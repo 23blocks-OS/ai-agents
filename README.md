@@ -1,54 +1,84 @@
-# 23blocks AI Agents
+# 23blocks AI Agents Marketplace
 
-Full 23blocks platform agents for shared cloud deployment.
+Official Claude Code marketplace for 23blocks platform plugins. One plugin per block.
+
+## Structure
+
+```
+ai-agents-mono/
+├── .claude-plugin/
+│   └── marketplace.json          # Marketplace definition
+├── plugins/
+│   ├── forms-block/              # Forms Block Plugin
+│   │   ├── .claude-plugin/
+│   │   │   └── plugin.json
+│   │   ├── agents/
+│   │   │   └── forms.md
+│   │   ├── skills/
+│   │   │   ├── schemas-api/
+│   │   │   │   └── SKILL.md
+│   │   │   ├── schemas-sdk/
+│   │   │   │   └── SKILL.md
+│   │   │   └── validation-api/
+│   │   │       └── SKILL.md
+│   │   ├── commands/
+│   │   └── hooks/
+│   ├── auth-block/               # Auth Block Plugin
+│   ├── data-block/               # Data Block Plugin
+│   └── storage-block/            # Storage Block Plugin
+├── pro-plugins/                  # Pro-only plugins (not in community)
+├── docs/
+│   └── agent-feature-guide.md    # Guide for block teams
+└── scripts/
+    └── build.sh
+```
 
 ## Installation
 
 ```bash
-# Add the marketplace
+# Add 23blocks marketplace
 claude plugin marketplace add https://github.com/23blocks-OS/ai-agents
 
-# Install the plugin
-claude plugin install 23blocks-cloud
+# List available plugins
+claude plugin marketplace list
+
+# Install the blocks you need
+claude plugin install forms-block
+claude plugin install auth-block
+claude plugin install data-block
 ```
 
-## What's Included
+## For Block Teams
 
-### Agent
-- **23blocks** - Full platform expertise for APIs, authentication, data models, forms, and more
+See [docs/agent-feature-guide.md](docs/agent-feature-guide.md) for complete instructions on creating your block's plugin.
 
-### Skills
-- **form-schemas** - Create dynamic form schemas with validation
-- **data-models** - Design database schemas following 23blocks conventions
-- **auth-basics** - Implement authentication flows
-- **deploy-cloud** - Deploy to 23blocks managed cloud
+**Quick Start:**
+1. Create your plugin directory: `plugins/your-block/`
+2. Add plugin manifest: `.claude-plugin/plugin.json`
+3. Add your agent: `agents/your-block.md`
+4. Add skills: `skills/feature-api/SKILL.md`, `skills/feature-sdk/SKILL.md`
+5. Submit PR
 
-## Usage
+## Distribution
 
-Simply describe your task and the agent will help:
+| Repo | Visibility | Content |
+|------|------------|---------|
+| [23blocks-OS/ai-agents](https://github.com/23blocks-OS/ai-agents) | Public | All standard plugins |
+| [23blocks/ai-agents-pro](https://github.com/23blocks/ai-agents-pro) | Private | All plugins + pro-only |
 
+## Development
+
+### Local Build
+```bash
+./scripts/build.sh
 ```
-"Create an API endpoint for user profiles"
-"Set up authentication in my React app"
-"Design a data model for an e-commerce store"
-"Deploy my app to 23blocks cloud"
-```
 
-## Pro Features
-
-Need self-hosted deployment, CRM integrations, or enterprise auth?
-
-Check out [23blocks Pro](https://www.23blocks.com/pro) for:
-- Deploy on your own infrastructure (AWS/GCP/Azure)
-- CRM integrations (Salesforce, HubSpot)
-- Enterprise auth (SSO, SAML, LDAP)
-- Compliance tools (SOC2, HIPAA, GDPR)
-
-## Support
-
-- Documentation: [docs.23blocks.com](https://docs.23blocks.com)
-- Community: [community.23blocks.com](https://community.23blocks.com)
+### CI/CD
+On push to `main`, GitHub Actions:
+1. Builds community and pro distributions
+2. Syncs to respective distribution repos
 
 ## License
 
-MIT License
+- Standard plugins: MIT
+- Pro plugins: Proprietary
