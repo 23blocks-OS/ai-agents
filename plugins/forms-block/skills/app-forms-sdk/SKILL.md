@@ -9,6 +9,23 @@ user-invocable: true
 
 TypeScript types, React components, and patterns for dynamic business forms with validation and scoring.
 
+## Required Environment Variables
+
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `BLOCKS_API_URL` | Forms API base URL | `https://forms.api.us.23blocks.com` |
+| `BLOCKS_AUTH_TOKEN` | Bearer token | `eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...` |
+| `BLOCKS_API_KEY` | API key (AppId) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
+
+**CRITICAL:** Always verify environment variables before initializing the client:
+
+```typescript
+// Pre-flight check
+if (!process.env.BLOCKS_API_URL || !process.env.BLOCKS_AUTH_TOKEN || !process.env.BLOCKS_API_KEY) {
+  throw new Error('Missing required env vars: BLOCKS_API_URL, BLOCKS_AUTH_TOKEN, BLOCKS_API_KEY');
+}
+```
+
 ## Overview
 
 App Forms are structured business forms with:

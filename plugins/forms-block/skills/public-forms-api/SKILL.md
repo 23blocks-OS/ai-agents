@@ -9,12 +9,30 @@ user-invocable: true
 
 API reference for passwordless form access via magic links with optional OTP verification.
 
-## Base URL
-```
-https://forms.23blocks.com/:url_id/forms/public
+## Required Environment Variables
+
+**BEFORE making ANY API call**, verify the API URL environment variable is set:
+
+```bash
+# Pre-flight check - Run this FIRST
+if [ -z "$BLOCKS_API_URL" ]; then
+  echo "ERROR: Missing BLOCKS_API_URL environment variable"
+  echo "Please set:"
+  echo "  BLOCKS_API_URL     - API base URL (e.g., https://forms.api.us.23blocks.com)"
+  exit 1
+fi
 ```
 
-Where `:url_id` is the company's URL identifier.
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `BLOCKS_API_URL` | Forms API base URL | `https://forms.api.us.23blocks.com` |
+
+## Base URL
+```bash
+$BLOCKS_API_URL/:url_id/forms/public
+```
+
+Where `:url_id` is the company's URL identifier (e.g., `starttalking`).
 
 ## Authentication
 No authentication required - uses magic link token:
@@ -56,7 +74,7 @@ Retrieves form for magic link access. Returns limited data if OTP verification i
 
 **Request:**
 ```bash
-curl -X GET "https://forms.23blocks.com/mycompany/forms/public?token=abc123xyz"
+curl -X GET "$BLOCKS_API_URL/mycompany/forms/public?token=abc123xyz"
 ```
 
 **Response 200 (OTP Required, Not Verified):**
@@ -137,7 +155,7 @@ Generates and sends a 6-digit OTP code to the assignee's email.
 
 **Request:**
 ```bash
-curl -X POST "https://forms.23blocks.com/mycompany/forms/public/send-otp?token=abc123xyz"
+curl -X POST "$BLOCKS_API_URL/mycompany/forms/public/send-otp?token=abc123xyz"
 ```
 
 **Response 200:**
@@ -171,7 +189,7 @@ Verifies the OTP code and returns full form data if correct.
 
 **Request:**
 ```bash
-curl -X POST "https://forms.23blocks.com/mycompany/forms/public/verify-otp?token=abc123xyz" \
+curl -X POST "$BLOCKS_API_URL/mycompany/forms/public/verify-otp?token=abc123xyz" \
   -H "Content-Type: application/json" \
   -d '{"code": "123456"}'
 ```
@@ -232,7 +250,7 @@ Submits completed form responses. Requires OTP verification if enabled.
 
 **Request:**
 ```bash
-curl -X POST "https://forms.23blocks.com/mycompany/forms/public?token=abc123xyz" \
+curl -X POST "$BLOCKS_API_URL/mycompany/forms/public?token=abc123xyz" \
   -H "Content-Type: application/json" \
   -d '{
     "responses": [null, 2, 1, 3, "Additional notes here"]
@@ -272,7 +290,7 @@ Auto-saves form responses without submitting.
 
 **Request:**
 ```bash
-curl -X PATCH "https://forms.23blocks.com/mycompany/forms/public?token=abc123xyz" \
+curl -X PATCH "$BLOCKS_API_URL/mycompany/forms/public?token=abc123xyz" \
   -H "Content-Type: application/json" \
   -d '{
     "responses": [null, 2, 1, null, null]
@@ -298,9 +316,9 @@ curl -X PATCH "https://forms.23blocks.com/mycompany/forms/public?token=abc123xyz
 
 ### Enable OTP for a Form
 ```bash
-curl -X PUT "$API_URL/forms/form-id" \
-  -H "Authorization: Bearer $TOKEN" \
-  -H "AppId: $APP_ID" \
+curl -X PUT "$BLOCKS_API_URL/forms/form-id" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "AppId: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "form": {

@@ -9,15 +9,34 @@ user-invocable: true
 
 Complete API reference for 23blocks form schema management.
 
-## Base URL
+## Required Environment Variables
+
+**BEFORE making ANY API call**, verify these environment variables are set:
+
+```bash
+# Pre-flight check - Run this FIRST
+if [ -z "$BLOCKS_API_URL" ] || [ -z "$BLOCKS_AUTH_TOKEN" ] || [ -z "$BLOCKS_API_KEY" ]; then
+  echo "ERROR: Missing required environment variables"
+  echo "Please set:"
+  echo "  BLOCKS_API_URL     - API base URL (e.g., https://forms.api.us.23blocks.com)"
+  echo "  BLOCKS_AUTH_TOKEN  - Your authentication token"
+  echo "  BLOCKS_API_KEY     - Your API key (AppId)"
+  exit 1
+fi
 ```
-https://api.23blocks.com/forms
-```
+
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `BLOCKS_API_URL` | Forms API base URL | `https://forms.api.us.23blocks.com` |
+| `BLOCKS_AUTH_TOKEN` | Bearer token | `eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...` |
+| `BLOCKS_API_KEY` | API key (AppId) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
 
 ## Authentication
 ```bash
-Authorization: Bearer {access_token}
-X-API-Key: {api_key}
+curl -X GET "$BLOCKS_API_URL/schemas" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "AppId: $BLOCKS_API_KEY" \
+  -H "Content-Type: application/json"
 ```
 
 ---
@@ -30,8 +49,8 @@ Creates a new form schema definition.
 
 **Request:**
 ```bash
-curl -X POST "$API_URL/forms/schemas" \
-  -H "Authorization: Bearer $TOKEN" \
+curl -X POST "$BLOCKS_API_URL/forms/schemas" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
     "name": "contact_form",
@@ -103,8 +122,8 @@ Retrieves a form schema by ID.
 
 **Request:**
 ```bash
-curl -X GET "$API_URL/forms/schemas/frm_abc123" \
-  -H "Authorization: Bearer $TOKEN"
+curl -X GET "$BLOCKS_API_URL/forms/schemas/frm_abc123" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN"
 ```
 
 **Response 200:**
@@ -147,8 +166,8 @@ Updates an existing form schema. Creates a new version.
 
 **Request:**
 ```bash
-curl -X PUT "$API_URL/forms/schemas/frm_abc123" \
-  -H "Authorization: Bearer $TOKEN" \
+curl -X PUT "$BLOCKS_API_URL/forms/schemas/frm_abc123" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
     "description": "Updated contact form",
@@ -198,8 +217,8 @@ Soft-deletes a form schema. Existing submissions are preserved.
 
 **Request:**
 ```bash
-curl -X DELETE "$API_URL/forms/schemas/frm_abc123" \
-  -H "Authorization: Bearer $TOKEN"
+curl -X DELETE "$BLOCKS_API_URL/forms/schemas/frm_abc123" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN"
 ```
 
 **Response 204:** No content
@@ -215,8 +234,8 @@ Lists all form schemas with pagination.
 
 **Request:**
 ```bash
-curl -X GET "$API_URL/forms/schemas?page=1&limit=20&status=active" \
-  -H "Authorization: Bearer $TOKEN"
+curl -X GET "$BLOCKS_API_URL/forms/schemas?page=1&limit=20&status=active" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN"
 ```
 
 **Query Parameters:**

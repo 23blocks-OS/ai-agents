@@ -9,16 +9,34 @@ user-invocable: true
 
 Complete API reference for 23blocks survey instance management.
 
-## Base URL
+## Required Environment Variables
+
+**BEFORE making ANY API call**, verify these environment variables are set:
+
+```bash
+# Pre-flight check - Run this FIRST
+if [ -z "$BLOCKS_API_URL" ] || [ -z "$BLOCKS_AUTH_TOKEN" ] || [ -z "$BLOCKS_API_KEY" ]; then
+  echo "ERROR: Missing required environment variables"
+  echo "Please set:"
+  echo "  BLOCKS_API_URL     - API base URL (e.g., https://forms.api.us.23blocks.com)"
+  echo "  BLOCKS_AUTH_TOKEN  - Your authentication token"
+  echo "  BLOCKS_API_KEY     - Your API key (AppId)"
+  exit 1
+fi
 ```
-https://forms.23blocks.com
-```
+
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `BLOCKS_API_URL` | Forms API base URL | `https://forms.api.us.23blocks.com` |
+| `BLOCKS_AUTH_TOKEN` | Bearer token | `eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...` |
+| `BLOCKS_API_KEY` | API key (AppId) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
 
 ## Authentication
 ```bash
-Authorization: Bearer {access_token}
-AppId: {api_access_key}
-Content-Type: application/json
+curl -X GET "$BLOCKS_API_URL/surveys/{form_id}/instances" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "AppId: $BLOCKS_API_KEY" \
+  -H "Content-Type: application/json"
 ```
 
 ---
@@ -31,9 +49,9 @@ Lists survey instances for a specific survey form.
 
 **Request:**
 ```bash
-curl -X GET "$API_URL/surveys/form-123/instances?page=1&records=20" \
-  -H "Authorization: Bearer $TOKEN" \
-  -H "AppId: $APP_ID"
+curl -X GET "$BLOCKS_API_URL/surveys/form-123/instances?page=1&records=20" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "AppId: $BLOCKS_API_KEY"
 ```
 
 **Query Parameters:**
@@ -80,9 +98,9 @@ Lists survey instances filtered by status.
 
 **Request:**
 ```bash
-curl -X GET "$API_URL/surveys/form-123/instances/status/completed" \
-  -H "Authorization: Bearer $TOKEN" \
-  -H "AppId: $APP_ID"
+curl -X GET "$BLOCKS_API_URL/surveys/form-123/instances/status/completed" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "AppId: $BLOCKS_API_KEY"
 ```
 
 **Status Values:**
@@ -99,9 +117,9 @@ Retrieves a specific survey instance.
 
 **Request:**
 ```bash
-curl -X GET "$API_URL/surveys/form-123/instances/survey-inst-123" \
-  -H "Authorization: Bearer $TOKEN" \
-  -H "AppId: $APP_ID"
+curl -X GET "$BLOCKS_API_URL/surveys/form-123/instances/survey-inst-123" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "AppId: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -152,9 +170,9 @@ Creates a new survey instance and optionally sends magic link.
 
 **Request:**
 ```bash
-curl -X POST "$API_URL/surveys/form-123/instances" \
-  -H "Authorization: Bearer $TOKEN" \
-  -H "AppId: $APP_ID" \
+curl -X POST "$BLOCKS_API_URL/surveys/form-123/instances" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "AppId: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "survey_instance": {
@@ -203,9 +221,9 @@ Updates survey instance data.
 
 **Request:**
 ```bash
-curl -X PUT "$API_URL/surveys/form-123/instances/survey-inst-123" \
-  -H "Authorization: Bearer $TOKEN" \
-  -H "AppId: $APP_ID" \
+curl -X PUT "$BLOCKS_API_URL/surveys/form-123/instances/survey-inst-123" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "AppId: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "survey_instance": {
@@ -229,9 +247,9 @@ Updates the survey instance status.
 
 **Request:**
 ```bash
-curl -X PUT "$API_URL/surveys/form-123/instances/survey-inst-123/status" \
-  -H "Authorization: Bearer $TOKEN" \
-  -H "AppId: $APP_ID" \
+curl -X PUT "$BLOCKS_API_URL/surveys/form-123/instances/survey-inst-123/status" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "AppId: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "status": "completed"
@@ -254,9 +272,9 @@ Resends the magic link email.
 
 **Request:**
 ```bash
-curl -X POST "$API_URL/surveys/form-123/instances/survey-inst-123/resend_magic_link" \
-  -H "Authorization: Bearer $TOKEN" \
-  -H "AppId: $APP_ID"
+curl -X POST "$BLOCKS_API_URL/surveys/form-123/instances/survey-inst-123/resend_magic_link" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "AppId: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -276,9 +294,9 @@ Soft-deletes a survey instance.
 
 **Request:**
 ```bash
-curl -X DELETE "$API_URL/surveys/form-123/instances/survey-inst-123" \
-  -H "Authorization: Bearer $TOKEN" \
-  -H "AppId: $APP_ID"
+curl -X DELETE "$BLOCKS_API_URL/surveys/form-123/instances/survey-inst-123" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "AppId: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -291,9 +309,9 @@ Lists all surveys for a specific user.
 
 **Request:**
 ```bash
-curl -X POST "$API_URL/surveys/users" \
-  -H "Authorization: Bearer $TOKEN" \
-  -H "AppId: $APP_ID" \
+curl -X POST "$BLOCKS_API_URL/surveys/users" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "AppId: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "user_unique_id": "user-456"

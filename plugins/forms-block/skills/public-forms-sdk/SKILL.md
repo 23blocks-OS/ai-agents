@@ -9,6 +9,23 @@ user-invocable: true
 
 TypeScript types, React components, and patterns for magic link access and OTP verification flows.
 
+## Required Environment Variables
+
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `BLOCKS_API_URL` | Forms API base URL | `https://forms.api.us.23blocks.com` |
+
+**Note:** Public forms use magic link tokens instead of authentication tokens. Only `BLOCKS_API_URL` is required.
+
+**CRITICAL:** Always verify the API URL before initializing:
+
+```typescript
+// Pre-flight check
+if (!process.env.BLOCKS_API_URL) {
+  throw new Error('Missing required env var: BLOCKS_API_URL');
+}
+```
+
 ## Overview
 
 Public forms allow unauthenticated access via magic links with optional OTP verification:

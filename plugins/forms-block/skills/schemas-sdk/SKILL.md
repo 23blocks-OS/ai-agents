@@ -9,6 +9,14 @@ user-invocable: true
 
 TypeScript and React SDK for 23blocks form schemas.
 
+## Required Environment Variables
+
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `BLOCKS_API_URL` | Forms API base URL | `https://forms.api.us.23blocks.com` |
+| `BLOCKS_AUTH_TOKEN` | Bearer token | `eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...` |
+| `BLOCKS_API_KEY` | API key (AppId) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
+
 ## Installation
 
 ```bash
@@ -24,9 +32,15 @@ npm install @23blocks/forms @23blocks/forms-react
 ```typescript
 import { FormsClient } from '@23blocks/forms';
 
+// CRITICAL: Verify env vars before initializing
+if (!process.env.BLOCKS_API_URL || !process.env.BLOCKS_AUTH_TOKEN || !process.env.BLOCKS_API_KEY) {
+  throw new Error('Missing required env vars: BLOCKS_API_URL, BLOCKS_AUTH_TOKEN, BLOCKS_API_KEY');
+}
+
 const forms = new FormsClient({
   apiKey: process.env.BLOCKS_API_KEY,
-  baseUrl: 'https://api.23blocks.com', // optional
+  authToken: process.env.BLOCKS_AUTH_TOKEN,
+  baseUrl: process.env.BLOCKS_API_URL,  // e.g., https://forms.api.us.23blocks.com
   timeout: 30000, // optional, ms
 });
 ```

@@ -9,6 +9,14 @@ user-invocable: true
 
 TypeScript types, API client, and React patterns for 23blocks Forms API integration.
 
+## Required Environment Variables
+
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `BLOCKS_API_URL` | Forms API base URL | `https://forms.api.us.23blocks.com` |
+| `BLOCKS_AUTH_TOKEN` | Bearer token | `eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...` |
+| `BLOCKS_API_KEY` | API key (AppId) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
+
 ## Installation
 
 ```bash
@@ -24,10 +32,15 @@ yarn add @23blocks/forms-sdk
 ```typescript
 import { FormsClient } from '@23blocks/forms-sdk';
 
+// CRITICAL: Verify env vars before initializing
+if (!process.env.BLOCKS_API_URL || !process.env.BLOCKS_AUTH_TOKEN || !process.env.BLOCKS_API_KEY) {
+  throw new Error('Missing required env vars: BLOCKS_API_URL, BLOCKS_AUTH_TOKEN, BLOCKS_API_KEY');
+}
+
 const client = new FormsClient({
-  baseUrl: 'https://forms.23blocks.com',
-  accessToken: process.env.FORMS_ACCESS_TOKEN,
-  appId: process.env.FORMS_APP_ID,
+  baseUrl: process.env.BLOCKS_API_URL,  // e.g., https://forms.api.us.23blocks.com
+  accessToken: process.env.BLOCKS_AUTH_TOKEN,
+  appId: process.env.BLOCKS_API_KEY,
 });
 ```
 
@@ -40,8 +53,13 @@ import { useAuth } from '@23blocks/auth-sdk';
 function useFormsClient() {
   const { accessToken, appId } = useAuth();
 
+  // CRITICAL: Verify env var before initializing
+  if (!process.env.BLOCKS_API_URL) {
+    throw new Error('Missing required env var: BLOCKS_API_URL');
+  }
+
   return new FormsClient({
-    baseUrl: 'https://forms.23blocks.com',
+    baseUrl: process.env.BLOCKS_API_URL,
     accessToken,
     appId,
   });

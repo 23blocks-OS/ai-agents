@@ -9,16 +9,34 @@ user-invocable: true
 
 Complete API reference for 23blocks email template management with Mandrill/SendGrid integration.
 
-## Base URL
+## Required Environment Variables
+
+**BEFORE making ANY API call**, verify these environment variables are set:
+
+```bash
+# Pre-flight check - Run this FIRST
+if [ -z "$BLOCKS_API_URL" ] || [ -z "$BLOCKS_AUTH_TOKEN" ] || [ -z "$BLOCKS_API_KEY" ]; then
+  echo "ERROR: Missing required environment variables"
+  echo "Please set:"
+  echo "  BLOCKS_API_URL     - API base URL (e.g., https://forms.api.us.23blocks.com)"
+  echo "  BLOCKS_AUTH_TOKEN  - Your authentication token"
+  echo "  BLOCKS_API_KEY     - Your API key (AppId)"
+  exit 1
+fi
 ```
-https://forms.23blocks.com
-```
+
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `BLOCKS_API_URL` | Forms API base URL | `https://forms.api.us.23blocks.com` |
+| `BLOCKS_AUTH_TOKEN` | Bearer token | `eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...` |
+| `BLOCKS_API_KEY` | API key (AppId) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
 
 ## Authentication
 ```bash
-Authorization: Bearer {access_token}
-AppId: {api_access_key}
-Content-Type: application/json
+curl -X GET "$BLOCKS_API_URL/mailtemplates" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "AppId: $BLOCKS_API_KEY" \
+  -H "Content-Type: application/json"
 ```
 
 ---
@@ -31,9 +49,9 @@ Lists all mail templates.
 
 **Request:**
 ```bash
-curl -X GET "$API_URL/mailtemplates?page=1&records=20" \
-  -H "Authorization: Bearer $TOKEN" \
-  -H "AppId: $APP_ID"
+curl -X GET "$BLOCKS_API_URL/mailtemplates?page=1&records=20" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "AppId: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -76,9 +94,9 @@ Retrieves a specific mail template.
 
 **Request:**
 ```bash
-curl -X GET "$API_URL/mailtemplates/tpl-123" \
-  -H "Authorization: Bearer $TOKEN" \
-  -H "AppId: $APP_ID"
+curl -X GET "$BLOCKS_API_URL/mailtemplates/tpl-123" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "AppId: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -115,9 +133,9 @@ Creates a new mail template.
 
 **Request:**
 ```bash
-curl -X POST "$API_URL/mailtemplates" \
-  -H "Authorization: Bearer $TOKEN" \
-  -H "AppId: $APP_ID" \
+curl -X POST "$BLOCKS_API_URL/mailtemplates" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "AppId: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "mail_template": {
@@ -176,9 +194,9 @@ Updates an existing mail template.
 
 **Request:**
 ```bash
-curl -X PUT "$API_URL/mailtemplates/tpl-123" \
-  -H "Authorization: Bearer $TOKEN" \
-  -H "AppId: $APP_ID" \
+curl -X PUT "$BLOCKS_API_URL/mailtemplates/tpl-123" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "AppId: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "mail_template": {
@@ -197,9 +215,9 @@ Deletes a mail template.
 
 **Request:**
 ```bash
-curl -X DELETE "$API_URL/mailtemplates/tpl-123" \
-  -H "Authorization: Bearer $TOKEN" \
-  -H "AppId: $APP_ID"
+curl -X DELETE "$BLOCKS_API_URL/mailtemplates/tpl-123" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "AppId: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -212,9 +230,9 @@ Retrieves Mandrill statistics for a template.
 
 **Request:**
 ```bash
-curl -X GET "$API_URL/mailtemplates/tpl-123/stats" \
-  -H "Authorization: Bearer $TOKEN" \
-  -H "AppId: $APP_ID"
+curl -X GET "$BLOCKS_API_URL/mailtemplates/tpl-123/stats" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "AppId: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**

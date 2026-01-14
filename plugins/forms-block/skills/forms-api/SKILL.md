@@ -9,16 +9,34 @@ user-invocable: true
 
 Complete API reference for 23blocks form management.
 
-## Base URL
+## Required Environment Variables
+
+**BEFORE making ANY API call**, verify these environment variables are set:
+
+```bash
+# Pre-flight check - Run this FIRST
+if [ -z "$BLOCKS_API_URL" ] || [ -z "$BLOCKS_AUTH_TOKEN" ] || [ -z "$BLOCKS_API_KEY" ]; then
+  echo "ERROR: Missing required environment variables"
+  echo "Please set:"
+  echo "  BLOCKS_API_URL     - API base URL (e.g., https://forms.api.us.23blocks.com)"
+  echo "  BLOCKS_AUTH_TOKEN  - Your authentication token"
+  echo "  BLOCKS_API_KEY     - Your API key (AppId)"
+  exit 1
+fi
 ```
-https://forms.23blocks.com
-```
+
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `BLOCKS_API_URL` | Forms API base URL | `https://forms.api.us.23blocks.com` |
+| `BLOCKS_AUTH_TOKEN` | Bearer token | `eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...` |
+| `BLOCKS_API_KEY` | API key (AppId) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
 
 ## Authentication
 ```bash
-Authorization: Bearer {access_token}
-AppId: {api_access_key}
-Content-Type: application/json
+curl -X GET "$BLOCKS_API_URL/forms" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "AppId: $BLOCKS_API_KEY" \
+  -H "Content-Type: application/json"
 ```
 
 ---
@@ -31,9 +49,9 @@ Lists all forms with pagination and filtering.
 
 **Request:**
 ```bash
-curl -X GET "$API_URL/forms?page=1&records=20&search=contact" \
-  -H "Authorization: Bearer $TOKEN" \
-  -H "AppId: $APP_ID"
+curl -X GET "$BLOCKS_API_URL/forms?page=1&records=20&search=contact" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "AppId: $BLOCKS_API_KEY"
 ```
 
 **Query Parameters:**
@@ -89,9 +107,9 @@ Retrieves a form by unique ID with its schema.
 
 **Request:**
 ```bash
-curl -X GET "$API_URL/forms/9ebed093-574a-4be4-9076-cfca36493330" \
-  -H "Authorization: Bearer $TOKEN" \
-  -H "AppId: $APP_ID"
+curl -X GET "$BLOCKS_API_URL/forms/9ebed093-574a-4be4-9076-cfca36493330" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "AppId: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -155,9 +173,9 @@ Creates a new form definition.
 
 **Request:**
 ```bash
-curl -X POST "$API_URL/forms" \
-  -H "Authorization: Bearer $TOKEN" \
-  -H "AppId: $APP_ID" \
+curl -X POST "$BLOCKS_API_URL/forms" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "AppId: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "form": {
@@ -219,9 +237,9 @@ Updates an existing form.
 
 **Request:**
 ```bash
-curl -X PUT "$API_URL/forms/9ebed093-574a-4be4-9076-cfca36493330" \
-  -H "Authorization: Bearer $TOKEN" \
-  -H "AppId: $APP_ID" \
+curl -X PUT "$BLOCKS_API_URL/forms/9ebed093-574a-4be4-9076-cfca36493330" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "AppId: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "form": {
@@ -261,9 +279,9 @@ Soft-deletes a form (sets status to deleted, enabled to false).
 
 **Request:**
 ```bash
-curl -X DELETE "$API_URL/forms/9ebed093-574a-4be4-9076-cfca36493330" \
-  -H "Authorization: Bearer $TOKEN" \
-  -H "AppId: $APP_ID"
+curl -X DELETE "$BLOCKS_API_URL/forms/9ebed093-574a-4be4-9076-cfca36493330" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "AppId: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -279,9 +297,9 @@ Lists forms filtered by form type ID.
 
 **Request:**
 ```bash
-curl -X GET "$API_URL/forms/types/app_form?page=1&records=20" \
-  -H "Authorization: Bearer $TOKEN" \
-  -H "AppId: $APP_ID"
+curl -X GET "$BLOCKS_API_URL/forms/types/app_form?page=1&records=20" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "AppId: $BLOCKS_API_KEY"
 ```
 
 **Response 200:** Same as GET /forms

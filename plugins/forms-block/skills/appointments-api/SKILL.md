@@ -9,16 +9,34 @@ user-invocable: true
 
 Complete API reference for 23blocks appointment management including booking, confirmation, cancellation, and reporting.
 
-## Base URL
+## Required Environment Variables
+
+**BEFORE making ANY API call**, verify these environment variables are set:
+
+```bash
+# Pre-flight check - Run this FIRST
+if [ -z "$BLOCKS_API_URL" ] || [ -z "$BLOCKS_AUTH_TOKEN" ] || [ -z "$BLOCKS_API_KEY" ]; then
+  echo "ERROR: Missing required environment variables"
+  echo "Please set:"
+  echo "  BLOCKS_API_URL     - API base URL (e.g., https://forms.api.us.23blocks.com)"
+  echo "  BLOCKS_AUTH_TOKEN  - Your authentication token"
+  echo "  BLOCKS_API_KEY     - Your API key (AppId)"
+  exit 1
+fi
 ```
-https://forms.23blocks.com
-```
+
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `BLOCKS_API_URL` | Forms API base URL | `https://forms.api.us.23blocks.com` |
+| `BLOCKS_AUTH_TOKEN` | Bearer token | `eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...` |
+| `BLOCKS_API_KEY` | API key (AppId) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
 
 ## Authentication
 ```bash
-Authorization: Bearer {access_token}
-AppId: {api_access_key}
-Content-Type: application/json
+curl -X GET "$BLOCKS_API_URL/appointments/{form_id}/instances" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "AppId: $BLOCKS_API_KEY" \
+  -H "Content-Type: application/json"
 ```
 
 ---
@@ -31,9 +49,9 @@ Lists all appointments for a specific form.
 
 **Request:**
 ```bash
-curl -X GET "$API_URL/appointments/form-123/instances?page=1&records=20" \
-  -H "Authorization: Bearer $TOKEN" \
-  -H "AppId: $APP_ID"
+curl -X GET "$BLOCKS_API_URL/appointments/form-123/instances?page=1&records=20" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "AppId: $BLOCKS_API_KEY"
 ```
 
 **Query Parameters:**
@@ -87,9 +105,9 @@ Retrieves a specific appointment.
 
 **Request:**
 ```bash
-curl -X GET "$API_URL/appointments/form-123/instances/apt-123" \
-  -H "Authorization: Bearer $TOKEN" \
-  -H "AppId: $APP_ID"
+curl -X GET "$BLOCKS_API_URL/appointments/form-123/instances/apt-123" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "AppId: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -131,9 +149,9 @@ Creates a new appointment booking.
 
 **Request:**
 ```bash
-curl -X POST "$API_URL/appointments/form-123/instances" \
-  -H "Authorization: Bearer $TOKEN" \
-  -H "AppId: $APP_ID" \
+curl -X POST "$BLOCKS_API_URL/appointments/form-123/instances" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "AppId: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "appointment": {
@@ -192,9 +210,9 @@ Updates an existing appointment.
 
 **Request:**
 ```bash
-curl -X PUT "$API_URL/appointments/form-123/instances/apt-123" \
-  -H "Authorization: Bearer $TOKEN" \
-  -H "AppId: $APP_ID" \
+curl -X PUT "$BLOCKS_API_URL/appointments/form-123/instances/apt-123" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "AppId: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "appointment": {
@@ -213,9 +231,9 @@ Confirms a pending appointment.
 
 **Request:**
 ```bash
-curl -X POST "$API_URL/appointments/form-123/instances/apt-123/confirm" \
-  -H "Authorization: Bearer $TOKEN" \
-  -H "AppId: $APP_ID"
+curl -X POST "$BLOCKS_API_URL/appointments/form-123/instances/apt-123/confirm" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "AppId: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -240,9 +258,9 @@ Cancels an appointment.
 
 **Request:**
 ```bash
-curl -X POST "$API_URL/appointments/form-123/instances/apt-123/cancel" \
-  -H "Authorization: Bearer $TOKEN" \
-  -H "AppId: $APP_ID" \
+curl -X POST "$BLOCKS_API_URL/appointments/form-123/instances/apt-123/cancel" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "AppId: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "reason": "Patient requested cancellation"
@@ -272,9 +290,9 @@ Soft-deletes an appointment.
 
 **Request:**
 ```bash
-curl -X DELETE "$API_URL/appointments/form-123/instances/apt-123" \
-  -H "Authorization: Bearer $TOKEN" \
-  -H "AppId: $APP_ID"
+curl -X DELETE "$BLOCKS_API_URL/appointments/form-123/instances/apt-123" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "AppId: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -289,9 +307,9 @@ Generates a list report of appointments with filtering.
 
 **Request:**
 ```bash
-curl -X POST "$API_URL/reports/appointments/list" \
-  -H "Authorization: Bearer $TOKEN" \
-  -H "AppId: $APP_ID" \
+curl -X POST "$BLOCKS_API_URL/reports/appointments/list" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "AppId: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "form_unique_id": "form-123",
@@ -332,9 +350,9 @@ Generates a summary report of appointments.
 
 **Request:**
 ```bash
-curl -X POST "$API_URL/reports/appointments/summary" \
-  -H "Authorization: Bearer $TOKEN" \
-  -H "AppId: $APP_ID" \
+curl -X POST "$BLOCKS_API_URL/reports/appointments/summary" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "AppId: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "form_unique_id": "form-123",
