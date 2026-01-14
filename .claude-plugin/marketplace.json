@@ -1,0 +1,47 @@
+{
+  "name": "23blocks",
+  "owner": {
+    "name": "23blocks",
+    "email": "support@23blocks.com"
+  },
+  "metadata": {
+    "description": "Official 23blocks platform plugins for Claude Code. One plugin per block.",
+    "version": "1.0.0",
+    "homepage": "https://www.23blocks.com",
+    "repository": "https://github.com/23blocks-OS/ai-agents"
+  },
+  "plugins": [
+    {
+      "name": "forms-block",
+      "source": "./plugins/forms-block",
+      "description": "23blocks Forms Block - schemas, validation, submission",
+      "version": "1.0.0",
+      "keywords": ["forms", "schemas", "validation"],
+      "category": "platform"
+    },
+    {
+      "name": "auth-block",
+      "source": "./plugins/auth-block",
+      "description": "23blocks Auth Block - sessions, tokens, SSO, permissions",
+      "version": "1.0.0",
+      "keywords": ["auth", "authentication", "sessions", "sso"],
+      "category": "platform"
+    },
+    {
+      "name": "data-block",
+      "source": "./plugins/data-block",
+      "description": "23blocks Data Block - models, queries, migrations",
+      "version": "1.0.0",
+      "keywords": ["data", "models", "queries", "database"],
+      "category": "platform"
+    },
+    {
+      "name": "storage-block",
+      "source": "./plugins/storage-block",
+      "description": "23blocks Storage Block - files, media, CDN",
+      "version": "1.0.0",
+      "keywords": ["storage", "files", "media", "cdn"],
+      "category": "platform"
+    }
+  ]
+}
