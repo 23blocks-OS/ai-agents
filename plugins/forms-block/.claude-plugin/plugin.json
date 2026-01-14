@@ -1,0 +1,34 @@
+{
+  "name": "forms-block",
+  "version": "2.1.0",
+  "description": "23blocks Forms Block - REST API and TypeScript/React SDK for form schemas, validation, submissions, surveys, appointments, app forms with scoring, magic links with OTP verification",
+  "author": {
+    "name": "23blocks",
+    "email": "support@23blocks.com"
+  },
+  "homepage": "https://docs.23blocks.com/forms",
+  "repository": "https://github.com/23blocks-OS/ai-agents",
+  "license": "MIT",
+  "keywords": [
+    "23blocks",
+    "forms",
+    "schemas",
+    "validation",
+    "submission",
+    "surveys",
+    "appointments",
+    "landing-forms",
+    "subscriptions",
+    "referrals",
+    "app-forms",
+    "scoring",
+    "magic-links",
+    "otp-verification",
+    "mail-templates",
+    "typescript",
+    "react",
+    "sdk",
+    "hooks",
+    "components"
+  ]
+}
