@@ -1,0 +1,27 @@
+{
+  "name": "content-block",
+  "version": "1.0.0",
+  "description": "23blocks Content Block - REST API for posts, comments, tags, categories, and user identities with social interactions (likes, follows, saves)",
+  "author": {
+    "name": "23blocks",
+    "email": "support@23blocks.com"
+  },
+  "homepage": "https://docs.23blocks.com/content",
+  "repository": "https://github.com/23blocks-OS/ai-agents",
+  "license": "MIT",
+  "keywords": [
+    "23blocks",
+    "content",
+    "posts",
+    "comments",
+    "tags",
+    "categories",
+    "identities",
+    "social",
+    "likes",
+    "follows",
+    "saves",
+    "versioning",
+    "moderation"
+  ]
+}
