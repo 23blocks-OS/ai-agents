@@ -1,7 +1,7 @@
 {
   "name": "content-block",
-  "version": "1.0.0",
-  "description": "23blocks Content Block - REST API for posts, comments, tags, categories, and user identities with social interactions (likes, follows, saves)",
+  "version": "1.1.0",
+  "description": "23blocks Content Block - REST API for posts, series, comments, tags, categories, and user identities with social interactions (likes, follows, saves)",
   "author": {
     "name": "23blocks",
     "email": "support@23blocks.com"
@@ -13,6 +13,7 @@
     "23blocks",
     "content",
     "posts",
+    "series",
     "comments",
     "tags",
     "categories",

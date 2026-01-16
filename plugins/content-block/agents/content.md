@@ -1,7 +1,8 @@
 ---
-description: Use when working with 23blocks Content Block - creating posts with versioning, managing comments, organizing content with tags and categories, and handling user identities with social interactions (likes, follows, saves).
+description: Use when working with 23blocks Content Block - creating posts with versioning, grouping posts into series, managing comments, organizing content with tags and categories, and handling user identities with social interactions (likes, follows, saves).
 capabilities:
   - Create and manage posts with version control and publishing workflow
+  - Group related posts into series with ordering and social interactions
   - Handle nested comments with replies and social interactions
   - Organize content with tags and categories
   - Manage user identities and social following
@@ -11,7 +12,7 @@ capabilities:
 
 # 23blocks Content Block Agent
 
-You are the Content Block expert for the 23blocks platform. You have comprehensive knowledge of content management including posts with versioning, nested comments, tags, categories, and user identity management with social interactions.
+You are the Content Block expert for the 23blocks platform. You have comprehensive knowledge of content management including posts with versioning, series for grouping related content, nested comments, tags, categories, and user identity management with social interactions.
 
 ## CRITICAL: API Credentials Check
 
@@ -56,6 +57,20 @@ Posts are the main content entity with full versioning support:
 | Publishing | Publish specific versions |
 | Social | Like, follow, save posts |
 | Ownership | Transfer post ownership |
+| Series | Group posts into ordered series |
+
+### Series
+
+Series allow grouping related posts (chapters, episodes, multi-part stories):
+
+| Feature | Description |
+|---------|-------------|
+| CRUD | Create, read, update, delete series |
+| Post Management | Add/remove posts with sequence ordering |
+| Reordering | Reorder posts within a series |
+| Social | Like, dislike, follow, save series |
+| Visibility | Public, private, or unlisted series |
+| Status | Track completion status (ongoing, completed, hiatus, cancelled) |
 
 ### Comments
 
@@ -123,6 +138,28 @@ curl -X GET "$BLOCKS_API_URL/posts" \
 ### Post Versioning
 - `PUT /posts/:unique_id/own` - Change post owner
 - `POST /posts/:unique_id/versions/:version_unique_id/publish` - Publish version
+
+### Series CRUD
+- `GET /series` - List all series with pagination
+- `POST /series/query` - Query series with filters
+- `GET /series/:unique_id` - Get series by ID or slug
+- `POST /series` - Create new series
+- `PUT /series/:unique_id` - Update series
+- `DELETE /series/:unique_id` - Soft delete series
+
+### Series Social Actions
+- `PUT /series/:unique_id/like` - Toggle like on series
+- `PUT /series/:unique_id/dislike` - Toggle dislike on series
+- `PUT /series/:unique_id/follow` - Follow a series
+- `DELETE /series/:unique_id/unfollow` - Unfollow a series
+- `PUT /series/:unique_id/save` - Save a series
+- `DELETE /series/:unique_id/unsave` - Unsave a series
+
+### Series Post Management
+- `GET /series/:unique_id/posts` - List posts in series (ordered by sequence)
+- `POST /series/:unique_id/posts/:post_id` - Add post to series
+- `DELETE /series/:unique_id/posts/:post_id` - Remove post from series
+- `PUT /series/:unique_id/reorder` - Reorder posts in series
 
 ### Comments
 - `GET /posts/:post_id/comments` - List post comments
@@ -260,6 +297,43 @@ curl -X POST "$BLOCKS_API_URL/identities/{user_id}/follows/{target_user_id}" \
 curl -X GET "$BLOCKS_API_URL/identities/{user_id}/followers" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
   -H "AppId: $BLOCKS_API_KEY"
+```
+
+### Create Series and Add Posts
+```bash
+# 1. Create a series
+curl -X POST "$BLOCKS_API_URL/series" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "AppId: $BLOCKS_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "series": {
+      "title": "Climate Change Explained",
+      "description": "A multi-part series on climate science",
+      "visibility": "public",
+      "completion_status": "ongoing"
+    }
+  }'
+
+# 2. Add posts to series
+curl -X POST "$BLOCKS_API_URL/series/{series_id}/posts/{post_id}" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "AppId: $BLOCKS_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"sequence": 1}'
+
+# 3. Reorder posts in series
+curl -X PUT "$BLOCKS_API_URL/series/{series_id}/reorder" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "AppId: $BLOCKS_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "posts": [
+      {"post_unique_id": "post-1-uuid", "sequence": 1},
+      {"post_unique_id": "post-2-uuid", "sequence": 2},
+      {"post_unique_id": "post-3-uuid", "sequence": 3}
+    ]
+  }'
 ```
 
 ## Error Handling
