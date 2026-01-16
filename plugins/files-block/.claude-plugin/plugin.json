@@ -1,0 +1,30 @@
+{
+  "name": "files-block",
+  "version": "1.0.0",
+  "description": "23blocks Files Block - REST API for user files, storage files, entity files, file access control, categories, tags, delegations, and AI-enabled file querying",
+  "author": {
+    "name": "23blocks",
+    "email": "support@23blocks.com"
+  },
+  "homepage": "https://docs.23blocks.com/files",
+  "repository": "https://github.com/23blocks-OS/ai-agents",
+  "license": "MIT",
+  "keywords": [
+    "23blocks",
+    "files",
+    "storage",
+    "entity-files",
+    "user-files",
+    "file-management",
+    "access-control",
+    "presigned-urls",
+    "multipart-upload",
+    "categories",
+    "tags",
+    "delegations",
+    "file-schemas",
+    "aws-s3",
+    "ai-enabled",
+    "rag"
+  ]
+}
