@@ -34,6 +34,14 @@
       "version": "1.0.0",
       "keywords": ["files", "storage", "access-control", "delegations", "presigned-urls", "multipart-upload"],
       "category": "platform"
+    },
+    {
+      "name": "jarvis-block",
+      "source": "./plugins/jarvis-block",
+      "description": "23blocks Jarvis Block - AI agents, versioned prompts, BPMN workflows, conversations, digital twins, tools, LLM integrations",
+      "version": "1.0.0",
+      "keywords": ["jarvis", "ai-agents", "prompts", "workflows", "bpmn", "conversations", "tools", "llm", "entities", "clusters"],
+      "category": "platform"
     }
   ]
 }

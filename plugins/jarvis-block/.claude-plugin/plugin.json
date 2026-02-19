@@ -1,0 +1,29 @@
+{
+  "name": "jarvis-block",
+  "version": "1.0.0",
+  "description": "23blocks Jarvis Block - REST API for AI agents, versioned prompts, BPMN workflows, conversations, tools, and LLM integrations",
+  "author": {
+    "name": "23blocks",
+    "email": "support@23blocks.com"
+  },
+  "homepage": "https://docs.23blocks.com/jarvis",
+  "repository": "https://github.com/23blocks-OS/ai-agents",
+  "license": "MIT",
+  "keywords": [
+    "23blocks",
+    "jarvis",
+    "ai-agents",
+    "prompts",
+    "workflows",
+    "bpmn",
+    "conversations",
+    "tools",
+    "llm",
+    "ai-models",
+    "digital-twins",
+    "entities",
+    "clusters",
+    "threads",
+    "executions"
+  ]
+}
