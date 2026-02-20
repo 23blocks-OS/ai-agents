@@ -1,0 +1,22 @@
+{
+  "name": "wallet-block",
+  "version": "1.0.0",
+  "description": "23blocks Wallet Block - REST API for digital wallets, transactions, transfers, OTP authorization, content storage, and webhook integrations",
+  "author": {
+    "name": "23blocks",
+    "email": "support@23blocks.com"
+  },
+  "homepage": "https://docs.23blocks.com/wallet",
+  "repository": "https://github.com/23blocks-OS/ai-agents",
+  "license": "MIT",
+  "keywords": [
+    "23blocks",
+    "wallet",
+    "transactions",
+    "transfers",
+    "otp",
+    "payments",
+    "content-storage",
+    "webhooks"
+  ]
+}

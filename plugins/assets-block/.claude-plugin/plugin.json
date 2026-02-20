@@ -1,0 +1,28 @@
+{
+  "name": "assets-block",
+  "version": "1.0.0",
+  "description": "23blocks Assets Block - REST API for asset management, digital entities, categories, tags, vendors, warehouses, events, audits, operations, alerts, and access control",
+  "author": {
+    "name": "23blocks",
+    "email": "support@23blocks.com"
+  },
+  "homepage": "https://docs.23blocks.com/assets",
+  "repository": "https://github.com/23blocks-OS/ai-agents",
+  "license": "MIT",
+  "keywords": [
+    "23blocks",
+    "assets",
+    "inventory",
+    "entities",
+    "categories",
+    "vendors",
+    "warehouses",
+    "audits",
+    "operations",
+    "alerts",
+    "access-control",
+    "reports",
+    "otp",
+    "maintenance"
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "name": "sales-block",
+  "version": "1.0.0",
+  "description": "23blocks Sales Block - REST API for order management, subscriptions, payments, Stripe integration, MercadoPago, flexible orders, vendor payments, and sales reporting",
+  "author": {
+    "name": "23blocks",
+    "email": "support@23blocks.com"
+  },
+  "homepage": "https://docs.23blocks.com/sales",
+  "repository": "https://github.com/23blocks-OS/ai-agents",
+  "license": "MIT",
+  "keywords": [
+    "23blocks",
+    "sales",
+    "orders",
+    "subscriptions",
+    "payments",
+    "stripe",
+    "mercadopago",
+    "invoicing",
+    "vendors",
+    "providers",
+    "flexible-orders",
+    "reports"
+  ]
+}

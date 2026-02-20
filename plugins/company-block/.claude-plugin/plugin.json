@@ -1,0 +1,21 @@
+{
+  "name": "company-block",
+  "version": "1.0.0",
+  "description": "23blocks Company Block - REST API for organizational structure management including departments, teams, positions, and employee assignments",
+  "author": {
+    "name": "23blocks",
+    "email": "support@23blocks.com"
+  },
+  "homepage": "https://docs.23blocks.com/company",
+  "repository": "https://github.com/23blocks-OS/ai-agents",
+  "license": "MIT",
+  "keywords": [
+    "23blocks",
+    "company",
+    "departments",
+    "teams",
+    "positions",
+    "employees",
+    "organizational-structure"
+  ]
+}

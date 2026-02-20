@@ -1,0 +1,25 @@
+{
+  "name": "products-block",
+  "version": "1.0.0",
+  "description": "23blocks Products Block - REST API for product catalog management including products, categories, brands, vendors, warehouses, carts, orders, stock, pricing, catalogs, collections, reviews, and promotions",
+  "author": {
+    "name": "23blocks",
+    "email": "support@23blocks.com"
+  },
+  "homepage": "https://docs.23blocks.com/products",
+  "repository": "https://github.com/23blocks-OS/ai-agents",
+  "license": "MIT",
+  "keywords": [
+    "products",
+    "catalog",
+    "categories",
+    "brands",
+    "carts",
+    "orders",
+    "stock",
+    "pricing",
+    "reviews",
+    "promotions",
+    "e-commerce"
+  ]
+}

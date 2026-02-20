@@ -1,0 +1,27 @@
+{
+  "name": "geolocation-block",
+  "version": "1.0.0",
+  "description": "23blocks Geolocation Block - REST API for location management, addresses, premises, bookings, routes, regions, and geographic hierarchies (countries, states, cities)",
+  "author": {
+    "name": "23blocks",
+    "email": "support@23blocks.com"
+  },
+  "homepage": "https://docs.23blocks.com/geolocation",
+  "repository": "https://github.com/23blocks-OS/ai-agents",
+  "license": "MIT",
+  "keywords": [
+    "23blocks",
+    "geolocation",
+    "locations",
+    "addresses",
+    "premises",
+    "bookings",
+    "routes",
+    "regions",
+    "maps",
+    "countries",
+    "states",
+    "cities",
+    "geographic"
+  ]
+}

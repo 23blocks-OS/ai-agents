@@ -1,0 +1,22 @@
+{
+  "name": "rewards-block",
+  "version": "1.0.0",
+  "description": "23blocks Rewards Block - REST API for loyalty programs, coupons, badges, customer rewards, offer codes, and expiration rules management",
+  "author": {
+    "name": "23blocks",
+    "email": "support@23blocks.com"
+  },
+  "homepage": "https://docs.23blocks.com/rewards",
+  "repository": "https://github.com/23blocks-OS/ai-agents",
+  "license": "MIT",
+  "keywords": [
+    "rewards",
+    "loyalty",
+    "coupons",
+    "badges",
+    "customers",
+    "offer-codes",
+    "points",
+    "gamification"
+  ]
+}

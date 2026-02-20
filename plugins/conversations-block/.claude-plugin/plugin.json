@@ -1,0 +1,22 @@
+{
+  "name": "conversations-block",
+  "version": "1.0.0",
+  "description": "23blocks Conversations Block - REST API for real-time messaging, conversations, groups, notifications, meetings, WebSocket connections, and file sharing",
+  "author": {
+    "name": "23blocks",
+    "email": "support@23blocks.com"
+  },
+  "homepage": "https://docs.23blocks.com/conversations",
+  "repository": "https://github.com/23blocks-OS/ai-agents",
+  "license": "MIT",
+  "keywords": [
+    "conversations",
+    "messaging",
+    "groups",
+    "notifications",
+    "meetings",
+    "websocket",
+    "real-time",
+    "chat"
+  ]
+}

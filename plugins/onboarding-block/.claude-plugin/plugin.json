@@ -1,0 +1,21 @@
+{
+  "name": "onboarding-block",
+  "version": "1.0.0",
+  "description": "23blocks Onboarding Block - REST API for user onboarding flows, step-by-step journeys, progress tracking, remarketing, and journey reporting",
+  "author": {
+    "name": "23blocks",
+    "email": "support@23blocks.com"
+  },
+  "homepage": "https://docs.23blocks.com/onboarding",
+  "repository": "https://github.com/23blocks-OS/ai-agents",
+  "license": "MIT",
+  "keywords": [
+    "onboarding",
+    "journeys",
+    "steps",
+    "flows",
+    "remarketing",
+    "user-progress",
+    "reports"
+  ]
+}

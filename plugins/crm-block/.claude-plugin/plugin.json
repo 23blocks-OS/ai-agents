@@ -1,0 +1,24 @@
+{
+  "name": "crm-block",
+  "version": "1.0.0",
+  "description": "23blocks CRM Block - REST API for customer relationship management including accounts, contacts, leads, opportunities, meetings, billings, quotes, referrals, Zoom integration, and calendar sync",
+  "author": {
+    "name": "23blocks",
+    "email": "support@23blocks.com"
+  },
+  "homepage": "https://docs.23blocks.com/crm",
+  "repository": "https://github.com/23blocks-OS/ai-agents",
+  "license": "MIT",
+  "keywords": [
+    "crm",
+    "accounts",
+    "contacts",
+    "leads",
+    "opportunities",
+    "meetings",
+    "billings",
+    "quotes",
+    "zoom",
+    "calendar"
+  ]
+}

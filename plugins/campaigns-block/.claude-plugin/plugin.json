@@ -1,0 +1,22 @@
+{
+  "name": "campaigns-block",
+  "version": "1.0.0",
+  "description": "23blocks Campaigns Block - REST API for marketing campaigns, media management, landing pages, audience targeting, templates, and campaign performance tracking",
+  "author": {
+    "name": "23blocks",
+    "email": "support@23blocks.com"
+  },
+  "homepage": "https://docs.23blocks.com/campaigns",
+  "repository": "https://github.com/23blocks-OS/ai-agents",
+  "license": "MIT",
+  "keywords": [
+    "23blocks",
+    "campaigns",
+    "marketing",
+    "media",
+    "landing-pages",
+    "audiences",
+    "templates",
+    "targeting"
+  ]
+}
