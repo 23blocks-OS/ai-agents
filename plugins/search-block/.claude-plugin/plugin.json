@@ -1,0 +1,28 @@
+{
+  "name": "search-block",
+  "version": "1.0.0",
+  "description": "23blocks Search Block - REST API for full-text search, entity management, AI-powered vector search, AWS CloudSearch, email templates, and multi-tenant company management",
+  "author": {
+    "name": "23blocks",
+    "email": "support@23blocks.com"
+  },
+  "homepage": "https://docs.23blocks.com/search",
+  "repository": "https://github.com/23blocks-OS/ai-agents",
+  "license": "MIT",
+  "keywords": [
+    "23blocks",
+    "search",
+    "full-text-search",
+    "entities",
+    "entity-search",
+    "ai-search",
+    "vector-search",
+    "cloud-search",
+    "mail-templates",
+    "mandrill",
+    "companies",
+    "multi-tenant",
+    "jarvis",
+    "nlp"
+  ]
+}

@@ -50,6 +50,14 @@
       "version": "1.0.0",
       "keywords": ["auth", "authentication", "authorization", "users", "sessions", "api-keys", "organizations", "roles", "permissions", "invitations", "teams", "oauth", "sso", "audit-logs"],
       "category": "platform"
+    },
+    {
+      "name": "search-block",
+      "source": "./plugins/search-block",
+      "description": "23blocks Search Block - full-text search, entity management, AI-powered vector search, AWS CloudSearch, email templates, multi-tenant companies",
+      "version": "1.0.0",
+      "keywords": ["search", "entities", "vector-search", "ai-search", "cloud-search", "mail-templates", "companies", "multi-tenant", "jarvis", "nlp"],
+      "category": "platform"
     }
   ]
 }
