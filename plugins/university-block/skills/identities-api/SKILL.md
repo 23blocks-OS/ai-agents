@@ -566,3 +566,73 @@ curl -X GET "$BLOCKS_API_URL/users/student-uuid-123/subjects/subject-uuid-001/no
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-university
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// StudentsService — client.university.students
+client.university.students.list(params?: ListStudentsParams): Promise<PageResult<Student>>;
+client.university.students.listArchived(params?: ListStudentsParams): Promise<PageResult<Student>>;
+client.university.students.get(uniqueId: string): Promise<Student>;
+client.university.students.register(uniqueId: string, data: RegisterStudentRequest): Promise<Student>;
+client.university.students.update(uniqueId: string, data: UpdateStudentRequest): Promise<Student>;
+client.university.students.archive(uniqueId: string): Promise<void>;
+client.university.students.restore(uniqueId: string): Promise<Student>;
+client.university.students.getCourses(uniqueId: string): Promise<Course[]>;
+client.university.students.getAvailableCourses(uniqueId: string): Promise<Course[]>;
+client.university.students.getGroups(uniqueId: string): Promise<CourseGroup[]>;
+client.university.students.getContentTree(uniqueId: string, courseGroupUniqueId: string): Promise<unknown>;
+client.university.students.getAvailability(uniqueId: string): Promise<StudentAvailability[]>;
+client.university.students.addAvailability(uniqueId: string, data: { dayOfWeek: number; startTime: string; endTime: string; timezone?: string }): Promise<StudentAvailability>;
+client.university.students.updateAvailability(uniqueId: string, availabilityUniqueId: string, data: { dayOfWeek?: number; startTime?: string; endTime?: string; timezone?: string }): Promise<StudentAvailability>;
+client.university.students.updateAvailabilitySlots(uniqueId: string, slots: { dayOfWeek: number; startTime: string; endTime: string }[]): Promise<StudentAvailability[]>;
+client.university.students.deleteAvailability(uniqueId: string, availabilityUniqueId: string): Promise<void>;
+client.university.students.deleteAllAvailability(uniqueId: string): Promise<void>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  Student,
+  ListStudentsParams,
+  RegisterStudentRequest,
+  UpdateStudentRequest,
+  StudentAvailability,
+} from '@23blocks/block-university';
+```
+
+### React Hook
+
+```typescript
+import { useUniversityBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useUniversityBlock();
+  const result = await client.university.students.list();
+}
+```

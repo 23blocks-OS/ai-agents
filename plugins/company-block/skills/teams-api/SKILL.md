@@ -470,3 +470,61 @@ curl -X GET "$BLOCKS_API_URL/users/user-uuid-001/teams?page=1&records=20" \
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-company
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// Teams — client.company.teams
+client.company.teams.list(params?: ListTeamsParams): Promise<PageResult<Team>>;
+client.company.teams.get(uniqueId: string): Promise<Team>;
+client.company.teams.create(data: CreateTeamRequest): Promise<Team>;
+client.company.teams.update(uniqueId: string, data: UpdateTeamRequest): Promise<Team>;
+client.company.teams.delete(uniqueId: string): Promise<void>;
+client.company.teams.listByDepartment(departmentUniqueId: string): Promise<Team[]>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  Team,
+  CreateTeamRequest,
+  UpdateTeamRequest,
+  ListTeamsParams,
+} from '@23blocks/block-company';
+```
+
+### React Hook
+
+```typescript
+import { useCompanyBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useCompanyBlock();
+  const result = await client.company.teams.list();
+}
+```

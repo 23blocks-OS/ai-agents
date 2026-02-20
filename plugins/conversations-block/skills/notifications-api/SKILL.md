@@ -770,3 +770,64 @@ curl -s -X GET "https://conversations.api.us.23blocks.com/sources/src_001" \
   ]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-conversations
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// NotificationsService — client.conversations.notifications
+list(params?: ListNotificationsParams): Promise<PageResult<Notification>>;
+get(uniqueId: string): Promise<Notification>;
+create(data: CreateNotificationRequest): Promise<Notification>;
+update(uniqueId: string, data: UpdateNotificationRequest): Promise<Notification>;
+delete(uniqueId: string): Promise<void>;
+markAsRead(uniqueId: string): Promise<Notification>;
+markAsUnread(uniqueId: string): Promise<Notification>;
+listByTarget(targetId: string, params?: ListNotificationsParams): Promise<PageResult<Notification>>;
+listUnread(params?: ListNotificationsParams): Promise<PageResult<Notification>>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  Notification,
+  CreateNotificationRequest,
+  UpdateNotificationRequest,
+  ListNotificationsParams,
+} from '@23blocks/block-conversations';
+```
+
+### React Hook
+
+```typescript
+import { useConversationsBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useConversationsBlock();
+  const result = await client.conversations.notifications.list();
+}
+```

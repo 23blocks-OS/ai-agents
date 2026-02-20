@@ -353,3 +353,67 @@ curl -X DELETE "$BLOCKS_API_URL/agents/agent-uuid-123/entities/entity-uuid-789" 
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-jarvis
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// AgentsService — client.jarvis.agents
+list(params?: ListAgentsParams): Promise<PageResult<Agent>>;
+get(uniqueId: string): Promise<Agent>;
+create(data: CreateAgentRequest): Promise<Agent>;
+update(uniqueId: string, data: UpdateAgentRequest): Promise<Agent>;
+delete(uniqueId: string): Promise<void>;
+addPrompt(uniqueId: string, data: AddAgentPromptRequest): Promise<Agent>;
+addEntity(uniqueId: string, data: AddAgentEntityRequest): Promise<Agent>;
+removeEntity(uniqueId: string, data: AddAgentEntityRequest): Promise<Agent>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  Agent,
+  CreateAgentRequest,
+  UpdateAgentRequest,
+  ListAgentsParams,
+  AddAgentPromptRequest,
+  AddAgentEntityRequest,
+} from '@23blocks/block-jarvis';
+```
+
+### React Hook
+
+```typescript
+import { useJarvisBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useJarvisBlock();
+
+  // Example: list all agents
+  const result = await client.jarvis.agents.list();
+}
+```

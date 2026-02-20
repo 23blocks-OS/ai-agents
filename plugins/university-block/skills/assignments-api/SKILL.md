@@ -438,3 +438,61 @@ curl -X PUT "$BLOCKS_API_URL/assignments/assignment-uuid-001/response/response-u
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-university
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// AssignmentsService — client.university.assignments
+client.university.assignments.list(params?: ListAssignmentsParams): Promise<PageResult<Assignment>>;
+client.university.assignments.get(uniqueId: string): Promise<Assignment>;
+client.university.assignments.create(data: CreateAssignmentRequest): Promise<Assignment>;
+client.university.assignments.update(uniqueId: string, data: UpdateAssignmentRequest): Promise<Assignment>;
+client.university.assignments.delete(uniqueId: string): Promise<void>;
+client.university.assignments.listByLesson(lessonUniqueId: string, params?: ListAssignmentsParams): Promise<PageResult<Assignment>>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  Assignment,
+  CreateAssignmentRequest,
+  UpdateAssignmentRequest,
+  ListAssignmentsParams,
+} from '@23blocks/block-university';
+```
+
+### React Hook
+
+```typescript
+import { useUniversityBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useUniversityBlock();
+  const result = await client.university.assignments.list();
+}
+```

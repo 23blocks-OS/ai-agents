@@ -635,3 +635,63 @@ curl -X POST "$BLOCKS_API_URL/landing_templates" \
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-campaigns
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// LandingPages — client.campaigns.landingPages
+client.campaigns.landingPages.list(params?: ListLandingPagesParams): Promise<PageResult<LandingPage>>;
+client.campaigns.landingPages.get(uniqueId: string): Promise<LandingPage>;
+client.campaigns.landingPages.create(data: CreateLandingPageRequest): Promise<LandingPage>;
+client.campaigns.landingPages.update(uniqueId: string, data: UpdateLandingPageRequest): Promise<LandingPage>;
+client.campaigns.landingPages.delete(uniqueId: string): Promise<void>;
+client.campaigns.landingPages.publish(uniqueId: string): Promise<LandingPage>;
+client.campaigns.landingPages.unpublish(uniqueId: string): Promise<LandingPage>;
+client.campaigns.landingPages.getBySlug(slug: string): Promise<LandingPage>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  LandingPage,
+  CreateLandingPageRequest,
+  UpdateLandingPageRequest,
+  ListLandingPagesParams,
+} from '@23blocks/block-campaigns';
+```
+
+### React Hook
+
+```typescript
+import { useCampaignsBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useCampaignsBlock();
+  const result = await client.campaigns.landingPages.list();
+}
+```

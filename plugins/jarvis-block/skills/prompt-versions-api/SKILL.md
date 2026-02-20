@@ -273,3 +273,54 @@ data: {"type":"done","execution_id":"exec-uuid-789","tokens_used":320}
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+**Note:** The Prompt Versions API does not have a dedicated SDK service yet. Use raw API calls as documented above, or use the generic HTTP client from the SDK. Prompt execution is available via `client.jarvis.prompts.execute()`.
+
+### Installation
+
+```bash
+npm install @23blocks/block-jarvis
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  ExecutePromptVersionRequest,
+} from '@23blocks/block-jarvis';
+```
+
+### React Hook
+
+```typescript
+import { useJarvisBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useJarvisBlock();
+
+  // Prompt versions are managed via REST API calls.
+  // For prompt execution, use client.jarvis.prompts.execute().
+  const result = await client.jarvis.prompts.execute('prompt-uuid', {
+    agentUniqueId: 'agent-uuid',
+    variables: { tone: 'professional' },
+  });
+}
+```

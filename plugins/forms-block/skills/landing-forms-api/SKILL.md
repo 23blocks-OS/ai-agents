@@ -310,3 +310,60 @@ curl -X POST "$BLOCKS_API_URL/crm/sync/landing/landing-123" \
 | 422 | Unprocessable Entity | Validation error (missing email) |
 | 400 | Bad Request | Invalid parameters |
 | 409 | Conflict | Duplicate submission (if only_once enabled) |
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-forms
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// LandingsService — client.forms.landingForms
+list(formUniqueId: string, params?: ListLandingsParams): Promise<PageResult<Landing>>;
+get(formUniqueId: string, uniqueId: string): Promise<Landing>;
+submit(formUniqueId: string, data: CreateLandingRequest): Promise<Landing>;
+update(formUniqueId: string, uniqueId: string, data: UpdateLandingRequest): Promise<Landing>;
+delete(formUniqueId: string, uniqueId: string): Promise<void>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  Landing,
+  CreateLandingRequest,
+  UpdateLandingRequest,
+  ListLandingsParams,
+} from '@23blocks/block-forms';
+```
+
+### React Hook
+
+```typescript
+import { useFormsBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useFormsBlock();
+  const result = await client.forms.landingForms.list('form-unique-id');
+}
+```

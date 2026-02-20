@@ -345,3 +345,76 @@ curl -X DELETE "$BLOCKS_API_URL/products/product-uuid-123/variations/variation-u
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-products
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// ProductReviewsService — client.products.reviews
+list(productUniqueId: string, page?: number, perPage?: number): Promise<PageResult<ProductReview>>;
+create(productUniqueId: string, data: CreateReviewRequest): Promise<ProductReview>;
+update(productUniqueId: string, reviewUniqueId: string, data: UpdateReviewRequest): Promise<ProductReview>;
+delete(productUniqueId: string, reviewUniqueId: string): Promise<void>;
+flag(productUniqueId: string, reviewUniqueId: string): Promise<ProductReview>;
+listByUser(userUniqueId: string, page?: number, perPage?: number): Promise<PageResult<ProductReview>>;
+
+// ProductVariationReviewsService — client.products.variationReviews
+list(variationUniqueId: string, params?: ListVariationReviewsParams): Promise<PageResult<ProductVariationReview>>;
+get(variationUniqueId: string, reviewUniqueId: string): Promise<ProductVariationReview>;
+create(variationUniqueId: string, data: CreateVariationReviewRequest): Promise<ProductVariationReview>;
+update(variationUniqueId: string, reviewUniqueId: string, data: UpdateVariationReviewRequest): Promise<ProductVariationReview>;
+delete(variationUniqueId: string, reviewUniqueId: string): Promise<void>;
+markHelpful(variationUniqueId: string, reviewUniqueId: string): Promise<ProductVariationReview>;
+markNotHelpful(variationUniqueId: string, reviewUniqueId: string): Promise<ProductVariationReview>;
+flag(variationUniqueId: string, reviewUniqueId: string): Promise<ProductVariationReview>;
+listByUser(userUniqueId: string, params?: ListVariationReviewsParams): Promise<PageResult<ProductVariationReview>>;
+getAverageRating(variationUniqueId: string): Promise<{ averageRating: number; totalReviews: number }>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  ProductReview,
+  ProductVariationReview,
+  CreateVariationReviewRequest,
+  UpdateVariationReviewRequest,
+  ListVariationReviewsParams,
+} from '@23blocks/block-products';
+```
+
+### React Hook
+
+```typescript
+import { useProductsBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useProductsBlock();
+
+  // Example: list reviews for a product
+  const result = await client.products.reviews.list('product-uuid-123');
+}
+```

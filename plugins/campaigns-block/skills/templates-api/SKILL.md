@@ -442,3 +442,69 @@ curl -X DELETE "$BLOCKS_API_URL/template_details/detail-uuid-1" \
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-campaigns
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// CampaignTemplates — client.campaigns.campaignTemplates
+client.campaigns.campaignTemplates.list(params?: ListCampaignTemplatesParams): Promise<PageResult<CampaignTemplate>>;
+client.campaigns.campaignTemplates.get(uniqueId: string): Promise<CampaignTemplate>;
+client.campaigns.campaignTemplates.create(data: CreateCampaignTemplateRequest): Promise<CampaignTemplate>;
+client.campaigns.campaignTemplates.update(uniqueId: string, data: UpdateCampaignTemplateRequest): Promise<CampaignTemplate>;
+client.campaigns.campaignTemplates.delete(uniqueId: string): Promise<void>;
+client.campaigns.campaignTemplates.listDetails(params?: ListTemplateDetailsParams): Promise<PageResult<TemplateDetail>>;
+client.campaigns.campaignTemplates.getDetail(uniqueId: string): Promise<TemplateDetail>;
+client.campaigns.campaignTemplates.createDetail(data: CreateTemplateDetailRequest): Promise<TemplateDetail>;
+client.campaigns.campaignTemplates.updateDetail(uniqueId: string, data: UpdateTemplateDetailRequest): Promise<TemplateDetail>;
+client.campaigns.campaignTemplates.deleteDetail(uniqueId: string): Promise<void>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  CampaignTemplate,
+  CreateCampaignTemplateRequest,
+  UpdateCampaignTemplateRequest,
+  ListCampaignTemplatesParams,
+  TemplateDetail,
+  CreateTemplateDetailRequest,
+  UpdateTemplateDetailRequest,
+  ListTemplateDetailsParams,
+} from '@23blocks/block-campaigns';
+```
+
+### React Hook
+
+```typescript
+import { useCampaignsBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useCampaignsBlock();
+  const result = await client.campaigns.campaignTemplates.list();
+}
+```

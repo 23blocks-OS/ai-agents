@@ -326,3 +326,63 @@ curl -X GET "$BLOCKS_API_URL/users/$USER_ID/files?tags=legal,2025" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
   -H "AppId: $BLOCKS_API_KEY"
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-files
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// FileTagsService — client.files.fileTags
+list(params?: ListFileTagsParams): Promise<PageResult<FileTag>>;
+get(uniqueId: string): Promise<FileTag>;
+create(data: CreateFileTagRequest): Promise<FileTag>;
+update(uniqueId: string, data: UpdateFileTagRequest): Promise<FileTag>;
+delete(uniqueId: string): Promise<void>;
+addToFile(userUniqueId: string, fileUniqueId: string, tagUniqueId: string): Promise<void>;
+removeFromFile(userUniqueId: string, fileUniqueId: string, tagUniqueId: string): Promise<void>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  FileTag,
+  CreateFileTagRequest,
+  UpdateFileTagRequest,
+  ListFileTagsParams,
+  FileTagAssignment,
+} from '@23blocks/block-files';
+```
+
+### React Hook
+
+```typescript
+import { useFilesBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useFilesBlock();
+  const result = await client.files.fileTags.list();
+}
+```

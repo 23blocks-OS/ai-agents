@@ -568,3 +568,65 @@ curl -X POST "$BLOCKS_API_URL/clusters/cluster-uuid-123/conversations/conv-uuid-
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-jarvis
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// ClustersService — client.jarvis.clusters
+list(userUniqueId: string, params?: ListClustersParams): Promise<PageResult<Cluster>>;
+get(userUniqueId: string, uniqueId: string): Promise<Cluster>;
+create(userUniqueId: string, data: CreateClusterRequest): Promise<Cluster>;
+update(userUniqueId: string, uniqueId: string, data: UpdateClusterRequest): Promise<Cluster>;
+delete(userUniqueId: string, uniqueId: string): Promise<void>;
+addPrompt(userUniqueId: string, uniqueId: string, promptUniqueId: string): Promise<Cluster>;
+createContext(userUniqueId: string, uniqueId: string, data?: CreateContextRequest): Promise<unknown>;
+sendMessage(userUniqueId: string, uniqueId: string, contextUniqueId: string, data: SendMessageRequest): Promise<unknown>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  Cluster,
+  CreateClusterRequest,
+  UpdateClusterRequest,
+  ListClustersParams,
+  CreateContextRequest,
+  SendMessageRequest,
+} from '@23blocks/block-jarvis';
+```
+
+### React Hook
+
+```typescript
+import { useJarvisBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useJarvisBlock();
+  const result = await client.jarvis.clusters.list('user-unique-id');
+}
+```

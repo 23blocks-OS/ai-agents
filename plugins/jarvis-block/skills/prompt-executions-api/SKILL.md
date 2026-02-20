@@ -249,3 +249,60 @@ curl -X DELETE "$BLOCKS_API_URL/prompts/prompt-uuid-123/executions/exec-uuid-789
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-jarvis
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// ExecutionsService — client.jarvis.executions
+list(params?: ListExecutionsParams): Promise<PageResult<Execution>>;
+get(uniqueId: string): Promise<Execution>;
+listByAgent(agentUniqueId: string, params?: ListExecutionsParams): Promise<PageResult<Execution>>;
+listByPrompt(promptUniqueId: string, params?: ListExecutionsParams): Promise<PageResult<Execution>>;
+cancel(uniqueId: string): Promise<Execution>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  Execution,
+  ListExecutionsParams,
+} from '@23blocks/block-jarvis';
+```
+
+### React Hook
+
+```typescript
+import { useJarvisBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useJarvisBlock();
+
+  // Example: list executions for a prompt
+  const executions = await client.jarvis.executions.listByPrompt('prompt-uuid');
+}
+```

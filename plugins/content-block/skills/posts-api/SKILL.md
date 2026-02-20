@@ -493,3 +493,76 @@ curl -X POST "$BLOCKS_API_URL/posts/post-uuid-123/versions/version-uuid/publish"
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-content
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// PostsService — client.content.posts
+list(params?: ListPostsParams): Promise<PageResult<Post>>;
+query(params: ListPostsParams): Promise<PageResult<Post>>;
+get(uniqueId: string): Promise<Post>;
+create(data: CreatePostRequest): Promise<Post>;
+update(uniqueId: string, data: UpdatePostRequest): Promise<Post>;
+replace(uniqueId: string, data: UpdatePostRequest): Promise<Post>;
+delete(uniqueId: string): Promise<void>;
+recover(uniqueId: string): Promise<Post>;
+search(query: string, params?: ListPostsParams): Promise<PageResult<Post>>;
+listDeleted(params?: ListPostsParams): Promise<PageResult<Post>>;
+changeOwner(uniqueId: string, newOwnerUniqueId: string): Promise<Post>;
+publishVersion(uniqueId: string, versionUniqueId: string): Promise<Post>;
+like(uniqueId: string): Promise<Post>;
+dislike(uniqueId: string): Promise<Post>;
+save(uniqueId: string): Promise<Post>;
+unsave(uniqueId: string): Promise<Post>;
+follow(uniqueId: string): Promise<Post>;
+unfollow(uniqueId: string): Promise<Post>;
+validate(uniqueId: string, templateUniqueId: string): Promise<PostValidationResult>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  Post,
+  CreatePostRequest,
+  UpdatePostRequest,
+  ListPostsParams,
+} from '@23blocks/block-content';
+```
+
+### React Hook
+
+```typescript
+import { useContentBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useContentBlock();
+
+  // Example: list all posts with pagination
+  const result = await client.content.posts.list({ page: 1, perPage: 20 });
+}
+```

@@ -408,3 +408,58 @@ curl -X POST "$BLOCKS_API_URL/companies/my-company/wallets/wal-abc-123/transacti
 | `self_transfer` | 422 | Cannot transfer to the same wallet |
 | `duplicate_reference` | 422 | Reference ID already used for another transaction |
 | `wallet_not_found` | 404 | Specified wallet does not exist |
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-wallet
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// TransactionsService — client.wallet.transactions
+client.wallet.transactions.list(params?: ListTransactionsParams): Promise<PageResult<Transaction>>;
+client.wallet.transactions.get(uniqueId: string): Promise<Transaction>;
+client.wallet.transactions.listByWallet(walletUniqueId: string, params?: ListTransactionsParams): Promise<PageResult<Transaction>>;
+client.wallet.transactions.listByReference(referenceType: string, referenceUniqueId: string, params?: ListTransactionsParams): Promise<PageResult<Transaction>>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  Transaction,
+  ListTransactionsParams,
+  TransactionType,
+} from '@23blocks/block-wallet';
+```
+
+### React Hook
+
+```typescript
+import { useWalletBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useWalletBlock();
+  const result = await client.wallet.transactions.list();
+}
+```

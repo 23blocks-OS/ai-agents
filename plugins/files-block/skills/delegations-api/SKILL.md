@@ -308,3 +308,61 @@ curl -X POST "$BLOCKS_API_URL/users/user-id/delegations" \
     }
   }'
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-files
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// DelegationsService — client.files.delegations
+list(userUniqueId: string, params?: ListFileDelegationsParams): Promise<PageResult<FileDelegation>>;
+get(userUniqueId: string, uniqueId: string): Promise<FileDelegation>;
+create(userUniqueId: string, data: CreateFileDelegationRequest): Promise<FileDelegation>;
+update(userUniqueId: string, uniqueId: string, data: UpdateFileDelegationRequest): Promise<FileDelegation>;
+delete(userUniqueId: string, uniqueId: string): Promise<void>;
+listReceivedDelegations(userUniqueId: string): Promise<FileDelegation[]>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  FileDelegation,
+  CreateFileDelegationRequest,
+  UpdateFileDelegationRequest,
+  ListFileDelegationsParams,
+} from '@23blocks/block-files';
+```
+
+### React Hook
+
+```typescript
+import { useFilesBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useFilesBlock();
+  const result = await client.files.delegations.list('user-unique-id');
+}
+```

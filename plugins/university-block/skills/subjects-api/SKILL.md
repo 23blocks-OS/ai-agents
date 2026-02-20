@@ -499,3 +499,66 @@ curl -X GET "$BLOCKS_API_URL/subjects/subject-uuid-001/tests" \
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-university
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// SubjectsService — client.university.subjects
+client.university.subjects.list(params?: ListSubjectsParams): Promise<PageResult<Subject>>;
+client.university.subjects.get(uniqueId: string): Promise<Subject>;
+client.university.subjects.create(data: CreateSubjectRequest): Promise<Subject>;
+client.university.subjects.update(uniqueId: string, data: UpdateSubjectRequest): Promise<Subject>;
+client.university.subjects.getResources(uniqueId: string): Promise<unknown[]>;
+client.university.subjects.getTeacherResources(uniqueId: string, teacherUniqueId: string): Promise<unknown[]>;
+client.university.subjects.getTests(uniqueId: string): Promise<unknown[]>;
+client.university.subjects.addLesson(uniqueId: string, lessonData: { name: string; description?: string }): Promise<unknown>;
+client.university.subjects.addResource(uniqueId: string, resourceData: unknown): Promise<unknown>;
+client.university.subjects.updateResource(uniqueId: string, resourceUniqueId: string, resourceData: unknown): Promise<unknown>;
+client.university.subjects.deleteResource(uniqueId: string, resourceUniqueId: string): Promise<void>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  Subject,
+  CreateSubjectRequest,
+  UpdateSubjectRequest,
+  ListSubjectsParams,
+} from '@23blocks/block-university';
+```
+
+### React Hook
+
+```typescript
+import { useUniversityBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useUniversityBlock();
+  const result = await client.university.subjects.list();
+}
+```

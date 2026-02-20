@@ -349,3 +349,68 @@ curl -X POST "$BLOCKS_API_URL/surveys/users" \
 | 404 | Not Found | Survey instance not found |
 | 422 | Unprocessable Entity | Validation error |
 | 400 | Bad Request | Invalid parameters |
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-forms
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// SurveysService — client.forms.surveys
+list(formUniqueId: string, params?: ListSurveysParams): Promise<PageResult<Survey>>;
+listByStatus(formUniqueId: string, status: SurveyStatus, params?: ListSurveysParams): Promise<PageResult<Survey>>;
+get(formUniqueId: string, uniqueId: string): Promise<Survey>;
+create(formUniqueId: string, data: CreateSurveyRequest): Promise<Survey>;
+update(formUniqueId: string, uniqueId: string, data: UpdateSurveyRequest): Promise<Survey>;
+delete(formUniqueId: string, uniqueId: string): Promise<void>;
+updateStatus(formUniqueId: string, uniqueId: string, data: UpdateSurveyStatusRequest): Promise<Survey>;
+resendMagicLink(formUniqueId: string, uniqueId: string): Promise<void>;
+listByUser(userUniqueId: string, params?: ListSurveysParams): Promise<PageResult<Survey>>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  Survey,
+  SurveyStatus,
+  CreateSurveyRequest,
+  UpdateSurveyRequest,
+  UpdateSurveyStatusRequest,
+  ListSurveysParams,
+} from '@23blocks/block-forms';
+```
+
+### React Hook
+
+```typescript
+import { useFormsBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useFormsBlock();
+
+  // Example: list survey instances for a form
+  const result = await client.forms.surveys.list('form-unique-id');
+}
+```

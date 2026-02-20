@@ -327,3 +327,64 @@ curl -X PUT "$BLOCKS_API_URL/customers/customer-uuid-123/grant_reward" \
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-rewards
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// RewardsService — client.rewards.rewards
+client.rewards.rewards.list(params?: ListRewardsParams): Promise<PageResult<Reward>>;
+client.rewards.rewards.get(uniqueId: string): Promise<Reward>;
+client.rewards.rewards.create(data: CreateRewardRequest): Promise<Reward>;
+client.rewards.rewards.update(uniqueId: string, data: UpdateRewardRequest): Promise<Reward>;
+client.rewards.rewards.delete(uniqueId: string): Promise<void>;
+client.rewards.rewards.redeem(data: RedeemRewardRequest): Promise<RewardRedemption>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  Reward,
+  RewardRedemption,
+  CreateRewardRequest,
+  UpdateRewardRequest,
+  ListRewardsParams,
+  RedeemRewardRequest,
+  RewardType,
+} from '@23blocks/block-rewards';
+```
+
+### React Hook
+
+```typescript
+import { useRewardsBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useRewardsBlock();
+  const result = await client.rewards.rewards.list();
+}
+```

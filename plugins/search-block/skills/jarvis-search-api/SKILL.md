@@ -196,3 +196,56 @@ curl -X POST "$BLOCKS_API_URL/jarvis/entities/search" \
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-search
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// JarvisSearchService — client.search.jarvis
+client.search.jarvis.search(query: JarvisSearchQuery): Promise<PageResult<JarvisSearchResult>>;
+client.search.jarvis.suggest(query: string, limit?: number): Promise<string[]>;
+client.search.jarvis.getRelated(entityUniqueId: string, entityType: string, limit?: number): Promise<JarvisSearchResult[]>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  JarvisSearchQuery,
+  JarvisSearchResult,
+} from '@23blocks/block-search';
+```
+
+### React Hook
+
+```typescript
+import { useSearchBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useSearchBlock();
+  const result = await client.search.jarvis.search({ query: 'find electronics under $50' });
+}
+```

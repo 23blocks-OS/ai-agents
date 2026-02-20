@@ -388,3 +388,66 @@ curl -X GET "$BLOCKS_API_URL/mailtemplates/template-uuid-123/mandrill/stats" \
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-onboarding
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// MailTemplatesService — client.onboarding.mailTemplates
+client.onboarding.mailTemplates.list(params?: ListMailTemplatesParams): Promise<PageResult<MailTemplate>>;
+client.onboarding.mailTemplates.get(uniqueId: string): Promise<MailTemplate>;
+client.onboarding.mailTemplates.create(data: CreateMailTemplateRequest): Promise<MailTemplate>;
+client.onboarding.mailTemplates.update(uniqueId: string, data: UpdateMailTemplateRequest): Promise<MailTemplate>;
+client.onboarding.mailTemplates.getMandrillStats(uniqueId: string): Promise<MandrillTemplateStats>;
+client.onboarding.mailTemplates.createMandrillTemplate(uniqueId: string, data: CreateMandrillTemplateRequest): Promise<MailTemplate>;
+client.onboarding.mailTemplates.updateMandrillTemplate(uniqueId: string, data: UpdateMandrillTemplateRequest): Promise<MailTemplate>;
+client.onboarding.mailTemplates.publishMandrill(uniqueId: string): Promise<MailTemplate>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  MailTemplate,
+  CreateMailTemplateRequest,
+  UpdateMailTemplateRequest,
+  ListMailTemplatesParams,
+  CreateMandrillTemplateRequest,
+  UpdateMandrillTemplateRequest,
+  MandrillTemplateStats,
+} from '@23blocks/block-onboarding';
+```
+
+### React Hook
+
+```typescript
+import { useOnboardingBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useOnboardingBlock();
+  const result = await client.onboarding.mailTemplates.list({ page: 1, perPage: 20 });
+}
+```

@@ -414,3 +414,64 @@ curl -X PUT "$BLOCKS_API_URL/categories/category-uuid-123/images/image-uuid-123/
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-products
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// CategoriesService — client.products.categories
+list(params?: ListCategoriesParams): Promise<PageResult<Category>>;
+get(uniqueId: string): Promise<Category>;
+create(data: CreateCategoryRequest): Promise<Category>;
+update(uniqueId: string, data: UpdateCategoryRequest): Promise<Category>;
+delete(uniqueId: string): Promise<void>;
+recover(uniqueId: string): Promise<Category>;
+getChildren(uniqueId: string): Promise<Category[]>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  Category,
+  CreateCategoryRequest,
+  UpdateCategoryRequest,
+  ListCategoriesParams,
+} from '@23blocks/block-products';
+```
+
+### React Hook
+
+```typescript
+import { useProductsBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useProductsBlock();
+
+  // Example: list categories with children
+  const result = await client.products.categories.list({ withChildren: true });
+}
+```

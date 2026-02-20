@@ -354,3 +354,62 @@ curl -X GET "$BLOCKS_API_URL/forms/types/app_form?page=1&records=20" \
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-forms
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// FormsService — client.forms.forms
+list(params?: ListFormsParams): Promise<PageResult<Form>>;
+get(uniqueId: string): Promise<Form>;
+create(data: CreateFormRequest): Promise<Form>;
+update(uniqueId: string, data: UpdateFormRequest): Promise<Form>;
+delete(uniqueId: string): Promise<void>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  Form,
+  CreateFormRequest,
+  UpdateFormRequest,
+  ListFormsParams,
+} from '@23blocks/block-forms';
+```
+
+### React Hook
+
+```typescript
+import { useFormsBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useFormsBlock();
+
+  // Example: list all forms
+  const result = await client.forms.forms.list();
+}
+```

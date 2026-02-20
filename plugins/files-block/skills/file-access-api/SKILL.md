@@ -495,3 +495,63 @@ curl -X DELETE "$BLOCKS_API_URL/users/$USER_ID/files/$FILE_ID/access/requests/$R
 | `owner` | Full control (create, read, update, delete) |
 | `write` | Can modify file and metadata |
 | `read` | View-only access |
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-files
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// FileAccessService — client.files.fileAccess
+list(params?: ListFileAccessParams): Promise<PageResult<FileAccess>>;
+get(uniqueId: string): Promise<FileAccess>;
+grant(data: CreateFileAccessRequest): Promise<FileAccess>;
+update(uniqueId: string, data: UpdateFileAccessRequest): Promise<FileAccess>;
+revoke(uniqueId: string): Promise<void>;
+listByFile(fileUniqueId: string, params?: ListFileAccessParams): Promise<PageResult<FileAccess>>;
+listByGrantee(granteeUniqueId: string, granteeType: string, params?: ListFileAccessParams): Promise<PageResult<FileAccess>>;
+checkAccess(fileUniqueId: string, granteeUniqueId: string): Promise<FileAccess | null>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  FileAccess,
+  CreateFileAccessRequest,
+  UpdateFileAccessRequest,
+  ListFileAccessParams,
+} from '@23blocks/block-files';
+```
+
+### React Hook
+
+```typescript
+import { useFilesBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useFilesBlock();
+  const result = await client.files.fileAccess.list();
+}
+```

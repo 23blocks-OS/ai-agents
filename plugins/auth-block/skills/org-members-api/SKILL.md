@@ -268,3 +268,66 @@ curl -X POST "$BLOCKS_API_URL/organizations/org-uuid-123/transfer_ownership" \
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-authentication
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// TenantUsersService — client.authentication.tenantUsers
+current(): Promise<TenantUser>;
+get(userUniqueId: string): Promise<TenantUser>;
+list(params?: ListParams): Promise<TenantUser[]>;
+
+// TenantsService (member management) — client.authentication.tenants
+createTenantUser(userUniqueId: string, request: CreateTenantUserRequest): Promise<TenantUserFull>;
+updateOnboarding(userUniqueId: string, urlId: string, request: UpdateTenantUserOnboardingRequest): Promise<TenantUserFull>;
+updateSales(userUniqueId: string, urlId: string, request: UpdateTenantUserSalesRequest): Promise<TenantUserFull>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  TenantUser,
+  TenantUserFull,
+  CreateTenantUserRequest,
+  UpdateTenantUserOnboardingRequest,
+  UpdateTenantUserSalesRequest,
+} from '@23blocks/block-authentication';
+```
+
+### React Hook
+
+```typescript
+import { useAuthenticationBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useAuthenticationBlock();
+
+  // Example: Get current tenant user context
+  const tenantUser = await client.authentication.tenantUsers.current();
+}
+```

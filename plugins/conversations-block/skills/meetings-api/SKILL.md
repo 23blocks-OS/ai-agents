@@ -293,3 +293,64 @@ curl -s -X POST "https://conversations.api.us.23blocks.com/vonage/conv_def456" \
   ]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-conversations
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// MeetingsService — client.conversations.meetings
+list(params?: ListMeetingsParams): Promise<PageResult<Meeting>>;
+get(uniqueId: string): Promise<Meeting>;
+create(data: CreateMeetingRequest): Promise<Meeting>;
+update(uniqueId: string, data: UpdateMeetingRequest): Promise<Meeting>;
+delete(uniqueId: string): Promise<void>;
+createSession(uniqueId: string): Promise<MeetingSession>;
+start(uniqueId: string): Promise<Meeting>;
+end(uniqueId: string): Promise<Meeting>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  Meeting,
+  MeetingSession,
+  CreateMeetingRequest,
+  UpdateMeetingRequest,
+  ListMeetingsParams,
+} from '@23blocks/block-conversations';
+```
+
+### React Hook
+
+```typescript
+import { useConversationsBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useConversationsBlock();
+  const result = await client.conversations.meetings.list();
+}
+```

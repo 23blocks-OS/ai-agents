@@ -244,3 +244,61 @@ If no category is specified when creating a file, the system uses the default "U
 ```
 
 This category is auto-created if it doesn't exist (self-healing for legacy tenants).
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-files
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// FileCategoriesService — client.files.fileCategories
+list(params?: ListFileCategoriesParams): Promise<PageResult<FileCategory>>;
+get(uniqueId: string): Promise<FileCategory>;
+create(data: CreateFileCategoryRequest): Promise<FileCategory>;
+update(uniqueId: string, data: UpdateFileCategoryRequest): Promise<FileCategory>;
+delete(uniqueId: string): Promise<void>;
+listChildren(parentUniqueId: string): Promise<FileCategory[]>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  FileCategory,
+  CreateFileCategoryRequest,
+  UpdateFileCategoryRequest,
+  ListFileCategoriesParams,
+} from '@23blocks/block-files';
+```
+
+### React Hook
+
+```typescript
+import { useFilesBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useFilesBlock();
+  const result = await client.files.fileCategories.list();
+}
+```

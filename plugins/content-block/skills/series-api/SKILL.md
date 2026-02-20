@@ -629,3 +629,77 @@ curl -X PUT "$BLOCKS_API_URL/series/series-uuid-123/reorder" \
 | `403` | Forbidden - Not the owner or admin |
 | `404` | Not Found - Resource not found |
 | `422` | Unprocessable Entity - Validation errors |
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-content
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// SeriesService — client.content.series
+list(params?: ListSeriesParams): Promise<PageResult<Series>>;
+query(params: QuerySeriesParams): Promise<PageResult<Series>>;
+get(uniqueId: string): Promise<Series>;
+create(data: CreateSeriesRequest): Promise<Series>;
+update(uniqueId: string, data: UpdateSeriesRequest): Promise<Series>;
+delete(uniqueId: string): Promise<void>;
+like(uniqueId: string): Promise<Series>;
+dislike(uniqueId: string): Promise<Series>;
+follow(uniqueId: string): Promise<Series>;
+unfollow(uniqueId: string): Promise<void>;
+save(uniqueId: string): Promise<Series>;
+unsave(uniqueId: string): Promise<void>;
+getPosts(uniqueId: string): Promise<Post[]>;
+addPost(seriesUniqueId: string, postUniqueId: string, sequence?: number): Promise<void>;
+removePost(seriesUniqueId: string, postUniqueId: string): Promise<void>;
+reorderPosts(uniqueId: string, data: ReorderPostsRequest): Promise<Series>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  Series,
+  CreateSeriesRequest,
+  UpdateSeriesRequest,
+  ListSeriesParams,
+  QuerySeriesParams,
+  ReorderPostsRequest,
+  SeriesVisibility,
+  SeriesCompletionStatus,
+} from '@23blocks/block-content';
+```
+
+### React Hook
+
+```typescript
+import { useContentBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useContentBlock();
+
+  // Example: list all series with pagination
+  const result = await client.content.series.list({ page: 1, perPage: 20 });
+}
+```

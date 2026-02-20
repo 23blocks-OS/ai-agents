@@ -244,3 +244,58 @@ curl -X GET "$BLOCKS_API_URL/users/user-uuid-123/reviews" \
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-products
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// VisitorsService — client.products.visitors
+create(data: CreateVisitorRequest): Promise<Visitor>;
+
+// ProductReviewsService — client.products.reviews (user reviews)
+listByUser(userUniqueId: string, page?: number, perPage?: number): Promise<PageResult<ProductReview>>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  ProductReview,
+} from '@23blocks/block-products';
+```
+
+### React Hook
+
+```typescript
+import { useProductsBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useProductsBlock();
+
+  // Example: create a visitor session
+  const visitor = await client.products.visitors.create({ sessionId: 'sess-abc123' });
+}
+```

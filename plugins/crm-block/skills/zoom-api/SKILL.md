@@ -552,3 +552,79 @@ curl -X GET "$BLOCKS_API_URL/zoom_hosts/zoom-host-uuid-123/allocations" \
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-crm
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// ZoomMeetingsService — client.crm.zoom
+get(userUniqueId: string, meetingUniqueId: string): Promise<ZoomMeeting>;
+provision(userUniqueId: string, meetingUniqueId: string, request?: ProvisionZoomMeetingRequest): Promise<ZoomMeeting>;
+update(userUniqueId: string, meetingUniqueId: string, request: UpdateZoomMeetingRequest): Promise<ZoomMeeting>;
+cancel(userUniqueId: string, meetingUniqueId: string): Promise<void>;
+checkAvailability(userUniqueId: string): Promise<ZoomAvailability>;
+
+// ZoomHostsService — client.crm.zoomHosts
+list(params?: ListZoomHostsParams): Promise<PageResult<ZoomHost>>;
+get(uniqueId: string): Promise<ZoomHost>;
+create(data: CreateZoomHostRequest): Promise<ZoomHost>;
+update(uniqueId: string, data: UpdateZoomHostRequest): Promise<ZoomHost>;
+delete(uniqueId: string): Promise<void>;
+getAvailability(uniqueId: string): Promise<ZoomHostAvailability>;
+getAllocations(uniqueId: string): Promise<ZoomHostAllocation[]>;
+getAvailableUsers(): Promise<AvailableUser[]>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  ZoomMeeting,
+  ZoomAvailability,
+  ProvisionZoomMeetingRequest,
+  UpdateZoomMeetingRequest,
+  ZoomHost,
+  ZoomHostAvailability,
+  ZoomHostAllocation,
+  AvailableUser,
+  CreateZoomHostRequest,
+  UpdateZoomHostRequest,
+  ListZoomHostsParams,
+} from '@23blocks/block-crm';
+```
+
+### React Hook
+
+```typescript
+import { useCrmBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useCrmBlock();
+
+  // Example: Check Zoom availability for a user
+  const result = await client.crm.zoom.checkAvailability('user-unique-id');
+}
+```

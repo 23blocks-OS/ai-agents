@@ -443,3 +443,73 @@ curl -X POST "$BLOCKS_API_URL/customers/customer-uuid-789/register/" \
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-sales
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// SalesUsers — client.sales.users
+client.sales.users.list(params?: ListSalesUsersParams): Promise<PageResult<SalesUser>>;
+client.sales.users.get(uniqueId: string): Promise<SalesUser>;
+client.sales.users.register(uniqueId: string, data?: RegisterSalesUserRequest): Promise<SalesUser>;
+client.sales.users.update(uniqueId: string, data: UpdateSalesUserRequest): Promise<SalesUser>;
+client.sales.users.listOrders(uniqueId: string, params?: { page?: number; perPage?: number }): Promise<PageResult<Order>>;
+client.sales.users.getOrder(uniqueId: string, orderUniqueId: string): Promise<Order>;
+client.sales.users.listSubscriptions(uniqueId: string, params?: ListUserSubscriptionsParams): Promise<PageResult<UserSubscription>>;
+client.sales.users.getSubscription(uniqueId: string, subscriptionUniqueId: string): Promise<UserSubscription>;
+client.sales.users.createSubscription(uniqueId: string, subscriptionUniqueId: string, data: CreateUserSubscriptionRequest): Promise<UserSubscription>;
+client.sales.users.updateSubscription(uniqueId: string, subscriptionUniqueId: string, data: UpdateUserSubscriptionRequest): Promise<UserSubscription>;
+client.sales.users.addConsumption(uniqueId: string, subscriptionUniqueId: string, data: AddSubscriptionConsumptionRequest): Promise<UserSubscription>;
+client.sales.users.cancelSubscription(uniqueId: string, subscriptionUniqueId: string): Promise<UserSubscription>;
+client.sales.users.deleteSubscription(uniqueId: string, subscriptionUniqueId: string): Promise<void>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  SalesUser,
+  RegisterSalesUserRequest,
+  UpdateSalesUserRequest,
+  ListSalesUsersParams,
+  UserSubscription,
+  CreateUserSubscriptionRequest,
+  UpdateUserSubscriptionRequest,
+  AddSubscriptionConsumptionRequest,
+  ListUserSubscriptionsParams,
+} from '@23blocks/block-sales';
+```
+
+### React Hook
+
+```typescript
+import { useSalesBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useSalesBlock();
+  const result = await client.sales.users.list();
+}
+```

@@ -301,3 +301,68 @@ curl -X DELETE "$BLOCKS_API_URL/users/user-uuid-123/shoppinglists/sl-uuid-123/pr
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-products
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// ShoppingListsService — client.products.shoppingLists
+list(params?: ListShoppingListsParams): Promise<PageResult<ShoppingList>>;
+get(uniqueId: string): Promise<ShoppingList>;
+create(data: CreateShoppingListRequest): Promise<ShoppingList>;
+update(uniqueId: string, data: UpdateShoppingListRequest): Promise<ShoppingList>;
+delete(uniqueId: string): Promise<void>;
+addItem(uniqueId: string, productUniqueId: string, quantity?: number): Promise<ShoppingList>;
+removeItem(uniqueId: string, productUniqueId: string): Promise<void>;
+updateItemQuantity(uniqueId: string, productUniqueId: string, quantity: number): Promise<ShoppingList>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  ShoppingList,
+  ShoppingListItem,
+  CreateShoppingListRequest,
+  UpdateShoppingListRequest,
+  ListShoppingListsParams,
+  AddShoppingListItemRequest,
+  RemoveShoppingListItemRequest,
+} from '@23blocks/block-products';
+```
+
+### React Hook
+
+```typescript
+import { useProductsBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useProductsBlock();
+
+  // Example: create a new shopping list
+  const list = await client.products.shoppingLists.create({ name: 'My Wishlist' });
+}
+```

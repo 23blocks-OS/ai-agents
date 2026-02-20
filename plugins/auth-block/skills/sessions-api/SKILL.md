@@ -347,3 +347,98 @@ curl -X POST "$BLOCKS_API_URL/sessions/mfa/verify" \
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-authentication
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// AuthService — client.authentication.auth
+signIn(request: SignInRequest): Promise<SignInResponse>;
+signUp(request: SignUpRequest): Promise<SignUpResponse>;
+signOut(): Promise<void>;
+validateToken(): Promise<TokenValidationResponse>;
+getCurrentUser(): Promise<User>;
+requestPasswordReset(request: PasswordResetRequest): Promise<void>;
+updatePassword(request: PasswordUpdateRequest): Promise<void>;
+refreshToken(request: RefreshTokenRequest): Promise<RefreshTokenResponse>;
+requestMagicLink(request: MagicLinkRequest): Promise<void>;
+verifyMagicLink(request: MagicLinkVerifyRequest): Promise<SignInResponse>;
+sendInvitation(request: InvitationRequest): Promise<void>;
+acceptInvitation(request: AcceptInvitationRequest): Promise<SignInResponse>;
+confirmEmail(token: string): Promise<User>;
+resendConfirmation(request: ResendConfirmationRequest): Promise<void>;
+validateEmail(request: ValidateEmailRequest): Promise<ValidateEmailResponse>;
+validateDocument(request: ValidateDocumentRequest): Promise<ValidateDocumentResponse>;
+resendInvitation(request: ResendInvitationRequest): Promise<User>;
+requestAccountRecovery(request: AccountRecoveryRequest): Promise<AccountRecoveryResponse>;
+completeAccountRecovery(request: CompleteRecoveryRequest): Promise<User>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  SignInRequest,
+  SignInResponse,
+  SignUpRequest,
+  SignUpResponse,
+  PasswordResetRequest,
+  PasswordUpdateRequest,
+  TokenValidationResponse,
+  RefreshTokenRequest,
+  RefreshTokenResponse,
+  MagicLinkRequest,
+  MagicLinkVerifyRequest,
+  InvitationRequest,
+  AcceptInvitationRequest,
+  ResendConfirmationRequest,
+  ValidateEmailRequest,
+  ValidateEmailResponse,
+  ValidateDocumentRequest,
+  ValidateDocumentResponse,
+  ResendInvitationRequest,
+  AccountRecoveryRequest,
+  AccountRecoveryResponse,
+  CompleteRecoveryRequest,
+  User,
+} from '@23blocks/block-authentication';
+```
+
+### React Hook
+
+```typescript
+import { useAuthenticationBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useAuthenticationBlock();
+
+  // Example: Sign in a user
+  const { user, accessToken } = await client.authentication.auth.signIn({
+    email: 'user@example.com',
+    password: 'password',
+  });
+}
+```

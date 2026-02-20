@@ -361,3 +361,69 @@ curl -X POST "$API_URL/forms/frm_abc123/validate?debug=true" \
 | Async validation timeout | Slow webhook | Increase `asyncTimeout` or optimize webhook |
 | Pattern not matching | Regex escaping | Double-escape backslashes in JSON |
 | Cross-field validation fails | Field order | Ensure dependent field exists in schema |
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+The validation API is used through form schemas and instances. There is no standalone validation service in the SDK. Validation rules are configured within form schemas and executed automatically during form instance submission.
+
+### Installation
+
+```bash
+npm install @23blocks/block-forms
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// Validation is handled through FormSchemasService — client.forms.schemas
+// Define validation rules in schema creation/updates:
+create(formUniqueId: string, data: CreateFormSchemaRequest): Promise<FormSchema>;
+update(formUniqueId: string, schemaUniqueId: string, data: UpdateFormSchemaRequest): Promise<FormSchema>;
+
+// Validation is executed during form instance submission — client.forms.formInstances
+submit(formUniqueId: string, uniqueId: string): Promise<FormInstance>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  FormSchema,
+  CreateFormSchemaRequest,
+  UpdateFormSchemaRequest,
+  FormInstance,
+} from '@23blocks/block-forms';
+```
+
+### React Hook
+
+```typescript
+import { useFormsBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useFormsBlock();
+
+  // Example: create a schema with validation rules
+  const schema = await client.forms.schemas.create('form-unique-id', {
+    code: 'contact-form',
+    name: 'Contact Form',
+    schema: { required_fields: ['email', 'message'] },
+  });
+}
+```

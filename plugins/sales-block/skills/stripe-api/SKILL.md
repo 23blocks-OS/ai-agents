@@ -621,3 +621,76 @@ curl -X DELETE "$BLOCKS_API_URL/stripe/subscriptions/sub_1234567890" \
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-sales
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// Stripe — client.sales.stripe
+client.sales.stripe.createCustomer(data: CreateStripeCustomerRequest): Promise<CreateStripeCustomerResponse>;
+client.sales.stripe.createCheckoutSession(data: CreateStripeCheckoutSessionRequest): Promise<StripeCheckoutSession>;
+client.sales.stripe.verifySession(sessionId: string): Promise<StripeCheckoutSession>;
+client.sales.stripe.createPaymentIntent(data: CreateStripePaymentIntentRequest): Promise<StripePaymentIntent>;
+client.sales.stripe.createCustomerPortal(uniqueId: string, data: CreateStripeCustomerPortalRequest): Promise<StripeCustomerPortalSession>;
+client.sales.stripe.listSubscriptions(params?: ListStripeSubscriptionsParams): Promise<PageResult<StripeSubscription>>;
+client.sales.stripe.createSubscription(data: CreateStripeSubscriptionRequest): Promise<StripeSubscription>;
+client.sales.stripe.updateSubscription(stripeSubscriptionId: string, data: UpdateStripeSubscriptionRequest): Promise<StripeSubscription>;
+client.sales.stripe.cancelSubscription(stripeSubscriptionId: string): Promise<void>;
+client.sales.stripe.listWebhooks(): Promise<StripeWebhook[]>;
+client.sales.stripe.createWebhook(data: CreateStripeWebhookRequest): Promise<StripeWebhook>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  CreateStripeCustomerRequest,
+  CreateStripeCustomerResponse,
+  StripeCheckoutSession,
+  CreateStripeCheckoutSessionRequest,
+  StripePaymentIntent,
+  CreateStripePaymentIntentRequest,
+  StripeSubscription,
+  CreateStripeSubscriptionRequest,
+  UpdateStripeSubscriptionRequest,
+  StripeCustomerPortalSession,
+  CreateStripeCustomerPortalRequest,
+  StripeWebhook,
+  CreateStripeWebhookRequest,
+  ListStripeSubscriptionsParams,
+} from '@23blocks/block-sales';
+```
+
+### React Hook
+
+```typescript
+import { useSalesBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useSalesBlock();
+  const result = await client.sales.stripe.listSubscriptions();
+}
+```

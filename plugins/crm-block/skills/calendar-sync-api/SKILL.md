@@ -568,3 +568,56 @@ curl -X POST "$BLOCKS_API_URL/calcom/my-company/webhook" \
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-crm
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// CalendarSyncService — client.crm.calendarSync
+syncUser(userUniqueId: string): Promise<CalendarSyncResult>;
+syncTenant(): Promise<CalendarSyncResult>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  CalendarSyncResult,
+} from '@23blocks/block-crm';
+```
+
+### React Hook
+
+```typescript
+import { useCrmBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useCrmBlock();
+
+  // Example: Sync calendar for a specific user
+  const result = await client.crm.calendarSync.syncUser('user-unique-id');
+}
+```

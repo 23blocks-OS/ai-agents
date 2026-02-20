@@ -540,3 +540,84 @@ curl -X DELETE "$BLOCKS_API_URL/channels/channel-uuid-001" \
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-products
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// ProductPricesService — client.products.prices
+list(params?: ListProductPricesParams): Promise<PageResult<ProductPrice>>;
+get(uniqueId: string): Promise<ProductPrice>;
+create(data: CreateProductPriceRequest): Promise<ProductPrice>;
+update(uniqueId: string, data: UpdateProductPriceRequest): Promise<ProductPrice>;
+delete(uniqueId: string): Promise<void>;
+getForProduct(productUniqueId: string, params?: ListProductPricesParams): Promise<PageResult<ProductPrice>>;
+getForVariation(variationUniqueId: string, params?: ListProductPricesParams): Promise<PageResult<ProductPrice>>;
+
+// ProductVariationsService — client.products.variations
+list(productUniqueId: string): Promise<ProductVariation[]>;
+get(productUniqueId: string, variationUniqueId: string): Promise<ProductVariation>;
+create(productUniqueId: string, data: CreateVariationRequest): Promise<ProductVariation>;
+update(productUniqueId: string, variationUniqueId: string, data: UpdateVariationRequest): Promise<ProductVariation>;
+delete(productUniqueId: string, variationUniqueId: string): Promise<void>;
+listReviews(productUniqueId: string, variationUniqueId: string): Promise<PageResult<any>>;
+createReview(productUniqueId: string, variationUniqueId: string, data: { rating: number; title?: string; content?: string }): Promise<any>;
+updateReview(productUniqueId: string, variationUniqueId: string, reviewUniqueId: string, data: { rating?: number; title?: string; content?: string }): Promise<any>;
+deleteReview(productUniqueId: string, variationUniqueId: string, reviewUniqueId: string): Promise<void>;
+flagReview(productUniqueId: string, variationUniqueId: string, reviewUniqueId: string): Promise<any>;
+
+// ChannelsService — client.products.channels
+list(): Promise<Channel[]>;
+get(uniqueId: string): Promise<Channel>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  ProductPrice,
+  CreateProductPriceRequest,
+  UpdateProductPriceRequest,
+  ListProductPricesParams,
+  ProductVariation,
+  CreateVariationRequest,
+  UpdateVariationRequest,
+  Channel,
+} from '@23blocks/block-products';
+```
+
+### React Hook
+
+```typescript
+import { useProductsBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useProductsBlock();
+
+  // Example: get prices for a product
+  const result = await client.products.prices.getForProduct('product-uuid-123');
+}
+```

@@ -355,3 +355,67 @@ curl -X DELETE "$BLOCKS_API_URL/sets/set-uuid-123/categories/category-uuid-001" 
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-products
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// ProductSetsService — client.products.productSets
+list(params?: ListProductSetsParams): Promise<PageResult<ProductSet>>;
+get(uniqueId: string): Promise<ProductSet>;
+create(data: CreateProductSetRequest): Promise<ProductSet>;
+update(uniqueId: string, data: UpdateProductSetRequest): Promise<ProductSet>;
+delete(uniqueId: string): Promise<void>;
+recover(uniqueId: string): Promise<ProductSet>;
+addProduct(uniqueId: string, productUniqueId: string, quantity?: number): Promise<ProductSet>;
+removeProduct(uniqueId: string, productUniqueId: string): Promise<void>;
+addCategory(uniqueId: string, categoryUniqueId: string): Promise<ProductSet>;
+removeCategory(uniqueId: string, categoryUniqueId: string): Promise<void>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  ProductSet,
+  CreateProductSetRequest,
+  UpdateProductSetRequest,
+  ListProductSetsParams,
+} from '@23blocks/block-products';
+```
+
+### React Hook
+
+```typescript
+import { useProductsBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useProductsBlock();
+
+  // Example: list all product sets
+  const result = await client.products.productSets.list();
+}
+```

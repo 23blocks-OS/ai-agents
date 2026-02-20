@@ -528,3 +528,68 @@ curl -X DELETE "$BLOCKS_API_URL/users/student-uuid-123/availability" \
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-university
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// AttendanceService — client.university.attendance
+client.university.attendance.list(params?: ListAttendanceParams): Promise<PageResult<Attendance>>;
+client.university.attendance.get(uniqueId: string): Promise<Attendance>;
+client.university.attendance.create(data: CreateAttendanceRequest): Promise<Attendance>;
+client.university.attendance.update(uniqueId: string, data: UpdateAttendanceRequest): Promise<Attendance>;
+client.university.attendance.delete(uniqueId: string): Promise<void>;
+client.university.attendance.bulkCreate(data: BulkAttendanceRequest): Promise<Attendance[]>;
+client.university.attendance.listByLesson(lessonUniqueId: string, params?: ListAttendanceParams): Promise<PageResult<Attendance>>;
+client.university.attendance.listByStudent(studentUniqueId: string, params?: ListAttendanceParams): Promise<PageResult<Attendance>>;
+client.university.attendance.listByCourse(courseUniqueId: string, params?: ListAttendanceParams): Promise<PageResult<Attendance>>;
+client.university.attendance.getStudentStats(studentUniqueId: string, courseUniqueId?: string): Promise<AttendanceStats>;
+client.university.attendance.verify(uniqueId: string): Promise<Attendance>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  Attendance,
+  CreateAttendanceRequest,
+  UpdateAttendanceRequest,
+  ListAttendanceParams,
+  BulkAttendanceRequest,
+  AttendanceStats,
+} from '@23blocks/block-university';
+```
+
+### React Hook
+
+```typescript
+import { useUniversityBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useUniversityBlock();
+  const result = await client.university.attendance.list();
+}
+```

@@ -529,3 +529,73 @@ curl -X GET "$BLOCKS_API_URL/agents/agent-uuid-123/threads/thread-uuid-456/runs/
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-jarvis
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// AgentRuntimeService — client.jarvis.agentRuntime
+getContext(agentUniqueId: string, contextUniqueId: string): Promise<AgentContext>;
+createContext(agentUniqueId: string, data?: CreateAgentContextRequest): Promise<AgentContext>;
+getConversation(agentUniqueId: string, contextUniqueId: string): Promise<{ messages: AgentMessage[] }>;
+getThread(agentUniqueId: string, threadId: string): Promise<AgentThread>;
+createThread(agentUniqueId: string, data?: CreateAgentThreadRequest): Promise<AgentThread>;
+sendMessage(agentUniqueId: string, threadId: string, data: SendAgentMessageRequest): Promise<unknown>;
+sendMessageStream(agentUniqueId: string, threadId: string, data: SendAgentMessageRequest): Promise<ReadableStream<string>>;
+getMessages(agentUniqueId: string, threadId: string): Promise<AgentMessage[]>;
+listExecutions(agentUniqueId: string, params?: ListAgentRunExecutionsParams): Promise<PageResult<AgentRunExecution>>;
+getExecution(agentUniqueId: string, executionUniqueId: string): Promise<AgentRunExecution>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  AgentThread,
+  AgentMessage,
+  AgentMessageContent,
+  AgentContext,
+  CreateAgentThreadRequest,
+  CreateAgentContextRequest,
+  SendAgentMessageRequest,
+  AgentRunExecution,
+  ListAgentRunExecutionsParams,
+} from '@23blocks/block-jarvis';
+```
+
+### React Hook
+
+```typescript
+import { useJarvisBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useJarvisBlock();
+
+  // Example: create a thread and send a message
+  const thread = await client.jarvis.agentRuntime.createThread('agent-uuid');
+  const response = await client.jarvis.agentRuntime.sendMessage('agent-uuid', thread.threadId, { content: 'Hello!' });
+}
+```

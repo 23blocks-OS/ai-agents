@@ -346,3 +346,62 @@ Templates use Handlebars syntax for variable interpolation:
 | 404 | Not Found | Template not found |
 | 422 | Unprocessable Entity | Validation error |
 | 400 | Bad Request | Invalid parameters |
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-forms
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// MailTemplatesService — client.forms.mailTemplates
+list(params?: ListMailTemplatesParams): Promise<PageResult<MailTemplate>>;
+get(uniqueId: string): Promise<MailTemplate>;
+create(data: CreateMailTemplateRequest): Promise<MailTemplate>;
+update(uniqueId: string, data: UpdateMailTemplateRequest): Promise<MailTemplate>;
+delete(uniqueId: string): Promise<void>;
+getStats(uniqueId: string): Promise<MailTemplateStats>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  MailTemplate,
+  CreateMailTemplateRequest,
+  UpdateMailTemplateRequest,
+  ListMailTemplatesParams,
+  MailTemplateStats,
+} from '@23blocks/block-forms';
+```
+
+### React Hook
+
+```typescript
+import { useFormsBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useFormsBlock();
+  const result = await client.forms.mailTemplates.list();
+}
+```

@@ -564,3 +564,66 @@ curl -X PUT "$BLOCKS_API_URL/contacts/contact-uuid-123/presign_document" \
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-crm
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// ContactsService — client.crm.contacts
+list(params?: ListContactsParams): Promise<PageResult<Contact>>;
+get(uniqueId: string): Promise<Contact>;
+create(data: CreateContactRequest): Promise<Contact>;
+update(uniqueId: string, data: UpdateContactRequest): Promise<Contact>;
+delete(uniqueId: string): Promise<void>;
+recover(uniqueId: string): Promise<Contact>;
+search(query: string, params?: ListContactsParams): Promise<PageResult<Contact>>;
+listDeleted(params?: ListContactsParams): Promise<PageResult<Contact>>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  Contact,
+  ContactProfile,
+  CreateContactRequest,
+  UpdateContactRequest,
+  ListContactsParams,
+} from '@23blocks/block-crm';
+```
+
+### React Hook
+
+```typescript
+import { useCrmBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useCrmBlock();
+
+  // Example: List all contacts
+  const result = await client.crm.contacts.list();
+}
+```

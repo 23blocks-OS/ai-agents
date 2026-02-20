@@ -229,3 +229,56 @@ curl -X DELETE "$BLOCKS_API_URL/collections/collection-uuid-123" \
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-products
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// CollectionsService — client.products.collections
+list(): Promise<Collection[]>;
+get(uniqueId: string): Promise<Collection>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  Collection,
+} from '@23blocks/block-products';
+```
+
+### React Hook
+
+```typescript
+import { useProductsBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useProductsBlock();
+
+  // Example: list all collections
+  const result = await client.products.collections.list();
+}
+```

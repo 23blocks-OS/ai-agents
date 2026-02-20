@@ -556,3 +556,66 @@ curl -X POST "$BLOCKS_API_URL/entities/entity-uuid-123/file_query" \
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-jarvis
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// EntitiesService — client.jarvis.entities
+list(params?: ListEntitiesParams): Promise<PageResult<Entity>>;
+get(uniqueId: string): Promise<Entity>;
+register(uniqueId: string, data?: RegisterEntityRequest): Promise<Entity>;
+update(uniqueId: string, data: UpdateEntityRequest): Promise<Entity>;
+delete(uniqueId: string): Promise<void>;
+addPrompt(uniqueId: string, promptUniqueId: string): Promise<void>;
+createContext(uniqueId: string, data?: CreateContextRequest): Promise<unknown>;
+sendMessage(uniqueId: string, contextUniqueId: string, data: SendMessageRequest): Promise<unknown>;
+sendMessageStream(uniqueId: string, contextUniqueId: string, data: SendMessageRequest): Promise<ReadableStream<string>>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  Entity,
+  RegisterEntityRequest,
+  UpdateEntityRequest,
+  ListEntitiesParams,
+  CreateContextRequest,
+  SendMessageRequest,
+} from '@23blocks/block-jarvis';
+```
+
+### React Hook
+
+```typescript
+import { useJarvisBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useJarvisBlock();
+  const result = await client.jarvis.entities.list();
+}
+```

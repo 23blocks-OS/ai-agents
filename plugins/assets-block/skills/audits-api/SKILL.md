@@ -345,3 +345,60 @@ curl -X POST "$BLOCKS_API_URL/companies/my-company/assets/asset-uuid-123/audits"
 | `401` | Unauthorized - Invalid or missing credentials |
 | `404` | Not Found - Asset or audit not found |
 | `422` | Unprocessable Entity - Validation errors |
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-assets
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// AssetAuditsService — client.assets.assetAudits
+client.assets.assetAudits.list(assetUniqueId: string, params?: ListAssetAuditsParams): Promise<PageResult<AssetAudit>>;
+client.assets.assetAudits.get(assetUniqueId: string, auditUniqueId: string): Promise<AssetAudit>;
+client.assets.assetAudits.create(assetUniqueId: string, data: CreateAssetAuditRequest): Promise<AssetAudit>;
+client.assets.assetAudits.update(assetUniqueId: string, auditUniqueId: string, data: UpdateAssetAuditRequest): Promise<AssetAudit>;
+client.assets.assetAudits.delete(assetUniqueId: string, auditUniqueId: string): Promise<void>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  AssetAudit,
+  CreateAssetAuditRequest,
+  UpdateAssetAuditRequest,
+  ListAssetAuditsParams,
+} from '@23blocks/block-assets';
+```
+
+### React Hook
+
+```typescript
+import { useAssetsBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useAssetsBlock();
+  const result = await client.assets.assetAudits.list('asset-unique-id');
+}
+```

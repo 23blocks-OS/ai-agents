@@ -461,3 +461,71 @@ curl -X DELETE "$BLOCKS_API_URL/workflows/workflow-uuid-123/instances/inst-uuid-
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-jarvis
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// WorkflowInstancesService — client.jarvis.workflowInstances
+start(workflowUniqueId: string, data?: StartWorkflowRequest): Promise<WorkflowInstance>;
+get(workflowUniqueId: string, instanceUniqueId: string): Promise<WorkflowInstance>;
+getDetails(workflowUniqueId: string, instanceUniqueId: string): Promise<WorkflowInstanceDetails>;
+step(workflowUniqueId: string, instanceUniqueId: string, data?: StepWorkflowRequest): Promise<WorkflowInstance>;
+logStep(workflowUniqueId: string, instanceUniqueId: string, data: LogWorkflowStepRequest): Promise<WorkflowInstance>;
+executeStep(workflowUniqueId: string, instanceUniqueId: string, data?: ExecuteStepRequest): Promise<WorkflowInstance>;
+executeNextStep(workflowUniqueId: string, instanceUniqueId: string, data?: ExecuteNextStepRequest): Promise<WorkflowInstance>;
+suspend(workflowUniqueId: string, instanceUniqueId: string): Promise<WorkflowInstance>;
+resume(workflowUniqueId: string, instanceUniqueId: string): Promise<WorkflowInstance>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  WorkflowInstance,
+  WorkflowInstanceDetails,
+  WorkflowStepLog,
+  WorkflowStepStatus,
+  StartWorkflowRequest,
+  StepWorkflowRequest,
+  LogWorkflowStepRequest,
+  ExecuteStepRequest,
+  ExecuteNextStepRequest,
+} from '@23blocks/block-jarvis';
+```
+
+### React Hook
+
+```typescript
+import { useJarvisBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useJarvisBlock();
+
+  // Example: start a workflow instance
+  const instance = await client.jarvis.workflowInstances.start('workflow-uuid');
+}
+```

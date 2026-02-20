@@ -903,3 +903,60 @@ curl -X POST "$BLOCKS_API_URL/reports/users/subscriptions/summary" \
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-sales
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// Subscriptions — client.sales.subscriptions
+client.sales.subscriptions.list(params?: ListSubscriptionsParams): Promise<PageResult<Subscription>>;
+client.sales.subscriptions.get(uniqueId: string): Promise<Subscription>;
+client.sales.subscriptions.create(data: CreateSubscriptionRequest): Promise<Subscription>;
+client.sales.subscriptions.addItem(subscriptionUniqueId: string, data: CreateSubscriptionItemRequest): Promise<SubscriptionItem>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  Subscription,
+  SubscriptionItem,
+  CreateSubscriptionRequest,
+  CreateSubscriptionItemRequest,
+  ListSubscriptionsParams,
+} from '@23blocks/block-sales';
+```
+
+### React Hook
+
+```typescript
+import { useSalesBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useSalesBlock();
+  const result = await client.sales.subscriptions.list();
+}
+```

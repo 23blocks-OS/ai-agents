@@ -286,3 +286,73 @@ curl -X DELETE "$BLOCKS_API_URL/agents/agent-uuid-123/global_tools/global-tool-u
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-jarvis
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// AgentToolsService — client.jarvis.agentTools
+list(agentUniqueId: string, params?: ListAgentToolsParams): Promise<PageResult<AgentTool>>;
+get(agentUniqueId: string, uniqueId: string): Promise<AgentTool>;
+create(agentUniqueId: string, data: CreateAgentToolRequest): Promise<AgentTool>;
+update(agentUniqueId: string, uniqueId: string, data: UpdateAgentToolRequest): Promise<AgentTool>;
+delete(agentUniqueId: string, uniqueId: string): Promise<void>;
+
+// AgentToolAssignmentsService — client.jarvis.agentToolAssignments
+list(agentUniqueId: string, params?: ListAgentToolAssignmentsParams): Promise<PageResult<AgentToolAssignment>>;
+get(agentUniqueId: string, uniqueId: string): Promise<AgentToolAssignment>;
+create(agentUniqueId: string, data: CreateAgentToolAssignmentRequest): Promise<AgentToolAssignment>;
+update(agentUniqueId: string, uniqueId: string, data: UpdateAgentToolAssignmentRequest): Promise<AgentToolAssignment>;
+delete(agentUniqueId: string, uniqueId: string): Promise<void>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  AgentTool,
+  CreateAgentToolRequest,
+  UpdateAgentToolRequest,
+  ListAgentToolsParams,
+  AgentToolAssignment,
+  CreateAgentToolAssignmentRequest,
+  UpdateAgentToolAssignmentRequest,
+  ListAgentToolAssignmentsParams,
+} from '@23blocks/block-jarvis';
+```
+
+### React Hook
+
+```typescript
+import { useJarvisBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useJarvisBlock();
+
+  // Example: list tools for an agent
+  const tools = await client.jarvis.agentTools.list('agent-uuid');
+}
+```

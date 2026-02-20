@@ -421,3 +421,61 @@ curl -X GET "$BLOCKS_API_URL/journeys?page=1&records=20" \
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-onboarding
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// UserIdentitiesService — client.onboarding.userIdentities
+client.onboarding.userIdentities.list(params?: ListUserIdentitiesParams): Promise<PageResult<UserIdentity>>;
+client.onboarding.userIdentities.get(uniqueId: string): Promise<UserIdentity>;
+client.onboarding.userIdentities.create(data: CreateUserIdentityRequest): Promise<UserIdentity>;
+client.onboarding.userIdentities.verify(uniqueId: string, data: VerifyUserIdentityRequest): Promise<UserIdentity>;
+client.onboarding.userIdentities.delete(uniqueId: string): Promise<void>;
+client.onboarding.userIdentities.listByUser(userUniqueId: string): Promise<UserIdentity[]>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  UserIdentity,
+  CreateUserIdentityRequest,
+  VerifyUserIdentityRequest,
+  ListUserIdentitiesParams,
+} from '@23blocks/block-onboarding';
+```
+
+### React Hook
+
+```typescript
+import { useOnboardingBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useOnboardingBlock();
+  const result = await client.onboarding.userIdentities.list({ page: 1, perPage: 20 });
+}
+```

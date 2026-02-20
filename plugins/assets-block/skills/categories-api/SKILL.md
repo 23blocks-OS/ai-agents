@@ -379,3 +379,67 @@ curl -X DELETE "$BLOCKS_API_URL/categories/category-uuid-123/images/file-uuid-78
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-assets
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// CategoriesService — client.assets.categories
+client.assets.categories.list(params?: ListCategoriesParams): Promise<PageResult<Category>>;
+client.assets.categories.get(uniqueId: string): Promise<Category>;
+client.assets.categories.create(data: CreateCategoryRequest): Promise<Category>;
+client.assets.categories.update(uniqueId: string, data: UpdateCategoryRequest): Promise<Category>;
+client.assets.categories.delete(uniqueId: string): Promise<void>;
+client.assets.categories.deleteCascade(uniqueId: string): Promise<void>;
+client.assets.categories.presignImage(uniqueId: string): Promise<CategoryPresignResponse>;
+client.assets.categories.createImage(uniqueId: string, data: CreateCategoryImageRequest): Promise<CategoryImage>;
+client.assets.categories.deleteImage(uniqueId: string, imageUniqueId: string): Promise<void>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  Category,
+  CreateCategoryRequest,
+  UpdateCategoryRequest,
+  ListCategoriesParams,
+  CategoryPresignResponse,
+  CreateCategoryImageRequest,
+  CategoryImage,
+} from '@23blocks/block-assets';
+```
+
+### React Hook
+
+```typescript
+import { useAssetsBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useAssetsBlock();
+  const result = await client.assets.categories.list();
+}
+```

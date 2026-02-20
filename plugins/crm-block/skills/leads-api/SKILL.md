@@ -466,3 +466,65 @@ curl -X DELETE "$BLOCKS_API_URL/leads/lead-uuid-123/follows/follow-uuid-123" \
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-crm
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// LeadsService — client.crm.leads
+list(params?: ListLeadsParams): Promise<PageResult<Lead>>;
+get(uniqueId: string): Promise<Lead>;
+create(data: CreateLeadRequest): Promise<Lead>;
+update(uniqueId: string, data: UpdateLeadRequest): Promise<Lead>;
+delete(uniqueId: string): Promise<void>;
+recover(uniqueId: string): Promise<Lead>;
+search(query: string, params?: ListLeadsParams): Promise<PageResult<Lead>>;
+listDeleted(params?: ListLeadsParams): Promise<PageResult<Lead>>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  Lead,
+  CreateLeadRequest,
+  UpdateLeadRequest,
+  ListLeadsParams,
+} from '@23blocks/block-crm';
+```
+
+### React Hook
+
+```typescript
+import { useCrmBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useCrmBlock();
+
+  // Example: List all leads
+  const result = await client.crm.leads.list();
+}
+```

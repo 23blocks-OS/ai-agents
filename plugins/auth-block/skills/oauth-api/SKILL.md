@@ -380,3 +380,77 @@ curl -X GET "$BLOCKS_API_URL/sso/config" \
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-authentication
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// OAuthService — client.authentication.oauth
+facebookLogin(request: OAuthSocialLoginRequest): Promise<SignInResponse>;
+googleLogin(request: OAuthSocialLoginRequest): Promise<SignInResponse>;
+tenantLogin(request: TenantLoginRequest): Promise<SignInResponse>;
+introspectToken(token?: string): Promise<TokenIntrospectionResponse>;
+refreshToken(refreshToken: string): Promise<{ accessToken: string; refreshToken?: string; tokenType: string; expiresIn?: number }>;
+revokeToken(request: TokenRevokeRequest): Promise<TokenRevokeResponse>;
+revokeAllTokens(request: TokenRevokeAllRequest): Promise<TokenRevokeResponse>;
+createTenantContext(request: TenantContextCreateRequest): Promise<TenantContextResponse>;
+revokeTenantContext(request: TenantContextRevokeRequest): Promise<{ message: string }>;
+getTenantContextAudit(): Promise<TenantContextAuditEntry[]>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  OAuthSocialLoginRequest,
+  TenantLoginRequest,
+  TokenIntrospectionResponse,
+  TokenRevokeRequest,
+  TokenRevokeAllRequest,
+  TokenRevokeResponse,
+  TenantContextCreateRequest,
+  TenantInfo,
+  TenantContextResponse,
+  TenantContextRevokeRequest,
+  TenantContextAuditEntry,
+  SignInResponse,
+} from '@23blocks/block-authentication';
+```
+
+### React Hook
+
+```typescript
+import { useAuthenticationBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useAuthenticationBlock();
+
+  // Example: Login with Google
+  const { user, accessToken } = await client.authentication.oauth.googleLogin({
+    token: 'google-access-token',
+  });
+}
+```

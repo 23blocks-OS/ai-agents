@@ -271,3 +271,62 @@ curl -X DELETE "$BLOCKS_API_URL/referrals/referral-uuid-123/" \
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-crm
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// ReferralsService — client.crm.referrals
+list(params?: ListReferralsParams): Promise<PageResult<Referral>>;
+get(uniqueId: string): Promise<Referral>;
+create(data: CreateReferralRequest): Promise<Referral>;
+update(uniqueId: string, data: UpdateReferralRequest): Promise<Referral>;
+delete(uniqueId: string): Promise<void>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  Referral,
+  CreateReferralRequest,
+  UpdateReferralRequest,
+  ListReferralsParams,
+} from '@23blocks/block-crm';
+```
+
+### React Hook
+
+```typescript
+import { useCrmBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useCrmBlock();
+
+  // Example: List all referrals
+  const result = await client.crm.referrals.list();
+}
+```

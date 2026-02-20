@@ -258,3 +258,65 @@ curl -X DELETE "$BLOCKS_API_URL/tokens/token-uuid-123" \
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-university
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// RegistrationTokensService — client.university.registrationTokens
+client.university.registrationTokens.list(params?: ListRegistrationTokensParams): Promise<PageResult<RegistrationToken>>;
+client.university.registrationTokens.get(uniqueId: string): Promise<RegistrationToken>;
+client.university.registrationTokens.create(data: CreateRegistrationTokenRequest): Promise<RegistrationToken>;
+client.university.registrationTokens.update(uniqueId: string, data: UpdateRegistrationTokenRequest): Promise<RegistrationToken>;
+client.university.registrationTokens.delete(uniqueId: string): Promise<void>;
+client.university.registrationTokens.validate(tokenCode: string): Promise<TokenValidationResult>;
+client.university.registrationTokens.use(tokenCode: string, userUniqueId: string): Promise<{ success: boolean; enrollmentUniqueId?: string; error?: string }>;
+client.university.registrationTokens.revoke(uniqueId: string): Promise<RegistrationToken>;
+client.university.registrationTokens.generateBatch(request: CreateRegistrationTokenRequest & { count: number }): Promise<RegistrationToken[]>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  RegistrationToken,
+  CreateRegistrationTokenRequest,
+  UpdateRegistrationTokenRequest,
+  ListRegistrationTokensParams,
+  TokenValidationResult,
+} from '@23blocks/block-university';
+```
+
+### React Hook
+
+```typescript
+import { useUniversityBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useUniversityBlock();
+  const result = await client.university.registrationTokens.list();
+}
+```

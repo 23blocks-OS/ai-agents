@@ -336,3 +336,63 @@ curl -X PUT "$BLOCKS_API_URL/users/user-uuid-123" \
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-assets
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// AssetsUsersService — client.assets.users
+client.assets.users.list(params?: ListAssetsUsersParams): Promise<PageResult<AssetsUser>>;
+client.assets.users.get(uniqueId: string): Promise<AssetsUser>;
+client.assets.users.register(uniqueId: string, data: RegisterAssetsUserRequest): Promise<AssetsUser>;
+client.assets.users.update(uniqueId: string, data: UpdateAssetsUserRequest): Promise<AssetsUser>;
+client.assets.users.listEntities(uniqueId: string): Promise<AssetsEntity[]>;
+client.assets.users.listAssets(uniqueId: string): Promise<Asset[]>;
+client.assets.users.listOwnership(uniqueId: string): Promise<UserOwnership[]>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  AssetsUser,
+  RegisterAssetsUserRequest,
+  UpdateAssetsUserRequest,
+  ListAssetsUsersParams,
+  UserOwnership,
+} from '@23blocks/block-assets';
+```
+
+### React Hook
+
+```typescript
+import { useAssetsBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useAssetsBlock();
+  const result = await client.assets.users.list();
+}
+```

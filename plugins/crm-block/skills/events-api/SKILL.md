@@ -474,3 +474,74 @@ curl -X PUT "$BLOCKS_API_URL/events/event-uuid-123/admin/notes" \
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-crm
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// ContactEventsService — client.crm.contactEvents
+list(params?: ListContactEventsParams): Promise<PageResult<ContactEvent>>;
+get(uniqueId: string): Promise<ContactEvent>;
+create(data: CreateContactEventRequest): Promise<ContactEvent>;
+update(uniqueId: string, data: UpdateContactEventRequest): Promise<ContactEvent>;
+delete(uniqueId: string): Promise<void>;
+studentConfirmation(uniqueId: string, request?: ConfirmationRequest): Promise<ContactEvent>;
+studentCheckin(uniqueId: string, request?: CheckinRequest): Promise<ContactEvent>;
+teacherConfirmation(uniqueId: string, request?: ConfirmationRequest): Promise<ContactEvent>;
+teacherCheckin(uniqueId: string, request?: CheckinRequest): Promise<ContactEvent>;
+checkout(uniqueId: string, request?: CheckoutRequest): Promise<ContactEvent>;
+checkoutStudent(uniqueId: string, request?: CheckoutRequest): Promise<ContactEvent>;
+studentNotes(uniqueId: string, request: EventNotesRequest): Promise<ContactEvent>;
+adminNotes(uniqueId: string, request: EventNotesRequest): Promise<ContactEvent>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  ContactEvent,
+  CreateContactEventRequest,
+  UpdateContactEventRequest,
+  ListContactEventsParams,
+  ConfirmationRequest,
+  CheckinRequest,
+  CheckoutRequest,
+  EventNotesRequest,
+} from '@23blocks/block-crm';
+```
+
+### React Hook
+
+```typescript
+import { useCrmBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useCrmBlock();
+
+  // Example: List all contact events
+  const result = await client.crm.contactEvents.list();
+}
+```

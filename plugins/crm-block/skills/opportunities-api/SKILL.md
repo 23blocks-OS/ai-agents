@@ -281,3 +281,65 @@ curl -X DELETE "$BLOCKS_API_URL/opportunities/opp-uuid-123/" \
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-crm
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// OpportunitiesService — client.crm.opportunities
+list(params?: ListOpportunitiesParams): Promise<PageResult<Opportunity>>;
+get(uniqueId: string): Promise<Opportunity>;
+create(data: CreateOpportunityRequest): Promise<Opportunity>;
+update(uniqueId: string, data: UpdateOpportunityRequest): Promise<Opportunity>;
+delete(uniqueId: string): Promise<void>;
+recover(uniqueId: string): Promise<Opportunity>;
+search(query: string, params?: ListOpportunitiesParams): Promise<PageResult<Opportunity>>;
+listDeleted(params?: ListOpportunitiesParams): Promise<PageResult<Opportunity>>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  Opportunity,
+  CreateOpportunityRequest,
+  UpdateOpportunityRequest,
+  ListOpportunitiesParams,
+} from '@23blocks/block-crm';
+```
+
+### React Hook
+
+```typescript
+import { useCrmBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useCrmBlock();
+
+  // Example: List all opportunities
+  const result = await client.crm.opportunities.list();
+}
+```

@@ -420,3 +420,81 @@ curl -X POST "$BLOCKS_API_URL/courses/course-uuid-789/students/student-uuid-123/
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-university
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// CalendarsService — client.university.calendars
+
+// Student Availability
+client.university.calendars.getStudentAvailability(userUniqueId: string): Promise<Availability[]>;
+client.university.calendars.addStudentAvailability(userUniqueId: string, data: CreateAvailabilityRequest): Promise<Availability>;
+client.university.calendars.updateStudentAvailability(userUniqueId: string, availabilityUniqueId: string, data: UpdateAvailabilityRequest): Promise<Availability>;
+client.university.calendars.updateStudentAvailabilities(userUniqueId: string, data: BulkUpdateAvailabilityRequest): Promise<Availability[]>;
+client.university.calendars.deleteStudentAvailability(userUniqueId: string, availabilityUniqueId: string): Promise<void>;
+client.university.calendars.deleteAllStudentAvailability(userUniqueId: string): Promise<void>;
+
+// Teacher Availability
+client.university.calendars.getTeacherAvailability(teacherUniqueId: string): Promise<Availability[]>;
+client.university.calendars.addTeacherAvailability(teacherUniqueId: string, data: CreateAvailabilityRequest): Promise<Availability>;
+client.university.calendars.updateTeacherAvailability(teacherUniqueId: string, availabilityUniqueId: string, data: UpdateAvailabilityRequest): Promise<Availability>;
+client.university.calendars.deleteTeacherAvailability(teacherUniqueId: string, availabilityUniqueId: string): Promise<void>;
+client.university.calendars.deleteAllTeacherAvailability(teacherUniqueId: string): Promise<void>;
+
+// Events
+client.university.calendars.listEvents(params?: ListCalendarEventsParams): Promise<PageResult<CalendarEvent>>;
+client.university.calendars.getEvent(uniqueId: string): Promise<CalendarEvent>;
+client.university.calendars.createEvent(data: CreateCalendarEventRequest): Promise<CalendarEvent>;
+client.university.calendars.updateEvent(uniqueId: string, data: UpdateCalendarEventRequest): Promise<CalendarEvent>;
+client.university.calendars.deleteEvent(uniqueId: string): Promise<void>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  Availability,
+  CalendarEvent,
+  CreateAvailabilityRequest,
+  UpdateAvailabilityRequest,
+  BulkUpdateAvailabilityRequest,
+  CreateCalendarEventRequest,
+  UpdateCalendarEventRequest,
+  ListCalendarEventsParams,
+} from '@23blocks/block-university';
+```
+
+### React Hook
+
+```typescript
+import { useUniversityBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useUniversityBlock();
+  const result = await client.university.calendars.listEvents();
+}
+```

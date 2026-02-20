@@ -543,3 +543,75 @@ curl -X DELETE "$BLOCKS_API_URL/entities/entity-uuid-123/access/requests/request
 | `403` | Forbidden - Not the entity owner |
 | `404` | Not Found - Entity or request not found |
 | `422` | Unprocessable Entity - Validation errors |
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-assets
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// AssetsEntitiesService — client.assets.entities
+client.assets.entities.list(params?: ListAssetsEntitiesParams): Promise<PageResult<AssetsEntity>>;
+client.assets.entities.get(uniqueId: string): Promise<AssetsEntity>;
+client.assets.entities.create(data: CreateAssetsEntityRequest): Promise<AssetsEntity>;
+client.assets.entities.update(uniqueId: string, data: UpdateAssetsEntityRequest): Promise<AssetsEntity>;
+client.assets.entities.delete(uniqueId: string): Promise<void>;
+
+// Access Management
+client.assets.entities.listAccesses(uniqueId: string): Promise<EntityAccess[]>;
+client.assets.entities.getAccess(uniqueId: string): Promise<EntityAccess>;
+client.assets.entities.makePublic(uniqueId: string): Promise<void>;
+client.assets.entities.revokeAccess(uniqueId: string, accessUniqueId: string): Promise<void>;
+
+// Access Requests
+client.assets.entities.requestAccess(uniqueId: string, data: CreateAccessRequestRequest): Promise<AccessRequest>;
+client.assets.entities.listAccessRequests(uniqueId: string): Promise<AccessRequest[]>;
+client.assets.entities.approveAccessRequest(uniqueId: string, requestUniqueId: string): Promise<AccessRequest>;
+client.assets.entities.denyAccessRequest(uniqueId: string, requestUniqueId: string): Promise<void>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  AssetsEntity,
+  CreateAssetsEntityRequest,
+  UpdateAssetsEntityRequest,
+  ListAssetsEntitiesParams,
+  EntityAccess,
+  AccessRequest,
+  CreateAccessRequestRequest,
+} from '@23blocks/block-assets';
+```
+
+### React Hook
+
+```typescript
+import { useAssetsBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useAssetsBlock();
+  const result = await client.assets.entities.list();
+}
+```

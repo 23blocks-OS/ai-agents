@@ -275,3 +275,60 @@ curl -X POST "$BLOCKS_API_URL/companies/my-company/assets/asset-uuid-123/operati
 | `401` | Unauthorized - Invalid or missing credentials |
 | `404` | Not Found - Asset or operation not found |
 | `422` | Unprocessable Entity - Validation errors |
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-assets
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// AssetOperationsService — client.assets.assetOperations
+client.assets.assetOperations.list(assetUniqueId: string, params?: ListAssetOperationsParams): Promise<PageResult<AssetOperation>>;
+client.assets.assetOperations.get(assetUniqueId: string, operationUniqueId: string): Promise<AssetOperation>;
+client.assets.assetOperations.create(assetUniqueId: string, data: CreateAssetOperationRequest): Promise<AssetOperation>;
+client.assets.assetOperations.reportSummary(params: OperationReportParams): Promise<OperationReportSummary>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  AssetOperation,
+  CreateAssetOperationRequest,
+  ListAssetOperationsParams,
+  OperationReportParams,
+  OperationReportSummary,
+} from '@23blocks/block-assets';
+```
+
+### React Hook
+
+```typescript
+import { useAssetsBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useAssetsBlock();
+  const result = await client.assets.assetOperations.list('asset-unique-id');
+}
+```

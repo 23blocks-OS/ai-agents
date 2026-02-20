@@ -413,3 +413,72 @@ curl -X GET "$BLOCKS_API_URL/organizations/org-uuid-123/stats" \
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-authentication
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// TenantsService — client.authentication.tenants
+listChildren(params?: ListParams): Promise<PageResult<Company>>;
+validateCode(request: ValidateTenantCodeRequest): Promise<ValidateTenantCodeResponse>;
+searchByName(request: SearchTenantRequest): Promise<Company>;
+searchByCode(request: SearchTenantRequest): Promise<Company>;
+createTenantUser(userUniqueId: string, request: CreateTenantUserRequest): Promise<TenantUserFull>;
+updateOnboarding(userUniqueId: string, urlId: string, request: UpdateTenantUserOnboardingRequest): Promise<TenantUserFull>;
+updateSales(userUniqueId: string, urlId: string, request: UpdateTenantUserSalesRequest): Promise<TenantUserFull>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  Company,
+  CompanyDetail,
+  CompanyBlock,
+  CompanyKey,
+  Tenant,
+  TenantUserFull,
+  CreateTenantUserRequest,
+  ValidateTenantCodeRequest,
+  ValidateTenantCodeResponse,
+  SearchTenantRequest,
+  UpdateTenantUserOnboardingRequest,
+  UpdateTenantUserSalesRequest,
+} from '@23blocks/block-authentication';
+```
+
+### React Hook
+
+```typescript
+import { useAuthenticationBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useAuthenticationBlock();
+
+  // Example: List child organizations (tenants)
+  const result = await client.authentication.tenants.listChildren({ page: 1, perPage: 20 });
+}
+```

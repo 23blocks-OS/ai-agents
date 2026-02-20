@@ -399,3 +399,65 @@ curl -X POST "$BLOCKS_API_URL/permissions/check" \
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-authentication
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// PermissionsService — client.authentication.permissions
+list(params?: ListParams): Promise<PageResult<Permission>>;
+get(uniqueId: string): Promise<Permission>;
+create(request: CreatePermissionRequest): Promise<Permission>;
+update(uniqueId: string, request: UpdatePermissionRequest): Promise<Permission>;
+delete(uniqueId: string): Promise<void>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  Permission,
+} from '@23blocks/block-authentication';
+
+// Also exported from the service file:
+import type {
+  CreatePermissionRequest,
+  UpdatePermissionRequest,
+} from '@23blocks/block-authentication';
+```
+
+### React Hook
+
+```typescript
+import { useAuthenticationBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useAuthenticationBlock();
+
+  // Example: List all permissions
+  const result = await client.authentication.permissions.list();
+}
+```

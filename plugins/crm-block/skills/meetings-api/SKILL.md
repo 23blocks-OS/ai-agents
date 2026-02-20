@@ -387,3 +387,65 @@ curl -X DELETE "$BLOCKS_API_URL/meetings/meeting-uuid-123/participants/participa
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-crm
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// MeetingsService — client.crm.meetings
+list(params?: ListMeetingsParams): Promise<PageResult<Meeting>>;
+get(uniqueId: string): Promise<Meeting>;
+create(data: CreateMeetingRequest): Promise<Meeting>;
+update(uniqueId: string, data: UpdateMeetingRequest): Promise<Meeting>;
+delete(uniqueId: string): Promise<void>;
+recover(uniqueId: string): Promise<Meeting>;
+search(query: string, params?: ListMeetingsParams): Promise<PageResult<Meeting>>;
+listDeleted(params?: ListMeetingsParams): Promise<PageResult<Meeting>>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  Meeting,
+  CreateMeetingRequest,
+  UpdateMeetingRequest,
+  ListMeetingsParams,
+} from '@23blocks/block-crm';
+```
+
+### React Hook
+
+```typescript
+import { useCrmBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useCrmBlock();
+
+  // Example: List all meetings
+  const result = await client.crm.meetings.list();
+}
+```

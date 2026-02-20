@@ -236,3 +236,67 @@ curl -X POST "$BLOCKS_API_URL/notes" \
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-university
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// NotesService — client.university.notes
+client.university.notes.list(params?: ListNotesParams): Promise<PageResult<Note>>;
+client.university.notes.get(uniqueId: string): Promise<Note>;
+client.university.notes.create(data: CreateNoteRequest): Promise<Note>;
+client.university.notes.update(uniqueId: string, data: UpdateNoteRequest): Promise<Note>;
+client.university.notes.delete(uniqueId: string): Promise<void>;
+client.university.notes.listByAuthor(authorUniqueId: string, params?: ListNotesParams): Promise<PageResult<Note>>;
+client.university.notes.listByTarget(targetUniqueId: string, targetType: string, params?: ListNotesParams): Promise<PageResult<Note>>;
+client.university.notes.listByCourse(courseUniqueId: string, params?: ListNotesParams): Promise<PageResult<Note>>;
+client.university.notes.listByLesson(lessonUniqueId: string, params?: ListNotesParams): Promise<PageResult<Note>>;
+client.university.notes.pin(uniqueId: string): Promise<Note>;
+client.university.notes.unpin(uniqueId: string): Promise<Note>;
+client.university.notes.getReplies(uniqueId: string): Promise<Note[]>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  Note,
+  CreateNoteRequest,
+  UpdateNoteRequest,
+  ListNotesParams,
+} from '@23blocks/block-university';
+```
+
+### React Hook
+
+```typescript
+import { useUniversityBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useUniversityBlock();
+  const result = await client.university.notes.list();
+}
+```

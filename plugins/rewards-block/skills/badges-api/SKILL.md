@@ -463,3 +463,65 @@ curl -X POST "$BLOCKS_API_URL/categories" \
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-rewards
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// BadgesService — client.rewards.badges
+client.rewards.badges.list(params?: ListBadgesParams): Promise<PageResult<Badge>>;
+client.rewards.badges.get(uniqueId: string): Promise<Badge>;
+client.rewards.badges.create(data: CreateBadgeRequest): Promise<Badge>;
+client.rewards.badges.update(uniqueId: string, data: UpdateBadgeRequest): Promise<Badge>;
+client.rewards.badges.delete(uniqueId: string): Promise<void>;
+client.rewards.badges.award(data: AwardBadgeRequest): Promise<UserBadge>;
+client.rewards.badges.listByUser(userUniqueId: string, params?: ListUserBadgesParams): Promise<PageResult<UserBadge>>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  Badge,
+  UserBadge,
+  CreateBadgeRequest,
+  UpdateBadgeRequest,
+  ListBadgesParams,
+  AwardBadgeRequest,
+  ListUserBadgesParams,
+} from '@23blocks/block-rewards';
+```
+
+### React Hook
+
+```typescript
+import { useRewardsBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useRewardsBlock();
+  const result = await client.rewards.badges.list();
+}
+```

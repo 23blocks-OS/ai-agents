@@ -507,3 +507,63 @@ curl -s -X POST "https://conversations.api.us.23blocks.com/ws-tokens" \
   ]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-conversations
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// UsersService — client.conversations.users
+list(params?: ListUsersParams): Promise<PageResult<ConversationsUser>>;
+get(uniqueId: string): Promise<ConversationsUser>;
+register(uniqueId: string, data?: RegisterUserRequest): Promise<ConversationsUser>;
+update(uniqueId: string, data: UpdateUserRequest): Promise<ConversationsUser>;
+listGroups(uniqueId: string): Promise<PageResult<Group>>;
+listConversations(uniqueId: string, params?: { page?: number; perPage?: number }): Promise<PageResult<Conversation>>;
+listGroupConversations(uniqueId: string, params?: { page?: number; perPage?: number }): Promise<PageResult<Conversation>>;
+listContextGroups(uniqueId: string, contextUniqueId: string): Promise<PageResult<Group>>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  ConversationsUser,
+  RegisterUserRequest,
+  UpdateUserRequest,
+  ListUsersParams,
+} from '@23blocks/block-conversations';
+```
+
+### React Hook
+
+```typescript
+import { useConversationsBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useConversationsBlock();
+  const result = await client.conversations.users.list();
+}
+```

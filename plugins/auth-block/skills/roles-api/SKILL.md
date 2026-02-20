@@ -381,3 +381,72 @@ curl -X GET "$BLOCKS_API_URL/roles/role-uuid-123/users?page=1&records=20" \
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-authentication
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// RolesService — client.authentication.roles
+list(params?: ListParams): Promise<PageResult<Role>>;
+get(uniqueId: string): Promise<Role>;
+getByCode(code: string): Promise<Role>;
+create(request: CreateRoleRequest): Promise<Role>;
+update(uniqueId: string, request: UpdateRoleRequest): Promise<Role>;
+delete(uniqueId: string): Promise<void>;
+getPermissions(roleUniqueId: string): Promise<Permission[]>;
+setPermissions(roleUniqueId: string, permissionIds: string[]): Promise<Role>;
+addPermission(roleUniqueId: string, permissionUniqueId: string): Promise<Role>;
+removePermission(roleUniqueId: string, permissionUniqueId: string): Promise<Role>;
+listPermissions(params?: ListParams): Promise<PageResult<Permission>>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  Role,
+  Permission,
+} from '@23blocks/block-authentication';
+
+// Also exported from the service file:
+import type {
+  CreateRoleRequest,
+  UpdateRoleRequest,
+} from '@23blocks/block-authentication';
+```
+
+### React Hook
+
+```typescript
+import { useAuthenticationBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useAuthenticationBlock();
+
+  // Example: List all roles
+  const result = await client.authentication.roles.list();
+}
+```

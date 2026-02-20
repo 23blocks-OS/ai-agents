@@ -428,3 +428,67 @@ curl -X PUT "$BLOCKS_API_URL/onboardings/onboarding-uuid-456/users/user-uuid-123
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-onboarding
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// OnboardingsService — client.onboarding.onboardings
+client.onboarding.onboardings.list(params?: ListOnboardingsParams): Promise<PageResult<Onboarding>>;
+client.onboarding.onboardings.get(uniqueId: string): Promise<Onboarding>;
+client.onboarding.onboardings.create(data: CreateOnboardingRequest): Promise<Onboarding>;
+client.onboarding.onboardings.update(uniqueId: string, data: UpdateOnboardingRequest): Promise<Onboarding>;
+client.onboarding.onboardings.delete(uniqueId: string): Promise<void>;
+client.onboarding.onboardings.addStep(uniqueId: string, data: AddStepRequest): Promise<OnboardingStep>;
+client.onboarding.onboardings.updateStep(uniqueId: string, stepUniqueId: string, data: UpdateStepRequest): Promise<OnboardingStep>;
+client.onboarding.onboardings.deleteStep(uniqueId: string, stepUniqueId: string): Promise<void>;
+client.onboarding.onboardings.stepUser(uniqueId: string, userUniqueId: string, stepData?: Record<string, unknown>): Promise<Onboarding>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  Onboarding,
+  CreateOnboardingRequest,
+  UpdateOnboardingRequest,
+  ListOnboardingsParams,
+  OnboardingStep,
+  AddStepRequest,
+  UpdateStepRequest,
+} from '@23blocks/block-onboarding';
+```
+
+### React Hook
+
+```typescript
+import { useOnboardingBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useOnboardingBlock();
+  const result = await client.onboarding.onboardings.list({ page: 1, perPage: 20 });
+}
+```

@@ -607,3 +607,95 @@ curl -X PUT "$BLOCKS_API_URL/users/$USER_ID/files/$FILE_ID/unpublish" \
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-files
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// UserFilesService — client.files.userFiles
+list(userUniqueId: string, params?: ListUserFilesParams): Promise<PageResult<UserFile>>;
+get(userUniqueId: string, fileUniqueId: string): Promise<UserFile>;
+add(userUniqueId: string, data: AddUserFileRequest): Promise<UserFile>;
+update(userUniqueId: string, fileUniqueId: string, data: UpdateUserFileRequest): Promise<UserFile>;
+delete(userUniqueId: string, fileUniqueId: string): Promise<void>;
+presignUpload(userUniqueId: string, data: PresignUploadRequest): Promise<PresignUploadResponse>;
+multipartPresign(userUniqueId: string, data: MultipartPresignRequest): Promise<MultipartPresignResponse>;
+multipartComplete(userUniqueId: string, data: MultipartCompleteRequest): Promise<UserFile>;
+approve(userUniqueId: string, fileUniqueId: string): Promise<UserFile>;
+reject(userUniqueId: string, fileUniqueId: string): Promise<UserFile>;
+publish(userUniqueId: string, fileUniqueId: string): Promise<UserFile>;
+unpublish(userUniqueId: string, fileUniqueId: string): Promise<UserFile>;
+addTag(userUniqueId: string, fileUniqueId: string, tagUniqueId: string): Promise<UserFile>;
+removeTag(userUniqueId: string, fileUniqueId: string, tagUniqueId: string): Promise<void>;
+bulkUpdateTags(userUniqueId: string, tagUniqueIds: string[]): Promise<void>;
+requestAccess(userUniqueId: string, fileUniqueId: string): Promise<void>;
+getAccess(userUniqueId: string, fileUniqueId: string): Promise<UserFileAccessGrant[]>;
+grantAccess(userUniqueId: string, fileUniqueId: string, data: UserFileAccessInput): Promise<UserFileAccessGrant>;
+revokeAccess(userUniqueId: string, fileUniqueId: string, accessUniqueId: string): Promise<void>;
+makePublic(userUniqueId: string, fileUniqueId: string): Promise<UserFile>;
+makePrivate(userUniqueId: string, fileUniqueId: string): Promise<UserFile>;
+bulkGrantAccess(userUniqueId: string, fileUniqueIds: string[], granteeUniqueIds: string[]): Promise<void>;
+bulkRevokeAccess(userUniqueId: string, fileUniqueIds: string[], granteeUniqueIds: string[]): Promise<void>;
+listAccessRequests(userUniqueId: string, fileUniqueId: string): Promise<UserFileAccessGrant[]>;
+approveAccessRequest(userUniqueId: string, fileUniqueId: string, requestUniqueId: string): Promise<UserFileAccessGrant>;
+denyAccessRequest(userUniqueId: string, fileUniqueId: string, requestUniqueId: string): Promise<void>;
+listGrantedDelegations(userUniqueId: string): Promise<UserFileDelegationGrant[]>;
+listReceivedDelegations(userUniqueId: string): Promise<UserFileDelegationGrant[]>;
+getDelegation(userUniqueId: string, delegationUniqueId: string): Promise<UserFileDelegationGrant>;
+createDelegation(userUniqueId: string, data: CreateDelegationRequest): Promise<UserFileDelegationGrant>;
+revokeDelegation(userUniqueId: string, delegationUniqueId: string): Promise<void>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  UserFile,
+  ListUserFilesParams,
+  AddUserFileRequest,
+  UpdateUserFileRequest,
+  PresignUploadRequest,
+  PresignUploadResponse,
+  MultipartPresignRequest,
+  MultipartPresignResponse,
+  MultipartCompleteRequest,
+  UserFileAccessGrant,
+  UserFileAccessInput,
+  UserFileDelegationGrant,
+  CreateDelegationRequest,
+} from '@23blocks/block-files';
+```
+
+### React Hook
+
+```typescript
+import { useFilesBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useFilesBlock();
+  const result = await client.files.userFiles.list('user-unique-id');
+}
+```

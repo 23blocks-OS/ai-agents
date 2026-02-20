@@ -227,3 +227,56 @@ curl -X DELETE "$BLOCKS_API_URL/alerts/alert-uuid-123" \
 |------|-------------|
 | `401` | Unauthorized - Invalid or missing credentials |
 | `404` | Not Found - Alert not found |
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-assets
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// AlertsService — client.assets.alerts
+client.assets.alerts.get(uniqueId: string): Promise<AssetAlert>;
+client.assets.alerts.create(data: CreateAssetAlertRequest): Promise<AssetAlert>;
+client.assets.alerts.delete(uniqueId: string): Promise<void>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  AssetAlert,
+  CreateAssetAlertRequest,
+} from '@23blocks/block-assets';
+```
+
+### React Hook
+
+```typescript
+import { useAssetsBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useAssetsBlock();
+  const result = await client.assets.alerts.get('alert-unique-id');
+}
+```

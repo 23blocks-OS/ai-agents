@@ -762,3 +762,76 @@ curl -X POST "$BLOCKS_API_URL/companies/my-company/wallets/wal-abc-123/transacti
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-wallet
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// WalletsService — client.wallet.wallets
+client.wallet.wallets.list(params?: ListWalletsParams): Promise<PageResult<Wallet>>;
+client.wallet.wallets.get(uniqueId: string): Promise<Wallet>;
+client.wallet.wallets.getByUser(userUniqueId: string): Promise<Wallet>;
+client.wallet.wallets.getUserWallet(userUniqueId: string, walletCode: string): Promise<Wallet>;
+client.wallet.wallets.create(data: CreateWalletRequest): Promise<Wallet>;
+client.wallet.wallets.update(uniqueId: string, data: UpdateWalletRequest): Promise<Wallet>;
+client.wallet.wallets.credit(uniqueId: string, data: CreditWalletRequest): Promise<Transaction>;
+client.wallet.wallets.debit(uniqueId: string, data: DebitWalletRequest): Promise<Transaction>;
+client.wallet.wallets.getBalance(uniqueId: string): Promise<{ balance: number; currency: string }>;
+client.wallet.wallets.validate(data: ValidateWalletRequest): Promise<ValidateWalletResponse>;
+client.wallet.wallets.transfer(userUniqueId: string, walletCode: string, data: TransferWalletRequest): Promise<Transaction>;
+client.wallet.wallets.getContent(userUniqueId: string, walletCode: string): Promise<WalletContent[]>;
+client.wallet.wallets.storeContent(userUniqueId: string, walletCode: string, data: StoreWalletContentRequest): Promise<WalletContent>;
+client.wallet.wallets.listTransactions(userUniqueId: string, walletCode: string): Promise<PageResult<Transaction>>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  Wallet,
+  CreateWalletRequest,
+  UpdateWalletRequest,
+  ListWalletsParams,
+  CreditWalletRequest,
+  DebitWalletRequest,
+  TransferWalletRequest,
+  ValidateWalletRequest,
+  ValidateWalletResponse,
+  WalletContent,
+  StoreWalletContentRequest,
+} from '@23blocks/block-wallet';
+```
+
+### React Hook
+
+```typescript
+import { useWalletBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useWalletBlock();
+  const result = await client.wallet.wallets.list();
+}
+```

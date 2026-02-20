@@ -428,3 +428,68 @@ curl -X POST "$BLOCKS_API_URL/reports/appointments/summary" \
 | 422 | Unprocessable Entity | Validation error (missing fields) |
 | 400 | Bad Request | Invalid date/time format |
 | 409 | Conflict | Time slot already booked |
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-forms
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// AppointmentsService — client.forms.appointments
+list(formUniqueId: string, params?: ListAppointmentsParams): Promise<PageResult<Appointment>>;
+get(formUniqueId: string, uniqueId: string): Promise<Appointment>;
+create(formUniqueId: string, data: CreateAppointmentRequest): Promise<Appointment>;
+update(formUniqueId: string, uniqueId: string, data: UpdateAppointmentRequest): Promise<Appointment>;
+delete(formUniqueId: string, uniqueId: string): Promise<void>;
+confirm(formUniqueId: string, uniqueId: string): Promise<Appointment>;
+cancel(formUniqueId: string, uniqueId: string): Promise<Appointment>;
+reportList(data: AppointmentReportRequest): Promise<Appointment[]>;
+reportSummary(data: AppointmentReportRequest): Promise<AppointmentReportSummary>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  Appointment,
+  CreateAppointmentRequest,
+  UpdateAppointmentRequest,
+  ListAppointmentsParams,
+  AppointmentReportRequest,
+  AppointmentReportSummary,
+} from '@23blocks/block-forms';
+```
+
+### React Hook
+
+```typescript
+import { useFormsBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useFormsBlock();
+
+  // Example: list appointments for a form
+  const result = await client.forms.appointments.list('form-unique-id');
+}
+```

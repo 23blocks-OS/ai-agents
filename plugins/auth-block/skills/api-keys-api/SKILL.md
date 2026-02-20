@@ -376,3 +376,72 @@ curl -X GET "$BLOCKS_API_URL/api_keys/key-uuid-123/usage" \
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-authentication
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// ApiKeysService — client.authentication.apiKeys
+list(params?: ListParams): Promise<PageResult<ApiKey>>;
+get(uniqueId: string): Promise<ApiKey>;
+getByKeyId(keyId: string): Promise<ApiKey>;
+create(request: CreateApiKeyRequest): Promise<ApiKeyWithSecret>;
+update(uniqueId: string, request: UpdateApiKeyRequest): Promise<ApiKey>;
+regenerate(uniqueId: string): Promise<ApiKeyWithSecret>;
+revoke(uniqueId: string, request?: RevokeApiKeyRequest): Promise<ApiKey>;
+delete(uniqueId: string): Promise<void>;
+getUsage(uniqueId: string, period?: 'day' | 'week' | 'month'): Promise<ApiKeyUsageStats>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  ApiKey,
+  ApiKeyWithSecret,
+  CreateApiKeyRequest,
+  UpdateApiKeyRequest,
+  RevokeApiKeyRequest,
+} from '@23blocks/block-authentication';
+
+// Also exported from the service file:
+import type {
+  ApiKeyUsageStats,
+} from '@23blocks/block-authentication';
+```
+
+### React Hook
+
+```typescript
+import { useAuthenticationBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useAuthenticationBlock();
+
+  // Example: List all API keys
+  const result = await client.authentication.apiKeys.list();
+}
+```

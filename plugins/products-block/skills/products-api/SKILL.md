@@ -1082,3 +1082,125 @@ curl -X GET "$BLOCKS_API_URL/products/product-uuid-123/vendors" \
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-products
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// ProductsService — client.products.products
+list(params?: ListProductsParams): Promise<PageResult<Product>>;
+get(uniqueId: string): Promise<Product>;
+create(data: CreateProductRequest): Promise<Product>;
+update(uniqueId: string, data: UpdateProductRequest): Promise<Product>;
+delete(uniqueId: string): Promise<void>;
+recover(uniqueId: string): Promise<Product>;
+search(query: string, params?: ListProductsParams): Promise<PageResult<Product>>;
+listDeleted(params?: ListProductsParams): Promise<PageResult<Product>>;
+listVariations(productUniqueId: string): Promise<ProductVariation[]>;
+getVariation(uniqueId: string): Promise<ProductVariation>;
+createVariation(data: CreateVariationRequest): Promise<ProductVariation>;
+updateVariation(uniqueId: string, data: UpdateVariationRequest): Promise<ProductVariation>;
+deleteVariation(uniqueId: string): Promise<void>;
+listImages(productUniqueId: string): Promise<ProductImage[]>;
+addImage(productUniqueId: string, imageUrl: string, isPrimary?: boolean): Promise<ProductImage>;
+deleteImage(uniqueId: string): Promise<void>;
+getStock(productUniqueId: string, vendorUniqueId?: string): Promise<ProductStock[]>;
+updateStock(productUniqueId: string, vendorUniqueId: string, warehouseUniqueId: string, quantity: number): Promise<ProductStock>;
+listReviews(productUniqueId: string): Promise<PageResult<ProductReview>>;
+addReview(productUniqueId: string, rating: number, title?: string, content?: string): Promise<ProductReview>;
+
+// ProductImagesService — client.products.images
+presign(productUniqueId: string): Promise<PresignResponse>;
+multipartPresign(productUniqueId: string, filename: string, contentType: string, totalParts: number): Promise<{ uploadId: string; urls: string[] }>;
+multipartComplete(productUniqueId: string, uploadId: string, key: string, parts: { etag: string; partNumber: number }[]): Promise<void>;
+create(productUniqueId: string, data: CreateProductImageRequest): Promise<ProductImage>;
+get(productUniqueId: string, imageUniqueId: string): Promise<ProductImage>;
+update(productUniqueId: string, imageUniqueId: string, data: { isPrimary?: boolean }): Promise<ProductImage>;
+delete(productUniqueId: string, imageUniqueId: string): Promise<void>;
+approve(productUniqueId: string, imageUniqueId: string): Promise<ProductImage>;
+publish(productUniqueId: string, imageUniqueId: string): Promise<ProductImage>;
+
+// ProductSuggestionsService — client.products.suggestions
+list(productUniqueId: string): Promise<Product[]>;
+add(productUniqueId: string, suggestedProductUniqueId: string): Promise<void>;
+remove(productUniqueId: string, suggestedProductUniqueId: string): Promise<void>;
+getReplacements(productUniqueId: string): Promise<Product[]>;
+addReplacements(productUniqueId: string, replacementProductUniqueIds: string[]): Promise<void>;
+
+// AddonsService — client.products.addons
+list(productUniqueId: string): Promise<Product[]>;
+add(productUniqueId: string, addonProductUniqueId: string): Promise<void>;
+remove(productUniqueId: string, addonUniqueId: string): Promise<void>;
+
+// ProductFiltersService — client.products.filters
+list(params?: ListProductFiltersParams): Promise<PageResult<ProductFilter>>;
+get(uniqueId: string): Promise<ProductFilter>;
+create(data: CreateProductFilterRequest): Promise<ProductFilter>;
+update(uniqueId: string, data: UpdateProductFilterRequest): Promise<ProductFilter>;
+delete(uniqueId: string): Promise<void>;
+reorder(filterIds: string[]): Promise<void>;
+
+// ProductVendorsService — client.products.productVendors
+listByProduct(productUniqueId: string, params?: ListProductVendorsParams): Promise<PageResult<ProductVendor>>;
+getPrimaryVendor(productUniqueId: string): Promise<ProductVendor | null>;
+getAvailableVendors(productUniqueId: string, params?: ListProductVendorsParams): Promise<PageResult<ProductVendor>>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  Product,
+  ProductVariation,
+  ProductImage,
+  ProductStock,
+  ProductReview,
+  CreateProductRequest,
+  UpdateProductRequest,
+  ListProductsParams,
+  CreateVariationRequest,
+  UpdateVariationRequest,
+  ProductFilter,
+  CreateProductFilterRequest,
+  UpdateProductFilterRequest,
+  ListProductFiltersParams,
+  ProductVendor,
+  ListProductVendorsParams,
+} from '@23blocks/block-products';
+```
+
+### React Hook
+
+```typescript
+import { useProductsBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useProductsBlock();
+
+  // Example: list products with pagination
+  const result = await client.products.products.list({ page: 1, perPage: 20 });
+}
+```

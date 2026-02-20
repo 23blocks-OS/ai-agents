@@ -267,3 +267,65 @@ curl -X DELETE "$BLOCKS_API_URL/quotes/quote-uuid-123/" \
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-crm
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// QuotesService — client.crm.quotes
+list(params?: ListQuotesParams): Promise<PageResult<Quote>>;
+get(uniqueId: string): Promise<Quote>;
+create(data: CreateQuoteRequest): Promise<Quote>;
+update(uniqueId: string, data: UpdateQuoteRequest): Promise<Quote>;
+delete(uniqueId: string): Promise<void>;
+recover(uniqueId: string): Promise<Quote>;
+search(query: string, params?: ListQuotesParams): Promise<PageResult<Quote>>;
+listDeleted(params?: ListQuotesParams): Promise<PageResult<Quote>>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  Quote,
+  CreateQuoteRequest,
+  UpdateQuoteRequest,
+  ListQuotesParams,
+} from '@23blocks/block-crm';
+```
+
+### React Hook
+
+```typescript
+import { useCrmBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useCrmBlock();
+
+  // Example: List all quotes
+  const result = await client.crm.quotes.list();
+}
+```

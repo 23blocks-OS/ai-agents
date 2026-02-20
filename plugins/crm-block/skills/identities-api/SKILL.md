@@ -290,3 +290,62 @@ curl -X GET "$BLOCKS_API_URL/users/user-uuid-123/meetings" \
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-crm
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// CrmUsersService — client.crm.users
+list(params?: ListCrmUsersParams): Promise<PageResult<CrmUser>>;
+get(uniqueId: string): Promise<CrmUser>;
+register(uniqueId: string, data: RegisterCrmUserRequest): Promise<CrmUser>;
+delete(uniqueId: string): Promise<void>;
+getContacts(uniqueId: string): Promise<Contact[]>;
+getMeetings(uniqueId: string): Promise<Meeting[]>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  CrmUser,
+  RegisterCrmUserRequest,
+  ListCrmUsersParams,
+} from '@23blocks/block-crm';
+```
+
+### React Hook
+
+```typescript
+import { useCrmBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useCrmBlock();
+
+  // Example: List all CRM users
+  const result = await client.crm.users.list();
+}
+```

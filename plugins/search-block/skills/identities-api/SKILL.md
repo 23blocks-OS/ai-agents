@@ -204,3 +204,59 @@ curl -X PUT "$BLOCKS_API_URL/identities/user-uuid-123" \
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-search
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// IdentitiesService — client.search.identities
+client.search.identities.list(params?: ListIdentitiesParams): Promise<PageResult<SearchIdentity>>;
+client.search.identities.get(uniqueId: string): Promise<SearchIdentity>;
+client.search.identities.register(uniqueId: string, data: RegisterIdentityRequest): Promise<SearchIdentity>;
+client.search.identities.update(uniqueId: string, data: UpdateIdentityRequest): Promise<SearchIdentity>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  SearchIdentity,
+  RegisterIdentityRequest,
+  UpdateIdentityRequest,
+  ListIdentitiesParams,
+} from '@23blocks/block-search';
+```
+
+### React Hook
+
+```typescript
+import { useSearchBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useSearchBlock();
+  const result = await client.search.identities.list({ page: 1, perPage: 20 });
+}
+```

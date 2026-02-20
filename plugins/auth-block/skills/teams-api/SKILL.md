@@ -407,3 +407,59 @@ curl -X PUT "$BLOCKS_API_URL/teams/team-uuid-123/members/user-uuid-456" \
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-authentication
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// TenantUsersService — client.authentication.tenantUsers
+current(): Promise<TenantUser>;
+get(userUniqueId: string): Promise<TenantUser>;
+list(params?: ListParams): Promise<TenantUser[]>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  TenantUser,
+  TenantUserFull,
+  CreateTenantUserRequest,
+} from '@23blocks/block-authentication';
+```
+
+### React Hook
+
+```typescript
+import { useAuthenticationBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useAuthenticationBlock();
+
+  // Example: List tenant users
+  const tenantUsers = await client.authentication.tenantUsers.list();
+}
+```

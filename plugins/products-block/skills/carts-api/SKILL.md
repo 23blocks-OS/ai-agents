@@ -767,3 +767,101 @@ curl -X POST "$BLOCKS_API_URL/tools/remarketing/carts/abandoned" \
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-products
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// CartService — client.products.cart
+get(userUniqueId: string): Promise<Cart>;
+getOrCreate(userUniqueId: string): Promise<Cart>;
+update(userUniqueId: string, data: UpdateCartRequest): Promise<Cart>;
+delete(userUniqueId: string): Promise<void>;
+addItem(userUniqueId: string, item: AddToCartRequest): Promise<Cart>;
+updateItem(userUniqueId: string, productUniqueId: string, data: UpdateCartItemRequest): Promise<Cart>;
+removeItem(userUniqueId: string, productUniqueId: string): Promise<Cart>;
+getItems(userUniqueId: string): Promise<CartDetail[]>;
+checkout(userUniqueId: string, data?: CheckoutRequest): Promise<Cart>;
+order(userUniqueId: string): Promise<{ cart: Cart; orderUniqueId: string }>;
+orderItem(userUniqueId: string, productUniqueId: string): Promise<{ cart: Cart; orderUniqueId: string }>;
+cancel(userUniqueId: string): Promise<Cart>;
+cancelItem(userUniqueId: string, productUniqueId: string): Promise<Cart>;
+
+// CartDetailsService — client.products.cartDetails
+order(cartUniqueId: string, detailUniqueId: string): Promise<CartDetail>;
+accept(cartUniqueId: string, detailUniqueId: string): Promise<CartDetail>;
+startProcessing(cartUniqueId: string, detailUniqueId: string): Promise<CartDetail>;
+processing(cartUniqueId: string, detailUniqueId: string): Promise<CartDetail>;
+ready(cartUniqueId: string, detailUniqueId: string): Promise<CartDetail>;
+ship(cartUniqueId: string, detailUniqueId: string): Promise<CartDetail>;
+deliver(cartUniqueId: string, detailUniqueId: string): Promise<CartDetail>;
+cancel(cartUniqueId: string, detailUniqueId: string): Promise<CartDetail>;
+return(cartUniqueId: string, detailUniqueId: string): Promise<CartDetail>;
+
+// MyCartsService — client.products.myCarts
+get(uniqueId: string): Promise<Cart>;
+create(): Promise<Cart>;
+update(uniqueId: string, data: UpdateMyCartRequest): Promise<Cart>;
+addToCart(data: AddToMyCartRequest): Promise<Cart>;
+checkout(uniqueId: string): Promise<Cart>;
+orderAll(uniqueId: string): Promise<Cart>;
+cancelAll(uniqueId: string): Promise<Cart>;
+delete(uniqueId: string): Promise<void>;
+
+// VisitorsService — client.products.visitors
+create(data: CreateVisitorRequest): Promise<Visitor>;
+
+// RemarketingService — client.products.remarketing
+getAbandonedCarts(params?: AbandonedCartsParams): Promise<{ carts: AbandonedCart[]; total: number }>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  Cart,
+  CartDetail,
+  AddToCartRequest,
+  UpdateCartItemRequest,
+  UpdateCartRequest,
+  CheckoutRequest,
+  CartResponse,
+  OrderCartResponse,
+} from '@23blocks/block-products';
+```
+
+### React Hook
+
+```typescript
+import { useProductsBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useProductsBlock();
+
+  // Example: get or create a cart for a user
+  const cart = await client.products.cart.getOrCreate('user-uuid-123');
+}
+```

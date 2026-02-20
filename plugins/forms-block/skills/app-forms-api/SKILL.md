@@ -582,3 +582,67 @@ Responses:     [null,          2,         1,         "notes"]
 | `range` | Map score to label |
 | `conditional` | If/then logic |
 | `custom` | Custom calculator |
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-forms
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// FormInstancesService — client.forms.formInstances
+list(formUniqueId: string, params?: ListFormInstancesParams): Promise<PageResult<FormInstance>>;
+get(formUniqueId: string, uniqueId: string): Promise<FormInstance>;
+create(formUniqueId: string, data: CreateFormInstanceRequest): Promise<FormInstance>;
+update(formUniqueId: string, uniqueId: string, data: UpdateFormInstanceRequest): Promise<FormInstance>;
+delete(formUniqueId: string, uniqueId: string): Promise<void>;
+start(formUniqueId: string, uniqueId: string): Promise<FormInstance>;
+submit(formUniqueId: string, uniqueId: string): Promise<FormInstance>;
+cancel(formUniqueId: string, uniqueId: string): Promise<FormInstance>;
+resendMagicLink(formUniqueId: string, uniqueId: string): Promise<void>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  FormInstance,
+  CreateFormInstanceRequest,
+  UpdateFormInstanceRequest,
+  SubmitFormInstanceRequest,
+  ListFormInstancesParams,
+} from '@23blocks/block-forms';
+```
+
+### React Hook
+
+```typescript
+import { useFormsBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useFormsBlock();
+
+  // Example: list instances for a form
+  const result = await client.forms.formInstances.list('form-unique-id');
+}
+```

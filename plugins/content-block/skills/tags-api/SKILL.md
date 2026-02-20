@@ -234,3 +234,62 @@ curl -X PUT "$BLOCKS_API_URL/tags/tag-uuid-123" \
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-content
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// TagsService — client.content.tags
+list(params?: ListTagsParams): Promise<PageResult<Tag>>;
+get(uniqueId: string): Promise<Tag>;
+create(data: CreateTagRequest): Promise<Tag>;
+update(uniqueId: string, data: UpdateTagRequest): Promise<Tag>;
+delete(uniqueId: string): Promise<void>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  Tag,
+  CreateTagRequest,
+  UpdateTagRequest,
+  ListTagsParams,
+} from '@23blocks/block-content';
+```
+
+### React Hook
+
+```typescript
+import { useContentBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useContentBlock();
+
+  // Example: list all tags
+  const result = await client.content.tags.list();
+}
+```

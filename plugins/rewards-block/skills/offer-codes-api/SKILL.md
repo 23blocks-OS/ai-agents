@@ -323,3 +323,59 @@ curl -X POST "$BLOCKS_API_URL/acme-corp/offer_codes/send" \
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-rewards
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// OfferCodesService — client.rewards.offerCodes
+client.rewards.offerCodes.get(code: string): Promise<OfferCode>;
+client.rewards.offerCodes.create(data: CreateOfferCodeRequest): Promise<OfferCode>;
+client.rewards.offerCodes.send(data: SendOfferCodeRequest): Promise<OfferCode>;
+client.rewards.offerCodes.redeem(data: RedeemOfferCodeRequest): Promise<OfferCode>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  OfferCode,
+  CreateOfferCodeRequest,
+  SendOfferCodeRequest,
+  RedeemOfferCodeRequest,
+} from '@23blocks/block-rewards';
+```
+
+### React Hook
+
+```typescript
+import { useRewardsBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useRewardsBlock();
+  const result = await client.rewards.offerCodes.get('OFFER-CODE');
+}
+```

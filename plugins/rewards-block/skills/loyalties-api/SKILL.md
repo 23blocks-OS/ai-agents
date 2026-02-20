@@ -877,3 +877,62 @@ curl -X PUT "$BLOCKS_API_URL/loyalties/loyalty-uuid-123/rules/rule-uuid-1/enable
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-rewards
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// LoyaltyService — client.rewards.loyalty
+client.rewards.loyalty.get(uniqueId: string): Promise<Loyalty>;
+client.rewards.loyalty.getByUser(userUniqueId: string): Promise<Loyalty>;
+client.rewards.loyalty.addPoints(data: AddPointsRequest): Promise<LoyaltyTransaction>;
+client.rewards.loyalty.redeemPoints(data: RedeemPointsRequest): Promise<LoyaltyTransaction>;
+client.rewards.loyalty.getHistory(userUniqueId: string, params?: ListTransactionsParams): Promise<PageResult<LoyaltyTransaction>>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  Loyalty,
+  LoyaltyTransaction,
+  AddPointsRequest,
+  RedeemPointsRequest,
+  ListTransactionsParams,
+  LoyaltyTier,
+} from '@23blocks/block-rewards';
+```
+
+### React Hook
+
+```typescript
+import { useRewardsBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useRewardsBlock();
+  const result = await client.rewards.loyalty.getByUser('user-unique-id');
+}
+```

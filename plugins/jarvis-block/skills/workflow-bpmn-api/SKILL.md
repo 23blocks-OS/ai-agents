@@ -393,3 +393,73 @@ curl -X DELETE "$BLOCKS_API_URL/workflows/workflow-uuid-123/transitions/trans-uu
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-jarvis
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// ConditionsService — client.jarvis.conditions
+list(params?: ListConditionsParams): Promise<PageResult<Condition>>;
+get(uniqueId: string): Promise<Condition>;
+create(data: CreateConditionRequest): Promise<Condition>;
+update(uniqueId: string, data: UpdateConditionRequest): Promise<Condition>;
+delete(uniqueId: string): Promise<void>;
+
+// StepTransitionsService — client.jarvis.stepTransitions
+list(stepUniqueId: string, params?: ListStepTransitionsParams): Promise<PageResult<StepTransition>>;
+get(stepUniqueId: string, uniqueId: string): Promise<StepTransition>;
+create(stepUniqueId: string, data: CreateStepTransitionRequest): Promise<StepTransition>;
+update(stepUniqueId: string, uniqueId: string, data: UpdateStepTransitionRequest): Promise<StepTransition>;
+delete(stepUniqueId: string, uniqueId: string): Promise<void>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  Condition,
+  CreateConditionRequest,
+  UpdateConditionRequest,
+  ListConditionsParams,
+  StepTransition,
+  CreateStepTransitionRequest,
+  UpdateStepTransitionRequest,
+  ListStepTransitionsParams,
+} from '@23blocks/block-jarvis';
+```
+
+### React Hook
+
+```typescript
+import { useJarvisBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useJarvisBlock();
+
+  // Example: list conditions
+  const conditions = await client.jarvis.conditions.list();
+}
+```

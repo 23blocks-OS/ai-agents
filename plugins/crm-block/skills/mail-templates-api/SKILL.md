@@ -365,3 +365,68 @@ curl -X GET "$BLOCKS_API_URL/mailtemplates/mandrill/stats" \
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-crm
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// CrmMailTemplatesService — client.crm.mailTemplates
+list(params?: ListCrmMailTemplatesParams): Promise<PageResult<CrmMailTemplate>>;
+get(uniqueId: string): Promise<CrmMailTemplate>;
+create(data: CreateCrmMailTemplateRequest): Promise<CrmMailTemplate>;
+update(uniqueId: string, data: UpdateCrmMailTemplateRequest): Promise<CrmMailTemplate>;
+getMandrillStats(uniqueId: string): Promise<MandrillTemplateStats>;
+createMandrillTemplate(uniqueId: string, data: CreateMandrillTemplateRequest): Promise<CrmMailTemplate>;
+updateMandrillTemplate(uniqueId: string, data: UpdateMandrillTemplateRequest): Promise<CrmMailTemplate>;
+publishMandrill(uniqueId: string): Promise<CrmMailTemplate>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  CrmMailTemplate,
+  CreateCrmMailTemplateRequest,
+  UpdateCrmMailTemplateRequest,
+  ListCrmMailTemplatesParams,
+  CreateMandrillTemplateRequest,
+  UpdateMandrillTemplateRequest,
+  MandrillTemplateStats,
+} from '@23blocks/block-crm';
+```
+
+### React Hook
+
+```typescript
+import { useCrmBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useCrmBlock();
+
+  // Example: List all mail templates
+  const result = await client.crm.mailTemplates.list();
+}
+```

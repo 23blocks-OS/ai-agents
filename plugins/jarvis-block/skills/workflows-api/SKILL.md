@@ -533,3 +533,78 @@ curl -X DELETE "$BLOCKS_API_URL/workflows/workflow-uuid-123/steps/step-uuid-1/ag
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-jarvis
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// WorkflowsService — client.jarvis.workflows
+list(params?: ListWorkflowsParams): Promise<PageResult<Workflow>>;
+get(uniqueId: string): Promise<Workflow>;
+create(data: CreateWorkflowRequest): Promise<Workflow>;
+update(uniqueId: string, data: UpdateWorkflowRequest): Promise<Workflow>;
+delete(uniqueId: string): Promise<void>;
+addStep(uniqueId: string, data: AddWorkflowStepRequest): Promise<WorkflowStep>;
+updateStep(uniqueId: string, stepUniqueId: string, data: UpdateWorkflowStepRequest): Promise<WorkflowStep>;
+removeStep(uniqueId: string, stepUniqueId: string): Promise<void>;
+
+// WorkflowStepsService — client.jarvis.workflowSteps
+get(workflowUniqueId: string, stepUniqueId: string): Promise<WorkflowStep>;
+add(workflowUniqueId: string, data: AddWorkflowStepRequest): Promise<WorkflowStep>;
+update(workflowUniqueId: string, stepUniqueId: string, data: UpdateWorkflowStepRequest): Promise<WorkflowStep>;
+remove(workflowUniqueId: string, stepUniqueId: string): Promise<void>;
+addPrompt(stepUniqueId: string, data: AddStepPromptRequest): Promise<void>;
+addAgent(stepUniqueId: string, data: AddStepAgentRequest): Promise<void>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  Workflow,
+  CreateWorkflowRequest,
+  UpdateWorkflowRequest,
+  ListWorkflowsParams,
+  WorkflowStep,
+  AddWorkflowStepRequest,
+  UpdateWorkflowStepRequest,
+  AddStepPromptRequest,
+  AddStepAgentRequest,
+} from '@23blocks/block-jarvis';
+```
+
+### React Hook
+
+```typescript
+import { useJarvisBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useJarvisBlock();
+
+  // Example: list all workflows
+  const result = await client.jarvis.workflows.list();
+}
+```

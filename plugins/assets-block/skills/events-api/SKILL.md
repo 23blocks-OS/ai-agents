@@ -371,3 +371,74 @@ curl -X DELETE "$BLOCKS_API_URL/assets/asset-uuid-123/events/event-uuid-001/imag
 | `401` | Unauthorized - Invalid or missing credentials |
 | `404` | Not Found - Asset or event not found |
 | `422` | Unprocessable Entity - Validation errors |
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-assets
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// AssetEventsService — client.assets.assetEvents
+client.assets.assetEvents.list(assetUniqueId: string, params?: ListAssetEventsParams): Promise<PageResult<AssetEvent>>;
+client.assets.assetEvents.get(assetUniqueId: string, eventUniqueId: string): Promise<AssetEvent>;
+client.assets.assetEvents.create(assetUniqueId: string, data: CreateAssetEventRequest): Promise<AssetEvent>;
+client.assets.assetEvents.update(assetUniqueId: string, eventUniqueId: string, data: UpdateAssetEventRequest): Promise<AssetEvent>;
+client.assets.assetEvents.reportList(params: EventReportParams): Promise<EventReportList>;
+client.assets.assetEvents.reportSummary(params: EventReportParams): Promise<EventReportSummary>;
+client.assets.assetEvents.presignImage(assetUniqueId: string, eventUniqueId: string): Promise<EventImagePresignResponse>;
+client.assets.assetEvents.createImage(assetUniqueId: string, eventUniqueId: string, data: CreateEventImageRequest): Promise<EventImage>;
+client.assets.assetEvents.deleteImage(assetUniqueId: string, eventUniqueId: string, imageUniqueId: string): Promise<void>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  AssetEvent,
+  AssetEventType,
+  CreateAssetEventRequest,
+  UpdateAssetEventRequest,
+  ListAssetEventsParams,
+  EventImagePresignResponse,
+  CreateEventImageRequest,
+  EventImage,
+} from '@23blocks/block-assets';
+
+import type {
+  EventReportParams,
+  EventReportSummary,
+  EventReportList,
+} from '@23blocks/block-assets';
+```
+
+### React Hook
+
+```typescript
+import { useAssetsBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useAssetsBlock();
+  const result = await client.assets.assetEvents.list('asset-unique-id');
+}
+```

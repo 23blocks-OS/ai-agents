@@ -292,3 +292,63 @@ curl -X DELETE "$BLOCKS_API_URL/departments/dept-uuid-123" \
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-company
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// Departments — client.company.departments
+client.company.departments.list(params?: ListDepartmentsParams): Promise<PageResult<Department>>;
+client.company.departments.get(uniqueId: string): Promise<Department>;
+client.company.departments.create(data: CreateDepartmentRequest): Promise<Department>;
+client.company.departments.update(uniqueId: string, data: UpdateDepartmentRequest): Promise<Department>;
+client.company.departments.delete(uniqueId: string): Promise<void>;
+client.company.departments.listByCompany(companyUniqueId: string): Promise<Department[]>;
+client.company.departments.getHierarchy(companyUniqueId: string): Promise<DepartmentHierarchy[]>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  Department,
+  DepartmentHierarchy,
+  CreateDepartmentRequest,
+  UpdateDepartmentRequest,
+  ListDepartmentsParams,
+} from '@23blocks/block-company';
+```
+
+### React Hook
+
+```typescript
+import { useCompanyBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useCompanyBlock();
+  const result = await client.company.departments.list();
+}
+```

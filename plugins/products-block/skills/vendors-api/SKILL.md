@@ -324,3 +324,62 @@ curl -X PUT "$BLOCKS_API_URL/vendors/vendor-uuid-123/products/update" \
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-products
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// VendorsService — client.products.vendors
+list(params?: ListVendorsParams): Promise<PageResult<Vendor>>;
+get(uniqueId: string): Promise<Vendor>;
+create(data: CreateVendorRequest): Promise<Vendor>;
+update(uniqueId: string, data: UpdateVendorRequest): Promise<Vendor>;
+delete(uniqueId: string): Promise<void>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  Vendor,
+  CreateVendorRequest,
+  UpdateVendorRequest,
+  ListVendorsParams,
+} from '@23blocks/block-products';
+```
+
+### React Hook
+
+```typescript
+import { useProductsBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useProductsBlock();
+
+  // Example: list vendors with search
+  const result = await client.products.vendors.list({ search: 'supplier' });
+}
+```

@@ -549,3 +549,73 @@ curl -X GET "$BLOCKS_API_URL/identities/user-uuid-123/activities" \
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-content
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// ContentUsersService — client.content.users
+list(params?: ListContentUsersParams): Promise<PageResult<ContentUser>>;
+get(uniqueId: string): Promise<ContentUser>;
+register(uniqueId: string, data: RegisterContentUserRequest): Promise<ContentUser>;
+update(uniqueId: string, data: UpdateContentUserRequest): Promise<ContentUser>;
+getDrafts(uniqueId: string): Promise<Post[]>;
+getPosts(uniqueId: string): Promise<Post[]>;
+getComments(uniqueId: string): Promise<Comment[]>;
+getActivities(uniqueId: string): Promise<UserActivity[]>;
+addTag(uniqueId: string, tagUniqueId: string): Promise<ContentUser>;
+removeTag(uniqueId: string, tagUniqueId: string): Promise<void>;
+getFollowers(uniqueId: string): Promise<Following[]>;
+getFollowing(uniqueId: string): Promise<Following[]>;
+followUser(uniqueId: string, targetUserUniqueId: string): Promise<void>;
+unfollowUser(uniqueId: string, targetUserUniqueId: string): Promise<void>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  ContentUser,
+  Following,
+  RegisterContentUserRequest,
+  UpdateContentUserRequest,
+  ListContentUsersParams,
+  UserActivity,
+} from '@23blocks/block-content';
+```
+
+### React Hook
+
+```typescript
+import { useContentBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useContentBlock();
+
+  // Example: get a user's profile
+  const result = await client.content.users.get('user-unique-id');
+}
+```

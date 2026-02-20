@@ -289,3 +289,61 @@ curl -X DELETE "$BLOCKS_API_URL/positions/pos-uuid-123" \
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-company
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// Positions — client.company.positions
+client.company.positions.list(params?: ListPositionsParams): Promise<PageResult<Position>>;
+client.company.positions.get(uniqueId: string): Promise<Position>;
+client.company.positions.create(data: CreatePositionRequest): Promise<Position>;
+client.company.positions.update(uniqueId: string, data: UpdatePositionRequest): Promise<Position>;
+client.company.positions.delete(uniqueId: string): Promise<void>;
+client.company.positions.listByDepartment(departmentUniqueId: string): Promise<Position[]>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  Position,
+  CreatePositionRequest,
+  UpdatePositionRequest,
+  ListPositionsParams,
+} from '@23blocks/block-company';
+```
+
+### React Hook
+
+```typescript
+import { useCompanyBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useCompanyBlock();
+  const result = await client.company.positions.list();
+}
+```

@@ -310,3 +310,57 @@ curl -X POST "$BLOCKS_API_URL/mercadopago/wh_mp001/webhook" \
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-sales
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// MercadoPago — client.sales.mercadopago
+client.sales.mercadopago.listPaymentMethods(): Promise<MercadoPagoPaymentMethod[]>;
+client.sales.mercadopago.createPayment(data: CreateMercadoPagoPaymentRequest): Promise<MercadoPagoPayment>;
+client.sales.mercadopago.createPSEPayment(data: CreateMercadoPagoPaymentRequest): Promise<MercadoPagoPayment>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  MercadoPagoPaymentMethod,
+  MercadoPagoPayment,
+  CreateMercadoPagoPaymentRequest,
+} from '@23blocks/block-sales';
+```
+
+### React Hook
+
+```typescript
+import { useSalesBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useSalesBlock();
+  const result = await client.sales.mercadopago.listPaymentMethods();
+}
+```

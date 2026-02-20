@@ -243,3 +243,62 @@ curl -X DELETE "$BLOCKS_API_URL/warehouses/warehouse-uuid-123" \
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-products
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// WarehousesService — client.products.warehouses
+list(params?: ListWarehousesParams): Promise<PageResult<Warehouse>>;
+get(uniqueId: string): Promise<Warehouse>;
+create(data: CreateWarehouseRequest): Promise<Warehouse>;
+update(uniqueId: string, data: UpdateWarehouseRequest): Promise<Warehouse>;
+delete(uniqueId: string): Promise<void>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  Warehouse,
+  CreateWarehouseRequest,
+  UpdateWarehouseRequest,
+  ListWarehousesParams,
+} from '@23blocks/block-products';
+```
+
+### React Hook
+
+```typescript
+import { useProductsBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useProductsBlock();
+
+  // Example: list warehouses for a vendor
+  const result = await client.products.warehouses.list({ vendorUniqueId: 'vendor-uuid' });
+}
+```

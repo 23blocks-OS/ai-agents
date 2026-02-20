@@ -467,3 +467,64 @@ curl -X GET "$BLOCKS_API_URL/contacts/contact-uuid-789/addresses" \
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-geolocation
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// AddressesService — client.geolocation.addresses
+client.geolocation.addresses.list(params?: ListAddressesParams): Promise<PageResult<Address>>;
+client.geolocation.addresses.get(uniqueId: string): Promise<Address>;
+client.geolocation.addresses.create(data: CreateAddressRequest): Promise<Address>;
+client.geolocation.addresses.update(uniqueId: string, data: UpdateAddressRequest): Promise<Address>;
+client.geolocation.addresses.delete(uniqueId: string): Promise<void>;
+client.geolocation.addresses.recover(uniqueId: string): Promise<Address>;
+client.geolocation.addresses.search(query: string, params?: ListAddressesParams): Promise<PageResult<Address>>;
+client.geolocation.addresses.listDeleted(params?: ListAddressesParams): Promise<PageResult<Address>>;
+client.geolocation.addresses.setDefault(uniqueId: string): Promise<Address>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  Address,
+  CreateAddressRequest,
+  UpdateAddressRequest,
+  ListAddressesParams,
+} from '@23blocks/block-geolocation';
+```
+
+### React Hook
+
+```typescript
+import { useGeolocationBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useGeolocationBlock();
+  const result = await client.geolocation.addresses.list();
+}
+```

@@ -415,3 +415,65 @@ curl -X DELETE "$BLOCKS_API_URL/invitations/invite-uuid-123/cancel" \
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-authentication
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// AuthService (invitation methods) — client.authentication.auth
+sendInvitation(request: InvitationRequest): Promise<void>;
+acceptInvitation(request: AcceptInvitationRequest): Promise<SignInResponse>;
+resendInvitation(request: ResendInvitationRequest): Promise<User>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  InvitationRequest,
+  AcceptInvitationRequest,
+  ResendInvitationRequest,
+  SignInResponse,
+  User,
+} from '@23blocks/block-authentication';
+```
+
+### React Hook
+
+```typescript
+import { useAuthenticationBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useAuthenticationBlock();
+
+  // Example: Send an invitation
+  await client.authentication.auth.sendInvitation({
+    email: 'newmember@example.com',
+    roleId: 'role-uuid',
+    redirectUrl: 'https://app.example.com/accept-invite',
+  });
+}
+```

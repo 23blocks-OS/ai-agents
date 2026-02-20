@@ -448,3 +448,66 @@ curl -X GET "$BLOCKS_API_URL/customers/customer-uuid-123/offer_codes" \
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-rewards
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// RewardsCustomersService — client.rewards.rewardsCustomers
+client.rewards.rewardsCustomers.list(params?: ListRewardsCustomersParams): Promise<PageResult<RewardsCustomer>>;
+client.rewards.rewardsCustomers.get(uniqueId: string): Promise<RewardsCustomer>;
+client.rewards.rewardsCustomers.getLoyaltyTier(uniqueId: string): Promise<Loyalty>;
+client.rewards.rewardsCustomers.getRewards(uniqueId: string): Promise<unknown>;
+client.rewards.rewardsCustomers.getRewardExpirations(uniqueId: string): Promise<CustomerRewardExpiration[]>;
+client.rewards.rewardsCustomers.getRewardHistory(uniqueId: string): Promise<CustomerRewardHistory[]>;
+client.rewards.rewardsCustomers.getBadges(uniqueId: string): Promise<Badge[]>;
+client.rewards.rewardsCustomers.getCoupons(uniqueId: string): Promise<Coupon[]>;
+client.rewards.rewardsCustomers.getOfferCodes(uniqueId: string): Promise<OfferCode[]>;
+client.rewards.rewardsCustomers.grantReward(uniqueId: string, points: number, reason?: string): Promise<RewardsCustomer>;
+client.rewards.rewardsCustomers.updateExpiration(uniqueId: string, expirationDate: Date): Promise<RewardsCustomer>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  RewardsCustomer,
+  CustomerRewardExpiration,
+  CustomerRewardHistory,
+  ListRewardsCustomersParams,
+} from '@23blocks/block-rewards';
+```
+
+### React Hook
+
+```typescript
+import { useRewardsBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useRewardsBlock();
+  const result = await client.rewards.rewardsCustomers.list();
+}
+```

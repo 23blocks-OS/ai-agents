@@ -385,3 +385,66 @@ curl -X GET "$BLOCKS_API_URL/entity_types/product" \
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-search
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// EntitiesService — client.search.entities
+client.search.entities.list(params?: ListEntitiesParams): Promise<PageResult<SearchEntity>>;
+client.search.entities.get(uniqueId: string): Promise<SearchEntity>;
+client.search.entities.register(uniqueId: string, data: RegisterEntityRequest): Promise<SearchEntity>;
+client.search.entities.update(uniqueId: string, data: UpdateEntityRequest): Promise<SearchEntity>;
+client.search.entities.delete(uniqueId: string): Promise<void>;
+client.search.entities.listEntityTypes(): Promise<{ entityType: string }[]>;
+client.search.entities.getEntityTypeSchema(entityType: string): Promise<EntityTypeSchema>;
+client.search.entities.searchByCopilot(data: CopilotSearchRequest): Promise<SearchEntity[]>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  SearchEntity,
+  EntityTypeSchema,
+  EntityFieldSchema,
+  RegisterEntityRequest,
+  UpdateEntityRequest,
+  ListEntitiesParams,
+  CopilotSearchRequest,
+} from '@23blocks/block-search';
+```
+
+### React Hook
+
+```typescript
+import { useSearchBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useSearchBlock();
+  const result = await client.search.entities.list({ page: 1, perPage: 20 });
+}
+```

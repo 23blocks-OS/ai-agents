@@ -317,3 +317,60 @@ curl -X GET "$BLOCKS_API_URL/course_groups/group-uuid-101/tests/test-uuid-001/re
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-university
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// CourseGroupsService — client.university.courseGroups
+client.university.courseGroups.get(uniqueId: string): Promise<CourseGroup>;
+client.university.courseGroups.create(data: CreateCourseGroupRequest): Promise<CourseGroup>;
+client.university.courseGroups.addStudent(uniqueId: string, studentUniqueId: string): Promise<CourseGroup>;
+client.university.courseGroups.addTeacher(uniqueId: string, teacherUniqueId: string): Promise<CourseGroup>;
+client.university.courseGroups.getTests(uniqueId: string): Promise<unknown[]>;
+client.university.courseGroups.getTestResponses(uniqueId: string, testUniqueId: string): Promise<unknown[]>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  CourseGroup,
+  CreateCourseGroupRequest,
+  ListCourseGroupsParams,
+} from '@23blocks/block-university';
+```
+
+### React Hook
+
+```typescript
+import { useUniversityBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useUniversityBlock();
+  const result = await client.university.courseGroups.get('group-unique-id');
+}
+```

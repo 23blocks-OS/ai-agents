@@ -272,3 +272,60 @@ curl -X DELETE "$BLOCKS_API_URL/expirations/expiration-uuid-123" \
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-rewards
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// ExpirationRulesService — client.rewards.expirationRules
+client.rewards.expirationRules.list(params?: ListExpirationRulesParams): Promise<PageResult<ExpirationRule>>;
+client.rewards.expirationRules.get(uniqueId: string): Promise<ExpirationRule>;
+client.rewards.expirationRules.create(data: CreateExpirationRuleRequest): Promise<ExpirationRule>;
+client.rewards.expirationRules.update(uniqueId: string, data: UpdateExpirationRuleRequest): Promise<ExpirationRule>;
+client.rewards.expirationRules.delete(uniqueId: string): Promise<void>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  ExpirationRule,
+  CreateExpirationRuleRequest,
+  UpdateExpirationRuleRequest,
+  ListExpirationRulesParams,
+} from '@23blocks/block-rewards';
+```
+
+### React Hook
+
+```typescript
+import { useRewardsBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useRewardsBlock();
+  const result = await client.rewards.expirationRules.list();
+}
+```

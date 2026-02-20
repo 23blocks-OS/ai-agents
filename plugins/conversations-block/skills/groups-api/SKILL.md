@@ -860,3 +860,65 @@ curl -s -X POST "https://conversations.api.us.23blocks.com/groups/join/XYZ789AB"
   ]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-conversations
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// GroupsService — client.conversations.groups
+list(params?: ListGroupsParams): Promise<PageResult<Group>>;
+get(uniqueId: string): Promise<Group>;
+create(data: CreateGroupRequest): Promise<Group>;
+update(uniqueId: string, data: UpdateGroupRequest): Promise<Group>;
+delete(uniqueId: string): Promise<void>;
+recover(uniqueId: string): Promise<Group>;
+search(query: string, params?: ListGroupsParams): Promise<PageResult<Group>>;
+listDeleted(params?: ListGroupsParams): Promise<PageResult<Group>>;
+addMember(uniqueId: string, memberId: string): Promise<Group>;
+removeMember(uniqueId: string, memberId: string): Promise<Group>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  Group,
+  CreateGroupRequest,
+  UpdateGroupRequest,
+  ListGroupsParams,
+} from '@23blocks/block-conversations';
+```
+
+### React Hook
+
+```typescript
+import { useConversationsBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useConversationsBlock();
+  const result = await client.conversations.groups.list();
+}
+```

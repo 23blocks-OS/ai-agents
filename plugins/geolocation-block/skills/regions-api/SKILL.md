@@ -345,3 +345,63 @@ curl -X DELETE "$BLOCKS_API_URL/regions/region-uuid-123/tags/tag-uuid-456" \
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-geolocation
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// RegionsService — client.geolocation.regions
+client.geolocation.regions.list(params?: ListRegionsParams): Promise<PageResult<Region>>;
+client.geolocation.regions.get(uniqueId: string): Promise<Region>;
+client.geolocation.regions.create(data: CreateRegionRequest): Promise<Region>;
+client.geolocation.regions.update(uniqueId: string, data: UpdateRegionRequest): Promise<Region>;
+client.geolocation.regions.delete(uniqueId: string): Promise<void>;
+client.geolocation.regions.recover(uniqueId: string): Promise<Region>;
+client.geolocation.regions.search(query: string, params?: ListRegionsParams): Promise<PageResult<Region>>;
+client.geolocation.regions.listDeleted(params?: ListRegionsParams): Promise<PageResult<Region>>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  Region,
+  CreateRegionRequest,
+  UpdateRegionRequest,
+  ListRegionsParams,
+} from '@23blocks/block-geolocation';
+```
+
+### React Hook
+
+```typescript
+import { useGeolocationBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useGeolocationBlock();
+  const result = await client.geolocation.regions.list();
+}
+```

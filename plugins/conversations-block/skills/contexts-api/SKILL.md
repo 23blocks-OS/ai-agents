@@ -450,3 +450,60 @@ curl -s -X GET "https://conversations.api.us.23blocks.com/context/ctx_proj_alpha
   ]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-conversations
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// ContextsService — client.conversations.contexts
+list(params?: ListContextsParams): Promise<PageResult<Context>>;
+get(uniqueId: string): Promise<Context>;
+create(data: CreateContextRequest): Promise<Context>;
+update(uniqueId: string, data: UpdateContextRequest): Promise<Context>;
+listGroups(contextUniqueId: string): Promise<PageResult<Group>>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  Context,
+  CreateContextRequest,
+  UpdateContextRequest,
+  ListContextsParams,
+} from '@23blocks/block-conversations';
+```
+
+### React Hook
+
+```typescript
+import { useConversationsBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useConversationsBlock();
+  const result = await client.conversations.contexts.list();
+}
+```

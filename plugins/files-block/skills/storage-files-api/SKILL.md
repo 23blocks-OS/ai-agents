@@ -406,3 +406,64 @@ Storage files are ideal for company-wide assets like:
 
 ### CDN Distribution
 For high-traffic assets, configure CloudFront for CDN distribution. The public URL can be transformed to use CloudFront when configured.
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-files
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// StorageFilesService — client.files.storageFiles
+list(params?: ListStorageFilesParams): Promise<PageResult<StorageFile>>;
+get(uniqueId: string): Promise<StorageFile>;
+upload(data: UploadFileRequest): Promise<StorageFile>;
+create(data: CreateStorageFileRequest): Promise<StorageFile>;
+update(uniqueId: string, data: UpdateStorageFileRequest): Promise<StorageFile>;
+delete(uniqueId: string): Promise<void>;
+download(uniqueId: string): Promise<Blob>;
+listByOwner(ownerUniqueId: string, ownerType: string, params?: ListStorageFilesParams): Promise<PageResult<StorageFile>>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  StorageFile,
+  CreateStorageFileRequest,
+  UpdateStorageFileRequest,
+  ListStorageFilesParams,
+  UploadFileRequest,
+} from '@23blocks/block-files';
+```
+
+### React Hook
+
+```typescript
+import { useFilesBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useFilesBlock();
+  const result = await client.files.storageFiles.list();
+}
+```

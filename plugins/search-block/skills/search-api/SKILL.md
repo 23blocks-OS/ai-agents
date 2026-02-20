@@ -187,3 +187,75 @@ curl -X GET "$BLOCKS_API_URL/search/10" \
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-search
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// SearchService — client.search.search
+client.search.search.search(request: SearchRequest): Promise<SearchResponse>;
+client.search.search.suggest(query: string, limit?: number): Promise<SearchResult[]>;
+client.search.search.entityTypes(): Promise<EntityType[]>;
+
+// SearchHistoryService — client.search.history
+client.search.history.recent(limit?: number): Promise<LastQuery[]>;
+client.search.history.get(uniqueId: string): Promise<SearchQuery>;
+client.search.history.clear(): Promise<void>;
+client.search.history.delete(uniqueId: string): Promise<void>;
+
+// FavoritesService — client.search.favorites
+client.search.favorites.list(params?: ListParams): Promise<PageResult<FavoriteEntity>>;
+client.search.favorites.get(uniqueId: string): Promise<FavoriteEntity>;
+client.search.favorites.add(request: AddFavoriteRequest): Promise<FavoriteEntity>;
+client.search.favorites.remove(uniqueId: string): Promise<void>;
+client.search.favorites.isFavorite(entityUniqueId: string): Promise<boolean>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  SearchResult,
+  SearchQuery,
+  LastQuery,
+  FavoriteEntity,
+  EntityType,
+  SearchRequest,
+  SearchResponse,
+  AddFavoriteRequest,
+} from '@23blocks/block-search';
+```
+
+### React Hook
+
+```typescript
+import { useSearchBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useSearchBlock();
+  const result = await client.search.search.search({ query: 'hello world' });
+}
+```

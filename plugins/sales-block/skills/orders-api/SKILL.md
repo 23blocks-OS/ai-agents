@@ -929,3 +929,66 @@ curl -X GET "$BLOCKS_API_URL/users/user-uuid-456/orders/order-uuid-123" \
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-sales
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// Orders — client.sales.orders
+client.sales.orders.list(params?: ListOrdersParams): Promise<PageResult<Order>>;
+client.sales.orders.get(uniqueId: string): Promise<Order>;
+client.sales.orders.create(data: CreateOrderRequest): Promise<Order>;
+client.sales.orders.update(uniqueId: string, data: UpdateOrderRequest): Promise<Order>;
+client.sales.orders.updateStatus(uniqueId: string, data: UpdateOrderStatusRequest): Promise<Order>;
+client.sales.orders.updateLogistics(uniqueId: string, data: UpdateOrderLogisticsRequest): Promise<Order>;
+client.sales.orders.addTips(uniqueId: string, data: AddOrderTipsRequest): Promise<Order>;
+client.sales.orders.listByCustomer(customerUniqueId: string, params?: ListOrdersParams): Promise<PageResult<Order>>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  Order,
+  CreateOrderRequest,
+  UpdateOrderRequest,
+  UpdateOrderStatusRequest,
+  UpdateOrderLogisticsRequest,
+  AddOrderTipsRequest,
+  ListOrdersParams,
+} from '@23blocks/block-sales';
+```
+
+### React Hook
+
+```typescript
+import { useSalesBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useSalesBlock();
+  const result = await client.sales.orders.list();
+}
+```

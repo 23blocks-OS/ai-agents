@@ -200,3 +200,60 @@ curl -X DELETE "$BLOCKS_API_URL/referrals/form-123/instances/ref-123" \
 | `metadata` | object | Custom metadata |
 | `converted_at` | timestamp | Conversion time |
 | `created_at` | timestamp | Creation time |
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-forms
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// ReferralsService — client.forms.referrals
+list(formUniqueId: string, params?: ListReferralsParams): Promise<PageResult<Referral>>;
+get(formUniqueId: string, uniqueId: string): Promise<Referral>;
+create(formUniqueId: string, data: CreateReferralRequest): Promise<Referral>;
+update(formUniqueId: string, uniqueId: string, data: UpdateReferralRequest): Promise<Referral>;
+delete(formUniqueId: string, uniqueId: string): Promise<void>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  Referral,
+  CreateReferralRequest,
+  UpdateReferralRequest,
+  ListReferralsParams,
+} from '@23blocks/block-forms';
+```
+
+### React Hook
+
+```typescript
+import { useFormsBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useFormsBlock();
+  const result = await client.forms.referrals.list('form-unique-id');
+}
+```

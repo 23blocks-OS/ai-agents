@@ -440,3 +440,84 @@ curl -X PUT "$BLOCKS_API_URL/onboard/journey-uuid-789/resume" \
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-onboarding
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// OnboardService — client.onboarding.onboard
+client.onboarding.onboard.start(uniqueId: string, data?: StartOnboardRequest): Promise<OnboardJourney>;
+client.onboarding.onboard.get(uniqueId: string): Promise<OnboardJourney>;
+client.onboarding.onboard.getDetails(uniqueId: string): Promise<OnboardJourneyDetails>;
+client.onboarding.onboard.step(uniqueId: string, data: StepOnboardRequest): Promise<OnboardJourney>;
+client.onboarding.onboard.log(uniqueId: string, data: LogOnboardRequest): Promise<OnboardJourney>;
+client.onboarding.onboard.suspend(uniqueId: string): Promise<OnboardJourney>;
+client.onboarding.onboard.resume(uniqueId: string): Promise<OnboardJourney>;
+
+// UserJourneysService — client.onboarding.userJourneys
+client.onboarding.userJourneys.list(params?: ListUserJourneysParams): Promise<PageResult<UserJourney>>;
+client.onboarding.userJourneys.get(uniqueId: string): Promise<UserJourney>;
+client.onboarding.userJourneys.start(data: StartJourneyRequest): Promise<UserJourney>;
+client.onboarding.userJourneys.completeStep(uniqueId: string, data: CompleteStepRequest): Promise<UserJourney>;
+client.onboarding.userJourneys.abandon(uniqueId: string): Promise<UserJourney>;
+client.onboarding.userJourneys.getByUser(userUniqueId: string): Promise<UserJourney[]>;
+client.onboarding.userJourneys.getProgress(uniqueId: string): Promise<{ progress: number; currentStep?: number; completedSteps?: number[] }>;
+client.onboarding.userJourneys.listByUserAndOnboarding(userUniqueId: string, onboardingUniqueId: string): Promise<UserJourney>;
+client.onboarding.userJourneys.reportList(params: UserJourneyReportParams): Promise<UserJourneyReportList>;
+client.onboarding.userJourneys.reportSummary(params: UserJourneyReportParams): Promise<UserJourneyReportSummary>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  OnboardJourney,
+  OnboardJourneyDetails,
+  OnboardStepDetail,
+  OnboardLogEntry,
+  StartOnboardRequest,
+  StepOnboardRequest,
+  LogOnboardRequest,
+  UserJourney,
+  StartJourneyRequest,
+  CompleteStepRequest,
+  ListUserJourneysParams,
+  UserJourneyReportParams,
+  UserJourneyReportSummary,
+  UserJourneyReportList,
+} from '@23blocks/block-onboarding';
+```
+
+### React Hook
+
+```typescript
+import { useOnboardingBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useOnboardingBlock();
+  const journey = await client.onboarding.onboard.start('onboarding-uuid');
+}
+```

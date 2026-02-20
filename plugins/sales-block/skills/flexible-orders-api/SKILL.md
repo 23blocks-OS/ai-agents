@@ -707,3 +707,75 @@ curl -X POST "$BLOCKS_API_URL/reports/flexible_orders/summary" \
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-sales
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// FlexibleOrders — client.sales.flexibleOrders
+client.sales.flexibleOrders.list(params?: ListFlexibleOrdersParams): Promise<PageResult<FlexibleOrder>>;
+client.sales.flexibleOrders.get(uniqueId: string): Promise<FlexibleOrder>;
+client.sales.flexibleOrders.create(data: CreateFlexibleOrderRequest): Promise<FlexibleOrder>;
+client.sales.flexibleOrders.update(uniqueId: string, data: UpdateFlexibleOrderRequest): Promise<FlexibleOrder>;
+client.sales.flexibleOrders.addDetails(uniqueId: string, data: AddFlexibleOrderDetailRequest): Promise<FlexibleOrder>;
+client.sales.flexibleOrders.addTips(uniqueId: string, data: AddFlexibleOrderTipsRequest): Promise<FlexibleOrder>;
+client.sales.flexibleOrders.addPaymentMethod(uniqueId: string, data: AddFlexibleOrderPaymentMethodRequest): Promise<FlexibleOrder>;
+client.sales.flexibleOrders.addPayment(uniqueId: string, data: AddFlexibleOrderPaymentRequest): Promise<FlexibleOrder>;
+client.sales.flexibleOrders.confirmPayment(uniqueId: string, paymentUniqueId: string): Promise<FlexibleOrder>;
+client.sales.flexibleOrders.updateStatus(uniqueId: string, status: string): Promise<FlexibleOrder>;
+client.sales.flexibleOrders.updateDetailStatus(uniqueId: string, detailUniqueId: string, status: string): Promise<FlexibleOrder>;
+client.sales.flexibleOrders.cancel(uniqueId: string): Promise<void>;
+client.sales.flexibleOrders.updateLogistics(uniqueId: string, data: UpdateFlexibleOrderLogisticsRequest): Promise<FlexibleOrder>;
+client.sales.flexibleOrders.updateDetailLogistics(uniqueId: string, detailUniqueId: string, data: UpdateFlexibleOrderLogisticsRequest): Promise<FlexibleOrder>;
+client.sales.flexibleOrders.getPayments(uniqueId: string): Promise<PageResult<Payment>>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  FlexibleOrder,
+  CreateFlexibleOrderRequest,
+  UpdateFlexibleOrderRequest,
+  AddFlexibleOrderDetailRequest,
+  AddFlexibleOrderTipsRequest,
+  AddFlexibleOrderPaymentMethodRequest,
+  AddFlexibleOrderPaymentRequest,
+  UpdateFlexibleOrderLogisticsRequest,
+  ListFlexibleOrdersParams,
+} from '@23blocks/block-sales';
+```
+
+### React Hook
+
+```typescript
+import { useSalesBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useSalesBlock();
+  const result = await client.sales.flexibleOrders.list();
+}
+```

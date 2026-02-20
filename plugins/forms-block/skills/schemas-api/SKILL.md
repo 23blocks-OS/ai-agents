@@ -324,3 +324,62 @@ curl -X GET "$BLOCKS_API_URL/forms/schemas?page=1&limit=20&status=active" \
   }
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-forms
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// FormSchemasService — client.forms.schemas
+list(formUniqueId: string, params?: ListFormSchemasParams): Promise<PageResult<FormSchema>>;
+get(formUniqueId: string, schemaUniqueId: string): Promise<FormSchema>;
+create(formUniqueId: string, data: CreateFormSchemaRequest): Promise<FormSchema>;
+update(formUniqueId: string, schemaUniqueId: string, data: UpdateFormSchemaRequest): Promise<FormSchema>;
+delete(formUniqueId: string, schemaUniqueId: string): Promise<void>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  FormSchema,
+  CreateFormSchemaRequest,
+  UpdateFormSchemaRequest,
+  ListFormSchemasParams,
+} from '@23blocks/block-forms';
+```
+
+### React Hook
+
+```typescript
+import { useFormsBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useFormsBlock();
+
+  // Example: list schemas for a form
+  const result = await client.forms.schemas.list('form-unique-id');
+}
+```

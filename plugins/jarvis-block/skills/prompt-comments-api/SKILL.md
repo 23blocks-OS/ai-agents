@@ -425,3 +425,88 @@ curl -X DELETE "$BLOCKS_API_URL/prompts/prompt-uuid-123/executions/exec-uuid-789
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-jarvis
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// PromptCommentsService — client.jarvis.promptComments
+list(promptUniqueId: string, params?: ListPromptCommentsParams): Promise<PageResult<PromptComment>>;
+get(promptUniqueId: string, uniqueId: string): Promise<PromptComment>;
+create(promptUniqueId: string, data: CreatePromptCommentRequest): Promise<PromptComment>;
+update(promptUniqueId: string, uniqueId: string, data: UpdatePromptCommentRequest): Promise<PromptComment>;
+delete(promptUniqueId: string, uniqueId: string): Promise<void>;
+like(promptUniqueId: string, uniqueId: string): Promise<void>;
+dislike(promptUniqueId: string, uniqueId: string): Promise<void>;
+reply(promptUniqueId: string, uniqueId: string, data: ReplyToCommentRequest): Promise<PromptComment>;
+follow(promptUniqueId: string, uniqueId: string): Promise<void>;
+unfollow(promptUniqueId: string, uniqueId: string): Promise<void>;
+save(promptUniqueId: string, uniqueId: string): Promise<void>;
+unsave(promptUniqueId: string, uniqueId: string): Promise<void>;
+
+// ExecutionCommentsService — client.jarvis.executionComments
+list(promptUniqueId: string, executionUniqueId: string, params?: ListExecutionCommentsParams): Promise<PageResult<ExecutionComment>>;
+get(promptUniqueId: string, executionUniqueId: string, uniqueId: string): Promise<ExecutionComment>;
+create(promptUniqueId: string, executionUniqueId: string, data: CreateExecutionCommentRequest): Promise<ExecutionComment>;
+update(promptUniqueId: string, executionUniqueId: string, uniqueId: string, data: UpdateExecutionCommentRequest): Promise<ExecutionComment>;
+delete(promptUniqueId: string, executionUniqueId: string, uniqueId: string): Promise<void>;
+like(promptUniqueId: string, executionUniqueId: string, uniqueId: string): Promise<void>;
+dislike(promptUniqueId: string, executionUniqueId: string, uniqueId: string): Promise<void>;
+reply(promptUniqueId: string, executionUniqueId: string, uniqueId: string, data: ReplyToCommentRequest): Promise<ExecutionComment>;
+follow(promptUniqueId: string, executionUniqueId: string, uniqueId: string): Promise<void>;
+unfollow(promptUniqueId: string, executionUniqueId: string, uniqueId: string): Promise<void>;
+save(promptUniqueId: string, executionUniqueId: string, uniqueId: string): Promise<void>;
+unsave(promptUniqueId: string, executionUniqueId: string, uniqueId: string): Promise<void>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  PromptComment,
+  CreatePromptCommentRequest,
+  UpdatePromptCommentRequest,
+  ListPromptCommentsParams,
+  ReplyToCommentRequest,
+  ExecutionComment,
+  CreateExecutionCommentRequest,
+  UpdateExecutionCommentRequest,
+  ListExecutionCommentsParams,
+} from '@23blocks/block-jarvis';
+```
+
+### React Hook
+
+```typescript
+import { useJarvisBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useJarvisBlock();
+
+  // Example: list comments for a prompt
+  const comments = await client.jarvis.promptComments.list('prompt-uuid');
+}
+```

@@ -303,3 +303,60 @@ curl -X POST "$BLOCKS_API_URL/reports/payments/summary" \
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-sales
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// Payments — client.sales.payments
+client.sales.payments.list(params?: ListPaymentsParams): Promise<PageResult<Payment>>;
+client.sales.payments.get(uniqueId: string): Promise<Payment>;
+client.sales.payments.create(orderUniqueId: string, data: CreatePaymentRequest): Promise<Payment>;
+client.sales.payments.createPaymentMethod(orderUniqueId: string, data: CreatePaymentMethodRequest): Promise<Payment>;
+client.sales.payments.listByOrder(orderUniqueId: string): Promise<Payment[]>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  Payment,
+  CreatePaymentRequest,
+  CreatePaymentMethodRequest,
+  ListPaymentsParams,
+} from '@23blocks/block-sales';
+```
+
+### React Hook
+
+```typescript
+import { useSalesBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useSalesBlock();
+  const result = await client.sales.payments.list();
+}
+```

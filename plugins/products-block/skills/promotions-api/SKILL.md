@@ -253,3 +253,64 @@ curl -X DELETE "$BLOCKS_API_URL/products/product-uuid-123/promotions/promo-uuid-
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-products
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// ProductPromotionsService — client.products.promotions
+list(params?: ListProductPromotionsParams): Promise<PageResult<ProductPromotion>>;
+get(uniqueId: string): Promise<ProductPromotion>;
+create(data: CreateProductPromotionRequest): Promise<ProductPromotion>;
+update(uniqueId: string, data: UpdateProductPromotionRequest): Promise<ProductPromotion>;
+delete(uniqueId: string): Promise<void>;
+activate(uniqueId: string): Promise<ProductPromotion>;
+deactivate(uniqueId: string): Promise<ProductPromotion>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  ProductPromotion,
+  CreateProductPromotionRequest,
+  UpdateProductPromotionRequest,
+  ListProductPromotionsParams,
+} from '@23blocks/block-products';
+```
+
+### React Hook
+
+```typescript
+import { useProductsBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useProductsBlock();
+
+  // Example: list active promotions
+  const result = await client.products.promotions.list({ active: true });
+}
+```

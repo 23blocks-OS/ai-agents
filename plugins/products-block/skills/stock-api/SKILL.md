@@ -366,3 +366,61 @@ curl -X POST "$BLOCKS_API_URL/stocks/stock-uuid-123/eval" \
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-products
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// StockService — client.products.stock
+get(productUniqueId: string): Promise<ProductStock[]>;
+create(productUniqueId: string, data: CreateStockRequest): Promise<ProductStock>;
+update(productUniqueId: string, stockUniqueId: string, data: UpdateStockRequest): Promise<ProductStock>;
+updateWithDetails(vendorUniqueId: string, warehouseUniqueId: string, productUniqueId: string, quantity: number): Promise<ProductStock>;
+updateVariationWithDetails(vendorUniqueId: string, warehouseUniqueId: string, productUniqueId: string, variationUniqueId: string, quantity: number): Promise<ProductStock>;
+search(params: SearchStockParams): Promise<PageResult<ProductStock>>;
+evaluateRules(stockUniqueId: string): Promise<{ alerts: any[] }>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  ProductStock,
+} from '@23blocks/block-products';
+```
+
+### React Hook
+
+```typescript
+import { useProductsBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useProductsBlock();
+
+  // Example: get stock for a product
+  const result = await client.products.stock.get('product-uuid-123');
+}
+```

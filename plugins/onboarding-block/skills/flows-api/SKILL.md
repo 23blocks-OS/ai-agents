@@ -215,3 +215,63 @@ curl -X PUT "$BLOCKS_API_URL/flows/flow-uuid-123/sources/source-uuid-456" \
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-onboarding
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// FlowsService — client.onboarding.flows
+client.onboarding.flows.list(params?: ListFlowsParams): Promise<PageResult<Flow>>;
+client.onboarding.flows.get(uniqueId: string): Promise<Flow>;
+client.onboarding.flows.create(data: CreateFlowRequest): Promise<Flow>;
+client.onboarding.flows.update(uniqueId: string, data: UpdateFlowRequest): Promise<Flow>;
+client.onboarding.flows.delete(uniqueId: string): Promise<void>;
+client.onboarding.flows.listByOnboarding(onboardingUniqueId: string): Promise<Flow[]>;
+client.onboarding.flows.getBySource(uniqueId: string, sourceUniqueId: string): Promise<Flow>;
+client.onboarding.flows.stepBySource(uniqueId: string, sourceUniqueId: string, stepData?: Record<string, unknown>): Promise<Flow>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  Flow,
+  CreateFlowRequest,
+  UpdateFlowRequest,
+  ListFlowsParams,
+} from '@23blocks/block-onboarding';
+```
+
+### React Hook
+
+```typescript
+import { useOnboardingBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useOnboardingBlock();
+  const result = await client.onboarding.flows.list({ page: 1, perPage: 20 });
+}
+```

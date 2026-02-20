@@ -794,3 +794,68 @@ curl -X POST "$BLOCKS_API_URL/coupon/redeem" \
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-rewards
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// CouponsService — client.rewards.coupons
+client.rewards.coupons.list(params?: ListCouponsParams): Promise<PageResult<Coupon>>;
+client.rewards.coupons.get(uniqueId: string): Promise<Coupon>;
+client.rewards.coupons.getByCode(code: string): Promise<Coupon>;
+client.rewards.coupons.create(data: CreateCouponRequest): Promise<Coupon>;
+client.rewards.coupons.update(uniqueId: string, data: UpdateCouponRequest): Promise<Coupon>;
+client.rewards.coupons.delete(uniqueId: string): Promise<void>;
+client.rewards.coupons.validate(data: ValidateCouponRequest): Promise<CouponValidationResult>;
+client.rewards.coupons.apply(data: ApplyCouponRequest): Promise<CouponApplication>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  Coupon,
+  CouponApplication,
+  CreateCouponRequest,
+  UpdateCouponRequest,
+  ListCouponsParams,
+  ValidateCouponRequest,
+  CouponValidationResult,
+  ApplyCouponRequest,
+  DiscountType,
+} from '@23blocks/block-rewards';
+```
+
+### React Hook
+
+```typescript
+import { useRewardsBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useRewardsBlock();
+  const result = await client.rewards.coupons.list();
+}
+```

@@ -734,3 +734,84 @@ curl -X POST "$BLOCKS_API_URL/assets/asset-uuid-123/otp" \
 | `401` | Unauthorized - Invalid or missing credentials |
 | `404` | Not Found - Asset not found |
 | `422` | Unprocessable Entity - Validation errors |
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-assets
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// AssetsService — client.assets.assets
+client.assets.assets.list(params?: ListAssetsParams): Promise<PageResult<Asset>>;
+client.assets.assets.get(uniqueId: string): Promise<Asset>;
+client.assets.assets.create(data: CreateAssetRequest): Promise<Asset>;
+client.assets.assets.update(uniqueId: string, data: UpdateAssetRequest): Promise<Asset>;
+client.assets.assets.delete(uniqueId: string): Promise<void>;
+client.assets.assets.listTrash(): Promise<PageResult<Asset>>;
+client.assets.assets.transfer(uniqueId: string, data: TransferAssetRequest): Promise<Asset>;
+client.assets.assets.assign(uniqueId: string, data: AssignAssetRequest): Promise<Asset>;
+client.assets.assets.unassign(uniqueId: string): Promise<Asset>;
+client.assets.assets.listByLocation(locationUniqueId: string, params?: ListAssetsParams): Promise<PageResult<Asset>>;
+client.assets.assets.listByAssignee(assignedToUniqueId: string, params?: ListAssetsParams): Promise<PageResult<Asset>>;
+client.assets.assets.addToCategory(uniqueId: string, data: AddToCategoryRequest): Promise<Asset>;
+client.assets.assets.addParts(uniqueId: string, data: AddPartsRequest): Promise<Asset>;
+client.assets.assets.removeParts(uniqueId: string, data: RemovePartsRequest): Promise<Asset>;
+client.assets.assets.updateMaintenance(uniqueId: string, data: UpdateMaintenanceRequest): Promise<Asset>;
+client.assets.assets.lend(uniqueId: string, data: LendAssetRequest): Promise<Asset>;
+client.assets.assets.createOTP(uniqueId: string, data?: CreateOTPRequest): Promise<OTPResponse>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  Asset,
+  CreateAssetRequest,
+  UpdateAssetRequest,
+  ListAssetsParams,
+  TransferAssetRequest,
+  AssignAssetRequest,
+} from '@23blocks/block-assets';
+
+import type {
+  AddToCategoryRequest,
+  AddPartsRequest,
+  RemovePartsRequest,
+  UpdateMaintenanceRequest,
+  LendAssetRequest,
+  CreateOTPRequest,
+  OTPResponse,
+} from '@23blocks/block-assets';
+```
+
+### React Hook
+
+```typescript
+import { useAssetsBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useAssetsBlock();
+  const result = await client.assets.assets.list();
+}
+```

@@ -1254,3 +1254,67 @@ curl -X POST "$BLOCKS_API_URL/location_groups/" \
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-geolocation
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// LocationsService — client.geolocation.locations
+client.geolocation.locations.list(params?: ListLocationsParams): Promise<PageResult<Location>>;
+client.geolocation.locations.get(uniqueId: string): Promise<Location>;
+client.geolocation.locations.create(data: CreateLocationRequest): Promise<Location>;
+client.geolocation.locations.update(uniqueId: string, data: UpdateLocationRequest): Promise<Location>;
+client.geolocation.locations.delete(uniqueId: string): Promise<void>;
+client.geolocation.locations.recover(uniqueId: string): Promise<Location>;
+client.geolocation.locations.search(query: string, params?: ListLocationsParams): Promise<PageResult<Location>>;
+client.geolocation.locations.listDeleted(params?: ListLocationsParams): Promise<PageResult<Location>>;
+client.geolocation.locations.getQRCode(uniqueId: string): Promise<string>;
+client.geolocation.locations.searchByCode(code: string): Promise<Location[]>;
+client.geolocation.locations.addTag(uniqueId: string, tagUniqueId: string): Promise<Location>;
+client.geolocation.locations.removeTag(uniqueId: string, tagUniqueId: string): Promise<void>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  Location,
+  CreateLocationRequest,
+  UpdateLocationRequest,
+  ListLocationsParams,
+} from '@23blocks/block-geolocation';
+```
+
+### React Hook
+
+```typescript
+import { useGeolocationBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useGeolocationBlock();
+  const result = await client.geolocation.locations.list();
+}
+```

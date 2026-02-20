@@ -462,3 +462,67 @@ async function submitForm(responses: any[]) {
   return response.json();
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-forms
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// ApplicationFormsService — client.forms.applicationForms
+get(urlId: string): Promise<ApplicationForm>;
+submit(urlId: string, data: ApplicationFormSubmission): Promise<ApplicationFormResponse>;
+draft(urlId: string, data: ApplicationFormDraft): Promise<ApplicationFormResponse>;
+sendOtp(urlId: string): Promise<SendOtpResponse>;
+verifyOtp(urlId: string, data: VerifyOtpRequest): Promise<ApplicationForm>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  ApplicationForm,
+  ApplicationFormSubmission,
+  ApplicationFormDraft,
+  ApplicationFormResponse,
+  SendOtpResponse,
+  VerifyOtpRequest,
+  VerificationStatus,
+  OtpErrorCode,
+  OtpError,
+} from '@23blocks/block-forms';
+```
+
+### React Hook
+
+```typescript
+import { useFormsBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useFormsBlock();
+
+  // Example: get a public form via magic link
+  const result = await client.forms.applicationForms.get('my-company-url');
+}
+```

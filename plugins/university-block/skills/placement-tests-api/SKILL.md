@@ -709,3 +709,94 @@ curl -X PUT "$BLOCKS_API_URL/users/student-uuid-123/placement/instance-uuid-101/
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-university
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// PlacementsService — client.university.placements
+
+// Placement Tests
+client.university.placements.get(uniqueId: string): Promise<PlacementTest>;
+client.university.placements.listByCourse(courseUniqueId: string, params?: ListPlacementsParams): Promise<PageResult<PlacementTest>>;
+client.university.placements.create(courseUniqueId: string, data: CreatePlacementRequest): Promise<PlacementTest>;
+
+// Sections
+client.university.placements.getSection(placementUniqueId: string, sectionId: string): Promise<PlacementSection>;
+client.university.placements.createSection(placementUniqueId: string, data: CreatePlacementSectionRequest): Promise<PlacementSection>;
+
+// Questions
+client.university.placements.getQuestion(placementUniqueId: string, questionId: string): Promise<PlacementQuestion>;
+client.university.placements.createQuestion(placementUniqueId: string, data: CreatePlacementQuestionRequest): Promise<PlacementQuestion>;
+client.university.placements.addQuestionToSection(placementUniqueId: string, sectionId: string, questionId: string): Promise<void>;
+
+// Options
+client.university.placements.listOptions(): Promise<PlacementOption[]>;
+client.university.placements.createOption(data: CreatePlacementOptionRequest): Promise<PlacementOption>;
+client.university.placements.addOptionToQuestion(placementUniqueId: string, questionId: string, optionId: string): Promise<void>;
+client.university.placements.setRightOption(placementUniqueId: string, questionId: string, optionId: string): Promise<void>;
+client.university.placements.removeOption(placementUniqueId: string, questionId: string, optionId: string): Promise<void>;
+
+// Rules
+client.university.placements.createRule(placementUniqueId: string, data: CreatePlacementRuleRequest): Promise<PlacementRule>;
+
+// User Placements
+client.university.placements.getUserPlacement(userUniqueId: string): Promise<PlacementInstance | null>;
+client.university.placements.startPlacement(userUniqueId: string, placementUniqueId: string): Promise<PlacementInstance>;
+client.university.placements.submitResponse(userUniqueId: string, instanceUniqueId: string, responses: PlacementResponse[]): Promise<PlacementInstance>;
+client.university.placements.finishPlacement(userUniqueId: string, instanceUniqueId: string): Promise<PlacementInstance>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  PlacementTest,
+  PlacementSection,
+  PlacementQuestion,
+  PlacementOption,
+  PlacementRule,
+  PlacementInstance,
+  CreatePlacementRequest,
+  CreatePlacementSectionRequest,
+  CreatePlacementQuestionRequest,
+  CreatePlacementOptionRequest,
+  CreatePlacementRuleRequest,
+  PlacementResponse,
+  ListPlacementsParams,
+} from '@23blocks/block-university';
+```
+
+### React Hook
+
+```typescript
+import { useUniversityBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useUniversityBlock();
+  const result = await client.university.placements.listByCourse('course-unique-id');
+}
+```

@@ -189,3 +189,62 @@ curl -X DELETE "$BLOCKS_API_URL/subscriptions/form-123/instances/sub-123" \
 | `subscribed_at` | timestamp | Subscription time |
 | `unsubscribed_at` | timestamp | Unsubscribe time |
 | `created_at` | timestamp | Creation time |
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-forms
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// SubscriptionsService — client.forms.subscriptions
+list(formUniqueId: string, params?: ListSubscriptionsParams): Promise<PageResult<Subscription>>;
+get(formUniqueId: string, uniqueId: string): Promise<Subscription>;
+submit(formUniqueId: string, data: CreateSubscriptionRequest): Promise<Subscription>;
+update(formUniqueId: string, uniqueId: string, data: UpdateSubscriptionRequest): Promise<Subscription>;
+delete(formUniqueId: string, uniqueId: string): Promise<void>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  Subscription,
+  CreateSubscriptionRequest,
+  UpdateSubscriptionRequest,
+  ListSubscriptionsParams,
+} from '@23blocks/block-forms';
+```
+
+### React Hook
+
+```typescript
+import { useFormsBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useFormsBlock();
+
+  // Example: list subscriptions for a form
+  const result = await client.forms.subscriptions.list('form-unique-id');
+}
+```

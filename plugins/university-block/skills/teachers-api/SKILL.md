@@ -1005,3 +1005,69 @@ curl -X PUT "$BLOCKS_API_URL/teachers/teacher-uuid-789/users/student-uuid-123/pr
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-university
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// TeachersService — client.university.teachers
+client.university.teachers.list(params?: ListTeachersParams): Promise<PageResult<Teacher>>;
+client.university.teachers.listArchived(params?: ListTeachersParams): Promise<PageResult<Teacher>>;
+client.university.teachers.get(uniqueId: string): Promise<Teacher>;
+client.university.teachers.getCourses(uniqueId: string): Promise<Course[]>;
+client.university.teachers.getGroups(uniqueId: string): Promise<CourseGroup[]>;
+client.university.teachers.getAvailability(uniqueId: string): Promise<TeacherAvailability[]>;
+client.university.teachers.addAvailability(uniqueId: string, data: CreateTeacherAvailabilityRequest): Promise<TeacherAvailability>;
+client.university.teachers.updateAvailability(uniqueId: string, availabilityUniqueId: string, data: UpdateTeacherAvailabilityRequest): Promise<TeacherAvailability>;
+client.university.teachers.deleteAvailability(uniqueId: string, availabilityUniqueId: string): Promise<void>;
+client.university.teachers.deleteAllAvailability(uniqueId: string): Promise<void>;
+client.university.teachers.getContentTree(uniqueId: string, courseGroupUniqueId: string): Promise<unknown>;
+client.university.teachers.getStudentContentTree(uniqueId: string, userUniqueId: string, courseGroupUniqueId: string): Promise<unknown>;
+client.university.teachers.promoteStudent(uniqueId: string, userUniqueId: string): Promise<unknown>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  Teacher,
+  ListTeachersParams,
+  TeacherAvailability,
+  CreateTeacherAvailabilityRequest,
+  UpdateTeacherAvailabilityRequest,
+} from '@23blocks/block-university';
+```
+
+### React Hook
+
+```typescript
+import { useUniversityBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useUniversityBlock();
+  const result = await client.university.teachers.list();
+}
+```

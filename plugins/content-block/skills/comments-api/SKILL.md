@@ -435,3 +435,69 @@ curl -X DELETE "$BLOCKS_API_URL/posts/post-uuid-123/comments/comment-uuid-456/mo
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-content
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// CommentsService — client.content.comments
+list(postUniqueId: string, params?: ListCommentsParams): Promise<PageResult<Comment>>;
+get(postUniqueId: string, uniqueId: string): Promise<Comment>;
+create(postUniqueId: string, data: CreateCommentRequest): Promise<Comment>;
+update(postUniqueId: string, uniqueId: string, data: UpdateCommentRequest): Promise<Comment>;
+delete(postUniqueId: string, uniqueId: string): Promise<void>;
+reply(postUniqueId: string, parentCommentUniqueId: string, data: Omit<CreateCommentRequest, 'parentId'>): Promise<Comment>;
+like(postUniqueId: string, uniqueId: string): Promise<Comment>;
+dislike(postUniqueId: string, uniqueId: string): Promise<Comment>;
+save(postUniqueId: string, uniqueId: string): Promise<Comment>;
+unsave(postUniqueId: string, uniqueId: string): Promise<Comment>;
+follow(postUniqueId: string, uniqueId: string): Promise<Comment>;
+unfollow(postUniqueId: string, uniqueId: string): Promise<Comment>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  Comment,
+  CreateCommentRequest,
+  UpdateCommentRequest,
+  ListCommentsParams,
+} from '@23blocks/block-content';
+```
+
+### React Hook
+
+```typescript
+import { useContentBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useContentBlock();
+
+  // Example: list comments for a post
+  const result = await client.content.comments.list('post-unique-id');
+}
+```

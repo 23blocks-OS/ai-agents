@@ -488,3 +488,60 @@ curl -X GET "$BLOCKS_API_URL/llm_providers/provider-uuid-456/vendor_models" \
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-jarvis
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// AIModelsService — client.jarvis.aiModels
+list(params?: ListAIModelsParams): Promise<PageResult<AIModel>>;
+get(uniqueId: string): Promise<AIModel>;
+create(data: CreateAIModelRequest): Promise<AIModel>;
+update(uniqueId: string, data: UpdateAIModelRequest): Promise<AIModel>;
+delete(uniqueId: string): Promise<void>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  AIModel,
+  CreateAIModelRequest,
+  UpdateAIModelRequest,
+  ListAIModelsParams,
+} from '@23blocks/block-jarvis';
+```
+
+### React Hook
+
+```typescript
+import { useJarvisBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useJarvisBlock();
+  const result = await client.jarvis.aiModels.list();
+}
+```

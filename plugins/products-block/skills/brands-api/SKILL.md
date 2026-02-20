@@ -263,3 +263,61 @@ curl -X GET "$BLOCKS_API_URL/brands/trash/show" \
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-products
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// BrandsService — client.products.brands
+list(page?: number, perPage?: number): Promise<PageResult<Brand>>;
+get(uniqueId: string): Promise<Brand>;
+create(data: CreateBrandRequest): Promise<Brand>;
+update(uniqueId: string, data: UpdateBrandRequest): Promise<Brand>;
+delete(uniqueId: string): Promise<void>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  Brand,
+  CreateBrandRequest,
+  UpdateBrandRequest,
+} from '@23blocks/block-products';
+```
+
+### React Hook
+
+```typescript
+import { useProductsBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useProductsBlock();
+
+  // Example: list all brands
+  const result = await client.products.brands.list();
+}
+```

@@ -284,3 +284,60 @@ curl -X DELETE "$BLOCKS_API_URL/tools/tool-uuid-123" \
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-jarvis
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// ToolsService — client.jarvis.tools
+list(params?: ListToolsParams): Promise<PageResult<Tool>>;
+get(uniqueId: string): Promise<Tool>;
+create(data: CreateToolRequest): Promise<Tool>;
+update(uniqueId: string, data: UpdateToolRequest): Promise<Tool>;
+delete(uniqueId: string): Promise<void>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  Tool,
+  CreateToolRequest,
+  UpdateToolRequest,
+  ListToolsParams,
+} from '@23blocks/block-jarvis';
+```
+
+### React Hook
+
+```typescript
+import { useJarvisBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useJarvisBlock();
+  const result = await client.jarvis.tools.list();
+}
+```

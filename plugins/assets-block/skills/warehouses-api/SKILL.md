@@ -289,3 +289,60 @@ curl -X DELETE "$BLOCKS_API_URL/warehouses/warehouse-uuid-123" \
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-assets
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// WarehousesService — client.assets.warehouses
+client.assets.warehouses.list(params?: ListWarehousesParams): Promise<PageResult<Warehouse>>;
+client.assets.warehouses.get(uniqueId: string): Promise<Warehouse>;
+client.assets.warehouses.create(data: CreateWarehouseRequest): Promise<Warehouse>;
+client.assets.warehouses.update(uniqueId: string, data: UpdateWarehouseRequest): Promise<Warehouse>;
+client.assets.warehouses.delete(uniqueId: string): Promise<void>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  Warehouse,
+  CreateWarehouseRequest,
+  UpdateWarehouseRequest,
+  ListWarehousesParams,
+} from '@23blocks/block-assets';
+```
+
+### React Hook
+
+```typescript
+import { useAssetsBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useAssetsBlock();
+  const result = await client.assets.warehouses.list();
+}
+```

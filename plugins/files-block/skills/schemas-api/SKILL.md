@@ -424,3 +424,61 @@ curl -X POST "$BLOCKS_API_URL/users/$USER_ID/files/$FILE_ID/query" \
   "required": ["name"]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-files
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// FileSchemasService — client.files.fileSchemas
+list(params?: ListFileSchemasParams): Promise<PageResult<FileSchema>>;
+get(uniqueId: string): Promise<FileSchema>;
+getByCode(code: string): Promise<FileSchema>;
+create(data: CreateFileSchemaRequest): Promise<FileSchema>;
+update(uniqueId: string, data: UpdateFileSchemaRequest): Promise<FileSchema>;
+delete(uniqueId: string): Promise<void>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  FileSchema,
+  CreateFileSchemaRequest,
+  UpdateFileSchemaRequest,
+  ListFileSchemasParams,
+} from '@23blocks/block-files';
+```
+
+### React Hook
+
+```typescript
+import { useFilesBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useFilesBlock();
+  const result = await client.files.fileSchemas.list();
+}
+```

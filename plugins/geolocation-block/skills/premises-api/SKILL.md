@@ -527,3 +527,63 @@ curl -X DELETE "$BLOCKS_API_URL/areas/area-uuid-123/tags/tag-uuid-456" \
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-geolocation
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// PremisesService — client.geolocation.premises
+client.geolocation.premises.list(params?: ListPremisesParams): Promise<PageResult<Premise>>;
+client.geolocation.premises.get(uniqueId: string): Promise<Premise>;
+client.geolocation.premises.create(data: CreatePremiseRequest): Promise<Premise>;
+client.geolocation.premises.update(uniqueId: string, data: UpdatePremiseRequest): Promise<Premise>;
+client.geolocation.premises.delete(uniqueId: string): Promise<void>;
+client.geolocation.premises.recover(uniqueId: string): Promise<Premise>;
+client.geolocation.premises.search(query: string, params?: ListPremisesParams): Promise<PageResult<Premise>>;
+client.geolocation.premises.listDeleted(params?: ListPremisesParams): Promise<PageResult<Premise>>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  Premise,
+  CreatePremiseRequest,
+  UpdatePremiseRequest,
+  ListPremisesParams,
+} from '@23blocks/block-geolocation';
+```
+
+### React Hook
+
+```typescript
+import { useGeolocationBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useGeolocationBlock();
+  const result = await client.geolocation.premises.list();
+}
+```

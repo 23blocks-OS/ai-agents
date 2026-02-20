@@ -1115,3 +1115,66 @@ curl -X POST "$BLOCKS_API_URL/accounts/account-uuid-123/quotes" \
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-crm
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// AccountsService — client.crm.accounts
+list(params?: ListAccountsParams): Promise<PageResult<Account>>;
+get(uniqueId: string): Promise<Account>;
+create(data: CreateAccountRequest): Promise<Account>;
+update(uniqueId: string, data: UpdateAccountRequest): Promise<Account>;
+delete(uniqueId: string): Promise<void>;
+recover(uniqueId: string): Promise<Account>;
+search(query: string, params?: ListAccountsParams): Promise<PageResult<Account>>;
+listDeleted(params?: ListAccountsParams): Promise<PageResult<Account>>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  Account,
+  AccountDetail,
+  CreateAccountRequest,
+  UpdateAccountRequest,
+  ListAccountsParams,
+} from '@23blocks/block-crm';
+```
+
+### React Hook
+
+```typescript
+import { useCrmBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useCrmBlock();
+
+  // Example: List all accounts
+  const result = await client.crm.accounts.list();
+}
+```

@@ -426,3 +426,42 @@ curl -X POST "$BLOCKS_API_URL/prompts/prompt-uuid-123/tests/compare" \
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+**Note:** The Prompt Tests API does not have a dedicated SDK service yet. Use raw API calls as documented above, or use the generic HTTP client from the SDK.
+
+### Installation
+
+```bash
+npm install @23blocks/block-jarvis
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### React Hook
+
+```typescript
+import { useJarvisBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useJarvisBlock();
+
+  // Prompt tests are managed via REST API calls.
+  // Use the HTTP client or fetch with the environment variables.
+}
+```

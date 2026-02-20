@@ -247,3 +247,60 @@ curl -X POST "$BLOCKS_API_URL/categories" \
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-content
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// CategoriesService — client.content.categories
+list(params?: ListCategoriesParams): Promise<PageResult<Category>>;
+get(uniqueId: string): Promise<Category>;
+create(data: CreateCategoryRequest): Promise<Category>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  Category,
+  CreateCategoryRequest,
+  UpdateCategoryRequest,
+  ListCategoriesParams,
+} from '@23blocks/block-content';
+```
+
+### React Hook
+
+```typescript
+import { useContentBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useContentBlock();
+
+  // Example: list all categories
+  const result = await client.content.categories.list();
+}
+```

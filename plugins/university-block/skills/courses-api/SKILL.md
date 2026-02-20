@@ -848,3 +848,64 @@ curl -X POST "$BLOCKS_API_URL/courses/course-uuid-456/placement/" \
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-university
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// CoursesService — client.university.courses
+client.university.courses.list(params?: ListCoursesParams): Promise<PageResult<Course>>;
+client.university.courses.get(uniqueId: string): Promise<Course>;
+client.university.courses.create(data: CreateCourseRequest): Promise<Course>;
+client.university.courses.update(uniqueId: string, data: UpdateCourseRequest): Promise<Course>;
+client.university.courses.delete(uniqueId: string): Promise<void>;
+client.university.courses.publish(uniqueId: string): Promise<Course>;
+client.university.courses.unpublish(uniqueId: string): Promise<Course>;
+client.university.courses.listByInstructor(instructorUniqueId: string, params?: ListCoursesParams): Promise<PageResult<Course>>;
+client.university.courses.listByCategory(categoryUniqueId: string, params?: ListCoursesParams): Promise<PageResult<Course>>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  Course,
+  CreateCourseRequest,
+  UpdateCourseRequest,
+  ListCoursesParams,
+} from '@23blocks/block-university';
+```
+
+### React Hook
+
+```typescript
+import { useUniversityBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useUniversityBlock();
+  const result = await client.university.courses.list();
+}
+```

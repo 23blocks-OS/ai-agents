@@ -679,3 +679,65 @@ curl -X DELETE "$BLOCKS_API_URL/campaigns/campaign-uuid-123/campaign_targets/tar
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-campaigns
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// Campaigns — client.campaigns.campaigns
+client.campaigns.campaigns.list(params?: ListCampaignsParams): Promise<PageResult<Campaign>>;
+client.campaigns.campaigns.get(uniqueId: string): Promise<Campaign>;
+client.campaigns.campaigns.create(data: CreateCampaignRequest): Promise<Campaign>;
+client.campaigns.campaigns.update(uniqueId: string, data: UpdateCampaignRequest): Promise<Campaign>;
+client.campaigns.campaigns.delete(uniqueId: string): Promise<void>;
+client.campaigns.campaigns.start(uniqueId: string): Promise<Campaign>;
+client.campaigns.campaigns.pause(uniqueId: string): Promise<Campaign>;
+client.campaigns.campaigns.stop(uniqueId: string): Promise<Campaign>;
+client.campaigns.campaigns.getResults(uniqueId: string): Promise<CampaignResults>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  Campaign,
+  CreateCampaignRequest,
+  UpdateCampaignRequest,
+  ListCampaignsParams,
+  CampaignResults,
+} from '@23blocks/block-campaigns';
+```
+
+### React Hook
+
+```typescript
+import { useCampaignsBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useCampaignsBlock();
+  const result = await client.campaigns.campaigns.list();
+}
+```

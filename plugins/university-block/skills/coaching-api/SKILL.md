@@ -955,3 +955,69 @@ curl -X GET "$BLOCKS_API_URL/teachers/teacher-uuid-456/coaching_sessions?page=1&
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-university
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// CoachingSessionsService — client.university.coachingSessions
+client.university.coachingSessions.list(params?: ListCoachingSessionsParams): Promise<PageResult<CoachingSession>>;
+client.university.coachingSessions.create(data: CreateCoachingSessionRequest): Promise<CoachingSession>;
+client.university.coachingSessions.update(uniqueId: string, data: UpdateCoachingSessionRequest): Promise<CoachingSession>;
+client.university.coachingSessions.delete(uniqueId: string): Promise<void>;
+client.university.coachingSessions.getByStudent(studentUniqueId: string): Promise<CoachingSession[]>;
+client.university.coachingSessions.getByTeacher(teacherUniqueId: string): Promise<CoachingSession[]>;
+client.university.coachingSessions.studentConfirm(uniqueId: string): Promise<CoachingSession>;
+client.university.coachingSessions.studentCheckIn(uniqueId: string): Promise<CoachingSession>;
+client.university.coachingSessions.studentCheckOut(uniqueId: string): Promise<CoachingSession>;
+client.university.coachingSessions.studentNotes(uniqueId: string, notes: string): Promise<CoachingSession>;
+client.university.coachingSessions.teacherConfirm(uniqueId: string): Promise<CoachingSession>;
+client.university.coachingSessions.teacherCheckIn(uniqueId: string): Promise<CoachingSession>;
+client.university.coachingSessions.teacherCheckOut(uniqueId: string): Promise<CoachingSession>;
+client.university.coachingSessions.adminNotes(uniqueId: string, notes: string): Promise<CoachingSession>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  CoachingSession,
+  CreateCoachingSessionRequest,
+  UpdateCoachingSessionRequest,
+  ListCoachingSessionsParams,
+} from '@23blocks/block-university';
+```
+
+### React Hook
+
+```typescript
+import { useUniversityBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useUniversityBlock();
+  const result = await client.university.coachingSessions.list();
+}
+```

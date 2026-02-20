@@ -198,3 +198,85 @@ curl -X POST "$BLOCKS_API_URL/identities/user-uuid-123/register" \
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-authentication
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// UsersService — client.authentication.users
+list(params?: ListParams): Promise<PageResult<User>>;
+get(uniqueId: string): Promise<User>;
+getByUniqueId(uniqueId: string): Promise<User>;
+update(uniqueId: string, request: UpdateUserRequest): Promise<User>;
+updateProfile(userUniqueId: string, request: UpdateProfileRequest): Promise<User>;
+delete(uniqueId: string): Promise<void>;
+activate(uniqueId: string): Promise<User>;
+deactivate(uniqueId: string): Promise<User>;
+changeRole(uniqueId: string, roleUniqueId: string, reason: string, forceReauth?: boolean): Promise<User>;
+search(query: string, params?: ListParams): Promise<PageResult<User>>;
+searchAdvanced(request: UserSearchRequest, params?: ListParams): Promise<PageResult<User>>;
+getProfile(userUniqueId: string): Promise<UserProfileFull>;
+createProfile(request: ProfileRequest): Promise<UserProfileFull>;
+updateEmail(userUniqueId: string, request: UpdateEmailRequest): Promise<User>;
+getDevices(userUniqueId: string, params?: ListParams): Promise<PageResult<UserDeviceFull>>;
+addDevice(request: AddDeviceRequest): Promise<UserDeviceFull>;
+getCompanies(userUniqueId: string): Promise<Company[]>;
+addSubscription(userUniqueId: string, request: AddUserSubscriptionRequest): Promise<UserSubscription>;
+updateSubscription(userUniqueId: string, request: AddUserSubscriptionRequest): Promise<UserSubscription>;
+resendConfirmationByUniqueId(userUniqueId: string): Promise<void>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  User,
+  Role,
+  Permission,
+  UserAvatar,
+  UserProfile,
+  UserProfileFull,
+  ProfileRequest,
+  UpdateEmailRequest,
+  UserDeviceFull,
+  AddDeviceRequest,
+  UserSearchRequest,
+  AddUserSubscriptionRequest,
+  Company,
+  UserSubscription,
+} from '@23blocks/block-authentication';
+```
+
+### React Hook
+
+```typescript
+import { useAuthenticationBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useAuthenticationBlock();
+  const result = await client.authentication.users.list();
+}
+```

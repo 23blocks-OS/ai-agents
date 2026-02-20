@@ -750,3 +750,72 @@ curl -X PUT "$BLOCKS_API_URL/users/student-uuid-123/test/instance-uuid-201/finis
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-university
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// ContentTestsService — client.university.contentTests
+client.university.contentTests.list(params?: ListContentTestsParams): Promise<PageResult<ContentTest>>;
+client.university.contentTests.get(uniqueId: string): Promise<ContentTest>;
+client.university.contentTests.create(data: CreateContentTestRequest): Promise<ContentTest>;
+client.university.contentTests.update(uniqueId: string, data: UpdateContentTestRequest): Promise<ContentTest>;
+client.university.contentTests.getResults(uniqueId: string): Promise<unknown[]>;
+client.university.contentTests.getSolution(uniqueId: string): Promise<unknown>;
+client.university.contentTests.createQuestion(uniqueId: string, data: CreateQuestionRequest): Promise<TestQuestion>;
+client.university.contentTests.updateQuestion(uniqueId: string, questionUniqueId: string, data: Partial<CreateQuestionRequest>): Promise<TestQuestion>;
+client.university.contentTests.getQuestion(uniqueId: string, questionId: string): Promise<TestQuestion>;
+client.university.contentTests.listOptions(): Promise<TestOption[]>;
+client.university.contentTests.createOption(data: CreateOptionRequest): Promise<TestOption>;
+client.university.contentTests.updateOption(uniqueId: string, optionUniqueId: string, data: Partial<CreateOptionRequest>): Promise<TestOption>;
+client.university.contentTests.addOptionToQuestion(uniqueId: string, questionId: string, optionId: string): Promise<TestQuestion>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  ContentTest,
+  TestQuestion,
+  TestOption,
+  CreateContentTestRequest,
+  UpdateContentTestRequest,
+  CreateQuestionRequest,
+  CreateOptionRequest,
+  ListContentTestsParams,
+} from '@23blocks/block-university';
+```
+
+### React Hook
+
+```typescript
+import { useUniversityBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useUniversityBlock();
+  const result = await client.university.contentTests.list();
+}
+```

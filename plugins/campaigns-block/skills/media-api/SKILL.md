@@ -461,3 +461,60 @@ curl -X GET "$BLOCKS_API_URL/campaign_media_results?campaign_id=campaign-uuid-12
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-campaigns
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// Media — client.campaigns.media
+client.campaigns.media.list(params?: ListMediaParams): Promise<PageResult<Media>>;
+client.campaigns.media.get(uniqueId: string): Promise<Media>;
+client.campaigns.media.create(data: CreateMediaRequest): Promise<Media>;
+client.campaigns.media.update(uniqueId: string, data: UpdateMediaRequest): Promise<Media>;
+client.campaigns.media.delete(uniqueId: string): Promise<void>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  Media,
+  CreateMediaRequest,
+  UpdateMediaRequest,
+  ListMediaParams,
+} from '@23blocks/block-campaigns';
+```
+
+### React Hook
+
+```typescript
+import { useCampaignsBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useCampaignsBlock();
+  const result = await client.campaigns.media.list();
+}
+```

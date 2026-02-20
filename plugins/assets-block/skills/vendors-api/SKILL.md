@@ -268,3 +268,60 @@ curl -X DELETE "$BLOCKS_API_URL/vendors/vendor-uuid-123" \
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-assets
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// VendorsService — client.assets.vendors
+client.assets.vendors.list(params?: ListVendorsParams): Promise<PageResult<Vendor>>;
+client.assets.vendors.get(uniqueId: string): Promise<Vendor>;
+client.assets.vendors.create(data: CreateVendorRequest): Promise<Vendor>;
+client.assets.vendors.update(uniqueId: string, data: UpdateVendorRequest): Promise<Vendor>;
+client.assets.vendors.delete(uniqueId: string): Promise<void>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  Vendor,
+  CreateVendorRequest,
+  UpdateVendorRequest,
+  ListVendorsParams,
+} from '@23blocks/block-assets';
+```
+
+### React Hook
+
+```typescript
+import { useAssetsBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useAssetsBlock();
+  const result = await client.assets.vendors.list();
+}
+```

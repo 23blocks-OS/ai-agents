@@ -428,3 +428,72 @@ curl -X DELETE "$BLOCKS_API_URL/prompts/prompt-uuid-123/unsave" \
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-jarvis
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// PromptsService — client.jarvis.prompts
+list(params?: ListPromptsParams): Promise<PageResult<Prompt>>;
+get(uniqueId: string): Promise<Prompt>;
+create(data: CreatePromptRequest): Promise<Prompt>;
+update(uniqueId: string, data: UpdatePromptRequest): Promise<Prompt>;
+delete(uniqueId: string): Promise<void>;
+execute(uniqueId: string, data: ExecutePromptRequest): Promise<ExecutePromptResponse>;
+render(uniqueId: string, data: RenderPromptRequest): Promise<RenderPromptResponse>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  Prompt,
+  CreatePromptRequest,
+  UpdatePromptRequest,
+  ListPromptsParams,
+  ExecutePromptRequest,
+  ExecutePromptResponse,
+  RenderPromptRequest,
+  RenderPromptResponse,
+  RenderPromptMeta,
+  PlaceholderValue,
+} from '@23blocks/block-jarvis';
+```
+
+### React Hook
+
+```typescript
+import { useJarvisBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useJarvisBlock();
+
+  // Example: render a prompt with variables
+  const result = await client.jarvis.prompts.render('prompt-uuid', {
+    placeholders: { tone: 'professional', topic: 'quarterly results' },
+  });
+}
+```

@@ -487,3 +487,64 @@ curl -X GET "$BLOCKS_API_URL/lessons/lesson-uuid-001/tests" \
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-university
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// LessonsService — client.university.lessons
+client.university.lessons.list(params?: ListLessonsParams): Promise<PageResult<Lesson>>;
+client.university.lessons.get(uniqueId: string): Promise<Lesson>;
+client.university.lessons.create(data: CreateLessonRequest): Promise<Lesson>;
+client.university.lessons.update(uniqueId: string, data: UpdateLessonRequest): Promise<Lesson>;
+client.university.lessons.delete(uniqueId: string): Promise<void>;
+client.university.lessons.reorder(courseUniqueId: string, data: ReorderLessonsRequest): Promise<Lesson[]>;
+client.university.lessons.listByCourse(courseUniqueId: string, params?: ListLessonsParams): Promise<PageResult<Lesson>>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  Lesson,
+  CreateLessonRequest,
+  UpdateLessonRequest,
+  ListLessonsParams,
+  ReorderLessonsRequest,
+  LessonContentType,
+} from '@23blocks/block-university';
+```
+
+### React Hook
+
+```typescript
+import { useUniversityBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useUniversityBlock();
+  const result = await client.university.lessons.list();
+}
+```

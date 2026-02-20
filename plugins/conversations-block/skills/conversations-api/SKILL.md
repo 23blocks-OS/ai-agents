@@ -741,3 +741,58 @@ curl -s -X DELETE "https://conversations.api.us.23blocks.com/conversations/conv_
   ]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-conversations
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// ConversationsService — client.conversations.conversations
+get(params: GetConversationParams): Promise<Conversation>;
+listContexts(): Promise<string[]>;
+deleteContext(context: string): Promise<void>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  Conversation,
+  ConversationFile,
+  ConversationMeta,
+  GetConversationParams,
+} from '@23blocks/block-conversations';
+```
+
+### React Hook
+
+```typescript
+import { useConversationsBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useConversationsBlock();
+  const result = await client.conversations.conversations.get({ context: 'my-context' });
+}
+```

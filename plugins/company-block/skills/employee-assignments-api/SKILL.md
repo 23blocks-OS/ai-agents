@@ -309,3 +309,62 @@ curl -X DELETE "$BLOCKS_API_URL/employee_assignments/assign-uuid-123" \
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-company
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// EmployeeAssignments — client.company.employeeAssignments
+client.company.employeeAssignments.list(params?: ListEmployeeAssignmentsParams): Promise<PageResult<EmployeeAssignment>>;
+client.company.employeeAssignments.get(uniqueId: string): Promise<EmployeeAssignment>;
+client.company.employeeAssignments.create(data: CreateEmployeeAssignmentRequest): Promise<EmployeeAssignment>;
+client.company.employeeAssignments.update(uniqueId: string, data: UpdateEmployeeAssignmentRequest): Promise<EmployeeAssignment>;
+client.company.employeeAssignments.delete(uniqueId: string): Promise<void>;
+client.company.employeeAssignments.listByUser(userUniqueId: string): Promise<EmployeeAssignment[]>;
+client.company.employeeAssignments.listByPosition(positionUniqueId: string): Promise<EmployeeAssignment[]>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  EmployeeAssignment,
+  CreateEmployeeAssignmentRequest,
+  UpdateEmployeeAssignmentRequest,
+  ListEmployeeAssignmentsParams,
+} from '@23blocks/block-company';
+```
+
+### React Hook
+
+```typescript
+import { useCompanyBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useCompanyBlock();
+  const result = await client.company.employeeAssignments.list();
+}
+```

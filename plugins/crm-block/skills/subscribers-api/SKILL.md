@@ -294,3 +294,62 @@ curl -X POST "$BLOCKS_API_URL/communications/unsubscribe" \
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-crm
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// SubscribersService — client.crm.subscribers
+list(params?: ListSubscribersParams): Promise<PageResult<Subscriber>>;
+get(uniqueId: string): Promise<Subscriber>;
+create(data: CreateSubscriberRequest): Promise<Subscriber>;
+update(uniqueId: string, data: UpdateSubscriberRequest): Promise<Subscriber>;
+delete(uniqueId: string): Promise<void>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  Subscriber,
+  CreateSubscriberRequest,
+  UpdateSubscriberRequest,
+  ListSubscribersParams,
+} from '@23blocks/block-crm';
+```
+
+### React Hook
+
+```typescript
+import { useCrmBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useCrmBlock();
+
+  // Example: List all subscribers
+  const result = await client.crm.subscribers.list();
+}
+```

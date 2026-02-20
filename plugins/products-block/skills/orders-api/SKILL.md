@@ -249,3 +249,64 @@ curl -X PUT "$BLOCKS_API_URL/carts/cart-uuid-123/products/product-uuid-001/cance
   }]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-products
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// CartDetailsService — client.products.cartDetails
+order(cartUniqueId: string, detailUniqueId: string): Promise<CartDetail>;
+accept(cartUniqueId: string, detailUniqueId: string): Promise<CartDetail>;
+startProcessing(cartUniqueId: string, detailUniqueId: string): Promise<CartDetail>;
+processing(cartUniqueId: string, detailUniqueId: string): Promise<CartDetail>;
+ready(cartUniqueId: string, detailUniqueId: string): Promise<CartDetail>;
+ship(cartUniqueId: string, detailUniqueId: string): Promise<CartDetail>;
+deliver(cartUniqueId: string, detailUniqueId: string): Promise<CartDetail>;
+cancel(cartUniqueId: string, detailUniqueId: string): Promise<CartDetail>;
+return(cartUniqueId: string, detailUniqueId: string): Promise<CartDetail>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  Cart,
+  CartDetail,
+} from '@23blocks/block-products';
+```
+
+### React Hook
+
+```typescript
+import { useProductsBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useProductsBlock();
+
+  // Example: ship an order detail
+  const result = await client.products.cartDetails.ship('cart-uuid', 'detail-uuid');
+}
+```

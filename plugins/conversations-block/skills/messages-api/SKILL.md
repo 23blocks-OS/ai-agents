@@ -593,3 +593,64 @@ curl -s -X POST "https://conversations.api.us.23blocks.com/conversations/conv_de
   ]
 }
 ```
+
+---
+
+## SDK Usage (TypeScript)
+
+> **When building web apps, use the SDK instead of raw API calls.**
+
+### Installation
+
+```bash
+npm install @23blocks/block-conversations
+```
+
+### Setup
+
+```typescript
+import { create23BlocksClient } from '@23blocks/sdk';
+
+const client = create23BlocksClient({
+  authToken: process.env.BLOCKS_AUTH_TOKEN!,
+  apiKey: process.env.BLOCKS_API_KEY!,
+  apiUrl: process.env.BLOCKS_API_URL!,
+});
+```
+
+### Available Methods
+
+```typescript
+// MessagesService — client.conversations.messages
+list(params?: ListMessagesParams): Promise<PageResult<Message>>;
+get(uniqueId: string): Promise<Message>;
+create(data: CreateMessageRequest): Promise<Message>;
+update(uniqueId: string, data: UpdateMessageRequest): Promise<Message>;
+delete(uniqueId: string): Promise<void>;
+recover(uniqueId: string): Promise<Message>;
+listByContext(contextId: string, params?: ListMessagesParams): Promise<PageResult<Message>>;
+listByParent(parentId: string, params?: ListMessagesParams): Promise<PageResult<Message>>;
+listDeleted(params?: ListMessagesParams): Promise<PageResult<Message>>;
+```
+
+### TypeScript Types
+
+```typescript
+import type {
+  Message,
+  CreateMessageRequest,
+  UpdateMessageRequest,
+  ListMessagesParams,
+} from '@23blocks/block-conversations';
+```
+
+### React Hook
+
+```typescript
+import { useConversationsBlock } from '@23blocks/react';
+
+function MyComponent() {
+  const { client } = useConversationsBlock();
+  const result = await client.conversations.messages.list();
+}
+```
