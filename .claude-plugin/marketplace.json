@@ -42,6 +42,14 @@
       "version": "1.0.0",
       "keywords": ["jarvis", "ai-agents", "prompts", "workflows", "bpmn", "conversations", "tools", "llm", "entities", "clusters"],
       "category": "platform"
+    },
+    {
+      "name": "auth-block",
+      "source": "./plugins/auth-block",
+      "description": "23blocks Auth Block - authentication, users, sessions, API keys, organizations, roles, permissions, invitations, teams, OAuth/SSO, audit logs",
+      "version": "1.0.0",
+      "keywords": ["auth", "authentication", "authorization", "users", "sessions", "api-keys", "organizations", "roles", "permissions", "invitations", "teams", "oauth", "sso", "audit-logs"],
+      "category": "platform"
     }
   ]
 }

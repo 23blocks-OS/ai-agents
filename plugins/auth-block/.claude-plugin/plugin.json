@@ -1,0 +1,30 @@
+{
+  "name": "auth-block",
+  "version": "1.0.0",
+  "description": "23blocks Auth Block - REST API for authentication, users, sessions, API keys, organizations, roles, permissions, invitations, teams, OAuth/SSO, and audit logs",
+  "author": {
+    "name": "23blocks",
+    "email": "support@23blocks.com"
+  },
+  "homepage": "https://docs.23blocks.com/auth",
+  "repository": "https://github.com/23blocks-OS/ai-agents",
+  "license": "MIT",
+  "keywords": [
+    "23blocks",
+    "auth",
+    "authentication",
+    "authorization",
+    "users",
+    "sessions",
+    "api-keys",
+    "organizations",
+    "roles",
+    "permissions",
+    "invitations",
+    "teams",
+    "oauth",
+    "sso",
+    "audit-logs",
+    "mfa"
+  ]
+}
