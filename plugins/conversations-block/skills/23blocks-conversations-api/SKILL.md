@@ -42,6 +42,7 @@ curl -X GET "$BLOCKS_API_URL/users/{unique_id}/conversations" \
 | PUT | `/conversations/:unique_id/archive` | Archive conversation |
 | PUT | `/conversations/:unique_id/restore` | Restore conversation |
 | PUT | `/conversations/:unique_id/extend` | Extend conversation |
+| PUT | `/conversations/:unique_id/messages/read_all` | Mark all messages as read |
 | GET | `/conversations/:unique_id/files/:file_unique_id` | Get file |
 | PUT | `/conversations/:unique_id/presign` | Presign file upload |
 | POST | `/conversations/:unique_id/files` | Upload file |
@@ -62,6 +63,7 @@ curl -X GET "$BLOCKS_API_URL/users/{unique_id}/conversations" \
 | metadata | object | Arbitrary key-value metadata |
 | extended_data | object | Custom extended data attached via /extend |
 | group_id | string | Associated group ID (null for direct conversations) |
+| first_response_tracking | object | Tracks first response time and metadata |
 | status | string | Conversation status: `active`, `archived` |
 | created_at | datetime | Conversation creation timestamp |
 | updated_at | datetime | Last update timestamp |
@@ -79,6 +81,22 @@ curl -X GET "$BLOCKS_API_URL/users/{unique_id}/conversations" \
 | uploaded_by | string | User who uploaded the file |
 | metadata | object | File metadata |
 | created_at | datetime | Upload timestamp |
+
+---
+
+## Breaking Changes
+
+> **Read status is now per-user via read horizon.** The conversation-level `unread_count` is now computed per-user using individual `MessageReadReceipt` records and a `last_read_at` read horizon on `context_users`. The old behavior where message `status` changed to `'read'` globally is no longer in effect. See the **23blocks-conversations-read-receipts-api** skill for details.
+
+## New Features
+
+### First Response Tracking
+
+The `first_response_tracking` field on contexts tracks when the first response was sent in a conversation, useful for SLA and response time metrics.
+
+### Auto-Read on Show
+
+When a conversation is retrieved via `GET /conversations/:unique_id`, all messages are automatically marked as read for the requesting user via `MessageReadService.mark_conversation_as_read`.
 
 ---
 

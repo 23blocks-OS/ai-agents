@@ -45,9 +45,11 @@ curl -X GET "$BLOCKS_API_URL/users/{unique_id}/groups" \
 | GET | `/users/:unique_id/context/:context_unique_id/groups` | List context groups |
 | GET | `/groups/:group_unique_id/invites` | List group invites |
 | POST | `/groups/:group_unique_id/invites` | Create group invite |
-| DELETE | `/groups/:group_unique_id/invites/:code` | Delete group invite |
+| DELETE | `/groups/:group_unique_id/invites/:code` | Revoke group invite |
 | GET | `/groups/:group_unique_id/invites/:code/qr` | Get invite QR code |
 | POST | `/groups/join/:code` | Join group via invite code |
+
+> **Invite management:** For full invite lifecycle management (expiration, QR generation, rate limits, user params on join), see the dedicated **23blocks-conversations-group-invites-api** skill.
 
 ---
 
@@ -62,6 +64,7 @@ curl -X GET "$BLOCKS_API_URL/users/{unique_id}/groups" \
 | description | string | Group description |
 | members | array | List of member user unique IDs |
 | owner_id | string | User unique ID of the group owner |
+| group_type | string | Group type identifier |
 | context_id | string | Associated context ID |
 | status | string | Group status: `active`, `archived`, `deleted` |
 | member_count | integer | Current number of members |
@@ -69,17 +72,30 @@ curl -X GET "$BLOCKS_API_URL/users/{unique_id}/groups" \
 | created_at | datetime | Group creation timestamp |
 | updated_at | datetime | Last update timestamp |
 
+### GroupUser (Membership)
+
+| Field | Type | Description |
+|-------|------|-------------|
+| user_unique_id | string | Member's user unique ID |
+| group_unique_id | string | Parent group ID |
+| role | string | Member role within the group (e.g., `owner`, `admin`, `member`, `moderator`) |
+| joined_at | datetime | When the user joined the group |
+
 ### Invite
 
 | Field | Type | Description |
 |-------|------|-------------|
-| code | string | Unique invite code |
+| code | string | URL-safe invite code (22 chars, 132 bits entropy) |
 | group_unique_id | string | Associated group ID |
+| name | string | Optional invite label |
 | created_by | string | User who created the invite |
+| status | string | Status: `active`, `revoked`, `expired` |
 | max_uses | integer | Maximum uses allowed (null for unlimited) |
 | use_count | integer | Number of times the code has been used |
 | expires_at | datetime | Expiration timestamp (null for never) |
 | created_at | datetime | Invite creation timestamp |
+
+> For detailed invite management including `expires_in_hours`, user params on join, QR generation, and rate limiting, see the **23blocks-conversations-group-invites-api** skill.
 
 ---
 

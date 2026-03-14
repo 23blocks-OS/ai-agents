@@ -73,8 +73,13 @@ Send a new message to a conversation.
 | content | string | Yes | Message content |
 | message_type | string | No | Type: `text` (default), `image`, `file`, `system`, `rich` |
 | sender_id | string | Yes | Unique ID of the sending user |
+| sender_role | string | No | Role of the sender (e.g. `user`, `assistant`, `system`) |
 | attachments | array | No | Array of attachment objects |
 | metadata | object | No | Additional message metadata |
+| expires_at | string | No | ISO 8601 expiration timestamp |
+| idempotency_key | string | No | Client-provided key for deduplication |
+| rag_sources | object | No | RAG retrieval source references (JSONB) |
+| actions | array | No | Inline message actions (see Message Actions API) |
 
 **cURL Example:**
 
@@ -118,6 +123,54 @@ curl -s -X POST "https://conversations.api.us.23blocks.com/conversations/conv_de
   }
 }
 ```
+
+**Idempotent Response (200 OK — duplicate):**
+
+When the same `idempotency_key` is sent again, the response includes `X-Idempotency-Status: duplicate` header and returns the existing message.
+
+---
+
+### Send Message with Idempotency and Actions
+
+**cURL Example:**
+
+```bash
+curl -s -X POST "https://conversations.api.us.23blocks.com/conversations/conv_def456/messages" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "AppId: $BLOCKS_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "message": {
+      "source": "usr_abc123",
+      "content": "Do you approve this request?",
+      "sender_role": "assistant",
+      "idempotency_key": "client_dedup_001",
+      "expires_at": "2025-02-15T00:00:00Z",
+      "rag_sources": {
+        "documents": [
+          { "id": "doc_001", "title": "Policy Guide", "score": 0.95 }
+        ]
+      },
+      "actions": [
+        {
+          "action_type": "button",
+          "control_type": "submit",
+          "control_label": "Approve",
+          "control_value": "approved",
+          "payload": { "request_id": "req_001" }
+        },
+        {
+          "action_type": "button",
+          "control_type": "cancel",
+          "control_label": "Reject",
+          "control_value": "rejected"
+        }
+      ]
+    }
+  }'
+```
+
+**Response Headers:** `X-Idempotency-Status: created`
 
 ---
 

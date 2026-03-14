@@ -36,9 +36,10 @@ curl -X GET "$BLOCKS_API_URL/conversations/{unique_id}/messages/{message_id}" \
 |--------|------|-------------|
 | GET | `/conversations/:unique_id/messages/:message_id` | Get message |
 | POST | `/conversations/:unique_id/messages` | Send message |
-| PUT | `/conversations/:unique_id/messages` | Update message |
+| PUT | `/conversations/:unique_id/messages` | Mark message as read (legacy) |
 | PUT | `/conversations/:unique_id/messages/:message_unique_id/read` | Mark message as read |
 | PUT | `/conversations/:unique_id/messages/:message_unique_id/unread` | Mark message as unread |
+| PUT | `/conversations/:unique_id/messages/read_all` | Mark all messages as read |
 | PUT | `/conversations/:unique_id/messages/:message_unique_id/extend` | Extend message |
 | GET | `/conversations/:unique_id/draft_messages/:message_id` | Get draft message |
 | POST | `/conversations/:unique_id/draft_messages` | Create draft message |
@@ -54,15 +55,20 @@ curl -X GET "$BLOCKS_API_URL/conversations/{unique_id}/messages/{message_id}" \
 | unique_id | string | Unique identifier for the message |
 | conversation_id | string | Parent conversation ID |
 | sender_id | string | User who sent the message |
+| sender_role | string | Role of the sender (e.g. `user`, `assistant`, `system`) |
 | content | string | Message body content |
 | message_type | string | Type: `text`, `image`, `file`, `system`, `rich` |
 | read_by | array | List of user IDs who have read the message |
 | attachments | array | Array of file attachment objects |
-| status | string | Delivery status: `sent`, `delivered`, `read` |
+| status | string | Delivery status: `sent`, `delivered` |
 | edited | boolean | Whether the message has been edited |
 | edited_at | datetime | Timestamp of last edit |
 | extended_data | object | Custom data attached via /extend |
 | metadata | object | Arbitrary key-value metadata |
+| expires_at | datetime | Message expiration timestamp (null = never expires) |
+| idempotency_key | string | Client-provided key for deduplication |
+| rag_sources | object (JSONB) | RAG retrieval source references |
+| actions | array | Inline message actions (created with message) |
 | created_at | datetime | Message creation timestamp |
 | updated_at | datetime | Last update timestamp |
 
@@ -89,6 +95,34 @@ curl -X GET "$BLOCKS_API_URL/conversations/{unique_id}/messages/{message_id}" \
 | content_type | string | MIME type |
 | size | integer | File size in bytes |
 | url | string | CDN URL for file access |
+
+---
+
+## Breaking Changes
+
+> **Message status no longer changes to `'read'`.** Read tracking is now per-user via `MessageReadReceipt` records (see the **23blocks-conversations-read-receipts-api** skill). The `status` field remains `sent` or `delivered`.
+
+## New Features
+
+### Idempotency
+
+Pass an `idempotency_key` when creating a message to prevent duplicates. If a message with the same key already exists, the API returns the existing message with status `200 OK` and header `X-Idempotency-Status: duplicate` instead of creating a new one.
+
+### Message Expiration
+
+Set `expires_at` on a message to make it auto-expire. Expired messages are excluded from conversation queries (`.not_expired` scope). Use the extend endpoint to update expiration.
+
+### Inline Actions
+
+Pass an `actions` array when creating a message to attach interactive controls (buttons, links, inputs). See the **23blocks-conversations-message-actions-api** skill for the full action data model.
+
+### Sender Role
+
+The `sender_role` field identifies the sender's role (e.g., `user`, `assistant`, `system`). Useful for AI/chatbot conversations.
+
+### RAG Sources
+
+The `rag_sources` JSONB field stores retrieval-augmented generation source references for AI-generated messages.
 
 ---
 
