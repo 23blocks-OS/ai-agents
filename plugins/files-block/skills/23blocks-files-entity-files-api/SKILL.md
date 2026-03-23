@@ -16,15 +16,26 @@ Complete API reference for 23blocks entity file management.
 | Variable | Description | Example |
 |----------|-------------|---------|
 | `BLOCKS_API_URL` | Files API base URL | `https://files.api.us.23blocks.com` |
-| `BLOCKS_AUTH_TOKEN` | Bearer token | `eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...` |
+| `BLOCKS_AUTH_TOKEN` | Bearer token (human or AID) | `eyJhbGciOiJSUzI1NiJ9...` |
 | `BLOCKS_API_KEY` | API key (AppId) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
 
 ## Authentication
+
+Two methods are supported. The Bearer token works the same either way.
+
+**Method 1: Agent Identity (AID)** -- For AI agents with AMP identity:
 ```bash
-curl -X GET "$BLOCKS_API_URL/entities/{entity_id}/files" \
-  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
-  -H "Content-Type: application/json"
+export BLOCKS_AUTH_TOKEN=$(aid-token.sh -a https://auth.api.us.23blocks.com/<tenant> -q)
+export BLOCKS_API_URL="https://files.api.us.23blocks.com"
+export BLOCKS_API_KEY="<your-api-key>"
+```
+> First time? See the `23blocks-auth-agent-identity-api` skill for setup.
+
+**Method 2: User Token** -- For human-provided credentials:
+```bash
+export BLOCKS_API_URL="https://files.api.us.23blocks.com"
+export BLOCKS_AUTH_TOKEN="<your-bearer-token>"
+export BLOCKS_API_KEY="<your-api-key>"
 ```
 
 ---

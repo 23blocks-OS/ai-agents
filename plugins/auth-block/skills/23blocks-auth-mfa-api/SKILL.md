@@ -13,36 +13,30 @@ Complete API reference for 23blocks multi-factor authentication management inclu
 
 ## Required Environment Variables
 
-**BEFORE making ANY API call**, verify these environment variables are set:
-
-```bash
-# Pre-flight check - Run this FIRST
-if [ -z "$BLOCKS_API_URL" ] || [ -z "$BLOCKS_AUTH_TOKEN" ] || [ -z "$BLOCKS_API_KEY" ]; then
-  echo "ERROR: Missing required environment variables"
-  echo "Please set:"
-  echo "  BLOCKS_API_URL     - API base URL (e.g., https://auth.api.us.23blocks.com)"
-  echo "  BLOCKS_AUTH_TOKEN  - Your authentication token"
-  echo "  BLOCKS_API_KEY     - Your API key (AppId)"
-  exit 1
-fi
-```
-
 | Variable | Description | Example |
 |----------|-------------|---------|
 | `BLOCKS_API_URL` | Auth API base URL | `https://auth.api.us.23blocks.com` |
-| `BLOCKS_AUTH_TOKEN` | Bearer token | `eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...` |
+| `BLOCKS_AUTH_TOKEN` | Bearer token (human or AID) | `eyJhbGciOiJSUzI1NiJ9...` |
 | `BLOCKS_API_KEY` | API key (AppId) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
 
 ## Authentication
 
-```bash
-curl -X POST "$BLOCKS_API_URL/users/{unique_id}/mfa/setup" \
-  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
-  -H "Content-Type: application/json"
-```
+Two methods are supported. The Bearer token works the same either way.
 
-**Important:** All MFA endpoints require the authenticated user to be the same user identified by `:unique_id` in the URL. Users can only manage their own MFA.
+**Method 1: Agent Identity (AID)** -- For AI agents with AMP identity:
+```bash
+export BLOCKS_AUTH_TOKEN=$(aid-token.sh -a https://auth.api.us.23blocks.com/<tenant> -q)
+export BLOCKS_API_URL="https://auth.api.us.23blocks.com"
+export BLOCKS_API_KEY="<your-api-key>"
+```
+> First time? See the `23blocks-auth-agent-identity-api` skill for setup.
+
+**Method 2: User Token** -- For human-provided credentials:
+```bash
+export BLOCKS_API_URL="https://auth.api.us.23blocks.com"
+export BLOCKS_AUTH_TOKEN="<your-bearer-token>"
+export BLOCKS_API_KEY="<your-api-key>"
+```
 
 ---
 

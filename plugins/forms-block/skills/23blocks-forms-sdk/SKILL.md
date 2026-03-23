@@ -16,48 +16,28 @@ TypeScript types, API client, and React patterns for 23blocks Forms API integrat
 | Variable | Description | Example |
 |----------|-------------|---------|
 | `BLOCKS_API_URL` | Forms API base URL | `https://forms.api.us.23blocks.com` |
-| `BLOCKS_AUTH_TOKEN` | Bearer token | `eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...` |
+| `BLOCKS_AUTH_TOKEN` | Bearer token (human or AID) | `eyJhbGciOiJSUzI1NiJ9...` |
 | `BLOCKS_API_KEY` | API key (AppId) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
 
 ## Authentication
 
-### Basic Configuration
+Two methods are supported. The Bearer token works the same either way.
 
-```typescript
-import { FormsClient } from '@23blocks/forms-sdk';
+**Method 1: Agent Identity (AID)** -- For AI agents with AMP identity:
+```bash
+export BLOCKS_AUTH_TOKEN=$(aid-token.sh -a https://auth.api.us.23blocks.com/<tenant> -q)
+export BLOCKS_API_URL="https://forms.api.us.23blocks.com"
+export BLOCKS_API_KEY="<your-api-key>"
+```
+> First time? See the `23blocks-auth-agent-identity-api` skill for setup.
 
-// CRITICAL: Verify env vars before initializing
-if (!process.env.BLOCKS_API_URL || !process.env.BLOCKS_AUTH_TOKEN || !process.env.BLOCKS_API_KEY) {
-  throw new Error('Missing required env vars: BLOCKS_API_URL, BLOCKS_AUTH_TOKEN, BLOCKS_API_KEY');
-}
-
-const client = new FormsClient({
-  baseUrl: process.env.BLOCKS_API_URL,
-  accessToken: process.env.BLOCKS_AUTH_TOKEN,
-  appId: process.env.BLOCKS_API_KEY,
-});
+**Method 2: User Token** -- For human-provided credentials:
+```bash
+export BLOCKS_API_URL="https://forms.api.us.23blocks.com"
+export BLOCKS_AUTH_TOKEN="<your-bearer-token>"
+export BLOCKS_API_KEY="<your-api-key>"
 ```
 
-### With Auth Provider Integration
-
-```typescript
-import { FormsClient } from '@23blocks/forms-sdk';
-import { useAuth } from '@23blocks/auth-sdk';
-
-function useFormsClient() {
-  const { accessToken, appId } = useAuth();
-
-  if (!process.env.BLOCKS_API_URL) {
-    throw new Error('Missing required env var: BLOCKS_API_URL');
-  }
-
-  return new FormsClient({
-    baseUrl: process.env.BLOCKS_API_URL,
-    accessToken,
-    appId,
-  });
-}
-```
 
 ## SDK Methods
 

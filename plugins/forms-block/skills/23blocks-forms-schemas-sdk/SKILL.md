@@ -16,24 +16,28 @@ TypeScript and React SDK for 23blocks form schemas.
 | Variable | Description | Example |
 |----------|-------------|---------|
 | `BLOCKS_API_URL` | Forms API base URL | `https://forms.api.us.23blocks.com` |
-| `BLOCKS_AUTH_TOKEN` | Bearer token | `eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...` |
+| `BLOCKS_AUTH_TOKEN` | Bearer token (human or AID) | `eyJhbGciOiJSUzI1NiJ9...` |
 | `BLOCKS_API_KEY` | API key (AppId) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
 
 ## Authentication
 
-```typescript
-import { FormsClient } from '@23blocks/forms';
+Two methods are supported. The Bearer token works the same either way.
 
-if (!process.env.BLOCKS_API_URL || !process.env.BLOCKS_AUTH_TOKEN || !process.env.BLOCKS_API_KEY) {
-  throw new Error('Missing required env vars');
-}
-
-const forms = new FormsClient({
-  apiKey: process.env.BLOCKS_API_KEY,
-  authToken: process.env.BLOCKS_AUTH_TOKEN,
-  baseUrl: process.env.BLOCKS_API_URL,
-});
+**Method 1: Agent Identity (AID)** -- For AI agents with AMP identity:
+```bash
+export BLOCKS_AUTH_TOKEN=$(aid-token.sh -a https://auth.api.us.23blocks.com/<tenant> -q)
+export BLOCKS_API_URL="https://forms.api.us.23blocks.com"
+export BLOCKS_API_KEY="<your-api-key>"
 ```
+> First time? See the `23blocks-auth-agent-identity-api` skill for setup.
+
+**Method 2: User Token** -- For human-provided credentials:
+```bash
+export BLOCKS_API_URL="https://forms.api.us.23blocks.com"
+export BLOCKS_AUTH_TOKEN="<your-bearer-token>"
+export BLOCKS_API_KEY="<your-api-key>"
+```
+
 
 ## Installation
 

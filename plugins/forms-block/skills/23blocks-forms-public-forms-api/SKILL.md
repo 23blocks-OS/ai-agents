@@ -16,17 +16,28 @@ API reference for passwordless form access via magic links with optional OTP ver
 | Variable | Description | Example |
 |----------|-------------|---------|
 | `BLOCKS_API_URL` | Forms API base URL | `https://forms.api.us.23blocks.com` |
+| `BLOCKS_AUTH_TOKEN` | Bearer token (human or AID) | `eyJhbGciOiJSUzI1NiJ9...` |
+| `BLOCKS_API_KEY` | API key (AppId) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
 
 ## Authentication
 
-No authentication required — uses magic link token:
+Two methods are supported. The Bearer token works the same either way.
+
+**Method 1: Agent Identity (AID)** -- For AI agents with AMP identity:
+```bash
+export BLOCKS_AUTH_TOKEN=$(aid-token.sh -a https://auth.api.us.23blocks.com/<tenant> -q)
+export BLOCKS_API_URL="https://forms.api.us.23blocks.com"
+export BLOCKS_API_KEY="<your-api-key>"
 ```
-?token=abc123xyz
+> First time? See the `23blocks-auth-agent-identity-api` skill for setup.
+
+**Method 2: User Token** -- For human-provided credentials:
+```bash
+export BLOCKS_API_URL="https://forms.api.us.23blocks.com"
+export BLOCKS_AUTH_TOKEN="<your-bearer-token>"
+export BLOCKS_API_KEY="<your-api-key>"
 ```
 
-Base URL pattern: `$BLOCKS_API_URL/:url_id/forms/public`
-
-Where `:url_id` is the company's URL identifier (e.g., `starttalking`).
 
 ## Endpoints
 
