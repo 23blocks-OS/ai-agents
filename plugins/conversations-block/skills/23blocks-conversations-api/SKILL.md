@@ -4,7 +4,7 @@ description: Create and manage conversations with metadata, archiving, and file 
 allowed-tools: Read, Write, Bash, Grep, Glob
 metadata:
   author: 23blocks
-  version: "1.0"
+  version: "1.1"
 ---
 
 # Conversations API
@@ -45,8 +45,9 @@ export BLOCKS_API_KEY="<your-api-key>"
 
 | Method | Path | Description |
 |--------|------|-------------|
-| GET | `/users/:unique_id/conversations` | List user conversations |
-| GET | `/users/:unique_id/mygroups/conversations` | List group conversations |
+| GET | `/users/:unique_id/conversations` | List user conversations (sortable, filterable) |
+| GET | `/users/:unique_id/mygroups/conversations` | List group conversations (searchable, sortable) |
+| GET | `/users/:unique_id/unread-summary` | Aggregated unread counts by dimension |
 | GET | `/conversations/:unique_id` | Get conversation |
 | POST | `/conversations/` | Create conversation |
 | PUT | `/conversations/:unique_id/meta` | Update conversation metadata |
@@ -92,6 +93,25 @@ export BLOCKS_API_KEY="<your-api-key>"
 | uploaded_by | string | User who uploaded the file |
 | metadata | object | File metadata |
 | created_at | datetime | Upload timestamp |
+
+---
+
+## WebSocket Channels
+
+### UserInboxChannel
+
+Subscribe to real-time notifications when a user receives new conversations.
+
+**Subscribe:**
+```json
+{ "channel": "UserInboxChannel", "user_id": "<user_unique_id>" }
+```
+
+**Events:**
+| Event | Description |
+|-------|-------------|
+| `new_conversation` | A new direct conversation was created involving this user |
+| `new_group_conversation` | A new group conversation was created involving this user |
 
 ---
 

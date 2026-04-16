@@ -25,12 +25,14 @@ Retrieve all conversations for a specific user.
 | page | integer | No | Page number for pagination |
 | per_page | integer | No | Results per page (default: 25) |
 | status | string | No | Filter by status: `active`, `archived` |
-| sort | string | No | Sort field (default: `-updated_at`) |
+| sort | string | No | Sort as `column:direction`. Allowed columns: `updated_at`, `created_at`, `reference`, `name`, `new_messages`. Default: `updated_at:desc` |
+| has_unread | boolean | No | Filter to conversations with unread messages for this user (per-user via `context_users.unread_count`) |
+| min_new_messages | integer | No | Filter to conversations with at least N new messages for this user (per-user) |
 
 **cURL Example:**
 
 ```bash
-curl -s -X GET "https://conversations.api.us.23blocks.com/users/usr_abc123/conversations?page=1&per_page=25&status=active" \
+curl -s -X GET "https://conversations.api.us.23blocks.com/users/usr_abc123/conversations?page=1&per_page=25&status=active&sort=new_messages:desc&has_unread=true" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
   -H "AppId: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json"
@@ -88,11 +90,13 @@ Retrieve all group conversations for a specific user.
 |-----------|------|----------|-------------|
 | page | integer | No | Page number for pagination |
 | per_page | integer | No | Results per page (default: 25) |
+| search | string | No | Search by conversation name (ILIKE match on `context.name`) |
+| sort | string | No | Sort as `column:direction`. Allowed columns: `updated_at`, `created_at`. Default: `updated_at:desc` |
 
 **cURL Example:**
 
 ```bash
-curl -s -X GET "https://conversations.api.us.23blocks.com/users/usr_abc123/mygroups/conversations?page=1&per_page=25" \
+curl -s -X GET "https://conversations.api.us.23blocks.com/users/usr_abc123/mygroups/conversations?page=1&per_page=25&search=engineering&sort=created_at:asc" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
   -H "AppId: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json"
@@ -127,6 +131,63 @@ curl -s -X GET "https://conversations.api.us.23blocks.com/users/usr_abc123/mygro
     "total": 5,
     "page": 1,
     "per_page": 25
+  }
+}
+```
+
+---
+
+### Get Unread Summary
+
+Retrieve aggregated per-user unread counts grouped by a dimension. Admin-only endpoint requiring `conversations:read` scope.
+
+**Endpoint:** `GET /users/:unique_id/unread-summary`
+
+**Path Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| unique_id | string | Yes | The unique identifier of the user |
+
+**Query Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| group_by | string | No | Grouping dimension: `reference` (default), `source`, `source_type`. Invalid values fall back to `reference` silently |
+
+**cURL Example:**
+
+```bash
+curl -s -X GET "https://conversations.api.us.23blocks.com/users/usr_abc123/unread-summary?group_by=reference" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "AppId: $BLOCKS_API_KEY" \
+  -H "Content-Type: application/json"
+```
+
+**Response (200 OK):**
+
+```json
+{
+  "data": {
+    "type": "UnreadSummary",
+    "attributes": {
+      "user_unique_id": "usr_abc123",
+      "group_by": "reference",
+      "buckets": [
+        {
+          "key": "project-alpha",
+          "unread_count": 12,
+          "conversation_count": 3
+        },
+        {
+          "key": "support-tickets",
+          "unread_count": 5,
+          "conversation_count": 2
+        }
+      ],
+      "total_unread_count": 17,
+      "total_conversation_count": 5
+    }
   }
 }
 ```

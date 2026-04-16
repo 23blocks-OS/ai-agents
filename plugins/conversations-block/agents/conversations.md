@@ -100,3 +100,12 @@ All API endpoints return standard HTTP status codes:
 ## WebSocket Connectivity
 
 For real-time messaging, generate a WebSocket token via the identities-api skill, then connect to the WebSocket endpoint using the returned token. Messages, typing indicators, and presence updates are delivered through the WebSocket channel.
+
+### Available Channels
+
+| Channel | Purpose | Events |
+|---------|---------|--------|
+| `conversation_{context_id}` | Per-conversation messages, read receipts, actions | message, read_receipt, message_action |
+| `UserInboxChannel` | Per-user inbox notifications | new_conversation, new_group_conversation |
+
+Subscribe to `UserInboxChannel` with `{ "channel": "UserInboxChannel", "user_id": "<user_unique_id>" }` to receive real-time alerts when new conversations are created.
