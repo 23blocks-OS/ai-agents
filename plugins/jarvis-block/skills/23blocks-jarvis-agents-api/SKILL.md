@@ -4,7 +4,7 @@ description: Manage 23blocks Jarvis AI agents via REST API. Use when creating ag
 allowed-tools: Read, Write, Bash, Grep, Glob
 metadata:
   author: 23blocks
-  version: "1.0"
+  version: "1.1"
 ---
 
 # Agents API
@@ -150,7 +150,9 @@ curl -X POST "$BLOCKS_API_URL/agents" \
     "agent": {
       "name": "Customer Support Bot",
       "description": "Handles customer inquiries and resolves issues",
-      "system_prompt": "You are a helpful customer support agent. Be polite and thorough."
+      "system_prompt": "You are a helpful customer support agent. Be polite and thorough.",
+      "provider": "mistral",
+      "model": "mistral-small-latest"
     }
   }'
 ```
@@ -161,6 +163,8 @@ curl -X POST "$BLOCKS_API_URL/agents" \
 | `name` | string | Yes | Agent name |
 | `description` | string | No | Agent description |
 | `system_prompt` | string | No | System prompt for agent behavior |
+| `provider` | string | No | LLM provider: `openai` (default), `anthropic`, `google`, `mistral`, `perplexity`, `openai_compatible`, `custom` |
+| `model` | string | No | Model identifier for the provider (e.g., `gpt-4`, `mistral-small-latest`) |
 
 **Response 201:**
 ```json
@@ -332,6 +336,8 @@ curl -X DELETE "$BLOCKS_API_URL/agents/agent-uuid-123/entities/entity-uuid-789" 
 | `name` | string | Agent name |
 | `description` | string | Agent description |
 | `system_prompt` | string | System prompt for behavior |
+| `provider` | string | LLM provider (`openai`, `anthropic`, `google`, `mistral`, `perplexity`, `openai_compatible`, `custom`) |
+| `model` | string | Model identifier for the provider |
 | `status` | enum | active, inactive |
 | `prompts_count` | integer | Number of assigned prompts |
 | `entities_count` | integer | Number of bound entities |

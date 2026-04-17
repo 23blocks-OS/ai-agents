@@ -4,7 +4,7 @@ description: Manage 23blocks Jarvis prompts via REST API. Use when creating prom
 allowed-tools: Read, Write, Bash, Grep, Glob
 metadata:
   author: 23blocks
-  version: "1.0"
+  version: "1.1"
 ---
 
 # Prompts API
@@ -147,7 +147,9 @@ curl -X POST "$BLOCKS_API_URL/prompts" \
     "prompt": {
       "name": "Email Generator",
       "description": "Generates professional emails based on tone and topic",
-      "content": "Write a {{tone}} email about {{topic}} to {{recipient}}."
+      "content": "Write a {{tone}} email about {{topic}} to {{recipient}}.",
+      "provider": "anthropic",
+      "model": "claude-sonnet-4-5-20241022"
     }
   }'
 ```
@@ -158,6 +160,8 @@ curl -X POST "$BLOCKS_API_URL/prompts" \
 | `name` | string | Yes | Prompt name |
 | `description` | string | No | Prompt description |
 | `content` | string | Yes | Prompt template with {{variables}} |
+| `provider` | string | No | LLM provider: `openai` (default), `anthropic`, `google`, `mistral`, `perplexity`, `openai_compatible`, `custom` |
+| `model` | string | No | Model identifier for the provider (e.g., `gpt-4`, `claude-sonnet-4-5-20241022`, `mistral-small-latest`) |
 
 **Response 201:**
 ```json
@@ -406,6 +410,8 @@ curl -X DELETE "$BLOCKS_API_URL/prompts/prompt-uuid-123/unsave" \
 | `name` | string | Prompt name |
 | `description` | string | Prompt description |
 | `content` | string | Template with {{variables}} |
+| `provider` | string | LLM provider (`openai`, `anthropic`, `google`, `mistral`, `perplexity`, `openai_compatible`, `custom`) |
+| `model` | string | Model identifier for the provider |
 | `status` | enum | draft, published |
 | `likes_count` | integer | Number of likes |
 | `saves_count` | integer | Number of saves |
