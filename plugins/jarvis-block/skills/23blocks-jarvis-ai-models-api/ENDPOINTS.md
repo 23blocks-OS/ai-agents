@@ -260,7 +260,7 @@ curl -X POST "$BLOCKS_API_URL/llm_providers" \
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `name` | string | Yes | Provider name |
-| `vendor` | string | Yes | Vendor (openai, anthropic, google, etc.) |
+| `vendor` | string | Yes | Vendor: `openai`, `anthropic`, `google`, `mistral` (alias: `mistralai`), `perplexity` |
 | `api_key` | string | Yes | Provider API key |
 | `api_endpoint` | string | No | Custom API endpoint |
 
@@ -281,6 +281,27 @@ curl -X POST "$BLOCKS_API_URL/llm_providers" \
   }
 }
 ```
+
+---
+
+**Example: Create Mistral Provider**
+
+```bash
+curl -X POST "$BLOCKS_API_URL/llm_providers" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "AppId: $BLOCKS_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "llm_provider": {
+      "name": "Mistral Production",
+      "vendor": "mistral",
+      "api_key": "...",
+      "api_endpoint": "https://api.mistral.ai"
+    }
+  }'
+```
+
+> For self-hosted Mistral (Ollama, vLLM), set `api_endpoint` to your custom URL. Model validation falls back to dynamic discovery.
 
 ---
 
@@ -398,6 +419,59 @@ curl -X GET "$BLOCKS_API_URL/llm_providers/provider-uuid-456/vendor_models" \
         "max_tokens": 128000,
         "supports_streaming": true,
         "supports_function_calling": true
+      }
+    }
+  ]
+}
+```
+
+---
+
+### GET /vendors/:vendor/models - Discover Vendor Models
+
+Lists available models directly from a vendor without requiring a configured provider. Useful for browsing models before creating a provider.
+
+**Request:**
+```bash
+curl -X GET "$BLOCKS_API_URL/vendors/mistral/models" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "AppId: $BLOCKS_API_KEY"
+```
+
+**Path Parameters:**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `vendor` | string | Yes | Vendor name: `openai`, `anthropic`, `google`, `mistral`, `perplexity` |
+
+**Response 200:**
+```json
+{
+  "data": [
+    {
+      "id": "mistral-large-latest",
+      "type": "vendor_model",
+      "attributes": {
+        "model_id": "mistral-large-latest",
+        "name": "Mistral Large",
+        "supports_streaming": true
+      }
+    },
+    {
+      "id": "mistral-small-latest",
+      "type": "vendor_model",
+      "attributes": {
+        "model_id": "mistral-small-latest",
+        "name": "Mistral Small",
+        "supports_streaming": true
+      }
+    },
+    {
+      "id": "codestral-latest",
+      "type": "vendor_model",
+      "attributes": {
+        "model_id": "codestral-latest",
+        "name": "Codestral",
+        "supports_streaming": true
       }
     }
   ]

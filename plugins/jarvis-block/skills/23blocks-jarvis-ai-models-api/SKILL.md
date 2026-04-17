@@ -4,7 +4,7 @@ description: Manage 23blocks Jarvis AI models and LLM providers via REST API. Us
 allowed-tools: Read, Write, Bash, Grep, Glob
 metadata:
   author: 23blocks
-  version: "1.0"
+  version: "1.1"
 ---
 
 # AI Models API
@@ -56,6 +56,7 @@ export BLOCKS_API_KEY="<your-api-key>"
 | DELETE | `/llm_providers/:id` | Delete an LLM provider |
 | POST | `/llm_providers/:id/validate` | Validate a provider connection |
 | GET | `/llm_providers/:id/vendor_models` | List vendor models |
+| GET | `/vendors/:vendor/models` | Discover models by vendor name |
 
 ---
 
@@ -83,12 +84,34 @@ export BLOCKS_API_KEY="<your-api-key>"
 |-------|------|-------------|
 | `unique_id` | uuid | Unique identifier |
 | `name` | string | Provider name |
-| `vendor` | string | Vendor (openai, anthropic, google) |
+| `vendor` | string | Vendor: `openai`, `anthropic`, `google`, `mistral` (alias: `mistralai`), `perplexity` |
 | `api_endpoint` | string | API endpoint URL |
 | `status` | enum | active, inactive |
 | `models_count` | integer | Number of configured models |
 | `created_at` | timestamp | Creation time |
 | `updated_at` | timestamp | Last update |
+
+---
+
+## Supported Providers
+
+| Vendor | Aliases | Base URL | Default Model | Streaming |
+|--------|---------|----------|---------------|-----------|
+| `openai` | — | `https://api.openai.com/v1` | `gpt-4` | Yes |
+| `anthropic` | — | `https://api.anthropic.com` | `claude-sonnet-4-5-20241022` | Yes |
+| `google` | — | `https://generativelanguage.googleapis.com` | `gemini-pro` | Yes |
+| `mistral` | `mistralai` | `https://api.mistral.ai` | `mistral-small-latest` | Yes |
+| `perplexity` | — | `https://api.perplexity.ai` | `pplx-7b-online` | Yes |
+
+### Mistral Models
+
+`mistral-large-latest`, `mistral-small-latest`, `ministral-3b-latest`, `ministral-8b-latest`, `open-mistral-nemo`, `codestral-latest`, `pixtral-large-latest`, `pixtral-12b-2409`
+
+> Mistral uses an OpenAI-compatible API (`/v1/chat/completions`). Custom base URLs are supported for self-hosted deployments (Ollama, vLLM) with dynamic model validation fallback.
+
+### Vendor Model Discovery
+
+Use `GET /llm_providers/:id/vendor_models` or `GET /vendors/:vendor/models` to list available models for any provider.
 
 ---
 
