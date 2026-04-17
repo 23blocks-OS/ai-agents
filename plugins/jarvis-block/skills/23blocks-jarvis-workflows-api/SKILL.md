@@ -4,7 +4,7 @@ description: Manage 23blocks Jarvis workflows via REST API. Use when creating BP
 allowed-tools: Read, Write, Bash, Grep, Glob
 metadata:
   author: 23blocks
-  version: "1.0"
+  version: "1.1"
 ---
 
 # Workflows API
@@ -81,7 +81,10 @@ export BLOCKS_API_KEY="<your-api-key>"
 |-------|------|-------------|
 | `unique_id` | uuid | Unique identifier |
 | `name` | string | Step name |
-| `step_type` | string | Step type |
+| `step_type` | string | Step type: `task`, `gateway`, `event`, etc. |
+| `gateway_type` | string | Gateway type: `exclusive`, `parallel`, `inclusive`, `event_based` (only for gateway steps) |
+| `is_entry_point` | boolean | Whether this step is the workflow entry point |
+| `is_exit_point` | boolean | Whether this step is the workflow exit point |
 | `position` | integer | Step position |
 | `description` | string | Step description |
 | `created_at` | timestamp | Creation time |

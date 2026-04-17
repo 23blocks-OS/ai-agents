@@ -125,6 +125,8 @@ curl -X POST "$BLOCKS_API_URL/ai_models" \
 | `top_p` | float | No | Top-p sampling (0-1) |
 | `frequency_penalty` | float | No | Frequency penalty (0-2) |
 | `presence_penalty` | float | No | Presence penalty (0-2) |
+| `input_token_cost_currency` | string | No | Currency for input token pricing (e.g., `USD`) |
+| `output_token_cost_currency` | string | No | Currency for output token pricing (e.g., `USD`) |
 
 **Response 201:**
 ```json

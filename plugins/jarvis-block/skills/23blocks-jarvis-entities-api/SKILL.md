@@ -4,7 +4,7 @@ description: Manage 23blocks Jarvis digital twin entities via REST API. Use when
 allowed-tools: Read, Write, Bash, Grep, Glob
 metadata:
   author: 23blocks
-  version: "1.0"
+  version: "1.1"
 ---
 
 # Entities API
@@ -70,7 +70,10 @@ export BLOCKS_API_KEY="<your-api-key>"
 | `name` | string | Entity name |
 | `entity_type` | string | Type classification |
 | `description` | string | Entity description |
+| `instructions` | string | Per-entity AI instructions |
 | `status` | enum | active, inactive |
+| `created_by` | string | User who created the entity (audit trail) |
+| `updated_by` | string | User who last updated the entity (audit trail) |
 | `contexts_count` | integer | Number of contexts |
 | `conversations_count` | integer | Number of conversations |
 | `created_at` | timestamp | Creation time |

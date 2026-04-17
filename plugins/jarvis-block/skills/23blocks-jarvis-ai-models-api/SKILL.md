@@ -75,6 +75,8 @@ export BLOCKS_API_KEY="<your-api-key>"
 | `top_p` | float | Top-p sampling |
 | `frequency_penalty` | float | Frequency penalty |
 | `presence_penalty` | float | Presence penalty |
+| `input_token_cost_currency` | string | Currency for input token pricing (e.g., `USD`) |
+| `output_token_cost_currency` | string | Currency for output token pricing (e.g., `USD`) |
 | `status` | enum | active, inactive |
 | `created_at` | timestamp | Creation time |
 | `updated_at` | timestamp | Last update |

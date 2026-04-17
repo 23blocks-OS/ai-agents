@@ -165,6 +165,8 @@ curl -X POST "$BLOCKS_API_URL/agents" \
 | `system_prompt` | string | No | System prompt for agent behavior |
 | `provider` | string | No | LLM provider: `openai` (default), `anthropic`, `google`, `mistral`, `perplexity`, `openai_compatible`, `custom` |
 | `model` | string | No | Model identifier for the provider (e.g., `gpt-4`, `mistral-small-latest`) |
+| `code` | string | No | Agent code/identifier |
+| `status` | string | No | Agent status: `active`, `inactive` |
 
 **Response 201:**
 ```json
@@ -334,6 +336,7 @@ curl -X DELETE "$BLOCKS_API_URL/agents/agent-uuid-123/entities/entity-uuid-789" 
 |-------|------|-------------|
 | `unique_id` | uuid | Unique identifier |
 | `name` | string | Agent name |
+| `code` | string | Agent code/identifier |
 | `description` | string | Agent description |
 | `system_prompt` | string | System prompt for behavior |
 | `provider` | string | LLM provider (`openai`, `anthropic`, `google`, `mistral`, `perplexity`, `openai_compatible`, `custom`) |
