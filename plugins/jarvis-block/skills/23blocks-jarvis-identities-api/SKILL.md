@@ -1,15 +1,15 @@
 ---
 name: 23blocks-jarvis-identities-api
-description: Manage 23blocks Jarvis user identities via REST API. Use when registering users, managing user contexts, handling user conversations and messages, or retrieving user content.
+description: Manage 23blocks Jarvis user identities via REST API. Use when registering users, managing user contexts, handling user conversations and messages, retrieving user content, or managing delegations.
 allowed-tools: Read, Write, Bash, Grep, Glob
 metadata:
   author: 23blocks
-  version: "1.0"
+  version: "1.1"
 ---
 
 # Identities API
 
-Complete API reference for 23blocks Jarvis user identity management with contexts, conversations, and content.
+Complete API reference for 23blocks Jarvis user identity management with contexts, conversations, content, and delegations.
 
 ## Required Environment Variables
 
@@ -56,6 +56,11 @@ export BLOCKS_API_KEY="<your-api-key>"
 | GET | `/identities/:id/conversations/:conv_id/messages` | List user messages |
 | POST | `/identities/:id/conversations/:conv_id/messages` | Send user message |
 | GET | `/identities/:id/content` | Get user content |
+| POST | `/identities/:id/delegations` | Create a delegation |
+| GET | `/identities/:id/delegations/granted` | List delegations granted by user |
+| GET | `/identities/:id/delegations/received` | List delegations received by user |
+| GET | `/identities/:id/delegations/:delegation_id` | Get a single delegation |
+| DELETE | `/identities/:id/delegations/:delegation_id` | Revoke a delegation |
 
 ---
 
@@ -89,6 +94,202 @@ export BLOCKS_API_KEY="<your-api-key>"
 | `role` | enum | user, assistant, system |
 | `content` | string | Message content |
 | `created_at` | timestamp | Creation time |
+
+### Delegation
+| Field | Type | Description |
+|-------|------|-------------|
+| `unique_id` | uuid | Unique identifier |
+| `grantor_uid` | uuid | User who granted the delegation |
+| `delegate_uid` | uuid | User who received the delegation |
+| `agent_uid` | uuid | Agent the delegation applies to |
+| `context_uid` | uuid | Context the delegation applies to |
+| `permissions` | array | Granted permissions: `read`, `write`, `execute` |
+| `status` | enum | active, revoked, expired |
+| `expires_at` | timestamp | Delegation expiration time |
+| `created_at` | timestamp | Creation time |
+| `updated_at` | timestamp | Last update |
+
+---
+
+## Delegations
+
+### POST /identities/:id/delegations - Create Delegation
+
+Creates a new delegation from this identity to another user.
+
+**Request:**
+```bash
+curl -X POST "$BLOCKS_API_URL/identities/user-uuid-123/delegations" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "AppId: $BLOCKS_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "delegation": {
+      "delegate_uid": "user-uuid-456",
+      "agent_uid": "agent-uuid-789",
+      "context_uid": "context-uuid-001",
+      "permissions": ["read", "write", "execute"],
+      "expires_at": "2025-06-01T00:00:00Z"
+    }
+  }'
+```
+
+**Request Parameters:**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `delegate_uid` | uuid | Yes | User UID to delegate to |
+| `agent_uid` | uuid | Yes | Agent the delegation applies to |
+| `context_uid` | uuid | No | Context scope (omit for agent-wide) |
+| `permissions` | array | No | Permissions: `read`, `write`, `execute` |
+| `expires_at` | timestamp | No | Delegation expiration time |
+
+**Response 201:**
+```json
+{
+  "data": {
+    "id": "delegation-uuid-001",
+    "type": "delegation",
+    "attributes": {
+      "unique_id": "delegation-uuid-001",
+      "grantor_uid": "user-uuid-123",
+      "delegate_uid": "user-uuid-456",
+      "agent_uid": "agent-uuid-789",
+      "context_uid": "context-uuid-001",
+      "permissions": ["read", "write", "execute"],
+      "status": "active",
+      "expires_at": "2025-06-01T00:00:00Z",
+      "created_at": "2025-01-12T10:30:00Z"
+    }
+  }
+}
+```
+
+**Errors:**
+- `422 Unprocessable Entity` - Validation errors
+
+---
+
+### GET /identities/:id/delegations/granted - List Granted Delegations
+
+Lists all delegations granted by this identity.
+
+**Request:**
+```bash
+curl -X GET "$BLOCKS_API_URL/identities/user-uuid-123/delegations/granted" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "AppId: $BLOCKS_API_KEY"
+```
+
+**Response 200:**
+```json
+{
+  "data": [
+    {
+      "id": "delegation-uuid-001",
+      "type": "delegation",
+      "attributes": {
+        "unique_id": "delegation-uuid-001",
+        "grantor_uid": "user-uuid-123",
+        "delegate_uid": "user-uuid-456",
+        "agent_uid": "agent-uuid-789",
+        "permissions": ["read", "write", "execute"],
+        "status": "active",
+        "created_at": "2025-01-12T10:30:00Z"
+      }
+    }
+  ]
+}
+```
+
+---
+
+### GET /identities/:id/delegations/received - List Received Delegations
+
+Lists all delegations received by this identity.
+
+**Request:**
+```bash
+curl -X GET "$BLOCKS_API_URL/identities/user-uuid-456/delegations/received" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "AppId: $BLOCKS_API_KEY"
+```
+
+**Response 200:**
+```json
+{
+  "data": [
+    {
+      "id": "delegation-uuid-001",
+      "type": "delegation",
+      "attributes": {
+        "unique_id": "delegation-uuid-001",
+        "grantor_uid": "user-uuid-123",
+        "delegate_uid": "user-uuid-456",
+        "agent_uid": "agent-uuid-789",
+        "permissions": ["read", "write", "execute"],
+        "status": "active",
+        "created_at": "2025-01-12T10:30:00Z"
+      }
+    }
+  ]
+}
+```
+
+---
+
+### GET /identities/:id/delegations/:delegation_id - Get Delegation
+
+Retrieves a single delegation by ID.
+
+**Request:**
+```bash
+curl -X GET "$BLOCKS_API_URL/identities/user-uuid-123/delegations/delegation-uuid-001" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "AppId: $BLOCKS_API_KEY"
+```
+
+**Response 200:**
+```json
+{
+  "data": {
+    "id": "delegation-uuid-001",
+    "type": "delegation",
+    "attributes": {
+      "unique_id": "delegation-uuid-001",
+      "grantor_uid": "user-uuid-123",
+      "delegate_uid": "user-uuid-456",
+      "agent_uid": "agent-uuid-789",
+      "context_uid": "context-uuid-001",
+      "permissions": ["read", "write", "execute"],
+      "status": "active",
+      "expires_at": "2025-06-01T00:00:00Z",
+      "created_at": "2025-01-12T10:30:00Z"
+    }
+  }
+}
+```
+
+**Errors:**
+- `404 Not Found` - Delegation not found
+
+---
+
+### DELETE /identities/:id/delegations/:delegation_id - Revoke Delegation
+
+Revokes a delegation.
+
+**Request:**
+```bash
+curl -X DELETE "$BLOCKS_API_URL/identities/user-uuid-123/delegations/delegation-uuid-001" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "AppId: $BLOCKS_API_KEY"
+```
+
+**Response 204:** No content
+
+**Errors:**
+- `404 Not Found` - Delegation not found
+- `403 Forbidden` - Not the grantor of this delegation
 
 ---
 

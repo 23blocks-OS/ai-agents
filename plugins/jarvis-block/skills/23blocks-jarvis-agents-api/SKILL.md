@@ -1,15 +1,15 @@
 ---
 name: 23blocks-jarvis-agents-api
-description: Manage 23blocks Jarvis AI agents via REST API. Use when creating agents, configuring agent settings, assigning prompts to agents, or binding entities to agents.
+description: Manage 23blocks Jarvis AI agents via REST API. Use when creating agents, configuring agent settings, assigning prompts to agents, binding entities to agents, or managing supervisor handoffs.
 allowed-tools: Read, Write, Bash, Grep, Glob
 metadata:
   author: 23blocks
-  version: "1.1"
+  version: "1.2"
 ---
 
 # Agents API
 
-Complete API reference for 23blocks Jarvis AI agent management with prompt assignments and entity bindings.
+Complete API reference for 23blocks Jarvis AI agent management with prompt assignments, entity bindings, and supervisor handoffs.
 
 ## Required Environment Variables
 
@@ -166,6 +166,7 @@ curl -X POST "$BLOCKS_API_URL/agents" \
 | `provider` | string | No | LLM provider: `openai` (default), `anthropic`, `google`, `mistral`, `perplexity`, `openai_compatible`, `custom` |
 | `model` | string | No | Model identifier for the provider (e.g., `gpt-4`, `mistral-small-latest`) |
 | `code` | string | No | Agent code/identifier |
+| `supervisor_user_uid` | uuid | No | User UID to assign as agent supervisor |
 | `status` | string | No | Agent status: `active`, `inactive` |
 
 **Response 201:**
@@ -329,6 +330,114 @@ curl -X DELETE "$BLOCKS_API_URL/agents/agent-uuid-123/entities/entity-uuid-789" 
 
 ---
 
+## Supervisor Handoff
+
+### POST /agents/:id/context/:context_id/handoff - Create Handoff
+
+Creates a supervisor handoff delegation for an agent context. Allows the supervisor to delegate agent management to another user.
+
+**Request:**
+```bash
+curl -X POST "$BLOCKS_API_URL/agents/agent-uuid-123/context/context-uuid-456/handoff" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "AppId: $BLOCKS_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "handoff": {
+      "delegate_user_uid": "user-uuid-789",
+      "permissions": ["read", "write", "execute"],
+      "expires_at": "2025-06-01T00:00:00Z"
+    }
+  }'
+```
+
+**Request Parameters:**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `delegate_user_uid` | uuid | Yes | User UID to delegate to |
+| `permissions` | array | No | Permissions to grant: `read`, `write`, `execute` |
+| `expires_at` | timestamp | No | Delegation expiration time |
+
+**Response 201:**
+```json
+{
+  "data": {
+    "id": "delegation-uuid-001",
+    "type": "delegation",
+    "attributes": {
+      "unique_id": "delegation-uuid-001",
+      "agent_uid": "agent-uuid-123",
+      "context_uid": "context-uuid-456",
+      "delegate_user_uid": "user-uuid-789",
+      "permissions": ["read", "write", "execute"],
+      "status": "active",
+      "expires_at": "2025-06-01T00:00:00Z",
+      "created_at": "2025-01-12T10:30:00Z"
+    }
+  }
+}
+```
+
+**Errors:**
+- `422 Unprocessable Entity` - Validation errors
+- `403 Forbidden` - Not the agent supervisor
+
+---
+
+### GET /agents/:id/context/:context_id/handoff - List Handoffs
+
+Lists all handoff delegations for an agent context.
+
+**Request:**
+```bash
+curl -X GET "$BLOCKS_API_URL/agents/agent-uuid-123/context/context-uuid-456/handoff" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "AppId: $BLOCKS_API_KEY"
+```
+
+**Response 200:**
+```json
+{
+  "data": [
+    {
+      "id": "delegation-uuid-001",
+      "type": "delegation",
+      "attributes": {
+        "unique_id": "delegation-uuid-001",
+        "agent_uid": "agent-uuid-123",
+        "context_uid": "context-uuid-456",
+        "delegate_user_uid": "user-uuid-789",
+        "permissions": ["read", "write", "execute"],
+        "status": "active",
+        "expires_at": "2025-06-01T00:00:00Z",
+        "created_at": "2025-01-12T10:30:00Z"
+      }
+    }
+  ]
+}
+```
+
+---
+
+### DELETE /agents/:id/context/:context_id/handoff/:delegation_id - Revoke Handoff
+
+Revokes a supervisor handoff delegation.
+
+**Request:**
+```bash
+curl -X DELETE "$BLOCKS_API_URL/agents/agent-uuid-123/context/context-uuid-456/handoff/delegation-uuid-001" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "AppId: $BLOCKS_API_KEY"
+```
+
+**Response 204:** No content
+
+**Errors:**
+- `404 Not Found` - Delegation not found
+- `403 Forbidden` - Not the agent supervisor
+
+---
+
 ## Data Models
 
 ### Agent
@@ -341,6 +450,7 @@ curl -X DELETE "$BLOCKS_API_URL/agents/agent-uuid-123/entities/entity-uuid-789" 
 | `system_prompt` | string | System prompt for behavior |
 | `provider` | string | LLM provider (`openai`, `anthropic`, `google`, `mistral`, `perplexity`, `openai_compatible`, `custom`) |
 | `model` | string | Model identifier for the provider |
+| `supervisor_user_uid` | uuid | User UID assigned as agent supervisor |
 | `status` | enum | active, inactive |
 | `prompts_count` | integer | Number of assigned prompts |
 | `entities_count` | integer | Number of bound entities |
