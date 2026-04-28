@@ -4,7 +4,7 @@ description: Create and manage conversations with metadata, archiving, and file 
 allowed-tools: Read, Write, Bash, Grep, Glob
 metadata:
   author: 23blocks
-  version: "1.1"
+  version: "1.2"
 ---
 
 # Conversations API
@@ -47,7 +47,7 @@ export BLOCKS_API_KEY="<your-api-key>"
 |--------|------|-------------|
 | GET | `/users/:unique_id/conversations` | List user conversations (sortable, filterable) |
 | GET | `/users/:unique_id/mygroups/conversations` | List group conversations (searchable, sortable) |
-| GET | `/users/:unique_id/unread-summary` | Aggregated unread counts by dimension |
+| GET | `/users/:unique_id/unread-summary` | Aggregated unread counts by dimension (supports payload grouping) |
 | GET | `/conversations/:unique_id` | Get conversation |
 | POST | `/conversations/` | Create conversation |
 | PUT | `/conversations/:unique_id/meta` | Update conversation metadata |

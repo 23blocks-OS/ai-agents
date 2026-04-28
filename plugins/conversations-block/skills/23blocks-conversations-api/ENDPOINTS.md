@@ -153,9 +153,10 @@ Retrieve aggregated per-user unread counts grouped by a dimension. Admin-only en
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| group_by | string | No | Grouping dimension: `reference` (default), `source`, `source_type`. Invalid values fall back to `reference` silently |
+| group_by | string | No | Grouping dimension: `reference` (default), `source`, `source_type`, `source_alias`, or `payload:<key>` for custom payload key grouping. Invalid fixed-column values fall back to `reference` silently. Invalid payload keys return `422` |
+| custom[<key>] | string | No | Filter by conversation payload key before grouping. Composable with `group_by=payload:<key>` for multi-level drill-down (e.g., `custom[project_id]=P1&group_by=payload:role`) |
 
-**cURL Example:**
+**cURL Example (fixed-column grouping):**
 
 ```bash
 curl -s -X GET "https://conversations.api.us.23blocks.com/users/usr_abc123/unread-summary?group_by=reference" \
@@ -191,6 +192,67 @@ curl -s -X GET "https://conversations.api.us.23blocks.com/users/usr_abc123/unrea
   }
 }
 ```
+
+**cURL Example (payload grouping):**
+
+```bash
+curl -s -X GET "https://conversations.api.us.23blocks.com/users/usr_abc123/unread-summary?group_by=payload:project_id" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "AppId: $BLOCKS_API_KEY" \
+  -H "Content-Type: application/json"
+```
+
+**Response (200 OK):**
+
+```json
+{
+  "data": {
+    "type": "UnreadSummary",
+    "attributes": {
+      "group_by": "payload:project_id",
+      "buckets": [
+        {
+          "key": "P1",
+          "unread_count": 7,
+          "conversation_count": 2,
+          "conversation_payload": {
+            "project_id": "P1",
+            "project_name": "Adventure Quest",
+            "role": "Developer"
+          }
+        },
+        {
+          "key": "P2",
+          "unread_count": 3,
+          "conversation_count": 1,
+          "conversation_payload": {
+            "project_id": "P2",
+            "project_name": "Project Alpha",
+            "role": "Designer"
+          }
+        }
+      ],
+      "total_unread_count": 10,
+      "total_conversation_count": 3
+    }
+  }
+}
+```
+
+**cURL Example (multi-level drill-down with custom filter + payload grouping):**
+
+```bash
+curl -s -X GET "https://conversations.api.us.23blocks.com/users/usr_abc123/unread-summary?custom[project_id]=P1&group_by=payload:role" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "AppId: $BLOCKS_API_KEY" \
+  -H "Content-Type: application/json"
+```
+
+**Payload Grouping Notes:**
+- Payload key must match `/[a-zA-Z0-9_]+/` — invalid keys return `422` with code `rt-076540`
+- `conversation_payload` is only present in buckets when using `payload:<key>` grouping, not fixed-column grouping
+- Each bucket's `conversation_payload` contains the full payload from one conversation in that group
+- Conversations with `NULL` values for the grouped key are excluded from results
 
 ---
 
