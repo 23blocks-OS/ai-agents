@@ -741,3 +741,150 @@ curl -s -X DELETE "https://conversations.api.us.23blocks.com/conversations/conv_
   }
 }
 ```
+
+---
+
+## AI Summaries
+
+### Generate Conversation Summary
+
+Generate an AI-powered summary of a conversation via Jarvis. Uses incremental processing — only sends new messages since the last summary, with the previous summary passed as context.
+
+**Endpoint:** `POST /conversations/:unique_id/summary`
+
+**Path Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| unique_id | string | Yes | The conversation unique ID |
+
+**Request Body:**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| prompt_id | string | No | Jarvis prompt ID for custom summary types (default: `conversation-summary`) |
+
+**cURL Example:**
+
+```bash
+curl -s -X POST "https://conversations.api.us.23blocks.com/conversations/conv_def456/summary" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "AppId: $BLOCKS_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "prompt_id": "conversation-summary"
+  }'
+```
+
+**Response (200 OK):**
+
+```json
+{
+  "data": {
+    "id": "summary_001",
+    "type": "conversation_summary",
+    "attributes": {
+      "unique_id": "summary_001",
+      "conversation_id": "conv_def456",
+      "summary": "The team discussed the Q2 roadmap, focusing on three key deliverables...",
+      "key_points": [
+        "Q2 roadmap finalized with 3 deliverables",
+        "Design review scheduled for next Tuesday",
+        "Budget approved for new tooling"
+      ],
+      "action_items": [
+        "Alice to prepare design mockups by Monday",
+        "Bob to set up staging environment",
+        "Charlie to send budget breakdown to finance"
+      ],
+      "summary_type": "conversation",
+      "prompt_id": "conversation-summary",
+      "message_count": 47,
+      "last_processed_message_id": "msg_xyz789",
+      "tokens_used": 1250,
+      "created_at": "2025-01-15T15:00:00Z"
+    }
+  }
+}
+```
+
+**Rate Limiting:** 1 Jarvis call per 60 seconds per conversation per user.
+
+**Caching:** Summaries are cached in `conversation_summaries` table with staleness detection. Subsequent calls return the cached summary if no new messages exist.
+
+**Errors:**
+- `429 Too Many Requests` - Rate limit exceeded
+- `404 Not Found` - Conversation not found
+
+---
+
+### Generate Batch Digest
+
+Batch-generate AI summaries for multiple conversations. Useful for inbox-level AI overviews. Only stale or missing summaries trigger Jarvis calls.
+
+**Endpoint:** `POST /conversations/digest`
+
+**Request Body:**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| conversation_ids | array | Yes | Array of conversation unique IDs (max 50) |
+| prompt_id | string | No | Jarvis prompt ID for custom summary types (default: `conversation-summary`) |
+
+**cURL Example:**
+
+```bash
+curl -s -X POST "https://conversations.api.us.23blocks.com/conversations/digest" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "AppId: $BLOCKS_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "conversation_ids": ["conv_def456", "conv_abc123", "conv_xyz789"]
+  }'
+```
+
+**Response (200 OK):**
+
+```json
+{
+  "data": [
+    {
+      "id": "summary_001",
+      "type": "conversation_summary",
+      "attributes": {
+        "unique_id": "summary_001",
+        "conversation_id": "conv_def456",
+        "summary": "Q2 roadmap discussion with 3 deliverables finalized...",
+        "key_points": ["Q2 roadmap finalized", "Design review Tuesday"],
+        "action_items": ["Alice: mockups by Monday"],
+        "summary_type": "digest",
+        "message_count": 47,
+        "last_processed_message_id": "msg_xyz789",
+        "tokens_used": 1250,
+        "created_at": "2025-01-15T15:00:00Z"
+      }
+    },
+    {
+      "id": "summary_002",
+      "type": "conversation_summary",
+      "attributes": {
+        "unique_id": "summary_002",
+        "conversation_id": "conv_abc123",
+        "summary": "Bug triage session — 5 critical issues identified...",
+        "key_points": ["5 critical bugs identified", "Hotfix branch created"],
+        "action_items": ["Team to prioritize P0 fixes"],
+        "summary_type": "digest",
+        "message_count": 23,
+        "last_processed_message_id": "msg_abc456",
+        "tokens_used": 800,
+        "created_at": "2025-01-15T15:00:00Z"
+      }
+    }
+  ]
+}
+```
+
+**Notes:**
+- Maximum 50 conversations per request
+- Uses 2-query batch cache check — only stale/missing summaries trigger Jarvis calls
+- Cached summaries are returned immediately without a Jarvis call

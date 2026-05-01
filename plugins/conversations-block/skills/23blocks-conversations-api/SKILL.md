@@ -1,10 +1,10 @@
 ---
 name: 23blocks-conversations-api
-description: Create and manage conversations with metadata, archiving, and file uploads. Use when initiating user conversations, uploading files, generating presigned URLs, or organizing conversation data.
+description: Create and manage conversations with metadata, archiving, file uploads, and AI summaries. Use when initiating user conversations, uploading files, generating presigned URLs, organizing conversation data, or generating AI-powered conversation summaries.
 allowed-tools: Read, Write, Bash, Grep, Glob
 metadata:
   author: 23blocks
-  version: "1.2"
+  version: "1.3"
 ---
 
 # Conversations API
@@ -59,6 +59,8 @@ export BLOCKS_API_KEY="<your-api-key>"
 | PUT | `/conversations/:unique_id/presign` | Presign file upload |
 | POST | `/conversations/:unique_id/files` | Upload file |
 | DELETE | `/conversations/:unique_id/files/:file_unique_id` | Delete file |
+| POST | `/conversations/:unique_id/summary` | Generate AI summary (via Jarvis) |
+| POST | `/conversations/digest` | Batch AI summaries for multiple conversations |
 
 ---
 
@@ -94,6 +96,23 @@ export BLOCKS_API_KEY="<your-api-key>"
 | metadata | object | File metadata |
 | created_at | datetime | Upload timestamp |
 
+### ConversationSummary
+
+| Field | Type | Description |
+|-------|------|-------------|
+| unique_id | string | Unique identifier for the summary |
+| conversation_id | string | Parent conversation ID |
+| summary | string | AI-generated conversation summary |
+| key_points | array | Extracted key points |
+| action_items | array | Extracted action items |
+| summary_type | string | Summary type: `conversation`, `digest` |
+| prompt_id | string | Jarvis prompt used for generation |
+| message_count | integer | Number of messages processed |
+| last_processed_message_id | string | ID of the last message included in summary |
+| tokens_used | integer | Tokens consumed for generation |
+| created_at | datetime | Summary creation timestamp |
+| updated_at | datetime | Last update timestamp |
+
 ---
 
 ## WebSocket Channels
@@ -128,6 +147,14 @@ The `first_response_tracking` field on contexts tracks when the first response w
 ### Auto-Read on Show
 
 When a conversation is retrieved via `GET /conversations/:unique_id`, all messages are automatically marked as read for the requesting user via `MessageReadService.mark_conversation_as_read`.
+
+### Unread Counter Accuracy (v1.3)
+
+`group_users.unread_count` is the single source of truth — incremented on message create, zeroed on conversation view. Viewing a conversation now correctly resets the counter.
+
+### AI Conversation Summaries (v1.3)
+
+Generate AI-powered summaries via Jarvis integration. Supports incremental processing (only new messages since last summary), custom prompts via `prompt_id`, and batch digest for inbox-level overviews. Rate limited to 1 Jarvis call per 60s per conversation per user.
 
 ---
 
