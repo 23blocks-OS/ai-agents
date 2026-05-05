@@ -746,11 +746,11 @@ curl -s -X DELETE "https://conversations.api.us.23blocks.com/conversations/conv_
 
 ## AI Summaries
 
-### Generate Conversation Summary
+### Get Conversation Summary
 
-Generate an AI-powered summary of a conversation via Jarvis. Uses incremental processing — only sends new messages since the last summary, with the previous summary passed as context.
+Retrieve an AI-powered summary of a conversation via Jarvis. Uses incremental processing — only sends new messages since the last summary, with the previous summary passed as context. Returns structured, validated fields.
 
-**Endpoint:** `POST /conversations/:unique_id/summary`
+**Endpoint:** `GET /conversations/:unique_id/summary`
 
 **Path Parameters:**
 
@@ -758,22 +758,13 @@ Generate an AI-powered summary of a conversation via Jarvis. Uses incremental pr
 |-----------|------|----------|-------------|
 | unique_id | string | Yes | The conversation unique ID |
 
-**Request Body:**
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| prompt_id | string | No | Jarvis prompt ID for custom summary types (default: `conversation-summary`) |
-
 **cURL Example:**
 
 ```bash
-curl -s -X POST "https://conversations.api.us.23blocks.com/conversations/conv_def456/summary" \
+curl -s -X GET "https://conversations.api.us.23blocks.com/conversations/conv_def456/summary" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
   -H "AppId: $BLOCKS_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "prompt_id": "conversation-summary"
-  }'
+  -H "Content-Type: application/json"
 ```
 
 **Response (200 OK):**
@@ -786,22 +777,37 @@ curl -s -X POST "https://conversations.api.us.23blocks.com/conversations/conv_de
     "attributes": {
       "unique_id": "summary_001",
       "conversation_id": "conv_def456",
-      "summary": "The team discussed the Q2 roadmap, focusing on three key deliverables...",
-      "key_points": [
+      "overall_summary": "The team discussed the Q2 roadmap, focusing on three key deliverables...",
+      "action_items": [
+        { "owner": "Alice", "task": "Prepare design mockups", "due": "Monday" },
+        { "owner": "Bob", "task": "Set up staging environment" },
+        { "owner": "Charlie", "task": "Send budget breakdown to finance" }
+      ],
+      "key_decisions": [
         "Q2 roadmap finalized with 3 deliverables",
-        "Design review scheduled for next Tuesday",
         "Budget approved for new tooling"
       ],
-      "action_items": [
-        "Alice to prepare design mockups by Monday",
-        "Bob to set up staging environment",
-        "Charlie to send budget breakdown to finance"
+      "important_info": [
+        "Design review scheduled for next Tuesday"
       ],
+      "participants": [
+        { "id": "usr_abc123", "role": "lead" },
+        { "id": "usr_xyz789", "role": "contributor" }
+      ],
+      "sentiment": "positive",
+      "conversation_status": "active",
+      "categories": ["roadmap", "planning", "budget"],
+      "stats": {
+        "message_count": 47,
+        "participant_count": 2
+      },
       "summary_type": "conversation",
       "prompt_id": "conversation-summary",
       "message_count": 47,
       "last_processed_message_id": "msg_xyz789",
       "tokens_used": 1250,
+      "validation_status": "valid",
+      "retry_count": 0,
       "created_at": "2025-01-15T15:00:00Z"
     }
   }
@@ -812,79 +818,73 @@ curl -s -X POST "https://conversations.api.us.23blocks.com/conversations/conv_de
 
 **Caching:** Summaries are cached in `conversation_summaries` table with staleness detection. Subsequent calls return the cached summary if no new messages exist.
 
+**Validation Status:**
+- `valid` — LLM output passed schema validation
+- `repaired` — Output was partially invalid but auto-repaired
+- `raw_fallback` — Validation failed, raw LLM output returned
+
 **Errors:**
 - `429 Too Many Requests` - Rate limit exceeded
 - `404 Not Found` - Conversation not found
 
 ---
 
-### Generate Batch Digest
+### Get User Conversations Digest
 
-Batch-generate AI summaries for multiple conversations. Useful for inbox-level AI overviews. Only stale or missing summaries trigger Jarvis calls.
+Retrieve an AI-powered digest across all of a user's conversations. Only stale or missing summaries trigger Jarvis calls.
 
-**Endpoint:** `POST /conversations/digest`
+**Endpoint:** `GET /users/:unique_id/conversations/summary`
 
-**Request Body:**
+**Path Parameters:**
 
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| conversation_ids | array | Yes | Array of conversation unique IDs (max 50) |
-| prompt_id | string | No | Jarvis prompt ID for custom summary types (default: `conversation-summary`) |
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| unique_id | string | Yes | The user unique ID |
 
 **cURL Example:**
 
 ```bash
-curl -s -X POST "https://conversations.api.us.23blocks.com/conversations/digest" \
+curl -s -X GET "https://conversations.api.us.23blocks.com/users/usr_abc123/conversations/summary" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
   -H "AppId: $BLOCKS_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "conversation_ids": ["conv_def456", "conv_abc123", "conv_xyz789"]
-  }'
+  -H "Content-Type: application/json"
 ```
 
 **Response (200 OK):**
 
 ```json
 {
-  "data": [
-    {
-      "id": "summary_001",
-      "type": "conversation_summary",
-      "attributes": {
-        "unique_id": "summary_001",
-        "conversation_id": "conv_def456",
-        "summary": "Q2 roadmap discussion with 3 deliverables finalized...",
-        "key_points": ["Q2 roadmap finalized", "Design review Tuesday"],
-        "action_items": ["Alice: mockups by Monday"],
-        "summary_type": "digest",
-        "message_count": 47,
-        "last_processed_message_id": "msg_xyz789",
-        "tokens_used": 1250,
-        "created_at": "2025-01-15T15:00:00Z"
-      }
-    },
-    {
-      "id": "summary_002",
-      "type": "conversation_summary",
-      "attributes": {
-        "unique_id": "summary_002",
-        "conversation_id": "conv_abc123",
-        "summary": "Bug triage session — 5 critical issues identified...",
-        "key_points": ["5 critical bugs identified", "Hotfix branch created"],
-        "action_items": ["Team to prioritize P0 fixes"],
-        "summary_type": "digest",
-        "message_count": 23,
-        "last_processed_message_id": "msg_abc456",
-        "tokens_used": 800,
-        "created_at": "2025-01-15T15:00:00Z"
+  "data": {
+    "id": "digest_001",
+    "type": "conversation_digest",
+    "attributes": {
+      "digest": {
+        "summary": "You have active discussions across 3 conversations...",
+        "categories": ["roadmap", "bugs", "hiring"],
+        "action_items": [
+          { "conversation_id": "conv_def456", "task": "Review Q2 mockups by Monday" },
+          { "conversation_id": "conv_abc123", "task": "Prioritize P0 bug fixes" }
+        ],
+        "stats": {
+          "total_conversations": 3,
+          "total_unread": 12,
+          "conversations_with_action_items": 2
+        }
+      },
+      "content": "Raw LLM output text...",
+      "meta": {
+        "validation_status": "valid",
+        "retry_count": 0,
+        "tokens_used": 2100,
+        "generated_at": "2025-01-15T15:00:00Z"
       }
     }
-  ]
+  }
 }
 ```
 
 **Notes:**
-- Maximum 50 conversations per request
 - Uses 2-query batch cache check — only stale/missing summaries trigger Jarvis calls
-- Cached summaries are returned immediately without a Jarvis call
+- `digest` contains the structured, validated output (`summary`, `categories`, `action_items`, `stats`)
+- `content` contains the raw LLM output
+- `meta` includes `validation_status` and `retry_count` for observability

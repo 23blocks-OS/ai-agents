@@ -4,7 +4,7 @@ description: Create and manage conversations with metadata, archiving, file uplo
 allowed-tools: Read, Write, Bash, Grep, Glob
 metadata:
   author: 23blocks
-  version: "1.3"
+  version: "1.4"
 ---
 
 # Conversations API
@@ -59,8 +59,8 @@ export BLOCKS_API_KEY="<your-api-key>"
 | PUT | `/conversations/:unique_id/presign` | Presign file upload |
 | POST | `/conversations/:unique_id/files` | Upload file |
 | DELETE | `/conversations/:unique_id/files/:file_unique_id` | Delete file |
-| POST | `/conversations/:unique_id/summary` | Generate AI summary (via Jarvis) |
-| POST | `/conversations/digest` | Batch AI summaries for multiple conversations |
+| GET | `/conversations/:unique_id/summary` | Get AI summary (via Jarvis) |
+| GET | `/users/:unique_id/conversations/summary` | Get user conversations digest |
 
 ---
 
@@ -102,14 +102,22 @@ export BLOCKS_API_KEY="<your-api-key>"
 |-------|------|-------------|
 | unique_id | string | Unique identifier for the summary |
 | conversation_id | string | Parent conversation ID |
-| summary | string | AI-generated conversation summary |
-| key_points | array | Extracted key points |
-| action_items | array | Extracted action items |
+| overall_summary | text | AI-generated conversation summary |
+| action_items | jsonb | Extracted action items |
+| key_decisions | jsonb | Extracted key decisions |
+| important_info | jsonb | Important information extracted |
+| participants | jsonb | Participant details from summary |
+| sentiment | string | Conversation sentiment: `positive`, `neutral`, `negative`, `mixed` |
+| conversation_status | string | Status derived from content: `active`, `resolved`, `waiting`, `escalated` |
+| categories | jsonb | Auto-categorized topics |
+| stats | jsonb | Summary statistics (message counts, etc.) |
 | summary_type | string | Summary type: `conversation`, `digest` |
 | prompt_id | string | Jarvis prompt used for generation |
 | message_count | integer | Number of messages processed |
 | last_processed_message_id | string | ID of the last message included in summary |
 | tokens_used | integer | Tokens consumed for generation |
+| validation_status | string | Output validation: `valid`, `repaired`, `raw_fallback` |
+| retry_count | integer | Number of LLM retries for valid output |
 | created_at | datetime | Summary creation timestamp |
 | updated_at | datetime | Last update timestamp |
 
@@ -137,6 +145,8 @@ Subscribe to real-time notifications when a user receives new conversations.
 ## Breaking Changes
 
 > **Read status is now per-user via read horizon.** The conversation-level `unread_count` is now computed per-user using individual `MessageReadReceipt` records and a `last_read_at` read horizon on `context_users`. The old behavior where message `status` changed to `'read'` globally is no longer in effect. See the **23blocks-conversations-read-receipts-api** skill for details.
+
+> **Digest endpoint changed (v1.4).** `POST /conversations/digest` is now `GET /users/:id/conversations/summary`. Response structure changed: `attributes.digest` contains `{ summary, categories, action_items, stats }`, `attributes.content` has raw LLM output, `attributes.meta` includes `validation_status` and `retry_count`.
 
 ## New Features
 
