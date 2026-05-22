@@ -14,7 +14,7 @@ Lists all leads with pagination.
 ```bash
 curl -X GET "$BLOCKS_API_URL/leads/?page=1&records=20" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Query Parameters:**
@@ -62,7 +62,7 @@ Retrieves a single lead by unique ID.
 ```bash
 curl -X GET "$BLOCKS_API_URL/leads/lead-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -109,7 +109,7 @@ Creates a new lead.
 ```bash
 curl -X POST "$BLOCKS_API_URL/leads/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "lead": {
@@ -170,7 +170,7 @@ Updates an existing lead.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/leads/lead-uuid-123/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "lead": {
@@ -211,7 +211,7 @@ Deletes a lead.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/leads/lead-uuid-123/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -233,7 +233,7 @@ Lists all follow-up tasks for a lead.
 ```bash
 curl -X GET "$BLOCKS_API_URL/leads/lead-uuid-123/follows" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -266,7 +266,7 @@ Retrieves a specific follow-up task.
 ```bash
 curl -X GET "$BLOCKS_API_URL/leads/lead-uuid-123/follows/follow-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -297,7 +297,7 @@ Creates a new follow-up task for a lead.
 ```bash
 curl -X POST "$BLOCKS_API_URL/leads/lead-uuid-123/follows" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "follow": {
@@ -343,7 +343,7 @@ Updates an existing follow-up task.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/leads/lead-uuid-123/follows/follow-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "follow": {
@@ -379,7 +379,7 @@ Deletes a follow-up task.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/leads/lead-uuid-123/follows/follow-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content

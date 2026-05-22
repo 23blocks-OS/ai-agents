@@ -14,7 +14,7 @@ Lists all flexible orders with pagination.
 ```bash
 curl -X GET "$BLOCKS_API_URL/flexible_orders/?page=1&records=20" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Query Parameters:**
@@ -63,7 +63,7 @@ Retrieves a single flexible order by unique ID.
 ```bash
 curl -X GET "$BLOCKS_API_URL/flexible_orders/flex-order-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -114,7 +114,7 @@ Creates a new flexible order.
 ```bash
 curl -X POST "$BLOCKS_API_URL/flexible_orders/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "flexible_order": {
@@ -168,7 +168,7 @@ Updates an existing flexible order.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/flexible_orders/flex-order-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "flexible_order": {
@@ -212,10 +212,10 @@ Adds line item details to a flexible order.
 ```bash
 curl -X POST "$BLOCKS_API_URL/flexible_orders/flex-order-uuid-123/details" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "detail": {
+    "details": {
       "description": "Consulting - 5 hours",
       "quantity": 5,
       "unit_price": 46.00
@@ -254,7 +254,7 @@ Adds a tip to a flexible order.
 ```bash
 curl -X POST "$BLOCKS_API_URL/flexible_orders/flex-order-uuid-123/tips/add" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "tip": {
@@ -288,7 +288,7 @@ curl -X POST "$BLOCKS_API_URL/flexible_orders/flex-order-uuid-123/tips/add" \
 ```bash
 curl -X POST "$BLOCKS_API_URL/flexible_orders/flex-order-uuid-123/payments/method" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "payment_method": {
@@ -320,7 +320,7 @@ curl -X POST "$BLOCKS_API_URL/flexible_orders/flex-order-uuid-123/payments/metho
 ```bash
 curl -X POST "$BLOCKS_API_URL/flexible_orders/flex-order-uuid-123/payments/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "payment": {
@@ -355,7 +355,7 @@ curl -X POST "$BLOCKS_API_URL/flexible_orders/flex-order-uuid-123/payments/" \
 ```bash
 curl -X PUT "$BLOCKS_API_URL/flexible_orders/flex-order-uuid-123/payments/payment-uuid-001/confirm" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -382,7 +382,7 @@ curl -X PUT "$BLOCKS_API_URL/flexible_orders/flex-order-uuid-123/payments/paymen
 ```bash
 curl -X PUT "$BLOCKS_API_URL/flexible_orders/flex-order-uuid-123/status" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "flexible_order": {
@@ -413,10 +413,10 @@ curl -X PUT "$BLOCKS_API_URL/flexible_orders/flex-order-uuid-123/status" \
 ```bash
 curl -X PUT "$BLOCKS_API_URL/flexible_orders/flex-order-uuid-123/details/detail-uuid-1/status" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "detail": {
+    "details": {
       "status": "processing"
     }
   }'
@@ -446,7 +446,7 @@ curl -X PUT "$BLOCKS_API_URL/flexible_orders/flex-order-uuid-123/details/detail-
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/flexible_orders/flex-order-uuid-123/cancel" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -471,7 +471,7 @@ curl -X DELETE "$BLOCKS_API_URL/flexible_orders/flex-order-uuid-123/cancel" \
 ```bash
 curl -X POST "$BLOCKS_API_URL/flexible_orders/flex-order-uuid-123/refund" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "refund": {
@@ -508,7 +508,7 @@ curl -X POST "$BLOCKS_API_URL/flexible_orders/flex-order-uuid-123/refund" \
 ```bash
 curl -X PUT "$BLOCKS_API_URL/flexible_orders/flex-order-uuid-123/logistics" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "logistics": {
@@ -545,7 +545,7 @@ curl -X PUT "$BLOCKS_API_URL/flexible_orders/flex-order-uuid-123/logistics" \
 ```bash
 curl -X PUT "$BLOCKS_API_URL/flexible_orders/flex-order-uuid-123/details/detail-uuid-1/logistics" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "logistics": {
@@ -584,7 +584,7 @@ Generates a summary report for flexible orders.
 ```bash
 curl -X POST "$BLOCKS_API_URL/reports/flexible_orders/summary" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "report": {

@@ -16,12 +16,21 @@ Complete API reference for 23blocks advanced entity search with AI vector search
 | Variable | Description | Example |
 |----------|-------------|---------|
 | `BLOCKS_API_URL` | Search API base URL | `https://search.api.us.23blocks.com` |
-| `BLOCKS_AUTH_TOKEN` | Bearer token (human or AID) | `eyJhbGciOiJSUzI1NiJ9...` |
-| `BLOCKS_API_KEY` | API key (AppId) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
+| `BLOCKS_AUTH_TOKEN` | Bearer token — your identity & scopes (from login or AID token exchange) | `eyJhbGciOiJSUzI1NiJ9...` |
+| `BLOCKS_API_KEY` | Tenant routing key (X-API-KEY header) — static, from company config | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
 
 ## Authentication
 
-Two methods are supported. The Bearer token works the same either way.
+**These two credentials serve different purposes and come from different sources:**
+
+| Credential | Purpose | Source | Changes? |
+|------------|---------|--------|----------|
+| `BLOCKS_API_KEY` | **Tenant routing** — identifies which company/app | Company config (static `pk_live_sh_...` key) | No — same key for all blocks |
+| `BLOCKS_AUTH_TOKEN` | **Identity & authorization** — who you are + what you can do | Login (`/auth/sign_in`), AID token exchange, or human-provided | Yes — expires, must be refreshed |
+
+> The API key used during AID registration is NOT the same as `BLOCKS_API_KEY`. The registration key authenticates the agent with the Auth API; `BLOCKS_API_KEY` routes requests to the correct tenant across all blocks.
+
+Two methods to obtain the Bearer token:
 
 **Method 1: Agent Identity (AID)** -- For AI agents with AMP identity:
 ```bash
@@ -50,25 +59,27 @@ Performs advanced entity search with include/exclude filters, nested JSONB field
 ```bash
 curl -X POST "$BLOCKS_API_URL/entities/search" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "include": {
-      "entity_type": "product",
-      "content.category": "electronics",
-      "content.price": { "min": 10, "max": 100 }
-    },
-    "exclude": {
-      "status": "inactive"
-    },
-    "page": 1,
-    "records": 20,
-    "sort_by": "content.price",
-    "sort_order": "asc"
+    "search": {
+      "include": {
+        "entity_type": "product",
+        "content.category": "electronics",
+        "content.price": { "min": 10, "max": 100 }
+      },
+      "exclude": {
+        "status": "inactive"
+      },
+      "page": 1,
+      "records": 20,
+      "sort_by": "content.price",
+      "sort_order": "asc"
+    }
   }'
 ```
 
-**Request Parameters:**
+**Request Parameters** (nested inside `"search": { ... }`)**:**
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `include` | object | No | Fields and values to include in results |
@@ -124,12 +135,14 @@ curl -X POST "$BLOCKS_API_URL/entities/search" \
 ```bash
 curl -X POST "$BLOCKS_API_URL/entities/search" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "include": {
-      "entity_type": "article",
-      "content.status": "published"
+    "search": {
+      "include": {
+        "entity_type": "article",
+        "content.status": "published"
+      }
     }
   }'
 ```
@@ -138,12 +151,14 @@ curl -X POST "$BLOCKS_API_URL/entities/search" \
 ```bash
 curl -X POST "$BLOCKS_API_URL/entities/search" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "include": {
-      "content.author.name": "John Doe",
-      "content.tags": ["technology", "ai"]
+    "search": {
+      "include": {
+        "content.author.name": "John Doe",
+        "content.tags": ["technology", "ai"]
+      }
     }
   }'
 ```
@@ -152,16 +167,18 @@ curl -X POST "$BLOCKS_API_URL/entities/search" \
 ```bash
 curl -X POST "$BLOCKS_API_URL/entities/search" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "include": {
-      "entity_type": "product",
-      "content.price": { "min": 10, "max": 50 },
-      "content.rating": { "min": 4 }
-    },
-    "sort_by": "content.rating",
-    "sort_order": "desc"
+    "search": {
+      "include": {
+        "entity_type": "product",
+        "content.price": { "min": 10, "max": 50 },
+        "content.rating": { "min": 4 }
+      },
+      "sort_by": "content.rating",
+      "sort_order": "desc"
+    }
   }'
 ```
 
@@ -169,15 +186,17 @@ curl -X POST "$BLOCKS_API_URL/entities/search" \
 ```bash
 curl -X POST "$BLOCKS_API_URL/entities/search" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "ai_search": true,
-    "ai_query": "sustainable eco-friendly products for home office",
-    "include": {
-      "entity_type": "product"
-    },
-    "records": 10
+    "search": {
+      "ai_search": true,
+      "ai_query": "sustainable eco-friendly products for home office",
+      "include": {
+        "entity_type": "product"
+      },
+      "records": 10
+    }
   }'
 ```
 
@@ -185,19 +204,21 @@ curl -X POST "$BLOCKS_API_URL/entities/search" \
 ```bash
 curl -X POST "$BLOCKS_API_URL/entities/search" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "include": {
-      "entity_type": "product",
-      "content.category": "electronics"
-    },
-    "exclude": {
-      "content.brand": "generic",
-      "status": "inactive"
-    },
-    "page": 1,
-    "records": 25
+    "search": {
+      "include": {
+        "entity_type": "product",
+        "content.category": "electronics"
+      },
+      "exclude": {
+        "content.brand": "generic",
+        "status": "inactive"
+      },
+      "page": 1,
+      "records": 25
+    }
   }'
 ```
 

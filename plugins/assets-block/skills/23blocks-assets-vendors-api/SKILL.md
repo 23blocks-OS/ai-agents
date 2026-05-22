@@ -16,12 +16,21 @@ Complete API reference for 23blocks Assets Block vendor management.
 | Variable | Description | Example |
 |----------|-------------|---------|
 | `BLOCKS_API_URL` | Assets API base URL | `https://assets.api.us.23blocks.com` |
-| `BLOCKS_AUTH_TOKEN` | Bearer token (human or AID) | `eyJhbGciOiJSUzI1NiJ9...` |
-| `BLOCKS_API_KEY` | API key (AppId) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
+| `BLOCKS_AUTH_TOKEN` | Bearer token — your identity & scopes (from login or AID token exchange) | `eyJhbGciOiJSUzI1NiJ9...` |
+| `BLOCKS_API_KEY` | Tenant routing key (X-API-KEY header) — static, from company config | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
 
 ## Authentication
 
-Two methods are supported. The Bearer token works the same either way.
+**These two credentials serve different purposes and come from different sources:**
+
+| Credential | Purpose | Source | Changes? |
+|------------|---------|--------|----------|
+| `BLOCKS_API_KEY` | **Tenant routing** — identifies which company/app | Company config (static `pk_live_sh_...` key) | No — same key for all blocks |
+| `BLOCKS_AUTH_TOKEN` | **Identity & authorization** — who you are + what you can do | Login (`/auth/sign_in`), AID token exchange, or human-provided | Yes — expires, must be refreshed |
+
+> The API key used during AID registration is NOT the same as `BLOCKS_API_KEY`. The registration key authenticates the agent with the Auth API; `BLOCKS_API_KEY` routes requests to the correct tenant across all blocks.
+
+Two methods to obtain the Bearer token:
 
 **Method 1: Agent Identity (AID)** -- For AI agents with AMP identity:
 ```bash
@@ -50,7 +59,7 @@ Lists all vendors.
 ```bash
 curl -X GET "$BLOCKS_API_URL/vendors" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -88,7 +97,7 @@ Retrieves a single vendor by unique ID.
 ```bash
 curl -X GET "$BLOCKS_API_URL/vendors/vendor-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -127,10 +136,11 @@ Creates a new vendor.
 ```bash
 curl -X POST "$BLOCKS_API_URL/vendors" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "vendor": {
+      "code": "HP",
       "name": "HP Inc.",
       "description": "Printers and computing hardware",
       "contact_name": "Bob Jones",
@@ -145,6 +155,7 @@ curl -X POST "$BLOCKS_API_URL/vendors" \
 **Request Parameters:**
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
+| `code` | string | Yes | Vendor code (unique identifier) |
 | `name` | string | Yes | Vendor name |
 | `description` | string | No | Vendor description |
 | `contact_name` | string | No | Primary contact name |
@@ -185,7 +196,7 @@ Updates an existing vendor.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/vendors/vendor-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "vendor": {
@@ -226,10 +237,10 @@ Deletes a vendor.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/vendors/vendor-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
-**Response 204:** No content
+**Response 204:** Returns `{}` with status 204
 
 **Errors:**
 - `404 Not Found` - Vendor not found
@@ -242,6 +253,7 @@ curl -X DELETE "$BLOCKS_API_URL/vendors/vendor-uuid-123" \
 | Field | Type | Description |
 |-------|------|-------------|
 | `unique_id` | uuid | Unique identifier |
+| `code` | string | Vendor code (unique identifier) |
 | `name` | string | Vendor name |
 | `description` | string | Vendor description |
 | `contact_name` | string | Primary contact name |

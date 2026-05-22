@@ -14,7 +14,7 @@ Lists all media assets with pagination.
 ```bash
 curl -X GET "$BLOCKS_API_URL/media?page=1&records=20" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Query Parameters:**
@@ -60,7 +60,7 @@ Retrieves a single media asset by unique ID.
 ```bash
 curl -X GET "$BLOCKS_API_URL/media/media-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -96,7 +96,7 @@ Creates a new media asset.
 ```bash
 curl -X POST "$BLOCKS_API_URL/media" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "media": {
@@ -149,7 +149,7 @@ Updates an existing media asset.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/media/media-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "media": {
@@ -188,7 +188,7 @@ Deletes a media asset.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/media/media-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -208,7 +208,7 @@ Lists all campaign media assignments with pagination.
 ```bash
 curl -X GET "$BLOCKS_API_URL/campaign_media?page=1&records=20" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Query Parameters:**
@@ -260,7 +260,7 @@ Assigns a media asset to a campaign.
 ```bash
 curl -X POST "$BLOCKS_API_URL/campaign_media" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "campaign_media": {
@@ -308,7 +308,7 @@ Removes a media assignment from a campaign.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/campaign_media/cm-uuid-456" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -325,7 +325,7 @@ Retrieves performance results for media across campaigns.
 ```bash
 curl -X GET "$BLOCKS_API_URL/campaign_media_results?campaign_id=campaign-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Query Parameters:**

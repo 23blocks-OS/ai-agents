@@ -16,12 +16,21 @@ Complete API reference for 23blocks Assets Block event management on assets with
 | Variable | Description | Example |
 |----------|-------------|---------|
 | `BLOCKS_API_URL` | Assets API base URL | `https://assets.api.us.23blocks.com` |
-| `BLOCKS_AUTH_TOKEN` | Bearer token (human or AID) | `eyJhbGciOiJSUzI1NiJ9...` |
-| `BLOCKS_API_KEY` | API key (AppId) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
+| `BLOCKS_AUTH_TOKEN` | Bearer token — your identity & scopes (from login or AID token exchange) | `eyJhbGciOiJSUzI1NiJ9...` |
+| `BLOCKS_API_KEY` | Tenant routing key (X-API-KEY header) — static, from company config | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
 
 ## Authentication
 
-Two methods are supported. The Bearer token works the same either way.
+**These two credentials serve different purposes and come from different sources:**
+
+| Credential | Purpose | Source | Changes? |
+|------------|---------|--------|----------|
+| `BLOCKS_API_KEY` | **Tenant routing** — identifies which company/app | Company config (static `pk_live_sh_...` key) | No — same key for all blocks |
+| `BLOCKS_AUTH_TOKEN` | **Identity & authorization** — who you are + what you can do | Login (`/auth/sign_in`), AID token exchange, or human-provided | Yes — expires, must be refreshed |
+
+> The API key used during AID registration is NOT the same as `BLOCKS_API_KEY`. The registration key authenticates the agent with the Auth API; `BLOCKS_API_KEY` routes requests to the correct tenant across all blocks.
+
+Two methods to obtain the Bearer token:
 
 **Method 1: Agent Identity (AID)** -- For AI agents with AMP identity:
 ```bash
@@ -50,7 +59,7 @@ Lists all events for an asset.
 ```bash
 curl -X GET "$BLOCKS_API_URL/assets/asset-uuid-123/events" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -105,7 +114,7 @@ Retrieves a single event by unique ID.
 ```bash
 curl -X GET "$BLOCKS_API_URL/assets/asset-uuid-123/events/event-uuid-001" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -152,7 +161,7 @@ Creates a new event on an asset.
 ```bash
 curl -X POST "$BLOCKS_API_URL/assets/asset-uuid-123/events" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "event": {
@@ -209,7 +218,7 @@ Updates an existing event.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/assets/asset-uuid-123/events/event-uuid-001" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "event": {
@@ -253,7 +262,7 @@ Generates a presigned URL for uploading an event image.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/assets/asset-uuid-123/events/event-uuid-001/presign" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "file": {
@@ -269,14 +278,12 @@ curl -X PUT "$BLOCKS_API_URL/assets/asset-uuid-123/events/event-uuid-001/presign
 | `filename` | string | Yes | Name of the file |
 | `content_type` | string | Yes | MIME type |
 
-**Response 200:**
+**Response 200 (plain JSON, not JSON:API):**
 ```json
 {
-  "data": {
-    "presigned_url": "https://storage.example.com/upload?signature=xyz789",
-    "file_unique_id": "file-uuid-003",
-    "expires_at": "2025-03-15T11:30:00Z"
-  }
+  "presigned_url": "https://storage.example.com/upload?signature=xyz789",
+  "file_unique_id": "file-uuid-003",
+  "expires_at": "2025-03-15T11:30:00Z"
 }
 ```
 
@@ -290,7 +297,7 @@ Confirms an event image upload after using the presigned URL.
 ```bash
 curl -X POST "$BLOCKS_API_URL/assets/asset-uuid-123/events/event-uuid-001/images" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "file": {
@@ -299,20 +306,14 @@ curl -X POST "$BLOCKS_API_URL/assets/asset-uuid-123/events/event-uuid-001/images
   }'
 ```
 
-**Response 200:**
+**Response 200 (plain JSON, not JSON:API):**
 ```json
 {
-  "data": {
-    "id": "file-uuid-003",
-    "type": "image",
-    "attributes": {
-      "unique_id": "file-uuid-003",
-      "url": "https://storage.example.com/events/inspection-photo.jpg",
-      "filename": "inspection-photo.jpg",
-      "content_type": "image/jpeg",
-      "created_at": "2025-03-15T10:30:00Z"
-    }
-  }
+  "unique_id": "file-uuid-003",
+  "url": "https://storage.example.com/events/inspection-photo.jpg",
+  "filename": "inspection-photo.jpg",
+  "content_type": "image/jpeg",
+  "created_at": "2025-03-15T10:30:00Z"
 }
 ```
 
@@ -326,10 +327,10 @@ Deletes an event image.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/assets/asset-uuid-123/events/event-uuid-001/images/file-uuid-003" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
-**Response 204:** No content
+**Response 204:** Returns `{}` with status 204
 
 ---
 

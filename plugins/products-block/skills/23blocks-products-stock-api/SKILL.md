@@ -16,12 +16,21 @@ Complete API reference for 23blocks product stock and inventory management.
 | Variable | Description | Example |
 |----------|-------------|---------|
 | `BLOCKS_API_URL` | Products API base URL | `https://products.api.us.23blocks.com` |
-| `BLOCKS_AUTH_TOKEN` | Bearer token (human or AID) | `eyJhbGciOiJSUzI1NiJ9...` |
-| `BLOCKS_API_KEY` | API key (AppId) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
+| `BLOCKS_AUTH_TOKEN` | Bearer token — your identity & scopes (from login or AID token exchange) | `eyJhbGciOiJSUzI1NiJ9...` |
+| `BLOCKS_API_KEY` | Tenant routing key (X-API-KEY header) — static, from company config | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
 
 ## Authentication
 
-Two methods are supported. The Bearer token works the same either way.
+**These two credentials serve different purposes and come from different sources:**
+
+| Credential | Purpose | Source | Changes? |
+|------------|---------|--------|----------|
+| `BLOCKS_API_KEY` | **Tenant routing** — identifies which company/app | Company config (static `pk_live_sh_...` key) | No — same key for all blocks |
+| `BLOCKS_AUTH_TOKEN` | **Identity & authorization** — who you are + what you can do | Login (`/auth/sign_in`), AID token exchange, or human-provided | Yes — expires, must be refreshed |
+
+> The API key used during AID registration is NOT the same as `BLOCKS_API_KEY`. The registration key authenticates the agent with the Auth API; `BLOCKS_API_KEY` routes requests to the correct tenant across all blocks.
+
+Two methods to obtain the Bearer token:
 
 **Method 1: Agent Identity (AID)** -- For AI agents with AMP identity:
 ```bash
@@ -50,7 +59,7 @@ Retrieves stock entries for a product.
 ```bash
 curl -X GET "$BLOCKS_API_URL/products/product-uuid-123/stock" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -59,7 +68,7 @@ curl -X GET "$BLOCKS_API_URL/products/product-uuid-123/stock" \
   "data": [
     {
       "id": "stock-uuid-123",
-      "type": "stock",
+      "type": "Stock",
       "attributes": {
         "unique_id": "stock-uuid-123",
         "product_unique_id": "product-uuid-123",
@@ -88,7 +97,7 @@ Creates a new stock entry for a product.
 ```bash
 curl -X POST "$BLOCKS_API_URL/products/product-uuid-123/stock" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "stock": {
@@ -113,7 +122,7 @@ curl -X POST "$BLOCKS_API_URL/products/product-uuid-123/stock" \
 {
   "data": {
     "id": "new-stock-uuid",
-    "type": "stock",
+    "type": "Stock",
     "attributes": {
       "unique_id": "new-stock-uuid",
       "product_unique_id": "product-uuid-123",
@@ -140,7 +149,7 @@ Updates a stock entry.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/products/product-uuid-123/stock/stock-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "stock": {
@@ -164,7 +173,7 @@ Updates stock for a specific product in a vendor's warehouse.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/vendors/vendor-uuid-001/warehouses/warehouse-uuid-001/products/product-uuid-123/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "stock": {
@@ -185,7 +194,7 @@ curl -X PUT "$BLOCKS_API_URL/vendors/vendor-uuid-001/warehouses/warehouse-uuid-0
 {
   "data": {
     "id": "vendor-stock-uuid",
-    "type": "vendor_stock",
+    "type": "VendorStock",
     "attributes": {
       "vendor_unique_id": "vendor-uuid-001",
       "warehouse_unique_id": "warehouse-uuid-001",
@@ -208,7 +217,7 @@ Updates stock for a product variation in a vendor's warehouse.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/vendors/vendor-uuid-001/warehouses/warehouse-uuid-001/products/product-uuid-123/variations/variation-uuid-001" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "stock": {
@@ -223,7 +232,7 @@ curl -X PUT "$BLOCKS_API_URL/vendors/vendor-uuid-001/warehouses/warehouse-uuid-0
 {
   "data": {
     "id": "variation-stock-uuid",
-    "type": "variation_stock",
+    "type": "VariationStock",
     "attributes": {
       "variation_unique_id": "variation-uuid-001",
       "quantity": 30,
@@ -246,7 +255,7 @@ Searches stock across products and warehouses.
 ```bash
 curl -X POST "$BLOCKS_API_URL/stocks/search" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "search": {
@@ -270,7 +279,7 @@ curl -X POST "$BLOCKS_API_URL/stocks/search" \
   "data": [
     {
       "id": "stock-uuid-456",
-      "type": "stock",
+      "type": "Stock",
       "attributes": {
         "unique_id": "stock-uuid-456",
         "product_unique_id": "product-uuid-789",
@@ -297,7 +306,7 @@ Evaluates stock availability and provides a stock assessment.
 ```bash
 curl -X POST "$BLOCKS_API_URL/stocks/stock-uuid-123/eval" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "eval": {
@@ -310,7 +319,7 @@ curl -X POST "$BLOCKS_API_URL/stocks/stock-uuid-123/eval" \
 ```json
 {
   "data": {
-    "type": "stock_evaluation",
+    "type": "StockEvaluation",
     "attributes": {
       "stock_unique_id": "stock-uuid-123",
       "available": 140,

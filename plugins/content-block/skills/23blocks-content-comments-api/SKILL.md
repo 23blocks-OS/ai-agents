@@ -16,12 +16,21 @@ Complete API reference for 23blocks comment management with threading and social
 | Variable | Description | Example |
 |----------|-------------|---------|
 | `BLOCKS_API_URL` | Content API base URL | `https://content.api.us.23blocks.com` |
-| `BLOCKS_AUTH_TOKEN` | Bearer token (human or AID) | `eyJhbGciOiJSUzI1NiJ9...` |
-| `BLOCKS_API_KEY` | API key (AppId) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
+| `BLOCKS_AUTH_TOKEN` | Bearer token — your identity & scopes (from login or AID token exchange) | `eyJhbGciOiJSUzI1NiJ9...` |
+| `BLOCKS_API_KEY` | Tenant routing key (X-API-KEY header) — static, from company config | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
 
 ## Authentication
 
-Two methods are supported. The Bearer token works the same either way.
+**These two credentials serve different purposes and come from different sources:**
+
+| Credential | Purpose | Source | Changes? |
+|------------|---------|--------|----------|
+| `BLOCKS_API_KEY` | **Tenant routing** — identifies which company/app | Company config (static `pk_live_sh_...` key) | No — same key for all blocks |
+| `BLOCKS_AUTH_TOKEN` | **Identity & authorization** — who you are + what you can do | Login (`/auth/sign_in`), AID token exchange, or human-provided | Yes — expires, must be refreshed |
+
+> The API key used during AID registration is NOT the same as `BLOCKS_API_KEY`. The registration key authenticates the agent with the Auth API; `BLOCKS_API_KEY` routes requests to the correct tenant across all blocks.
+
+Two methods to obtain the Bearer token:
 
 **Method 1: Agent Identity (AID)** -- For AI agents with AMP identity:
 ```bash
@@ -43,21 +52,21 @@ export BLOCKS_API_KEY="<your-api-key>"
 
 > Full endpoint documentation: [ENDPOINTS.md](ENDPOINTS.md)
 
-| Method | Path | Description |
-|--------|------|-------------|
-| GET | `/posts/:post_id/comments` | List comments for a post |
-| GET | `/posts/:post_id/comments/:unique_id` | Get a single comment |
-| POST | `/posts/:post_id/comments` | Create a comment |
-| PUT | `/posts/:post_id/comments/:unique_id` | Update a comment |
-| DELETE | `/posts/:post_id/comments/:unique_id` | Delete a comment |
-| POST | `/posts/:post_id/comments/:unique_id/reply` | Reply to a comment |
-| PUT | `/posts/:post_id/comments/:unique_id/like` | Like a comment |
-| PUT | `/posts/:post_id/comments/:unique_id/dislike` | Dislike a comment |
-| PUT | `/posts/:post_id/comments/:unique_id/follow` | Follow a comment |
-| DELETE | `/posts/:post_id/comments/:unique_id/unfollow` | Unfollow a comment |
-| PUT | `/posts/:post_id/comments/:unique_id/save` | Save a comment |
-| DELETE | `/posts/:post_id/comments/:unique_id/unsave` | Unsave a comment |
-| DELETE | `/posts/:post_id/comments/:unique_id/moderate` | Moderate (remove) a comment |
+| Method | Path | Auth | Description |
+|--------|------|------|-------------|
+| GET | `/posts/:post_id/comments` | Public | List comments for a post |
+| GET | `/posts/:post_id/comments/:unique_id` | Bearer | Get a single comment |
+| POST | `/posts/:post_id/comments` | Bearer | Create a comment |
+| PUT | `/posts/:post_id/comments/:unique_id` | Bearer | Update a comment |
+| DELETE | `/posts/:post_id/comments/:unique_id` | Bearer | Delete a comment |
+| POST | `/posts/:post_id/comments/:unique_id/reply` | Bearer | Reply to a comment |
+| PUT | `/posts/:post_id/comments/:unique_id/like` | Bearer | Like a comment |
+| PUT | `/posts/:post_id/comments/:unique_id/dislike` | Bearer | Dislike a comment |
+| PUT | `/posts/:post_id/comments/:unique_id/follow` | Bearer | Follow a comment |
+| DELETE | `/posts/:post_id/comments/:unique_id/unfollow` | Bearer | Unfollow a comment |
+| PUT | `/posts/:post_id/comments/:unique_id/save` | Bearer | Save a comment |
+| DELETE | `/posts/:post_id/comments/:unique_id/unsave` | Bearer | Unsave a comment |
+| DELETE | `/posts/:post_id/comments/:unique_id/moderate` | Bearer | Moderate (remove) a comment |
 
 ---
 

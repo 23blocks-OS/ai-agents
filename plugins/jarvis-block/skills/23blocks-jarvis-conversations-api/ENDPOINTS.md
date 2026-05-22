@@ -12,7 +12,7 @@ Lists all standalone conversations with pagination.
 ```bash
 curl -X GET "$BLOCKS_API_URL/conversations?page=1&records=20" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Query Parameters:**
@@ -55,7 +55,7 @@ Retrieves a single conversation by unique ID.
 ```bash
 curl -X GET "$BLOCKS_API_URL/conversations/conv-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -89,7 +89,7 @@ Creates a new standalone conversation.
 ```bash
 curl -X POST "$BLOCKS_API_URL/conversations" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "conversation": {
@@ -130,7 +130,7 @@ Updates a conversation.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/conversations/conv-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "conversation": {
@@ -164,7 +164,7 @@ Deletes a conversation.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/conversations/conv-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -181,7 +181,7 @@ Lists messages in a conversation.
 ```bash
 curl -X GET "$BLOCKS_API_URL/conversations/conv-uuid-123/messages?page=1&records=50" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -222,7 +222,7 @@ Sends a message in a conversation.
 ```bash
 curl -X POST "$BLOCKS_API_URL/conversations/conv-uuid-123/messages" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "message": {
@@ -266,7 +266,7 @@ Queries the conversation history using AI.
 ```bash
 curl -X POST "$BLOCKS_API_URL/conversations/conv-uuid-123/query" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "query": "What decisions were made about the timeline?"
@@ -306,7 +306,7 @@ Renames a conversation.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/conversations/conv-uuid-123/rename" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "title": "Q1 Project Planning"
@@ -338,7 +338,7 @@ Archives a conversation.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/conversations/conv-uuid-123/archive" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -366,7 +366,7 @@ Restores an archived conversation.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/conversations/conv-uuid-123/restore" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**

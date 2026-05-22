@@ -10,16 +10,16 @@ Lists all content tests.
 
 **Request:**
 ```bash
-curl -X GET "$BLOCKS_API_URL/tests?page=1&records=20" \
+curl -X GET "$BLOCKS_API_URL/tests?page=1&size=20" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Query Parameters:**
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `page` | integer | No | Page number (default: 1) |
-| `records` | integer | No | Items per page (default: 15) |
+| `size` | integer | No | Items per page (default: 15, max: 100) |
 
 **Response 200:**
 ```json
@@ -41,9 +41,8 @@ curl -X GET "$BLOCKS_API_URL/tests?page=1&records=20" \
     }
   ],
   "meta": {
-    "total_count": 15,
-    "page": 1,
-    "records": 20
+    "totalPages": 1,
+    "totalRecords": 15
   }
 }
 ```
@@ -58,7 +57,7 @@ Retrieves a single test with its questions.
 ```bash
 curl -X GET "$BLOCKS_API_URL/tests/test-uuid-001" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -102,7 +101,7 @@ Creates a new content test.
 ```bash
 curl -X POST "$BLOCKS_API_URL/tests/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "test": {
@@ -160,7 +159,7 @@ Updates an existing test.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/tests/test-uuid-001" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "test": {
@@ -197,7 +196,7 @@ Retrieves a specific question from a test.
 ```bash
 curl -X GET "$BLOCKS_API_URL/tests/test-uuid-001/questions/question-uuid-001" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -236,7 +235,7 @@ Creates a new question for a test.
 ```bash
 curl -X POST "$BLOCKS_API_URL/tests/test-uuid-001/questions" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "question": {
@@ -281,7 +280,7 @@ Updates an existing question.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/tests/test-uuid-001/questions/question-uuid-001" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "question": {
@@ -316,7 +315,7 @@ Lists all available options across test questions.
 ```bash
 curl -X GET "$BLOCKS_API_URL/tests/questions/options" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -346,7 +345,7 @@ Creates a new answer option.
 ```bash
 curl -X POST "$BLOCKS_API_URL/tests/options" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "option": {
@@ -385,7 +384,7 @@ Updates an existing option.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/tests/test-uuid-001/options/option-uuid-001" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "option": {
@@ -418,7 +417,7 @@ Adds an option to a question.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/tests/test-uuid-001/questions/question-uuid-001/options" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "option_unique_id": "option-uuid-001"
@@ -447,7 +446,7 @@ Retrieves results for a test across all students.
 ```bash
 curl -X GET "$BLOCKS_API_URL/test/test-uuid-001/results" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -470,7 +469,8 @@ curl -X GET "$BLOCKS_API_URL/test/test-uuid-001/results" \
     }
   ],
   "meta": {
-    "total_count": 28,
+    "totalPages": 2,
+    "totalRecords": 28,
     "average_score": 72.5,
     "pass_rate": 0.82
   }
@@ -487,7 +487,7 @@ Retrieves the solution (correct answers) for a test.
 ```bash
 curl -X GET "$BLOCKS_API_URL/test/test-uuid-001/solution" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -524,7 +524,7 @@ Retrieves all test instances for a student.
 ```bash
 curl -X GET "$BLOCKS_API_URL/users/student-uuid-123/tests" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -560,7 +560,7 @@ Starts a test for a student.
 ```bash
 curl -X POST "$BLOCKS_API_URL/users/student-uuid-123/test/test-uuid-001" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 201:**
@@ -590,7 +590,7 @@ Submits a response to a test question.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/users/student-uuid-123/test/instance-uuid-201" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "response": {
@@ -631,7 +631,7 @@ Finishes a student's test.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/users/student-uuid-123/test/instance-uuid-201/finish" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**

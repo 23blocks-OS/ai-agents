@@ -14,7 +14,7 @@ Lists all templates with pagination.
 ```bash
 curl -X GET "$BLOCKS_API_URL/templates?page=1&records=20" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Query Parameters:**
@@ -61,7 +61,7 @@ Retrieves a single template by unique ID.
 ```bash
 curl -X GET "$BLOCKS_API_URL/templates/template-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -105,7 +105,7 @@ Creates a new template.
 ```bash
 curl -X POST "$BLOCKS_API_URL/templates" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "template": {
@@ -159,7 +159,7 @@ Updates an existing template.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/templates/template-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "template": {
@@ -200,7 +200,7 @@ Deletes a template.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/templates/template-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -220,7 +220,7 @@ Lists all template details with pagination.
 ```bash
 curl -X GET "$BLOCKS_API_URL/template_details?template_id=template-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Query Parameters:**
@@ -265,7 +265,7 @@ Creates a new template detail section.
 ```bash
 curl -X POST "$BLOCKS_API_URL/template_details" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "template_detail": {
@@ -317,7 +317,7 @@ Updates an existing template detail.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/template_details/detail-uuid-1" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "template_detail": {
@@ -356,7 +356,7 @@ Deletes a template detail.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/template_details/detail-uuid-1" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content

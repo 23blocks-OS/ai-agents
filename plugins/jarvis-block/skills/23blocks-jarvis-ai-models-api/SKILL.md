@@ -16,12 +16,21 @@ Complete API reference for 23blocks Jarvis AI model and LLM provider management.
 | Variable | Description | Example |
 |----------|-------------|---------|
 | `BLOCKS_API_URL` | Jarvis API base URL | `https://jarvis.api.us.23blocks.com` |
-| `BLOCKS_AUTH_TOKEN` | Bearer token (human or AID) | `eyJhbGciOiJSUzI1NiJ9...` |
-| `BLOCKS_API_KEY` | API key (AppId) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
+| `BLOCKS_AUTH_TOKEN` | Bearer token — your identity & scopes (from login or AID token exchange) | `eyJhbGciOiJSUzI1NiJ9...` |
+| `BLOCKS_API_KEY` | Tenant routing key (X-API-KEY header) — static, from company config | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
 
 ## Authentication
 
-Two methods are supported. The Bearer token works the same either way.
+**These two credentials serve different purposes and come from different sources:**
+
+| Credential | Purpose | Source | Changes? |
+|------------|---------|--------|----------|
+| `BLOCKS_API_KEY` | **Tenant routing** — identifies which company/app | Company config (static `pk_live_sh_...` key) | No — same key for all blocks |
+| `BLOCKS_AUTH_TOKEN` | **Identity & authorization** — who you are + what you can do | Login (`/auth/sign_in`), AID token exchange, or human-provided | Yes — expires, must be refreshed |
+
+> The API key used during AID registration is NOT the same as `BLOCKS_API_KEY`. The registration key authenticates the agent with the Auth API; `BLOCKS_API_KEY` routes requests to the correct tenant across all blocks.
+
+Two methods to obtain the Bearer token:
 
 **Method 1: Agent Identity (AID)** -- For AI agents with AMP identity:
 ```bash
@@ -38,6 +47,23 @@ export BLOCKS_AUTH_TOKEN="<your-bearer-token>"
 export BLOCKS_API_KEY="<your-api-key>"
 ```
 
+---
+
+## Prerequisites
+
+**User identity must be registered** before calling any endpoint in this skill. Without registration, all requests return `404` with code `usr-not-registered`.
+
+```bash
+curl -X POST "$BLOCKS_API_URL/identities/$USER_UNIQUE_ID/register" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{ "name": "Your Name", "email": "you@example.com" }'
+```
+
+> Self-registration (your own JWT) requires no special scope. Registering other users requires `identities:write`.
+
+---
 
 ## Endpoints
 
@@ -86,7 +112,7 @@ export BLOCKS_API_KEY="<your-api-key>"
 |-------|------|-------------|
 | `unique_id` | uuid | Unique identifier |
 | `name` | string | Provider name |
-| `vendor` | string | Vendor: `openai`, `anthropic`, `google`, `mistral` (alias: `mistralai`), `perplexity` |
+| `vendor` | string | Vendor: `openai`, `anthropic`, `google`, `mistral` (alias: `mistralai`), `perplexity`, `openai_compatible`, `custom` |
 | `api_endpoint` | string | API endpoint URL |
 | `status` | enum | active, inactive |
 | `models_count` | integer | Number of configured models |
@@ -97,13 +123,16 @@ export BLOCKS_API_KEY="<your-api-key>"
 
 ## Supported Providers
 
-| Vendor | Aliases | Base URL | Default Model | Streaming |
-|--------|---------|----------|---------------|-----------|
-| `openai` | — | `https://api.openai.com/v1` | `gpt-4` | Yes |
-| `anthropic` | — | `https://api.anthropic.com` | `claude-sonnet-4-5-20241022` | Yes |
-| `google` | — | `https://generativelanguage.googleapis.com` | `gemini-pro` | Yes |
-| `mistral` | `mistralai` | `https://api.mistral.ai` | `mistral-small-latest` | Yes |
+| Vendor | Accepted Aliases (any case) | Base URL | Default Model | Streaming |
+|--------|------------------------------|----------|---------------|-----------|
+| `openai` | `gpt`, `openai-gpt`, `openai-gpt4` | `https://api.openai.com/v1` | `gpt-4` | Yes |
+| `anthropic` | `claude` | `https://api.anthropic.com` | `claude-sonnet-4-5-20241022` | Yes |
+| `google` | `gemini`, `google-gemini`, `google-ai` | `https://generativelanguage.googleapis.com` | `gemini-pro` | Yes |
+| `mistral` | `mistralai`, `mistral-ai` | `https://api.mistral.ai` | `mistral-small-latest` | Yes |
 | `perplexity` | — | `https://api.perplexity.ai` | `pplx-7b-online` | Yes |
+| `openai_compatible` | `openai-compatible`, `custom` | Custom | Varies | Yes |
+
+> Provider names are auto-normalized on CompanyKey creation. All aliases resolve to their canonical uppercase form (e.g. `claude` → `ANTHROPIC`, `gpt` → `OPENAI`).
 
 ### Mistral Models
 

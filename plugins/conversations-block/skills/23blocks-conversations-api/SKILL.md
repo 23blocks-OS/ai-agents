@@ -16,12 +16,21 @@ Create and manage conversations between users. Supports metadata management, arc
 | Variable | Description | Example |
 |----------|-------------|---------|
 | `BLOCKS_API_URL` | Conversations API base URL | `https://realtime.api.us.23blocks.com` |
-| `BLOCKS_AUTH_TOKEN` | Bearer token (human or AID) | `eyJhbGciOiJSUzI1NiJ9...` |
-| `BLOCKS_API_KEY` | API key (AppId) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
+| `BLOCKS_AUTH_TOKEN` | Bearer token — your identity & scopes (from login or AID token exchange) | `eyJhbGciOiJSUzI1NiJ9...` |
+| `BLOCKS_API_KEY` | Tenant routing key (X-API-KEY header) — static, from company config | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
 
 ## Authentication
 
-Two methods are supported. The Bearer token works the same either way.
+**These two credentials serve different purposes and come from different sources:**
+
+| Credential | Purpose | Source | Changes? |
+|------------|---------|--------|----------|
+| `BLOCKS_API_KEY` | **Tenant routing** — identifies which company/app | Company config (static `pk_live_sh_...` key) | No — same key for all blocks |
+| `BLOCKS_AUTH_TOKEN` | **Identity & authorization** — who you are + what you can do | Login (`/auth/sign_in`), AID token exchange, or human-provided | Yes — expires, must be refreshed |
+
+> The API key used during AID registration is NOT the same as `BLOCKS_API_KEY`. The registration key authenticates the agent with the Auth API; `BLOCKS_API_KEY` routes requests to the correct tenant across all blocks.
+
+Two methods to obtain the Bearer token:
 
 **Method 1: Agent Identity (AID)** -- For AI agents with AMP identity:
 ```bash
@@ -146,7 +155,7 @@ Subscribe to real-time notifications when a user receives new conversations.
 
 > **Read status is now per-user via read horizon.** The conversation-level `unread_count` is now computed per-user using individual `MessageReadReceipt` records and a `last_read_at` read horizon on `context_users`. The old behavior where message `status` changed to `'read'` globally is no longer in effect. See the **23blocks-conversations-read-receipts-api** skill for details.
 
-> **Digest endpoint changed (v1.4).** `POST /conversations/digest` is now `GET /users/:id/conversations/summary`. Response structure changed: `attributes.digest` contains `{ summary, categories, action_items, stats }`, `attributes.content` has raw LLM output, `attributes.meta` includes `validation_status` and `retry_count`.
+> **Digest endpoint changed (v1.4).** `POST /conversations/digest` is now `GET /users/:id/conversations/summary`. Response structure changed: `attributes.digest` contains `{ summary, categories, action_items, stats }`, `attributes.content` has raw LLM output, `attributes.meta` includes `validation_status` and `retry_count`. The `conversations_found` boolean is now always present in digest responses — use it to distinguish "query found no conversations" (`false`) from "Jarvis failed to summarize" (`true` but empty summary).
 
 ## New Features
 
@@ -165,6 +174,8 @@ When a conversation is retrieved via `GET /conversations/:unique_id`, all messag
 ### AI Conversation Summaries (v1.3)
 
 Generate AI-powered summaries via Jarvis integration. Supports incremental processing (only new messages since last summary), custom prompts via `prompt_id`, and batch digest for inbox-level overviews. Rate limited to 1 Jarvis call per 60s per conversation per user.
+
+> **Jarvis Passthrough Auth (v1.4).** The Conversations API no longer looks up per-tenant CompanyKeys for Jarvis. Consumer `Authorization` (Bearer JWT) and `X-API-Key` headers are forwarded directly to Jarvis as-is. The same credentials that authenticate with the Conversations API now authenticate with Jarvis — no separate Jarvis key is needed.
 
 ---
 

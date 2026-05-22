@@ -16,12 +16,21 @@ Complete API reference for 23blocks machine-to-machine (M2M) service token manag
 | Variable | Description | Example |
 |----------|-------------|---------|
 | `BLOCKS_API_URL` | Auth API base URL | `https://auth.api.us.23blocks.com` |
-| `BLOCKS_AUTH_TOKEN` | Bearer token (human or AID) | `eyJhbGciOiJSUzI1NiJ9...` |
-| `BLOCKS_API_KEY` | API key (AppId) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
+| `BLOCKS_AUTH_TOKEN` | Bearer token — your identity & scopes (from login or AID token exchange) | `eyJhbGciOiJSUzI1NiJ9...` |
+| `BLOCKS_API_KEY` | Tenant routing key (X-API-KEY header) — static, from company config | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
 
 ## Authentication
 
-Two methods are supported. The Bearer token works the same either way.
+**These two credentials serve different purposes and come from different sources:**
+
+| Credential | Purpose | Source | Changes? |
+|------------|---------|--------|----------|
+| `BLOCKS_API_KEY` | **Tenant routing** — identifies which company/app | Company config (static `pk_live_sh_...` key) | No — same key for all blocks |
+| `BLOCKS_AUTH_TOKEN` | **Identity & authorization** — who you are + what you can do | Login (`/auth/sign_in`), AID token exchange, or human-provided | Yes — expires, must be refreshed |
+
+> The API key used during AID registration is NOT the same as `BLOCKS_API_KEY`. The registration key authenticates the agent with the Auth API; `BLOCKS_API_KEY` routes requests to the correct tenant across all blocks.
+
+Two methods to obtain the Bearer token:
 
 **Method 1: Agent Identity (AID)** -- For AI agents with AMP identity:
 ```bash
@@ -52,7 +61,7 @@ Creates a new M2M service token. Only human admin JWTs can create tokens (servic
 ```bash
 curl -X POST "$BLOCKS_API_URL/companies/{company_url_id}/service_tokens" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "name": "my-agent-token",
@@ -110,7 +119,7 @@ Lists service tokens for a company with optional filtering and pagination.
 ```bash
 curl -X GET "$BLOCKS_API_URL/companies/{company_url_id}/service_tokens?page=1&per_page=25&status=active&token_category=agent" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Query Parameters:**
@@ -154,7 +163,7 @@ Retrieves a single service token by ID.
 ```bash
 curl -X GET "$BLOCKS_API_URL/companies/{company_url_id}/service_tokens/{unique_id}" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -192,7 +201,7 @@ Revokes a service token, permanently invalidating it.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/companies/{company_url_id}/service_tokens/{unique_id}" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "reason": "Token compromised"
@@ -229,7 +238,7 @@ Atomically revokes the current token and creates a new one with the same configu
 ```bash
 curl -X POST "$BLOCKS_API_URL/companies/{company_url_id}/service_tokens/{unique_id}/regenerate" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 201:**

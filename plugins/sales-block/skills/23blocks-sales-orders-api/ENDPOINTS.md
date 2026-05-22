@@ -14,7 +14,7 @@ Lists all orders with pagination.
 ```bash
 curl -X GET "$BLOCKS_API_URL/orders/?page=1&records=20" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Query Parameters:**
@@ -63,7 +63,7 @@ Retrieves a single order by unique ID.
 ```bash
 curl -X GET "$BLOCKS_API_URL/orders/order-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -111,7 +111,7 @@ Retrieves all payments for an order.
 ```bash
 curl -X GET "$BLOCKS_API_URL/orders/order-uuid-123/payments" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -144,7 +144,7 @@ Creates a new order.
 ```bash
 curl -X POST "$BLOCKS_API_URL/orders/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "order": {
@@ -195,7 +195,7 @@ Updates an existing order.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/orders/order-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "order": {
@@ -234,10 +234,10 @@ Adds line item details to an order.
 ```bash
 curl -X POST "$BLOCKS_API_URL/orders/order-uuid-123/details" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "detail": {
+    "details": {
       "description": "Premium Plan - Annual",
       "quantity": 1,
       "unit_price": 99.99,
@@ -290,7 +290,7 @@ Adds a tip/gratuity to an order.
 ```bash
 curl -X POST "$BLOCKS_API_URL/orders/order-uuid-123/tips/add" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "tip": {
@@ -332,7 +332,7 @@ Sets the payment method for an order.
 ```bash
 curl -X POST "$BLOCKS_API_URL/orders/order-uuid-123/payments/method" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "payment_method": {
@@ -372,7 +372,7 @@ Creates a payment for the order.
 ```bash
 curl -X POST "$BLOCKS_API_URL/orders/order-uuid-123/payments/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "payment": {
@@ -415,7 +415,7 @@ Confirms a pending payment.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/orders/order-uuid-123/payments/payment-uuid-001/confirm" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -445,7 +445,7 @@ Updates the order status.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/orders/order-uuid-123/status" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "order": {
@@ -484,10 +484,10 @@ Updates the status of a specific order detail.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/orders/order-uuid-123/details/detail-uuid-1/status" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "detail": {
+    "details": {
       "status": "processing"
     }
   }'
@@ -520,7 +520,7 @@ Cancels an order.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/orders/order-uuid-123/cancel" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -548,7 +548,7 @@ Processes a refund for an order.
 ```bash
 curl -X POST "$BLOCKS_API_URL/orders/order-uuid-123/refund" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "refund": {
@@ -594,7 +594,7 @@ Updates shipping/logistics information for the order.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/orders/order-uuid-123/logistics" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "logistics": {
@@ -644,7 +644,7 @@ Updates logistics for a specific order detail.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/orders/order-uuid-123/details/detail-uuid-1/logistics" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "logistics": {
@@ -684,7 +684,7 @@ Adds a tax to the order.
 ```bash
 curl -X POST "$BLOCKS_API_URL/orders/order-uuid-123/taxes" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "tax": {
@@ -729,7 +729,7 @@ Updates an existing tax on the order.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/orders/order-uuid-123/taxes/tax-uuid-001" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "tax": {
@@ -766,7 +766,7 @@ Removes a tax from the order.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/orders/order-uuid-123/taxes/tax-uuid-001" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -783,7 +783,7 @@ Lists all orders for a specific user.
 ```bash
 curl -X GET "$BLOCKS_API_URL/users/user-uuid-456/orders?page=1&records=20" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -818,7 +818,7 @@ Retrieves a specific order for a user.
 ```bash
 curl -X GET "$BLOCKS_API_URL/users/user-uuid-456/orders/order-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:** Same format as GET /orders/:unique_id

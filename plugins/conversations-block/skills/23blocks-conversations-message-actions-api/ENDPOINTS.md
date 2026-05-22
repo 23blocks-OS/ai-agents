@@ -13,7 +13,7 @@ Actions are created as part of message creation. Pass an `actions` array when se
 ```bash
 curl -s -X POST "$BLOCKS_API_URL/conversations/conv_def456/messages" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "message": {
@@ -107,7 +107,7 @@ Retrieve all active actions for a message. Paginated.
 ```bash
 curl -s -X GET "$BLOCKS_API_URL/conversations/conv_def456/messages/msg_001/actions?page=1&records=50" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json"
 ```
 
@@ -170,7 +170,7 @@ Retrieve a specific action by unique ID.
 ```bash
 curl -s -X GET "$BLOCKS_API_URL/conversations/conv_def456/messages/msg_001/actions/act_001" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json"
 ```
 
@@ -249,7 +249,7 @@ Update an action's fields, status, payload, or response. Commonly used to record
 ```bash
 curl -s -X PUT "$BLOCKS_API_URL/conversations/conv_def456/messages/msg_001/actions/act_001" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "message_action": {
@@ -312,7 +312,7 @@ Soft-delete an action by setting `enabled: 'false'` and `status: 'deleted'`. Ret
 ```bash
 curl -s -X DELETE "$BLOCKS_API_URL/conversations/conv_def456/messages/msg_001/actions/act_002" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json"
 ```
 

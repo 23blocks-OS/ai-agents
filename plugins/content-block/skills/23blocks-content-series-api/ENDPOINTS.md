@@ -10,11 +10,12 @@ Full endpoint documentation. See [SKILL.md](SKILL.md) for setup, data models, an
 
 Lists all series with pagination.
 
+> **Public endpoint** — requires only `X-API-KEY`. No Bearer token needed.
+
 **Request:**
 ```bash
 curl -X GET "$BLOCKS_API_URL/series?page=1&records=20" \
-  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Query Parameters:**
@@ -76,14 +77,15 @@ curl -X GET "$BLOCKS_API_URL/series?page=1&records=20" \
 
 Query series with advanced filters.
 
+> **Public endpoint** — requires only `X-API-KEY`. No Bearer token needed.
+
 **Request:**
 ```bash
 curl -X POST "$BLOCKS_API_URL/series/query" \
-  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "search": {
+    "query": {
       "visibility": "public",
       "completion_status": "ongoing",
       "search": "climate"
@@ -106,11 +108,12 @@ curl -X POST "$BLOCKS_API_URL/series/query" \
 
 Retrieves a single series by unique ID or slug.
 
+> **Public endpoint** — requires only `X-API-KEY`. No Bearer token needed.
+
 **Request:**
 ```bash
 curl -X GET "$BLOCKS_API_URL/series/series-uuid-123" \
-  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -173,7 +176,7 @@ Creates a new series.
 ```bash
 curl -X POST "$BLOCKS_API_URL/series" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "series": {
@@ -236,7 +239,7 @@ Updates an existing series. Only the series owner or admin can update.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/series/series-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "series": {
@@ -278,7 +281,7 @@ Soft-deletes a series. Only the series owner or admin can delete.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/series/series-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -299,7 +302,7 @@ Toggles like on a series. If already liked, removes the like.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/series/series-uuid-123/like" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -314,7 +317,7 @@ Toggles dislike on a series. If already disliked, removes the dislike.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/series/series-uuid-123/dislike" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -329,7 +332,7 @@ Follows a series to receive updates.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/series/series-uuid-123/follow" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -344,7 +347,7 @@ Unfollows a series.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/series/series-uuid-123/unfollow" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -359,7 +362,7 @@ Saves/bookmarks a series.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/series/series-uuid-123/save" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -374,7 +377,7 @@ Removes series from saved list.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/series/series-uuid-123/unsave" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -391,7 +394,7 @@ Lists all posts in a series, ordered by sequence.
 ```bash
 curl -X GET "$BLOCKS_API_URL/series/series-uuid-123/posts?page=1&records=20" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -436,7 +439,7 @@ Adds a post to the series. Only the series owner or admin can add posts.
 ```bash
 curl -X POST "$BLOCKS_API_URL/series/series-uuid-123/posts/post-uuid-456" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"sequence": 3}'
 ```
@@ -476,7 +479,7 @@ Removes a post from the series. Only the series owner or admin can remove posts.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/series/series-uuid-123/posts/post-uuid-456" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -495,7 +498,7 @@ Reorders posts within the series. Only the series owner or admin can reorder.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/series/series-uuid-123/reorder" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "posts": [

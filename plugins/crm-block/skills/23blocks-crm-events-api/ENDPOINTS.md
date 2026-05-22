@@ -14,7 +14,7 @@ Lists all events with pagination.
 ```bash
 curl -X GET "$BLOCKS_API_URL/events/?page=1&records=20" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Query Parameters:**
@@ -61,7 +61,7 @@ Creates a new event.
 ```bash
 curl -X POST "$BLOCKS_API_URL/events/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "event": {
@@ -117,7 +117,7 @@ Updates an existing event.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/events/event-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "event": {
@@ -156,7 +156,7 @@ Deletes an event.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/events/event-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -176,7 +176,7 @@ Updates contact confirmation status for an event.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/events/event-uuid-123/contacts/confirmation" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "contact_id": "contact-uuid-456",
@@ -207,7 +207,7 @@ Records contact check-in for an event.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/events/event-uuid-123/contacts/checking" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "contact_id": "contact-uuid-456",
@@ -238,7 +238,7 @@ Records contact checkout for an event.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/events/event-uuid-123/contacts/checkout" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "contact_id": "contact-uuid-456",
@@ -269,7 +269,7 @@ Adds or updates notes for a contact at an event.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/events/event-uuid-123/contacts/notes" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "contact_id": "contact-uuid-456",
@@ -302,7 +302,7 @@ Updates employee confirmation status for an event.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/events/event-uuid-123/employees/confirmation" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "employee_id": "user-uuid-789",
@@ -333,7 +333,7 @@ Records employee check-in for an event.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/events/event-uuid-123/employees/checking" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "employee_id": "user-uuid-789",
@@ -358,7 +358,7 @@ Records employee checkout for an event.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/events/event-uuid-123/employees/checkout" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "employee_id": "user-uuid-789",
@@ -385,7 +385,7 @@ Adds or updates admin notes for an event.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/events/event-uuid-123/admin/notes" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "notes": "Venue confirmed. Catering booked for 150 attendees. AV setup at 7am."

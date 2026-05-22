@@ -29,7 +29,7 @@ if [ -z "$BLOCKS_API_URL" ] || [ -z "$BLOCKS_AUTH_TOKEN" ] || [ -z "$BLOCKS_API_
   echo "Please set:"
   echo "  BLOCKS_API_URL     - API base URL (e.g., https://products.api.us.23blocks.com)"
   echo "  BLOCKS_AUTH_TOKEN  - Your authentication token"
-  echo "  BLOCKS_API_KEY     - Your API key (AppId)"
+  echo "  BLOCKS_API_KEY     - Your API key (X-API-KEY header)"
   exit 1
 fi
 echo "All credentials configured"
@@ -40,7 +40,7 @@ echo "All credentials configured"
 |----------|-------------|---------|
 | `BLOCKS_API_URL` | Products API base URL | `https://products.api.us.23blocks.com` |
 | `BLOCKS_AUTH_TOKEN` | Bearer token for authentication | `eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...` |
-| `BLOCKS_API_KEY` | API key (AppId header) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
+| `BLOCKS_API_KEY` | API key (X-API-KEY header) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
 
 **Agent Behavior:**
 - ALWAYS run the pre-flight check before any API operation
@@ -118,7 +118,7 @@ Shopping cart and checkout management:
 | Logs | View cart activity logs |
 | Details | Manage cart detail status transitions |
 | My Carts | Authenticated user cart operations |
-| Visitors | Create visitor sessions |
+| Visitors / Guests | Create guest sessions (POST /visitors is legacy alias for POST /guests/) |
 | Remarketing | Abandoned cart remarketing |
 
 ### Orders
@@ -239,7 +239,7 @@ All authenticated endpoints require:
 ```bash
 curl -X GET "$BLOCKS_API_URL/products" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json"
 ```
 
@@ -351,8 +351,13 @@ curl -X GET "$BLOCKS_API_URL/products" \
 - `PUT /mycarts/:unique_id/cancel` - Cancel my cart
 - `DELETE /mycarts/:unique_id` - Delete my cart
 
-### Visitors & Remarketing
-- `POST /visitors` - Create visitor
+### Guests & Remarketing
+- `POST /guests/` - Create guest (preferred)
+- `GET /guests/:user_unique_id` - Get guest
+- `PUT /guests/:user_unique_id` - Update guest
+- `PUT /guests/:unique_id/convert` - Convert guest to user
+- `POST /guests/:unique_id/auth` - Authenticate guest
+- `POST /visitors` - Create visitor (**legacy alias** for `POST /guests/`)
 - `POST /tools/remarketing/carts/abandoned` - Abandoned carts
 
 ### Orders
@@ -462,7 +467,6 @@ curl -X GET "$BLOCKS_API_URL/products" \
 - `POST /companies/:url_id/keys` - Add API key
 - `DELETE /companies/:url_id/keys/:key_unique_id` - Delete API key
 - `POST /companies/:url_id/exchange` - Add exchange settings
-- `POST /companies/:url_id/access` - Impersonate user
 - `GET /companies/:url_id/storage` - Get storage settings
 - `PUT /companies/:url_id/storage` - Update storage settings
 
@@ -473,7 +477,7 @@ curl -X GET "$BLOCKS_API_URL/products" \
 # 1. Create product
 curl -X POST "$BLOCKS_API_URL/products/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "product": {
@@ -488,14 +492,14 @@ curl -X POST "$BLOCKS_API_URL/products/" \
 # 2. Get presigned URL for image upload
 curl -X PUT "$BLOCKS_API_URL/products/{product_id}/presign" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"file_name": "keyboard.jpg", "content_type": "image/jpeg"}'
 
 # 3. Upload image
 curl -X POST "$BLOCKS_API_URL/products/{product_id}/images" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"image": {"file_url": "https://s3.example.com/keyboard.jpg"}}'
 ```
@@ -505,26 +509,26 @@ curl -X POST "$BLOCKS_API_URL/products/{product_id}/images" \
 # 1. Create cart
 curl -X POST "$BLOCKS_API_URL/carts/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"cart": {"user_unique_id": "user-uuid-123"}}'
 
 # 2. Update cart with products
 curl -X PUT "$BLOCKS_API_URL/carts/user-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"cart": {"products": [{"product_unique_id": "prod-uuid", "quantity": 2}]}}'
 
 # 3. Checkout
 curl -X POST "$BLOCKS_API_URL/carts/user-uuid-123/checkout" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 
 # 4. Place order
 curl -X PUT "$BLOCKS_API_URL/carts/{cart_id}/order" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 ### Manage Stock and Pricing
@@ -532,14 +536,14 @@ curl -X PUT "$BLOCKS_API_URL/carts/{cart_id}/order" \
 # 1. Create stock entry
 curl -X POST "$BLOCKS_API_URL/products/{product_id}/stock" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"stock": {"quantity": 100, "warehouse_unique_id": "wh-uuid"}}'
 
 # 2. Create price
 curl -X POST "$BLOCKS_API_URL/products/{product_id}/prices/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"price": {"amount": 49.99, "currency": "USD", "channel_unique_id": "ch-uuid"}}'
 ```

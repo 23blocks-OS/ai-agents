@@ -34,7 +34,7 @@ Retrieve all conversations for a specific user.
 ```bash
 curl -s -X GET "https://conversations.api.us.23blocks.com/users/usr_abc123/conversations?page=1&per_page=25&status=active&sort=new_messages:desc&has_unread=true" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json"
 ```
 
@@ -98,7 +98,7 @@ Retrieve all group conversations for a specific user.
 ```bash
 curl -s -X GET "https://conversations.api.us.23blocks.com/users/usr_abc123/mygroups/conversations?page=1&per_page=25&search=engineering&sort=created_at:asc" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json"
 ```
 
@@ -161,7 +161,7 @@ Retrieve aggregated per-user unread counts grouped by a dimension. Admin-only en
 ```bash
 curl -s -X GET "https://conversations.api.us.23blocks.com/users/usr_abc123/unread-summary?group_by=reference" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json"
 ```
 
@@ -198,7 +198,7 @@ curl -s -X GET "https://conversations.api.us.23blocks.com/users/usr_abc123/unrea
 ```bash
 curl -s -X GET "https://conversations.api.us.23blocks.com/users/usr_abc123/unread-summary?group_by=payload:project_id" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json"
 ```
 
@@ -244,7 +244,7 @@ curl -s -X GET "https://conversations.api.us.23blocks.com/users/usr_abc123/unrea
 ```bash
 curl -s -X GET "https://conversations.api.us.23blocks.com/users/usr_abc123/unread-summary?custom[project_id]=P1&group_by=payload:role" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json"
 ```
 
@@ -273,7 +273,7 @@ Retrieve details of a specific conversation.
 ```bash
 curl -s -X GET "https://conversations.api.us.23blocks.com/conversations/conv_def456" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json"
 ```
 
@@ -325,7 +325,7 @@ Create a new conversation between participants.
 ```bash
 curl -s -X POST "https://conversations.api.us.23blocks.com/conversations/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "participants": ["usr_abc123", "usr_xyz789"],
@@ -383,7 +383,7 @@ Update the metadata of an existing conversation.
 ```bash
 curl -s -X PUT "https://conversations.api.us.23blocks.com/conversations/conv_def456/meta" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "metadata": {
@@ -431,7 +431,7 @@ Archive a conversation to remove it from the active list.
 ```bash
 curl -s -X PUT "https://conversations.api.us.23blocks.com/conversations/conv_def456/archive" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json"
 ```
 
@@ -470,7 +470,7 @@ Restore an archived conversation back to active status.
 ```bash
 curl -s -X PUT "https://conversations.api.us.23blocks.com/conversations/conv_def456/restore" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json"
 ```
 
@@ -515,7 +515,7 @@ Extend a conversation with additional custom data.
 ```bash
 curl -s -X PUT "https://conversations.api.us.23blocks.com/conversations/conv_def456/extend" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "data": {
@@ -568,7 +568,7 @@ Retrieve a file attached to a conversation.
 ```bash
 curl -s -X GET "https://conversations.api.us.23blocks.com/conversations/conv_def456/files/file_001" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json"
 ```
 
@@ -620,7 +620,7 @@ Generate a presigned URL for direct file upload.
 ```bash
 curl -s -X PUT "https://conversations.api.us.23blocks.com/conversations/conv_def456/presign" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "filename": "document.pdf",
@@ -673,7 +673,7 @@ Upload a file to a conversation.
 ```bash
 curl -s -X POST "https://conversations.api.us.23blocks.com/conversations/conv_def456/files" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -F "file=@/path/to/document.pdf" \
   -F 'metadata={"description": "Project report"}'
 ```
@@ -722,7 +722,7 @@ Delete a file from a conversation.
 ```bash
 curl -s -X DELETE "https://conversations.api.us.23blocks.com/conversations/conv_def456/files/file_001" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json"
 ```
 
@@ -750,6 +750,8 @@ curl -s -X DELETE "https://conversations.api.us.23blocks.com/conversations/conv_
 
 Retrieve an AI-powered summary of a conversation via Jarvis. Uses incremental processing — only sends new messages since the last summary, with the previous summary passed as context. Returns structured, validated fields.
 
+> **Jarvis Passthrough Auth:** The Conversations API forwards the consumer's `Authorization` and `X-API-Key` headers directly to Jarvis. No separate Jarvis key or per-tenant CompanyKey lookup is needed — the same credentials that authenticate with the Conversations API authenticate with Jarvis.
+
 **Endpoint:** `GET /conversations/:unique_id/summary`
 
 **Path Parameters:**
@@ -763,7 +765,7 @@ Retrieve an AI-powered summary of a conversation via Jarvis. Uses incremental pr
 ```bash
 curl -s -X GET "https://conversations.api.us.23blocks.com/conversations/conv_def456/summary" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json"
 ```
 
@@ -846,7 +848,7 @@ Retrieve an AI-powered digest across all of a user's conversations. Only stale o
 ```bash
 curl -s -X GET "https://conversations.api.us.23blocks.com/users/usr_abc123/conversations/summary" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json"
 ```
 
@@ -858,6 +860,7 @@ curl -s -X GET "https://conversations.api.us.23blocks.com/users/usr_abc123/conve
     "id": "digest_001",
     "type": "conversation_digest",
     "attributes": {
+      "conversations_found": true,
       "digest": {
         "summary": "You have active discussions across 3 conversations...",
         "categories": ["roadmap", "bugs", "hiring"],
@@ -885,6 +888,8 @@ curl -s -X GET "https://conversations.api.us.23blocks.com/users/usr_abc123/conve
 
 **Notes:**
 - Uses 2-query batch cache check — only stale/missing summaries trigger Jarvis calls
+- `conversations_found` (boolean) is always present. Use it to distinguish "query found no conversations" (`false`) from "Jarvis failed to summarize" (`true` but empty/null summary)
 - `digest` contains the structured, validated output (`summary`, `categories`, `action_items`, `stats`)
 - `content` contains the raw LLM output
 - `meta` includes `validation_status` and `retry_count` for observability
+- **Jarvis Passthrough Auth:** Consumer `Authorization` and `X-API-Key` headers are forwarded directly to Jarvis. No separate Jarvis key or per-tenant CompanyKey lookup is needed

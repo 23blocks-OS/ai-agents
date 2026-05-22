@@ -11,7 +11,7 @@ capabilities:
   - Generate sales reports for orders, payments, subscriptions, and vendors
   - Manage user, entity, and customer identities
   - Configure email templates with Mandrill integration
-  - Handle multi-tenant company management with API keys and impersonation
+  - Handle multi-tenant company management with API keys and token exchange
 ---
 
 # 23blocks Sales Block Agent
@@ -29,7 +29,7 @@ if [ -z "$BLOCKS_API_URL" ] || [ -z "$BLOCKS_AUTH_TOKEN" ] || [ -z "$BLOCKS_API_
   echo "Please set:"
   echo "  BLOCKS_API_URL     - API base URL (e.g., https://sales.api.us.23blocks.com)"
   echo "  BLOCKS_AUTH_TOKEN  - Your authentication token"
-  echo "  BLOCKS_API_KEY     - Your API key (AppId)"
+  echo "  BLOCKS_API_KEY     - Your API key (X-API-KEY header)"
   exit 1
 fi
 echo "All credentials configured"
@@ -40,7 +40,7 @@ echo "All credentials configured"
 |----------|-------------|---------|
 | `BLOCKS_API_URL` | Sales API base URL | `https://sales.api.us.23blocks.com` |
 | `BLOCKS_AUTH_TOKEN` | Bearer token for authentication | `eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...` |
-| `BLOCKS_API_KEY` | API key (AppId header) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
+| `BLOCKS_API_KEY` | API key (X-API-KEY header) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
 
 **Agent Behavior:**
 - ALWAYS run the pre-flight check before any API operation
@@ -173,7 +173,6 @@ Multi-tenant company management:
 | CRUD | Create, read, update companies |
 | API Keys | Manage company API keys |
 | Exchange | Exchange tokens between companies |
-| Impersonate | Impersonate users within companies |
 | Storage | View company storage usage |
 
 ## API Endpoints
@@ -188,7 +187,7 @@ All authenticated endpoints require:
 ```bash
 curl -X GET "$BLOCKS_API_URL/orders" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json"
 ```
 
@@ -328,7 +327,6 @@ curl -X GET "$BLOCKS_API_URL/orders" \
 - `POST /companies/:unique_id/keys` - Create API key
 - `DELETE /companies/:unique_id/keys/:key_id` - Delete API key
 - `POST /companies/:unique_id/exchange` - Exchange token
-- `POST /companies/:unique_id/impersonate` - Impersonate user
 - `GET /companies/:unique_id/storage` - Get storage usage
 
 ## Common Patterns
@@ -338,7 +336,7 @@ curl -X GET "$BLOCKS_API_URL/orders" \
 # 1. Create order
 curl -X POST "$BLOCKS_API_URL/orders" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "order": {
@@ -350,10 +348,10 @@ curl -X POST "$BLOCKS_API_URL/orders" \
 # 2. Add order details
 curl -X POST "$BLOCKS_API_URL/orders/{order_id}/details" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "detail": {
+    "details": {
       "description": "Premium Plan",
       "quantity": 1,
       "unit_price": 99.00
@@ -363,7 +361,7 @@ curl -X POST "$BLOCKS_API_URL/orders/{order_id}/details" \
 # 3. Set payment method and create payment
 curl -X POST "$BLOCKS_API_URL/orders/{order_id}/payments/method" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "payment_method": {
@@ -374,7 +372,7 @@ curl -X POST "$BLOCKS_API_URL/orders/{order_id}/payments/method" \
 
 curl -X POST "$BLOCKS_API_URL/orders/{order_id}/payments" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "payment": {
@@ -389,7 +387,7 @@ curl -X POST "$BLOCKS_API_URL/orders/{order_id}/payments" \
 # 1. Create Stripe customer
 curl -X POST "$BLOCKS_API_URL/stripe/customers" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "customer": {
@@ -401,7 +399,7 @@ curl -X POST "$BLOCKS_API_URL/stripe/customers" \
 # 2. Create Stripe subscription
 curl -X POST "$BLOCKS_API_URL/stripe/subscriptions" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "subscription": {
@@ -415,7 +413,7 @@ curl -X POST "$BLOCKS_API_URL/stripe/subscriptions" \
 ```bash
 curl -X POST "$BLOCKS_API_URL/reports/orders/summary" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "report": {

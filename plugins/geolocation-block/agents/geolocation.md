@@ -26,7 +26,7 @@ if [ -z "$BLOCKS_API_URL" ] || [ -z "$BLOCKS_AUTH_TOKEN" ] || [ -z "$BLOCKS_API_
   echo "Please set:"
   echo "  BLOCKS_API_URL     - API base URL (e.g., https://geolocation.api.us.23blocks.com)"
   echo "  BLOCKS_AUTH_TOKEN  - Your authentication token"
-  echo "  BLOCKS_API_KEY     - Your API key (AppId)"
+  echo "  BLOCKS_API_KEY     - Your API key (X-API-KEY header)"
   exit 1
 fi
 echo "All credentials configured"
@@ -37,7 +37,7 @@ echo "All credentials configured"
 |----------|-------------|---------|
 | `BLOCKS_API_URL` | Geolocation API base URL | `https://geolocation.api.us.23blocks.com` |
 | `BLOCKS_AUTH_TOKEN` | Bearer token for authentication | `eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...` |
-| `BLOCKS_API_KEY` | API key (AppId header) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
+| `BLOCKS_API_KEY` | API key (X-API-KEY header) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
 
 **Agent Behavior:**
 - ALWAYS run the pre-flight check before any API operation
@@ -143,13 +143,20 @@ $BLOCKS_API_URL  # e.g., https://geolocation.api.us.23blocks.com
 ```
 
 ### Authentication
-All authenticated endpoints require:
+Most endpoints require authentication:
 ```bash
 curl -X GET "$BLOCKS_API_URL/locations" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json"
 ```
+
+**Public endpoints (no auth required):**
+- `GET /locations` - List all locations
+- `GET /locations/:unique_id/` - Get a single location
+- `GET /locations/:unique_id/qrcode` - Get QR code
+- `POST /locations/search/code` - Search by code
+- All geographic hierarchy queries (`GET /countries/:code/locations`, etc.)
 
 ### Identities
 - `GET /identities/` - List identities
@@ -285,7 +292,7 @@ curl -X GET "$BLOCKS_API_URL/locations" \
 # 1. Create location
 curl -X POST "$BLOCKS_API_URL/locations/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "location": {
@@ -304,10 +311,10 @@ curl -X POST "$BLOCKS_API_URL/locations/" \
 # 2. Add operating hours
 curl -X POST "$BLOCKS_API_URL/locations/{location_id}/hours/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "hour": {
+    "location_hour": {
       "day_of_week": "monday",
       "open_time": "09:00",
       "close_time": "17:00"
@@ -320,12 +327,12 @@ curl -X POST "$BLOCKS_API_URL/locations/{location_id}/hours/" \
 # 1. List premises at location
 curl -X GET "$BLOCKS_API_URL/locations/{location_id}/premises" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 
 # 2. Create booking
 curl -X POST "$BLOCKS_API_URL/locations/{location_id}/premises/{premise_id}/bookings" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "booking": {
@@ -343,7 +350,7 @@ curl -X POST "$BLOCKS_API_URL/locations/{location_id}/premises/{premise_id}/book
 # 1. Create route
 curl -X POST "$BLOCKS_API_URL/routes/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "route": {
@@ -355,7 +362,7 @@ curl -X POST "$BLOCKS_API_URL/routes/" \
 # 2. Add location stops
 curl -X POST "$BLOCKS_API_URL/routes/{route_id}/locations" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "location_unique_id": "location-uuid-123",
@@ -365,7 +372,7 @@ curl -X POST "$BLOCKS_API_URL/routes/{route_id}/locations" \
 # 3. Assign user
 curl -X POST "$BLOCKS_API_URL/routes/{route_id}/users" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "user_unique_id": "user-uuid-456"
@@ -377,7 +384,7 @@ curl -X POST "$BLOCKS_API_URL/routes/{route_id}/users" \
 # 1. Create address for user
 curl -X POST "$BLOCKS_API_URL/addresses/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "address": {
@@ -389,14 +396,14 @@ curl -X POST "$BLOCKS_API_URL/addresses/" \
       "address_type": "home",
       "is_default": true,
       "owner_type": "user",
-      "owner_id": "user-uuid-123"
+      "owner_unique_id": "user-uuid-123"
     }
   }'
 
 # 2. Get user default address
 curl -X GET "$BLOCKS_API_URL/users/{user_id}/default" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 ## Error Handling

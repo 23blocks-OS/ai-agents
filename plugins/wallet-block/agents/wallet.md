@@ -26,7 +26,7 @@ if [ -z "$BLOCKS_API_URL" ] || [ -z "$BLOCKS_AUTH_TOKEN" ] || [ -z "$BLOCKS_API_
   echo "Please set:"
   echo "  BLOCKS_API_URL     - API base URL (e.g., https://wallet.api.us.23blocks.com)"
   echo "  BLOCKS_AUTH_TOKEN  - Your authentication token"
-  echo "  BLOCKS_API_KEY     - Your API key (AppId)"
+  echo "  BLOCKS_API_KEY     - Your API key (X-API-KEY header)"
   exit 1
 fi
 echo "All credentials configured"
@@ -37,7 +37,7 @@ echo "All credentials configured"
 |----------|-------------|---------|
 | `BLOCKS_API_URL` | Wallet API base URL | `https://wallet.api.us.23blocks.com` |
 | `BLOCKS_AUTH_TOKEN` | Bearer token for authentication | `eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...` |
-| `BLOCKS_API_KEY` | API key (AppId header) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
+| `BLOCKS_API_KEY` | API key (X-API-KEY header) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
 
 **Agent Behavior:**
 - ALWAYS run the pre-flight check before any API operation
@@ -96,7 +96,7 @@ All authenticated endpoints require:
 ```bash
 curl -X GET "$BLOCKS_API_URL/users/{unique_id}/wallets" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json"
 ```
 
@@ -137,7 +137,7 @@ curl -X GET "$BLOCKS_API_URL/users/{unique_id}/wallets" \
 # 1. Create wallet for a user
 curl -X POST "$BLOCKS_API_URL/users/{unique_id}/wallets/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "wallet": {
@@ -149,7 +149,7 @@ curl -X POST "$BLOCKS_API_URL/users/{unique_id}/wallets/" \
 # 2. Create a credit transaction
 curl -X POST "$BLOCKS_API_URL/users/{unique_id}/wallets/{wallet_code}" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "transaction": {
@@ -163,7 +163,7 @@ curl -X POST "$BLOCKS_API_URL/users/{unique_id}/wallets/{wallet_code}" \
 # 3. Check balance
 curl -X GET "$BLOCKS_API_URL/users/{unique_id}/wallets/{wallet_code}" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 ### Transfer Between Wallets
@@ -171,7 +171,7 @@ curl -X GET "$BLOCKS_API_URL/users/{unique_id}/wallets/{wallet_code}" \
 # Transfer funds from one wallet to another
 curl -X POST "$BLOCKS_API_URL/users/{unique_id}/wallets/{wallet_code}/transfer" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "transfer": {
@@ -188,7 +188,7 @@ curl -X POST "$BLOCKS_API_URL/users/{unique_id}/wallets/{wallet_code}/transfer" 
 # 1. Generate OTP code for a sensitive operation
 curl -X POST "$BLOCKS_API_URL/users/{unique_id}/wallets/{wallet_code}/otp" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "otp": {
@@ -200,7 +200,7 @@ curl -X POST "$BLOCKS_API_URL/users/{unique_id}/wallets/{wallet_code}/otp" \
 # 2. Use OTP code in subsequent transfer request
 curl -X POST "$BLOCKS_API_URL/users/{unique_id}/wallets/{wallet_code}/transfer" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "transfer": {
@@ -218,7 +218,7 @@ curl -X POST "$BLOCKS_API_URL/users/{unique_id}/wallets/{wallet_code}/transfer" 
 # Store arbitrary content associated with a wallet
 curl -X PUT "$BLOCKS_API_URL/users/{unique_id}/wallets/{wallet_code}/content" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "content": {

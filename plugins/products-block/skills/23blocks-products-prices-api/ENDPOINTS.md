@@ -14,7 +14,7 @@ Lists all prices for a product.
 ```bash
 curl -X GET "$BLOCKS_API_URL/products/product-uuid-123/prices" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -23,7 +23,7 @@ curl -X GET "$BLOCKS_API_URL/products/product-uuid-123/prices" \
   "data": [
     {
       "id": "price-uuid-123",
-      "type": "price",
+      "type": "Price",
       "attributes": {
         "unique_id": "price-uuid-123",
         "product_unique_id": "product-uuid-123",
@@ -50,7 +50,7 @@ Retrieves a specific price entry.
 ```bash
 curl -X GET "$BLOCKS_API_URL/products/product-uuid-123/prices/price-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -58,7 +58,7 @@ curl -X GET "$BLOCKS_API_URL/products/product-uuid-123/prices/price-uuid-123" \
 {
   "data": {
     "id": "price-uuid-123",
-    "type": "price",
+    "type": "Price",
     "attributes": {
       "unique_id": "price-uuid-123",
       "product_unique_id": "product-uuid-123",
@@ -86,7 +86,7 @@ Creates a new price for a product.
 ```bash
 curl -X POST "$BLOCKS_API_URL/products/product-uuid-123/prices/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "price": {
@@ -111,7 +111,7 @@ curl -X POST "$BLOCKS_API_URL/products/product-uuid-123/prices/" \
 {
   "data": {
     "id": "new-price-uuid",
-    "type": "price",
+    "type": "Price",
     "attributes": {
       "unique_id": "new-price-uuid",
       "amount": 39.99,
@@ -137,7 +137,7 @@ Updates an existing price.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/products/product-uuid-123/prices/price-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "price": {
@@ -161,7 +161,7 @@ Lists all prices for a product variation.
 ```bash
 curl -X GET "$BLOCKS_API_URL/products/product-uuid-123/variations/variation-uuid-001/prices" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -170,7 +170,7 @@ curl -X GET "$BLOCKS_API_URL/products/product-uuid-123/variations/variation-uuid
   "data": [
     {
       "id": "vprice-uuid-123",
-      "type": "variation_price",
+      "type": "VariationPrice",
       "attributes": {
         "unique_id": "vprice-uuid-123",
         "variation_unique_id": "variation-uuid-001",
@@ -194,7 +194,7 @@ Creates a price for a product variation.
 ```bash
 curl -X POST "$BLOCKS_API_URL/products/product-uuid-123/variations/variation-uuid-001/prices/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "price": {
@@ -217,7 +217,7 @@ Updates a variation price.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/products/product-uuid-123/variations/variation-uuid-001/prices/vprice-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "price": {
@@ -240,7 +240,7 @@ Lists all variations for a product.
 ```bash
 curl -X GET "$BLOCKS_API_URL/products/product-uuid-123/variations" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -249,7 +249,7 @@ curl -X GET "$BLOCKS_API_URL/products/product-uuid-123/variations" \
   "data": [
     {
       "id": "variation-uuid-001",
-      "type": "variation",
+      "type": "Variation",
       "attributes": {
         "unique_id": "variation-uuid-001",
         "product_unique_id": "product-uuid-123",
@@ -275,7 +275,7 @@ Creates a new product variation.
 ```bash
 curl -X POST "$BLOCKS_API_URL/products/product-uuid-123/variations" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "variation": {
@@ -300,7 +300,7 @@ curl -X POST "$BLOCKS_API_URL/products/product-uuid-123/variations" \
 {
   "data": {
     "id": "new-variation-uuid",
-    "type": "variation",
+    "type": "Variation",
     "attributes": {
       "unique_id": "new-variation-uuid",
       "name": "Small - White",
@@ -322,7 +322,7 @@ Updates a product variation.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/products/product-uuid-123/variations/variation-uuid-001" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "variation": {
@@ -344,7 +344,7 @@ Deletes a product variation.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/products/product-uuid-123/variations/variation-uuid-001" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -361,7 +361,7 @@ Lists all pricing channels.
 ```bash
 curl -X GET "$BLOCKS_API_URL/channels/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -370,7 +370,7 @@ curl -X GET "$BLOCKS_API_URL/channels/" \
   "data": [
     {
       "id": "channel-uuid-001",
-      "type": "channel",
+      "type": "Channel",
       "attributes": {
         "unique_id": "channel-uuid-001",
         "name": "Online Store",
@@ -394,7 +394,7 @@ Creates a new pricing channel.
 ```bash
 curl -X POST "$BLOCKS_API_URL/channels/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "channel": {
@@ -424,7 +424,7 @@ Updates a pricing channel.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/channels/channel-uuid-001" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "channel": {
@@ -445,7 +445,7 @@ Deletes a pricing channel.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/channels/channel-uuid-001" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content

@@ -16,12 +16,21 @@ Complete API reference for 23blocks wallet transaction processing including cred
 | Variable | Description | Example |
 |----------|-------------|---------|
 | `BLOCKS_API_URL` | Wallet API base URL | `https://wallet.api.us.23blocks.com` |
-| `BLOCKS_AUTH_TOKEN` | Bearer token (human or AID) | `eyJhbGciOiJSUzI1NiJ9...` |
-| `BLOCKS_API_KEY` | API key (AppId) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
+| `BLOCKS_AUTH_TOKEN` | Bearer token — your identity & scopes (from login or AID token exchange) | `eyJhbGciOiJSUzI1NiJ9...` |
+| `BLOCKS_API_KEY` | Tenant routing key (X-API-KEY header) — static, from company config | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
 
 ## Authentication
 
-Two methods are supported. The Bearer token works the same either way.
+**These two credentials serve different purposes and come from different sources:**
+
+| Credential | Purpose | Source | Changes? |
+|------------|---------|--------|----------|
+| `BLOCKS_API_KEY` | **Tenant routing** — identifies which company/app | Company config (static `pk_live_sh_...` key) | No — same key for all blocks |
+| `BLOCKS_AUTH_TOKEN` | **Identity & authorization** — who you are + what you can do | Login (`/auth/sign_in`), AID token exchange, or human-provided | Yes — expires, must be refreshed |
+
+> The API key used during AID registration is NOT the same as `BLOCKS_API_KEY`. The registration key authenticates the agent with the Auth API; `BLOCKS_API_KEY` routes requests to the correct tenant across all blocks.
+
+Two methods to obtain the Bearer token:
 
 **Method 1: Agent Identity (AID)** -- For AI agents with AMP identity:
 ```bash
@@ -50,7 +59,7 @@ Creates a credit or debit transaction on a wallet. Credit transactions add funds
 ```bash
 curl -X POST "$BLOCKS_API_URL/users/user-uuid-123/wallets/wal-abc-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "transaction": {
@@ -67,7 +76,7 @@ curl -X POST "$BLOCKS_API_URL/users/user-uuid-123/wallets/wal-abc-123" \
 ```bash
 curl -X POST "$BLOCKS_API_URL/users/user-uuid-123/wallets/wal-abc-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "transaction": {
@@ -131,7 +140,7 @@ Lists all transactions for a wallet with pagination, ordered by most recent firs
 ```bash
 curl -X GET "$BLOCKS_API_URL/users/user-uuid-123/wallets/wal-abc-123/transactions?page=1&records=20" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Path Parameters:**
@@ -216,7 +225,7 @@ Transfers funds from the source wallet to a target wallet. Creates two linked tr
 ```bash
 curl -X POST "$BLOCKS_API_URL/users/user-uuid-123/wallets/wal-abc-123/transfer" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "transfer": {
@@ -233,7 +242,7 @@ curl -X POST "$BLOCKS_API_URL/users/user-uuid-123/wallets/wal-abc-123/transfer" 
 ```bash
 curl -X POST "$BLOCKS_API_URL/users/user-uuid-123/wallets/wal-abc-123/transfer" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "transfer": {
@@ -299,7 +308,7 @@ Webhook endpoint for external systems to post transaction notifications to a wal
 ```bash
 curl -X POST "$BLOCKS_API_URL/companies/my-company/wallets/wal-abc-123/transactions" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "transaction": {

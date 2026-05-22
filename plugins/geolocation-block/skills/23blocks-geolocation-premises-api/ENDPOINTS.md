@@ -14,7 +14,7 @@ Lists all premises within a location.
 ```bash
 curl -X GET "$BLOCKS_API_URL/locations/loc-uuid-123/premises?page=1&records=20" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Query Parameters:**
@@ -29,7 +29,7 @@ curl -X GET "$BLOCKS_API_URL/locations/loc-uuid-123/premises?page=1&records=20" 
   "data": [
     {
       "id": "premise-uuid-456",
-      "type": "premise",
+      "type": "Premise",
       "attributes": {
         "unique_id": "premise-uuid-456",
         "name": "Conference Room A",
@@ -61,7 +61,7 @@ Retrieves a single premise by unique ID.
 ```bash
 curl -X GET "$BLOCKS_API_URL/locations/loc-uuid-123/premises/premise-uuid-456" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -69,7 +69,7 @@ curl -X GET "$BLOCKS_API_URL/locations/loc-uuid-123/premises/premise-uuid-456" \
 {
   "data": {
     "id": "premise-uuid-456",
-    "type": "premise",
+    "type": "Premise",
     "attributes": {
       "unique_id": "premise-uuid-456",
       "name": "Conference Room A",
@@ -84,7 +84,7 @@ curl -X GET "$BLOCKS_API_URL/locations/loc-uuid-123/premises/premise-uuid-456" \
     "relationships": {
       "tags": {
         "data": [
-          { "id": "tag-uuid", "type": "tag" }
+          { "id": "tag-uuid", "type": "Tag" }
         ]
       }
     }
@@ -105,7 +105,7 @@ Creates a new premise within a location.
 ```bash
 curl -X POST "$BLOCKS_API_URL/locations/loc-uuid-123/premises" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "premise": {
@@ -134,7 +134,7 @@ curl -X POST "$BLOCKS_API_URL/locations/loc-uuid-123/premises" \
 {
   "data": {
     "id": "premise-uuid-456",
-    "type": "premise",
+    "type": "Premise",
     "attributes": {
       "unique_id": "premise-uuid-456",
       "name": "Conference Room A",
@@ -163,7 +163,7 @@ Updates an existing premise.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/locations/loc-uuid-123/premises/premise-uuid-456" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "premise": {
@@ -178,7 +178,7 @@ curl -X PUT "$BLOCKS_API_URL/locations/loc-uuid-123/premises/premise-uuid-456" \
 {
   "data": {
     "id": "premise-uuid-456",
-    "type": "premise",
+    "type": "Premise",
     "attributes": {
       "unique_id": "premise-uuid-456",
       "name": "Conference Room A",
@@ -203,7 +203,7 @@ Deletes a premise.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/locations/loc-uuid-123/premises/premise-uuid-456" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -223,10 +223,12 @@ Adds a tag to a premise.
 ```bash
 curl -X POST "$BLOCKS_API_URL/locations/loc-uuid-123/premises/premise-uuid-456/tags" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "tag_unique_id": "tag-uuid-789"
+    "tag": {
+      "unique_id": "tag-uuid-789"
+    }
   }'
 ```
 
@@ -247,7 +249,7 @@ Removes a tag from a premise.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/locations/loc-uuid-123/premises/premise-uuid-456/tags/tag-uuid-789" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -269,7 +271,7 @@ Lists all events scheduled at a premise.
 ```bash
 curl -X GET "$BLOCKS_API_URL/locations/loc-uuid-123/premises/premise-uuid-456/events?page=1&records=20" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -278,7 +280,7 @@ curl -X GET "$BLOCKS_API_URL/locations/loc-uuid-123/premises/premise-uuid-456/ev
   "data": [
     {
       "id": "event-uuid-101",
-      "type": "event",
+      "type": "Event",
       "attributes": {
         "unique_id": "event-uuid-101",
         "name": "All Hands Meeting",
@@ -308,7 +310,7 @@ Creates a new event at a premise.
 ```bash
 curl -X POST "$BLOCKS_API_URL/locations/loc-uuid-123/premises/premise-uuid-456/events" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "event": {
@@ -335,7 +337,7 @@ curl -X POST "$BLOCKS_API_URL/locations/loc-uuid-123/premises/premise-uuid-456/e
 {
   "data": {
     "id": "event-uuid-101",
-    "type": "event",
+    "type": "Event",
     "attributes": {
       "unique_id": "event-uuid-101",
       "name": "All Hands Meeting",
@@ -365,7 +367,7 @@ Retrieves a specific area.
 ```bash
 curl -X GET "$BLOCKS_API_URL/areas/area-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -373,7 +375,7 @@ curl -X GET "$BLOCKS_API_URL/areas/area-uuid-123" \
 {
   "data": {
     "id": "area-uuid-123",
-    "type": "area",
+    "type": "Area",
     "attributes": {
       "unique_id": "area-uuid-123",
       "name": "Reception Area",
@@ -383,7 +385,7 @@ curl -X GET "$BLOCKS_API_URL/areas/area-uuid-123" \
     "relationships": {
       "tags": {
         "data": [
-          { "id": "tag-uuid", "type": "tag" }
+          { "id": "tag-uuid", "type": "Tag" }
         ]
       }
     }
@@ -404,10 +406,12 @@ Adds a tag to an area.
 ```bash
 curl -X POST "$BLOCKS_API_URL/areas/area-uuid-123/tags/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "tag_unique_id": "tag-uuid-456"
+    "tag": {
+      "unique_id": "tag-uuid-456"
+    }
   }'
 ```
 
@@ -428,7 +432,7 @@ Removes a tag from an area.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/areas/area-uuid-123/tags/tag-uuid-456" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**

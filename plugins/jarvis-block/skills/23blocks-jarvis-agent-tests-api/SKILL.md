@@ -16,12 +16,21 @@ Complete API reference for 23blocks Jarvis agent testing framework with test cas
 | Variable | Description | Example |
 |----------|-------------|---------|
 | `BLOCKS_API_URL` | Jarvis API base URL | `https://jarvis.api.us.23blocks.com` |
-| `BLOCKS_AUTH_TOKEN` | Bearer token (human or AID) | `eyJhbGciOiJSUzI1NiJ9...` |
-| `BLOCKS_API_KEY` | API key (AppId) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
+| `BLOCKS_AUTH_TOKEN` | Bearer token — your identity & scopes (from login or AID token exchange) | `eyJhbGciOiJSUzI1NiJ9...` |
+| `BLOCKS_API_KEY` | Tenant routing key (X-API-KEY header) — static, from company config | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
 
 ## Authentication
 
-Two methods are supported. The Bearer token works the same either way.
+**These two credentials serve different purposes and come from different sources:**
+
+| Credential | Purpose | Source | Changes? |
+|------------|---------|--------|----------|
+| `BLOCKS_API_KEY` | **Tenant routing** — identifies which company/app | Company config (static `pk_live_sh_...` key) | No — same key for all blocks |
+| `BLOCKS_AUTH_TOKEN` | **Identity & authorization** — who you are + what you can do | Login (`/auth/sign_in`), AID token exchange, or human-provided | Yes — expires, must be refreshed |
+
+> The API key used during AID registration is NOT the same as `BLOCKS_API_KEY`. The registration key authenticates the agent with the Auth API; `BLOCKS_API_KEY` routes requests to the correct tenant across all blocks.
+
+Two methods to obtain the Bearer token:
 
 **Method 1: Agent Identity (AID)** -- For AI agents with AMP identity:
 ```bash
@@ -40,6 +49,22 @@ export BLOCKS_API_KEY="<your-api-key>"
 
 ---
 
+## Prerequisites
+
+**User identity must be registered** before calling any endpoint in this skill. Without registration, all requests return `404` with code `usr-not-registered`.
+
+```bash
+curl -X POST "$BLOCKS_API_URL/identities/$USER_UNIQUE_ID/register" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{ "name": "Your Name", "email": "you@example.com" }'
+```
+
+> Self-registration (your own JWT) requires no special scope. Registering other users requires `identities:write`.
+
+---
+
 ## Endpoints
 
 ### GET /agents/:id/tests - List Agent Tests
@@ -50,7 +75,7 @@ Lists all test cases for an agent.
 ```bash
 curl -X GET "$BLOCKS_API_URL/agents/agent-uuid-123/tests" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -84,7 +109,7 @@ Retrieves a single test case.
 ```bash
 curl -X GET "$BLOCKS_API_URL/agents/agent-uuid-123/tests/test-uuid-456" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -121,7 +146,7 @@ Creates a new test case for an agent.
 ```bash
 curl -X POST "$BLOCKS_API_URL/agents/agent-uuid-123/tests" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "test": {
@@ -171,7 +196,7 @@ Updates an existing test case.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/agents/agent-uuid-123/tests/test-uuid-456" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "test": {
@@ -208,7 +233,7 @@ Deletes a test case.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/agents/agent-uuid-123/tests/test-uuid-456" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -225,7 +250,7 @@ Retrieves results for a specific test.
 ```bash
 curl -X GET "$BLOCKS_API_URL/agents/agent-uuid-123/tests/test-uuid-456/results" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -259,7 +284,7 @@ Executes a single test case.
 ```bash
 curl -X POST "$BLOCKS_API_URL/agents/agent-uuid-123/tests/test-uuid-456/run" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -292,7 +317,7 @@ Executes all test cases for an agent.
 ```bash
 curl -X POST "$BLOCKS_API_URL/agents/agent-uuid-123/tests/run_all" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**

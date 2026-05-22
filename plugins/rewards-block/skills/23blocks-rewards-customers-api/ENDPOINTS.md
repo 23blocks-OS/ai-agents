@@ -14,7 +14,7 @@ Lists all reward customers with pagination.
 ```bash
 curl -X GET "$BLOCKS_API_URL/customers?page=1&records=20" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Query Parameters:**
@@ -58,7 +58,7 @@ Retrieves a single customer reward profile.
 ```bash
 curl -X GET "$BLOCKS_API_URL/customers/customer-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -93,7 +93,7 @@ Retrieves the customer's current loyalty program status and tier information.
 ```bash
 curl -X GET "$BLOCKS_API_URL/customers/customer-uuid-123/loyalty" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -130,7 +130,7 @@ Retrieves the customer's current reward balances.
 ```bash
 curl -X GET "$BLOCKS_API_URL/customers/customer-uuid-123/rewards?page=1&records=20" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Query Parameters:**
@@ -175,7 +175,7 @@ Retrieves the customer's rewards that are approaching expiration.
 ```bash
 curl -X GET "$BLOCKS_API_URL/customers/customer-uuid-123/rewards/expirations" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -208,7 +208,7 @@ Retrieves the customer's complete reward transaction history.
 ```bash
 curl -X GET "$BLOCKS_API_URL/customers/customer-uuid-123/rewards/history?page=1&records=20" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Query Parameters:**
@@ -267,7 +267,7 @@ Retrieves all badges earned by the customer.
 ```bash
 curl -X GET "$BLOCKS_API_URL/customers/customer-uuid-123/badges" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -301,7 +301,7 @@ Retrieves all coupons assigned to or redeemed by the customer.
 ```bash
 curl -X GET "$BLOCKS_API_URL/customers/customer-uuid-123/coupons" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -334,7 +334,7 @@ Retrieves all offer codes used by the customer.
 ```bash
 curl -X GET "$BLOCKS_API_URL/customers/customer-uuid-123/offer_codes" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**

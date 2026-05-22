@@ -14,7 +14,7 @@ Lists all accounts with pagination.
 ```bash
 curl -X GET "$BLOCKS_API_URL/accounts/?page=1&records=20" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Query Parameters:**
@@ -62,7 +62,7 @@ Retrieves a single account by unique ID.
 ```bash
 curl -X GET "$BLOCKS_API_URL/accounts/account-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -111,7 +111,7 @@ Lists all trashed (soft-deleted) accounts.
 ```bash
 curl -X GET "$BLOCKS_API_URL/accounts/status/trash" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:** Same format as List Accounts, filtered by trash status.
@@ -126,7 +126,7 @@ Lists all archived accounts.
 ```bash
 curl -X GET "$BLOCKS_API_URL/accounts/status/archive" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:** Same format as List Accounts, filtered by archive status.
@@ -141,7 +141,7 @@ Validates account data before creation.
 ```bash
 curl -X POST "$BLOCKS_API_URL/accounts/validate" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "account": {
@@ -171,7 +171,7 @@ Validates a tax ID for an account.
 ```bash
 curl -X POST "$BLOCKS_API_URL/accounts/validate_tax_id" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "tax_id": "12-3456789"
@@ -203,7 +203,7 @@ Creates a new customer account.
 ```bash
 curl -X POST "$BLOCKS_API_URL/accounts/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "account": {
@@ -264,7 +264,7 @@ Updates an existing account.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/accounts/account-uuid-123/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "account": {
@@ -303,7 +303,7 @@ Soft-deletes an account (moves to trash).
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/accounts/account-uuid-123/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -321,7 +321,7 @@ Archives an account instead of deleting it.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/accounts/account-uuid-123/archive" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -350,7 +350,7 @@ Adds additional details to an account.
 ```bash
 curl -X POST "$BLOCKS_API_URL/accounts/account-uuid-123/details" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "detail": {
@@ -391,7 +391,7 @@ Updates existing account details.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/accounts/account-uuid-123/details" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "detail": {
@@ -428,7 +428,7 @@ Gets a presigned URL for uploading an account logo.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/accounts/account-uuid-123/presign_logo" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "file": {
@@ -458,7 +458,7 @@ Publishes the uploaded logo for the account.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/accounts/account-uuid-123/logo/publish" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "file_key": "accounts/account-uuid-123/logo.png"
@@ -490,7 +490,7 @@ Lists all leads associated with an account.
 ```bash
 curl -X GET "$BLOCKS_API_URL/accounts/account-uuid-123/leads" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -523,7 +523,7 @@ Associates a lead with an account.
 ```bash
 curl -X POST "$BLOCKS_API_URL/accounts/account-uuid-123/leads" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "lead": {
@@ -567,7 +567,7 @@ Lists all contacts associated with an account.
 ```bash
 curl -X GET "$BLOCKS_API_URL/accounts/account-uuid-123/contacts" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -601,7 +601,7 @@ Retrieves a specific contact associated with an account.
 ```bash
 curl -X GET "$BLOCKS_API_URL/accounts/account-uuid-123/contacts/contact-uuid-456" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -634,7 +634,7 @@ Associates a contact with an account.
 ```bash
 curl -X POST "$BLOCKS_API_URL/accounts/account-uuid-123/contacts" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "contact": {
@@ -676,7 +676,7 @@ Removes a contact association from an account.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/accounts/account-uuid-123/contacts/contact-uuid-456" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -693,7 +693,7 @@ Lists all meetings associated with an account.
 ```bash
 curl -X GET "$BLOCKS_API_URL/accounts/account-uuid-123/meetings" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -727,7 +727,7 @@ Lists all documents associated with an account.
 ```bash
 curl -X GET "$BLOCKS_API_URL/accounts/account-uuid-123/documents" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -760,7 +760,7 @@ Gets a presigned URL for uploading a document.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/accounts/account-uuid-123/presign_document" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "file": {
@@ -790,7 +790,7 @@ Registers an uploaded document with an account.
 ```bash
 curl -X POST "$BLOCKS_API_URL/accounts/account-uuid-123/documents" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "document": {
@@ -827,7 +827,7 @@ Deletes a document from an account.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/accounts/account-uuid-123/documents/doc-uuid-456" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -844,7 +844,7 @@ Assigns a category to an account.
 ```bash
 curl -X POST "$BLOCKS_API_URL/accounts/account-uuid-123/categories" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "category": {
@@ -872,7 +872,7 @@ Lists all locations for an account.
 ```bash
 curl -X GET "$BLOCKS_API_URL/accounts/account-uuid-123/locations" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -906,7 +906,7 @@ Adds a location to an account.
 ```bash
 curl -X POST "$BLOCKS_API_URL/accounts/account-uuid-123/locations" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "location": {
@@ -962,7 +962,7 @@ Lists all quotes for an account.
 ```bash
 curl -X GET "$BLOCKS_API_URL/accounts/account-uuid-123/quotes" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -993,7 +993,7 @@ Creates a quote for an account.
 ```bash
 curl -X POST "$BLOCKS_API_URL/accounts/account-uuid-123/quotes" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "quote": {

@@ -29,7 +29,7 @@ if [ -z "$BLOCKS_API_URL" ] || [ -z "$BLOCKS_AUTH_TOKEN" ] || [ -z "$BLOCKS_API_
   echo "Please set:"
   echo "  BLOCKS_API_URL     - API base URL (e.g., https://onboarding.api.us.23blocks.com)"
   echo "  BLOCKS_AUTH_TOKEN  - Your authentication token"
-  echo "  BLOCKS_API_KEY     - Your API key (AppId)"
+  echo "  BLOCKS_API_KEY     - Your API key (X-API-KEY header)"
   exit 1
 fi
 echo "All credentials configured"
@@ -40,7 +40,7 @@ echo "All credentials configured"
 |----------|-------------|---------|
 | `BLOCKS_API_URL` | Onboarding API base URL | `https://onboarding.api.us.23blocks.com` |
 | `BLOCKS_AUTH_TOKEN` | Bearer token for authentication | `eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...` |
-| `BLOCKS_API_KEY` | API key (AppId header) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
+| `BLOCKS_API_KEY` | API key (X-API-KEY header) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
 
 **Agent Behavior:**
 - ALWAYS run the pre-flight check before any API operation
@@ -132,7 +132,6 @@ Multi-tenant company management:
 | Feature | Description |
 |---------|-------------|
 | CRUD | Get and create companies |
-| Impersonation | Generate temporary access tokens |
 | API Keys | Manage external integration keys |
 | Exchange | Configure RabbitMQ exchange settings |
 | Storage | Configure storage settings |
@@ -149,7 +148,7 @@ All authenticated endpoints require:
 ```bash
 curl -X GET "$BLOCKS_API_URL/users" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json"
 ```
 
@@ -207,7 +206,6 @@ curl -X GET "$BLOCKS_API_URL/users" \
 ### Companies
 - `GET /companies/:url_id` - Get company
 - `POST /companies/` - Create company
-- `POST /companies/:url_id/access` - Impersonate user
 - `GET /companies/:url_id/keys` - List API keys
 - `POST /companies/:unique_id/keys` - Add API key
 - `DELETE /companies/:unique_id/keys/:key_unique_id` - Delete API key
@@ -223,7 +221,7 @@ curl -X GET "$BLOCKS_API_URL/users" \
 # 1. Register user with onboarding auto-start
 curl -X POST "$BLOCKS_API_URL/users/user-uuid-123/register/onboarding-uuid-456" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "user": {
@@ -235,15 +233,15 @@ curl -X POST "$BLOCKS_API_URL/users/user-uuid-123/register/onboarding-uuid-456" 
 # 2. Check journey status
 curl -X GET "$BLOCKS_API_URL/onboard/journey-uuid-789" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 
 # 3. Progress through steps
 curl -X PUT "$BLOCKS_API_URL/onboard/journey-uuid-789" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "journey": {
+    "onboard": {
       "metadata": {"completed_action": "profile_setup"}
     }
   }'
@@ -254,7 +252,7 @@ curl -X PUT "$BLOCKS_API_URL/onboard/journey-uuid-789" \
 # 1. Create onboarding (requires role_id 2)
 curl -X POST "$BLOCKS_API_URL/onboardings" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "onboarding": {
@@ -266,7 +264,7 @@ curl -X POST "$BLOCKS_API_URL/onboardings" \
 # 2. Add steps
 curl -X PUT "$BLOCKS_API_URL/onboardings/onboarding-uuid-456/steps" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "step": {
@@ -282,7 +280,7 @@ curl -X PUT "$BLOCKS_API_URL/onboardings/onboarding-uuid-456/steps" \
 # 3. Add another step
 curl -X PUT "$BLOCKS_API_URL/onboardings/onboarding-uuid-456/steps" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "step": {
@@ -300,7 +298,7 @@ curl -X PUT "$BLOCKS_API_URL/onboardings/onboarding-uuid-456/steps" \
 # Notify users who abandoned journeys more than 48 hours ago
 curl -X GET "$BLOCKS_API_URL/tools/remarketing/abandoned_journeys?elapsed_hours=48" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 ## Error Handling

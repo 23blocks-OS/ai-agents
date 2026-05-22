@@ -14,7 +14,7 @@ Lists all registered entities.
 ```bash
 curl -X GET "$BLOCKS_API_URL/entities" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -46,7 +46,7 @@ Retrieves a single entity.
 ```bash
 curl -X GET "$BLOCKS_API_URL/entities/$ENTITY_ID" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -76,7 +76,7 @@ Registers a new entity for file management.
 ```bash
 curl -X POST "$BLOCKS_API_URL/entities/$ENTITY_ID/register" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "entity": {
@@ -123,7 +123,7 @@ Lists all files for an entity.
 ```bash
 curl -X GET "$BLOCKS_API_URL/entities/$ENTITY_ID/files?page=1&records=20" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Query Parameters:**
@@ -169,7 +169,7 @@ Retrieves a single entity file.
 ```bash
 curl -X GET "$BLOCKS_API_URL/entities/$ENTITY_ID/files/$FILE_ID" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -205,7 +205,7 @@ Gets a presigned URL for uploading a file to an entity.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/entities/$ENTITY_ID/presign?filename=policy.pdf" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -226,7 +226,7 @@ Initiates a multipart upload for large entity files.
 ```bash
 curl -X POST "$BLOCKS_API_URL/entities/$ENTITY_ID/multipart_presign_upload" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "filename": "large-presentation.pptx",
@@ -256,7 +256,7 @@ Finalizes a multipart upload for entity files.
 ```bash
 curl -X POST "$BLOCKS_API_URL/entities/$ENTITY_ID/multipart_complete_upload" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "filename": "large-presentation.pptx",
@@ -287,7 +287,7 @@ Registers an uploaded file for an entity.
 ```bash
 curl -X POST "$BLOCKS_API_URL/entities/$ENTITY_ID/files" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "file": {
@@ -328,7 +328,7 @@ Updates entity file metadata.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/entities/$ENTITY_ID/files/$FILE_ID" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "file": {
@@ -361,7 +361,7 @@ Deletes an entity file.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/entities/$ENTITY_ID/files/$FILE_ID" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -378,7 +378,7 @@ Associates an existing file with an entity (file sharing between entities).
 ```bash
 curl -X POST "$BLOCKS_API_URL/entities/$ENTITY_ID/files/associate" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "file_unique_id": "existing-file-id",
@@ -416,7 +416,7 @@ Removes a file association from an entity.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/entities/$ENTITY_ID/files/$FILE_ID/disassociate" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content

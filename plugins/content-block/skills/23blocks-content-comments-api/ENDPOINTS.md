@@ -10,11 +10,12 @@ Full endpoint documentation. See [SKILL.md](SKILL.md) for setup, data models, an
 
 Lists all comments for a post.
 
+> **Public endpoint** — requires only `X-API-KEY`. No Bearer token needed.
+
 **Request:**
 ```bash
 curl -X GET "$BLOCKS_API_URL/posts/post-uuid-123/comments?page=1&records=20" \
-  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Query Parameters:**
@@ -66,7 +67,7 @@ Retrieves a single comment by unique ID.
 ```bash
 curl -X GET "$BLOCKS_API_URL/posts/post-uuid-123/comments/comment-uuid-456" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -100,7 +101,7 @@ Creates a new comment on a post.
 ```bash
 curl -X POST "$BLOCKS_API_URL/posts/post-uuid-123/comments" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "comment": {
@@ -144,7 +145,7 @@ Updates an existing comment.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/posts/post-uuid-123/comments/comment-uuid-456" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "comment": {
@@ -181,7 +182,7 @@ Deletes a comment.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/posts/post-uuid-123/comments/comment-uuid-456" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -199,7 +200,7 @@ Creates a reply to an existing comment.
 ```bash
 curl -X POST "$BLOCKS_API_URL/posts/post-uuid-123/comments/comment-uuid-456/reply" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "comment": {
@@ -236,7 +237,7 @@ Adds a like to the comment.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/posts/post-uuid-123/comments/comment-uuid-456/like" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -256,7 +257,7 @@ Adds a dislike to the comment.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/posts/post-uuid-123/comments/comment-uuid-456/dislike" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -276,7 +277,7 @@ Follows a comment to receive updates on replies.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/posts/post-uuid-123/comments/comment-uuid-456/follow" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -296,7 +297,7 @@ Unfollows a comment.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/posts/post-uuid-123/comments/comment-uuid-456/unfollow" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -316,7 +317,7 @@ Saves/bookmarks a comment.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/posts/post-uuid-123/comments/comment-uuid-456/save" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -336,7 +337,7 @@ Removes comment from saved list.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/posts/post-uuid-123/comments/comment-uuid-456/unsave" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -358,7 +359,7 @@ Removes a comment as a moderator.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/posts/post-uuid-123/comments/comment-uuid-456/moderate" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content

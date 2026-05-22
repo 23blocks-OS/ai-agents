@@ -16,12 +16,21 @@ Complete API reference for 23blocks company-level storage file management.
 | Variable | Description | Example |
 |----------|-------------|---------|
 | `BLOCKS_API_URL` | Files API base URL | `https://files.api.us.23blocks.com` |
-| `BLOCKS_AUTH_TOKEN` | Bearer token (human or AID) | `eyJhbGciOiJSUzI1NiJ9...` |
-| `BLOCKS_API_KEY` | API key (AppId) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
+| `BLOCKS_AUTH_TOKEN` | Bearer token — your identity & scopes (from login or AID token exchange) | `eyJhbGciOiJSUzI1NiJ9...` |
+| `BLOCKS_API_KEY` | Tenant routing key (X-API-KEY header) — static, from company config | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
 
 ## Authentication
 
-Two methods are supported. The Bearer token works the same either way.
+**These two credentials serve different purposes and come from different sources:**
+
+| Credential | Purpose | Source | Changes? |
+|------------|---------|--------|----------|
+| `BLOCKS_API_KEY` | **Tenant routing** — identifies which company/app | Company config (static `pk_live_sh_...` key) | No — same key for all blocks |
+| `BLOCKS_AUTH_TOKEN` | **Identity & authorization** — who you are + what you can do | Login (`/auth/sign_in`), AID token exchange, or human-provided | Yes — expires, must be refreshed |
+
+> The API key used during AID registration is NOT the same as `BLOCKS_API_KEY`. The registration key authenticates the agent with the Auth API; `BLOCKS_API_KEY` routes requests to the correct tenant across all blocks.
+
+Two methods to obtain the Bearer token:
 
 **Method 1: Agent Identity (AID)** -- For AI agents with AMP identity:
 ```bash
@@ -50,7 +59,7 @@ Lists storage files for a company. Admins see all files; others see only public 
 ```bash
 curl -X GET "$BLOCKS_API_URL/storage/$URL_ID/files?page=1&records=20&search=logo" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Query Parameters:**
@@ -108,7 +117,7 @@ Retrieves a single storage file with a fresh signed URL.
 **Request:**
 ```bash
 curl -X GET "$BLOCKS_API_URL/storage/$URL_ID/files/$FILE_ID" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -135,7 +144,7 @@ curl -X GET "$BLOCKS_API_URL/storage/$URL_ID/files/$FILE_ID" \
 }
 ```
 
-**Note:** No authentication required for public files; AppId header still needed.
+**Note:** No authentication required for public files; X-API-KEY header still needed.
 
 ---
 
@@ -145,18 +154,26 @@ Gets a presigned URL for direct S3 upload to storage.
 
 **Request:**
 ```bash
-curl -X PUT "$BLOCKS_API_URL/storage/$URL_ID/presign_upload?filename=banner.jpg&serialization=jsonapi" \
+curl -X PUT "$BLOCKS_API_URL/storage/$URL_ID/presign_upload?filename=banner.jpg" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Query Parameters:**
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `filename` | string | Yes | Name of file to upload |
-| `serialization` | string | No | Set to `jsonapi` for structured response |
+| `serialization` | string | No | Set to `jsonapi` for JSON:API response format |
 
-**Response 200 (JSONAPI):**
+**Response 200 (default — flat JSON):**
+```json
+{
+  "signed_url": "https://s3.us-east-2.amazonaws.com/...?X-Amz-Signature=...",
+  "public_url": "https://s3.us-east-2.amazonaws.com/.../banner.jpg"
+}
+```
+
+**Response 200 (with `?serialization=jsonapi`):**
 ```json
 {
   "data": {
@@ -184,7 +201,7 @@ Registers an uploaded file in storage.
 ```bash
 curl -X POST "$BLOCKS_API_URL/storage/$URL_ID/files" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "file": {
@@ -245,7 +262,7 @@ Updates storage file metadata.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/storage/$URL_ID/files/$FILE_ID" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "file": {
@@ -279,7 +296,7 @@ Soft-deletes a storage file.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/storage/$URL_ID/files/$FILE_ID" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -294,7 +311,7 @@ Sets file status to active.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/storage/$URL_ID/files/$FILE_ID/approve" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -320,7 +337,7 @@ Sets file status back to review.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/storage/$URL_ID/files/$FILE_ID/reject" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -346,7 +363,7 @@ Copies file to public bucket for public access.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/storage/$URL_ID/files/$FILE_ID/publish" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -361,7 +378,7 @@ Removes file from public bucket.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/storage/$URL_ID/files/$FILE_ID/unpublish" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content

@@ -24,7 +24,7 @@ Retrieve a specific message from a conversation.
 ```bash
 curl -s -X GET "https://conversations.api.us.23blocks.com/conversations/conv_def456/messages/msg_001" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json"
 ```
 
@@ -86,7 +86,7 @@ Send a new message to a conversation.
 ```bash
 curl -s -X POST "https://conversations.api.us.23blocks.com/conversations/conv_def456/messages" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "content": "Hello, how are you?",
@@ -137,7 +137,7 @@ When the same `idempotency_key` is sent again, the response includes `X-Idempote
 ```bash
 curl -s -X POST "https://conversations.api.us.23blocks.com/conversations/conv_def456/messages" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "message": {
@@ -181,7 +181,7 @@ curl -s -X POST "https://conversations.api.us.23blocks.com/conversations/conv_de
 ```bash
 curl -s -X POST "https://conversations.api.us.23blocks.com/conversations/conv_def456/messages" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "content": "Here is the document",
@@ -226,7 +226,7 @@ Update an existing message in a conversation.
 ```bash
 curl -s -X PUT "https://conversations.api.us.23blocks.com/conversations/conv_def456/messages" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "message_unique_id": "msg_001",
@@ -277,7 +277,7 @@ Mark a specific message as read by the current user.
 ```bash
 curl -s -X PUT "https://conversations.api.us.23blocks.com/conversations/conv_def456/messages/msg_001/read" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json"
 ```
 
@@ -318,7 +318,7 @@ Mark a specific message as unread for the current user.
 ```bash
 curl -s -X PUT "https://conversations.api.us.23blocks.com/conversations/conv_def456/messages/msg_001/unread" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json"
 ```
 
@@ -365,7 +365,7 @@ Attach additional custom data to a message.
 ```bash
 curl -s -X PUT "https://conversations.api.us.23blocks.com/conversations/conv_def456/messages/msg_001/extend" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "data": {
@@ -424,7 +424,7 @@ Retrieve a draft message from a conversation.
 ```bash
 curl -s -X GET "https://conversations.api.us.23blocks.com/conversations/conv_def456/draft_messages/draft_001" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json"
 ```
 
@@ -479,7 +479,7 @@ Save a draft message in a conversation.
 ```bash
 curl -s -X POST "https://conversations.api.us.23blocks.com/conversations/conv_def456/draft_messages" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "content": "I was thinking about the project timeline...",

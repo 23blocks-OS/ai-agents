@@ -16,12 +16,21 @@ Complete API reference for 23blocks file tag management.
 | Variable | Description | Example |
 |----------|-------------|---------|
 | `BLOCKS_API_URL` | Files API base URL | `https://files.api.us.23blocks.com` |
-| `BLOCKS_AUTH_TOKEN` | Bearer token (human or AID) | `eyJhbGciOiJSUzI1NiJ9...` |
-| `BLOCKS_API_KEY` | API key (AppId) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
+| `BLOCKS_AUTH_TOKEN` | Bearer token — your identity & scopes (from login or AID token exchange) | `eyJhbGciOiJSUzI1NiJ9...` |
+| `BLOCKS_API_KEY` | Tenant routing key (X-API-KEY header) — static, from company config | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
 
 ## Authentication
 
-Two methods are supported. The Bearer token works the same either way.
+**These two credentials serve different purposes and come from different sources:**
+
+| Credential | Purpose | Source | Changes? |
+|------------|---------|--------|----------|
+| `BLOCKS_API_KEY` | **Tenant routing** — identifies which company/app | Company config (static `pk_live_sh_...` key) | No — same key for all blocks |
+| `BLOCKS_AUTH_TOKEN` | **Identity & authorization** — who you are + what you can do | Login (`/auth/sign_in`), AID token exchange, or human-provided | Yes — expires, must be refreshed |
+
+> The API key used during AID registration is NOT the same as `BLOCKS_API_KEY`. The registration key authenticates the agent with the Auth API; `BLOCKS_API_KEY` routes requests to the correct tenant across all blocks.
+
+Two methods to obtain the Bearer token:
 
 **Method 1: Agent Identity (AID)** -- For AI agents with AMP identity:
 ```bash
@@ -50,7 +59,7 @@ Lists all tags for the tenant.
 ```bash
 curl -X GET "$BLOCKS_API_URL/tags" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -91,7 +100,7 @@ Retrieves a single tag by ID.
 ```bash
 curl -X GET "$BLOCKS_API_URL/tags/$TAG_ID" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -120,11 +129,12 @@ Creates a new tag.
 ```bash
 curl -X POST "$BLOCKS_API_URL/tags" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "tag": {
-      "tag": "confidential"
+      "tag": "confidential",
+      "description": "Files marked as confidential"
     }
   }'
 ```
@@ -133,6 +143,7 @@ curl -X POST "$BLOCKS_API_URL/tags" \
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `tag` | string | Yes | Tag name |
+| `description` | string | No | Tag description |
 
 **Response 201:**
 ```json
@@ -159,7 +170,7 @@ Updates an existing tag.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/tags/$TAG_ID" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "tag": {
@@ -194,7 +205,7 @@ Adds tags to a specific file.
 ```bash
 curl -X POST "$BLOCKS_API_URL/users/$USER_ID/files/$FILE_ID/tags" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "tags": ["legal", "2025", "contract"]
@@ -231,7 +242,7 @@ Removes specific tags from a file.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/users/$USER_ID/files/$FILE_ID/tags" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "tags": ["2025"]
@@ -261,7 +272,7 @@ Updates tags for multiple files at once.
 ```bash
 curl -X POST "$BLOCKS_API_URL/users/$USER_ID/tags" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "file_unique_ids": ["file-1", "file-2", "file-3"],
@@ -297,6 +308,7 @@ curl -X POST "$BLOCKS_API_URL/users/$USER_ID/tags" \
 |-------|------|-------------|
 | `unique_id` | uuid | Unique identifier |
 | `tag` | string | Tag name |
+| `description` | string | Tag description |
 | `created_at` | timestamp | Creation time |
 | `updated_at` | timestamp | Last update |
 
@@ -318,12 +330,12 @@ Use the `tags` query parameter when listing files:
 # Filter by single tag
 curl -X GET "$BLOCKS_API_URL/users/$USER_ID/files?tags=legal" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 
 # Filter by multiple tags (comma-separated)
 curl -X GET "$BLOCKS_API_URL/users/$USER_ID/files?tags=legal,2025" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 ---

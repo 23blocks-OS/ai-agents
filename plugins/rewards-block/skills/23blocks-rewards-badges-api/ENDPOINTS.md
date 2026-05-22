@@ -14,7 +14,7 @@ Lists all badges with pagination.
 ```bash
 curl -X GET "$BLOCKS_API_URL/badges?page=1&records=20" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Query Parameters:**
@@ -60,7 +60,7 @@ Retrieves a single badge by unique ID.
 ```bash
 curl -X GET "$BLOCKS_API_URL/badges/badge-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -102,17 +102,15 @@ Creates a new badge.
 ```bash
 curl -X POST "$BLOCKS_API_URL/badges" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "badge": {
-      "name": "First Purchase",
-      "description": "Awarded after first purchase",
-      "image_url": "https://cdn.example.com/badges/first-purchase.png",
-      "criteria": "Complete first transaction",
-      "points_value": 50,
-      "category_id": "category-uuid-1"
-    }
+    "name": "First Purchase",
+    "description": "Awarded after first purchase",
+    "image_url": "https://cdn.example.com/badges/first-purchase.png",
+    "criteria": "Complete first transaction",
+    "points_value": 50,
+    "category_id": "category-uuid-1"
   }'
 ```
 
@@ -160,14 +158,12 @@ Updates an existing badge.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/badges" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "badge": {
-      "unique_id": "badge-uuid-123",
-      "name": "Super Shopper",
-      "points_value": 100
-    }
+    "unique_id": "badge-uuid-123",
+    "name": "Super Shopper",
+    "points_value": 100
   }'
 ```
 
@@ -200,12 +196,10 @@ Deletes a badge.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/badges" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "badge": {
-      "unique_id": "badge-uuid-123"
-    }
+    "unique_id": "badge-uuid-123"
   }'
 ```
 
@@ -224,7 +218,7 @@ Assigns a category to a badge.
 ```bash
 curl -X POST "$BLOCKS_API_URL/badges/badge-uuid-123/categories" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "category_unique_id": "category-uuid-1"
@@ -261,7 +255,7 @@ Awards a badge to a specific user.
 ```bash
 curl -X POST "$BLOCKS_API_URL/badge" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "customer_unique_id": "customer-uuid",
@@ -308,7 +302,7 @@ Lists all badge categories.
 ```bash
 curl -X GET "$BLOCKS_API_URL/categories" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -340,7 +334,7 @@ Creates a new badge category.
 ```bash
 curl -X POST "$BLOCKS_API_URL/categories" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "category": {

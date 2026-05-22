@@ -14,7 +14,7 @@ Retrieves the aggregated context for an agent (system prompt, entity contexts, p
 ```bash
 curl -X GET "$BLOCKS_API_URL/agents/agent-uuid-123/context" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -56,7 +56,7 @@ Lists all threads for an agent.
 ```bash
 curl -X GET "$BLOCKS_API_URL/agents/agent-uuid-123/threads?page=1&records=20" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Query Parameters:**
@@ -99,7 +99,7 @@ Retrieves a single thread.
 ```bash
 curl -X GET "$BLOCKS_API_URL/agents/agent-uuid-123/threads/thread-uuid-456" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -133,7 +133,7 @@ Creates a new conversation thread for an agent.
 ```bash
 curl -X POST "$BLOCKS_API_URL/agents/agent-uuid-123/threads" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "thread": {
@@ -174,7 +174,7 @@ Deletes a thread and its messages.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/agents/agent-uuid-123/threads/thread-uuid-456" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -191,7 +191,7 @@ Lists messages in a thread.
 ```bash
 curl -X GET "$BLOCKS_API_URL/agents/agent-uuid-123/threads/thread-uuid-456/messages?page=1&records=50" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -232,7 +232,7 @@ Sends a message in a thread.
 ```bash
 curl -X POST "$BLOCKS_API_URL/agents/agent-uuid-123/threads/thread-uuid-456/messages" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "message": {
@@ -274,7 +274,7 @@ Sends a message and streams the AI response in real-time.
 ```bash
 curl -X POST "$BLOCKS_API_URL/agents/agent-uuid-123/threads/thread-uuid-456/messages/stream" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "message": {
@@ -304,7 +304,7 @@ Creates a new agent execution run in a thread.
 ```bash
 curl -X POST "$BLOCKS_API_URL/agents/agent-uuid-123/threads/thread-uuid-456/runs" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "run": {
@@ -344,7 +344,7 @@ Lists all runs in a thread.
 ```bash
 curl -X GET "$BLOCKS_API_URL/agents/agent-uuid-123/threads/thread-uuid-456/runs" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -379,7 +379,7 @@ Retrieves a single run.
 ```bash
 curl -X GET "$BLOCKS_API_URL/agents/agent-uuid-123/threads/thread-uuid-456/runs/run-uuid-789" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -413,7 +413,7 @@ Lists execution steps within a run.
 ```bash
 curl -X GET "$BLOCKS_API_URL/agents/agent-uuid-123/threads/thread-uuid-456/runs/run-uuid-789/executions" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**

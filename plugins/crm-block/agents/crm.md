@@ -34,7 +34,7 @@ if [ -z "$BLOCKS_API_URL" ] || [ -z "$BLOCKS_AUTH_TOKEN" ] || [ -z "$BLOCKS_API_
   echo "Please set:"
   echo "  BLOCKS_API_URL     - API base URL (e.g., https://crm.api.us.23blocks.com)"
   echo "  BLOCKS_AUTH_TOKEN  - Your authentication token"
-  echo "  BLOCKS_API_KEY     - Your API key (AppId)"
+  echo "  BLOCKS_API_KEY     - Your API key (X-API-KEY header)"
   exit 1
 fi
 echo "All credentials configured"
@@ -45,7 +45,7 @@ echo "All credentials configured"
 |----------|-------------|---------|
 | `BLOCKS_API_URL` | CRM API base URL | `https://crm.api.us.23blocks.com` |
 | `BLOCKS_AUTH_TOKEN` | Bearer token for authentication | `eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...` |
-| `BLOCKS_API_KEY` | API key (AppId header) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
+| `BLOCKS_API_KEY` | API key (X-API-KEY header) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
 
 **Agent Behavior:**
 - ALWAYS run the pre-flight check before any API operation
@@ -243,7 +243,7 @@ All authenticated endpoints require:
 ```bash
 curl -X GET "$BLOCKS_API_URL/accounts" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json"
 ```
 
@@ -448,7 +448,7 @@ curl -X GET "$BLOCKS_API_URL/accounts" \
 # 1. Create account
 curl -X POST "$BLOCKS_API_URL/accounts/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "account": {
@@ -463,7 +463,7 @@ curl -X POST "$BLOCKS_API_URL/accounts/" \
 # 2. Add contact to account
 curl -X POST "$BLOCKS_API_URL/accounts/{account_id}/contacts" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "contact": {
@@ -480,7 +480,7 @@ curl -X POST "$BLOCKS_API_URL/accounts/{account_id}/contacts" \
 # 1. Create a lead
 curl -X POST "$BLOCKS_API_URL/leads/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "lead": {
@@ -494,7 +494,7 @@ curl -X POST "$BLOCKS_API_URL/leads/" \
 # 2. Convert to opportunity
 curl -X POST "$BLOCKS_API_URL/opportunities/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "opportunity": {
@@ -513,7 +513,7 @@ curl -X POST "$BLOCKS_API_URL/opportunities/" \
 # 1. Create meeting
 curl -X POST "$BLOCKS_API_URL/meetings/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "meeting": {
@@ -527,7 +527,7 @@ curl -X POST "$BLOCKS_API_URL/meetings/" \
 # 2. Add Zoom link
 curl -X POST "$BLOCKS_API_URL/users/{user_id}/meetings/{meeting_id}/zoom" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "zoom": {

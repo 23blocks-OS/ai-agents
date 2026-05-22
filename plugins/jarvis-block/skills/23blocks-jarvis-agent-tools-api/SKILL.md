@@ -16,12 +16,21 @@ Complete API reference for 23blocks Jarvis agent tool management — legacy tool
 | Variable | Description | Example |
 |----------|-------------|---------|
 | `BLOCKS_API_URL` | Jarvis API base URL | `https://jarvis.api.us.23blocks.com` |
-| `BLOCKS_AUTH_TOKEN` | Bearer token (human or AID) | `eyJhbGciOiJSUzI1NiJ9...` |
-| `BLOCKS_API_KEY` | API key (AppId) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
+| `BLOCKS_AUTH_TOKEN` | Bearer token — your identity & scopes (from login or AID token exchange) | `eyJhbGciOiJSUzI1NiJ9...` |
+| `BLOCKS_API_KEY` | Tenant routing key (X-API-KEY header) — static, from company config | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
 
 ## Authentication
 
-Two methods are supported. The Bearer token works the same either way.
+**These two credentials serve different purposes and come from different sources:**
+
+| Credential | Purpose | Source | Changes? |
+|------------|---------|--------|----------|
+| `BLOCKS_API_KEY` | **Tenant routing** — identifies which company/app | Company config (static `pk_live_sh_...` key) | No — same key for all blocks |
+| `BLOCKS_AUTH_TOKEN` | **Identity & authorization** — who you are + what you can do | Login (`/auth/sign_in`), AID token exchange, or human-provided | Yes — expires, must be refreshed |
+
+> The API key used during AID registration is NOT the same as `BLOCKS_API_KEY`. The registration key authenticates the agent with the Auth API; `BLOCKS_API_KEY` routes requests to the correct tenant across all blocks.
+
+Two methods to obtain the Bearer token:
 
 **Method 1: Agent Identity (AID)** -- For AI agents with AMP identity:
 ```bash
@@ -40,6 +49,22 @@ export BLOCKS_API_KEY="<your-api-key>"
 
 ---
 
+## Prerequisites
+
+**User identity must be registered** before calling any endpoint in this skill. Without registration, all requests return `404` with code `usr-not-registered`.
+
+```bash
+curl -X POST "$BLOCKS_API_URL/identities/$USER_UNIQUE_ID/register" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{ "name": "Your Name", "email": "you@example.com" }'
+```
+
+> Self-registration (your own JWT) requires no special scope. Registering other users requires `identities:write`.
+
+---
+
 ## Legacy Agent Tools
 
 ### GET /agents/:id/tools - List Agent Tools
@@ -50,7 +75,7 @@ Lists all legacy tools for an agent.
 ```bash
 curl -X GET "$BLOCKS_API_URL/agents/agent-uuid-123/tools" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -89,7 +114,7 @@ Creates a legacy tool for an agent.
 ```bash
 curl -X POST "$BLOCKS_API_URL/agents/agent-uuid-123/tools" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "tool": {
@@ -142,7 +167,7 @@ Updates a legacy agent tool.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/agents/agent-uuid-123/tools/tool-uuid-456" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "tool": {
@@ -177,7 +202,7 @@ Deletes a legacy agent tool.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/agents/agent-uuid-123/tools/tool-uuid-456" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -194,7 +219,7 @@ Lists global tools assigned to an agent.
 ```bash
 curl -X GET "$BLOCKS_API_URL/agents/agent-uuid-123/global_tools" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -226,7 +251,7 @@ Assigns a global reusable tool to an agent.
 ```bash
 curl -X POST "$BLOCKS_API_URL/agents/agent-uuid-123/global_tools/global-tool-uuid-789" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -246,7 +271,7 @@ Removes a global tool assignment from an agent.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/agents/agent-uuid-123/global_tools/global-tool-uuid-789" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**

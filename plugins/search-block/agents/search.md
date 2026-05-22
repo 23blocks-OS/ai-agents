@@ -26,7 +26,7 @@ if [ -z "$BLOCKS_API_URL" ] || [ -z "$BLOCKS_AUTH_TOKEN" ] || [ -z "$BLOCKS_API_
   echo "Please set:"
   echo "  BLOCKS_API_URL     - API base URL (e.g., https://search.api.us.23blocks.com)"
   echo "  BLOCKS_AUTH_TOKEN  - Your authentication token"
-  echo "  BLOCKS_API_KEY     - Your API key (AppId)"
+  echo "  BLOCKS_API_KEY     - Your API key (X-API-KEY header)"
   exit 1
 fi
 echo "All credentials configured"
@@ -37,7 +37,7 @@ echo "All credentials configured"
 |----------|-------------|---------|
 | `BLOCKS_API_URL` | Search API base URL | `https://search.api.us.23blocks.com` |
 | `BLOCKS_AUTH_TOKEN` | Bearer token for authentication | `eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...` |
-| `BLOCKS_API_KEY` | API key (AppId header) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
+| `BLOCKS_API_KEY` | API key (X-API-KEY header) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
 
 **Agent Behavior:**
 - ALWAYS run the pre-flight check before any API operation
@@ -121,7 +121,6 @@ Multi-tenant company management:
 | Management | Get company details and configuration |
 | API Keys | Manage company API keys for external integrations |
 | Exchange | Configure RabbitMQ exchange settings |
-| Impersonation | Generate temporary access tokens |
 | Provisioning | Create new company tenants |
 
 ### User Identities
@@ -145,7 +144,7 @@ All authenticated endpoints require:
 ```bash
 curl -X GET "$BLOCKS_API_URL/entities" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json"
 ```
 
@@ -193,7 +192,6 @@ curl -X GET "$BLOCKS_API_URL/entities" \
 - `POST /companies/:url_id/keys` - Add company API key
 - `DELETE /companies/:url_id/keys/:key_unique_id` - Delete company API key
 - `POST /companies/:url_id/exchange` - Add RabbitMQ exchange settings
-- `POST /companies/:url_id/access` - Impersonate user (generate access token)
 
 ## Common Patterns
 
@@ -202,7 +200,7 @@ curl -X GET "$BLOCKS_API_URL/entities" \
 # 1. Execute a search query
 curl -X POST "$BLOCKS_API_URL/search" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "query": "machine learning",
@@ -213,7 +211,7 @@ curl -X POST "$BLOCKS_API_URL/search" \
 # 2. Get recent search history
 curl -X GET "$BLOCKS_API_URL/search/10" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 ### Register Entity and Search
@@ -221,7 +219,7 @@ curl -X GET "$BLOCKS_API_URL/search/10" \
 # 1. Register an entity
 curl -X POST "$BLOCKS_API_URL/entities/entity-uuid-123/register" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "entity": {
@@ -239,17 +237,19 @@ curl -X POST "$BLOCKS_API_URL/entities/entity-uuid-123/register" \
 # 2. Search entities with filters
 curl -X POST "$BLOCKS_API_URL/entities/search" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "include": {
-      "entity_type": "product",
-      "content.category": "electronics"
-    },
-    "page": 1,
-    "records": 20,
-    "sort_by": "content.price",
-    "sort_order": "asc"
+    "search": {
+      "include": {
+        "entity_type": "product",
+        "content.category": "electronics"
+      },
+      "page": 1,
+      "records": 20,
+      "sort_by": "content.price",
+      "sort_order": "asc"
+    }
   }'
 ```
 
@@ -258,7 +258,7 @@ curl -X POST "$BLOCKS_API_URL/entities/search" \
 # Use Jarvis to translate natural language to structured search
 curl -X POST "$BLOCKS_API_URL/jarvis/entities/search" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "query": "Find all electronics under $50 with high ratings",
@@ -271,10 +271,10 @@ curl -X POST "$BLOCKS_API_URL/jarvis/entities/search" \
 # 1. Create template
 curl -X POST "$BLOCKS_API_URL/mailtemplates" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "mail_template": {
+    "template": {
       "name": "Welcome Email",
       "template_name": "welcome-email",
       "from_email": "noreply@example.com",
@@ -287,17 +287,17 @@ curl -X POST "$BLOCKS_API_URL/mailtemplates" \
 # 2. Create Mandrill template
 curl -X POST "$BLOCKS_API_URL/mailtemplates/{template_id}/mandrill" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 
 # 3. Publish to Mandrill
 curl -X PUT "$BLOCKS_API_URL/mailtemplates/{template_id}/mandrill/publish" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 
 # 4. Check delivery stats
 curl -X GET "$BLOCKS_API_URL/mailtemplates/{template_id}/mandrill/stats" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 ## Error Handling

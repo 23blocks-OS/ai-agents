@@ -14,7 +14,7 @@ Lists all coupon configuration templates.
 ```bash
 curl -X GET "$BLOCKS_API_URL/configurations?page=1&records=20" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Query Parameters:**
@@ -60,7 +60,7 @@ Retrieves a single coupon configuration.
 ```bash
 curl -X GET "$BLOCKS_API_URL/configurations/config-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -99,7 +99,7 @@ Lists all coupons generated from a specific configuration.
 ```bash
 curl -X GET "$BLOCKS_API_URL/configurations/config-uuid-123/coupons?page=1&records=20" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -137,7 +137,7 @@ Creates a new coupon configuration template.
 ```bash
 curl -X POST "$BLOCKS_API_URL/configurations" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "configuration": {
@@ -195,7 +195,7 @@ Updates an existing coupon configuration.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/configurations" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "configuration": {
@@ -235,7 +235,7 @@ Deletes a coupon configuration.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/configurations/config-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -253,7 +253,7 @@ Generates a single coupon from a configuration.
 ```bash
 curl -X POST "$BLOCKS_API_URL/configurations/config-uuid-123/one" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "coupon": {
@@ -296,7 +296,7 @@ Generates multiple coupons from a configuration at once.
 ```bash
 curl -X POST "$BLOCKS_API_URL/configurations/config-uuid-123/batch" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "quantity": 50,
@@ -337,7 +337,7 @@ Voids all coupons in a batch.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/configurations/config-uuid-123/batches/batch-uuid-123/void" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -366,7 +366,7 @@ Loads pre-existing coupon codes into a configuration.
 ```bash
 curl -X POST "$BLOCKS_API_URL/configurations/config-uuid-123/load" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "codes": ["PROMO-001", "PROMO-002", "PROMO-003"]
@@ -401,7 +401,7 @@ Lists all coupons with pagination.
 ```bash
 curl -X GET "$BLOCKS_API_URL/coupons?page=1&records=20" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Query Parameters:**
@@ -445,7 +445,7 @@ Retrieves a single coupon by unique ID.
 ```bash
 curl -X GET "$BLOCKS_API_URL/coupons/coupon-uuid-1" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -485,7 +485,7 @@ Creates a standalone coupon.
 ```bash
 curl -X POST "$BLOCKS_API_URL/coupons" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "coupon": {
@@ -536,7 +536,7 @@ Updates an existing coupon.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/coupons/coupon-uuid-1" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "coupon": {
@@ -571,7 +571,7 @@ Voids a coupon so it can no longer be redeemed.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/coupons/coupon-uuid-1/void" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -599,7 +599,7 @@ Deletes a coupon.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/coupons/coupon-uuid-1" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -617,7 +617,7 @@ Previews a coupon redemption without committing the transaction.
 ```bash
 curl -X POST "$BLOCKS_API_URL/coupon/preview" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "code": "SUMMER-ABC123",
@@ -665,7 +665,7 @@ Redeems a coupon for a customer.
 ```bash
 curl -X POST "$BLOCKS_API_URL/coupon/redeem" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "code": "SUMMER-ABC123",

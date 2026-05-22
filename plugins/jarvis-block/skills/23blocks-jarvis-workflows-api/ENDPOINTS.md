@@ -12,7 +12,7 @@ Lists all workflows with pagination.
 ```bash
 curl -X GET "$BLOCKS_API_URL/workflows?page=1&records=20" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Query Parameters:**
@@ -57,7 +57,7 @@ Retrieves a single workflow by unique ID.
 ```bash
 curl -X GET "$BLOCKS_API_URL/workflows/workflow-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -99,7 +99,7 @@ Creates a new workflow.
 ```bash
 curl -X POST "$BLOCKS_API_URL/workflows" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "workflow": {
@@ -146,7 +146,7 @@ Updates an existing workflow.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/workflows/workflow-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "workflow": {
@@ -182,7 +182,7 @@ Deletes a workflow.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/workflows/workflow-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -199,7 +199,7 @@ Lists all steps in a workflow.
 ```bash
 curl -X GET "$BLOCKS_API_URL/workflows/workflow-uuid-123/steps" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -244,7 +244,7 @@ Retrieves a single workflow step.
 ```bash
 curl -X GET "$BLOCKS_API_URL/workflows/workflow-uuid-123/steps/step-uuid-1" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -283,7 +283,7 @@ Creates a new workflow step.
 ```bash
 curl -X POST "$BLOCKS_API_URL/workflows/workflow-uuid-123/steps" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "step": {
@@ -299,9 +299,12 @@ curl -X POST "$BLOCKS_API_URL/workflows/workflow-uuid-123/steps" \
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `name` | string | Yes | Step name |
-| `step_type` | string | Yes | Step type (ai_review, human_review, automated) |
+| `step_type` | string | Yes | Step type: `task`, `gateway`, `event`, `ai_review`, `human_review`, `automated` |
 | `position` | integer | Yes | Step position in workflow |
 | `description` | string | No | Step description |
+| `gateway_type` | string | No | Gateway type: `exclusive`, `parallel`, `inclusive`, `event_based` (only for gateway steps) |
+| `is_entry_point` | boolean | No | Whether this step is the workflow entry point |
+| `is_exit_point` | boolean | No | Whether this step is the workflow exit point |
 
 **Response 201:**
 ```json
@@ -330,7 +333,7 @@ Updates a workflow step.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/workflows/workflow-uuid-123/steps/step-uuid-1" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "step": {
@@ -366,7 +369,7 @@ Deletes a workflow step.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/workflows/workflow-uuid-123/steps/step-uuid-1" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -383,7 +386,7 @@ Assigns a prompt to a workflow step.
 ```bash
 curl -X POST "$BLOCKS_API_URL/workflows/workflow-uuid-123/steps/step-uuid-1/prompts/prompt-uuid-456" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -403,7 +406,7 @@ Removes a prompt from a workflow step.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/workflows/workflow-uuid-123/steps/step-uuid-1/prompts/prompt-uuid-456" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -423,7 +426,7 @@ Assigns an agent to a workflow step.
 ```bash
 curl -X POST "$BLOCKS_API_URL/workflows/workflow-uuid-123/steps/step-uuid-1/agents/agent-uuid-789" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -443,7 +446,7 @@ Removes an agent from a workflow step.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/workflows/workflow-uuid-123/steps/step-uuid-1/agents/agent-uuid-789" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**

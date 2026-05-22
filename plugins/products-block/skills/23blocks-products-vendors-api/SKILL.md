@@ -16,12 +16,21 @@ Complete API reference for 23blocks product vendor management with product catal
 | Variable | Description | Example |
 |----------|-------------|---------|
 | `BLOCKS_API_URL` | Products API base URL | `https://products.api.us.23blocks.com` |
-| `BLOCKS_AUTH_TOKEN` | Bearer token (human or AID) | `eyJhbGciOiJSUzI1NiJ9...` |
-| `BLOCKS_API_KEY` | API key (AppId) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
+| `BLOCKS_AUTH_TOKEN` | Bearer token — your identity & scopes (from login or AID token exchange) | `eyJhbGciOiJSUzI1NiJ9...` |
+| `BLOCKS_API_KEY` | Tenant routing key (X-API-KEY header) — static, from company config | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
 
 ## Authentication
 
-Two methods are supported. The Bearer token works the same either way.
+**These two credentials serve different purposes and come from different sources:**
+
+| Credential | Purpose | Source | Changes? |
+|------------|---------|--------|----------|
+| `BLOCKS_API_KEY` | **Tenant routing** — identifies which company/app | Company config (static `pk_live_sh_...` key) | No — same key for all blocks |
+| `BLOCKS_AUTH_TOKEN` | **Identity & authorization** — who you are + what you can do | Login (`/auth/sign_in`), AID token exchange, or human-provided | Yes — expires, must be refreshed |
+
+> The API key used during AID registration is NOT the same as `BLOCKS_API_KEY`. The registration key authenticates the agent with the Auth API; `BLOCKS_API_KEY` routes requests to the correct tenant across all blocks.
+
+Two methods to obtain the Bearer token:
 
 **Method 1: Agent Identity (AID)** -- For AI agents with AMP identity:
 ```bash
@@ -50,7 +59,7 @@ Lists all vendors.
 ```bash
 curl -X GET "$BLOCKS_API_URL/vendors/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -59,7 +68,7 @@ curl -X GET "$BLOCKS_API_URL/vendors/" \
   "data": [
     {
       "id": "vendor-uuid-123",
-      "type": "vendor",
+      "type": "Vendor",
       "attributes": {
         "unique_id": "vendor-uuid-123",
         "name": "Main Supplier Inc",
@@ -87,7 +96,7 @@ Retrieves a single vendor by unique ID.
 ```bash
 curl -X GET "$BLOCKS_API_URL/vendors/vendor-uuid-123/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -95,7 +104,7 @@ curl -X GET "$BLOCKS_API_URL/vendors/vendor-uuid-123/" \
 {
   "data": {
     "id": "vendor-uuid-123",
-    "type": "vendor",
+    "type": "Vendor",
     "attributes": {
       "unique_id": "vendor-uuid-123",
       "name": "Main Supplier Inc",
@@ -124,7 +133,7 @@ Creates a new vendor.
 ```bash
 curl -X POST "$BLOCKS_API_URL/vendors/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "vendor": {
@@ -151,7 +160,7 @@ curl -X POST "$BLOCKS_API_URL/vendors/" \
 {
   "data": {
     "id": "new-vendor-uuid",
-    "type": "vendor",
+    "type": "Vendor",
     "attributes": {
       "unique_id": "new-vendor-uuid",
       "name": "New Supplier Co",
@@ -177,7 +186,7 @@ Updates an existing vendor.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/vendors/vendor-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "vendor": {
@@ -199,7 +208,7 @@ Deletes a vendor.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/vendors/vendor-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -216,7 +225,7 @@ Loads a batch of products into a vendor's catalog.
 ```bash
 curl -X POST "$BLOCKS_API_URL/vendors/vendor-uuid-123/products/load" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "products": [
@@ -246,7 +255,7 @@ curl -X POST "$BLOCKS_API_URL/vendors/vendor-uuid-123/products/load" \
 ```json
 {
   "data": {
-    "type": "batch_result",
+    "type": "BatchResult",
     "attributes": {
       "loaded": 2,
       "errors": 0
@@ -265,7 +274,7 @@ Updates vendor product catalog entries.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/vendors/vendor-uuid-123/products/update" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "products": [
@@ -282,7 +291,7 @@ curl -X PUT "$BLOCKS_API_URL/vendors/vendor-uuid-123/products/update" \
 ```json
 {
   "data": {
-    "type": "batch_result",
+    "type": "BatchResult",
     "attributes": {
       "updated": 1,
       "errors": 0

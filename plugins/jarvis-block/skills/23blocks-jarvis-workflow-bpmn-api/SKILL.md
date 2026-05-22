@@ -16,12 +16,21 @@ Complete API reference for 23blocks Jarvis workflow conditions and step transiti
 | Variable | Description | Example |
 |----------|-------------|---------|
 | `BLOCKS_API_URL` | Jarvis API base URL | `https://jarvis.api.us.23blocks.com` |
-| `BLOCKS_AUTH_TOKEN` | Bearer token (human or AID) | `eyJhbGciOiJSUzI1NiJ9...` |
-| `BLOCKS_API_KEY` | API key (AppId) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
+| `BLOCKS_AUTH_TOKEN` | Bearer token — your identity & scopes (from login or AID token exchange) | `eyJhbGciOiJSUzI1NiJ9...` |
+| `BLOCKS_API_KEY` | Tenant routing key (X-API-KEY header) — static, from company config | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
 
 ## Authentication
 
-Two methods are supported. The Bearer token works the same either way.
+**These two credentials serve different purposes and come from different sources:**
+
+| Credential | Purpose | Source | Changes? |
+|------------|---------|--------|----------|
+| `BLOCKS_API_KEY` | **Tenant routing** — identifies which company/app | Company config (static `pk_live_sh_...` key) | No — same key for all blocks |
+| `BLOCKS_AUTH_TOKEN` | **Identity & authorization** — who you are + what you can do | Login (`/auth/sign_in`), AID token exchange, or human-provided | Yes — expires, must be refreshed |
+
+> The API key used during AID registration is NOT the same as `BLOCKS_API_KEY`. The registration key authenticates the agent with the Auth API; `BLOCKS_API_KEY` routes requests to the correct tenant across all blocks.
+
+Two methods to obtain the Bearer token:
 
 **Method 1: Agent Identity (AID)** -- For AI agents with AMP identity:
 ```bash
@@ -40,6 +49,37 @@ export BLOCKS_API_KEY="<your-api-key>"
 
 ---
 
+## Prerequisites
+
+**User identity must be registered** before calling any endpoint in this skill. Without registration, all requests return `404` with code `usr-not-registered`.
+
+```bash
+curl -X POST "$BLOCKS_API_URL/identities/$USER_UNIQUE_ID/register" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{ "name": "Your Name", "email": "you@example.com" }'
+```
+
+> Self-registration (your own JWT) requires no special scope. Registering other users requires `identities:write`.
+
+---
+
+## Workflow Step Parameters (BPMN)
+
+When creating or updating workflow steps (via `POST /workflows/:id/steps` or `PUT /workflows/:id/steps/:step_id` in the workflows skill), the following BPMN-related parameters are accepted:
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `step_type` | string | No | Step type: `task`, `gateway`, `event`, `ai_review`, `human_review`, `automated` |
+| `gateway_type` | string | No | Gateway type: `exclusive`, `parallel`, `inclusive`, `event_based` (only for gateway steps) |
+| `is_entry_point` | boolean | No | Whether this step is the workflow entry point |
+| `is_exit_point` | boolean | No | Whether this step is the workflow exit point |
+
+> See the `23blocks-jarvis-workflows-api` skill for full step CRUD endpoints.
+
+---
+
 ## Step Conditions
 
 ### GET /workflows/:id/steps/:step_id/conditions - List Conditions
@@ -50,7 +90,7 @@ Lists all conditions for a workflow step.
 ```bash
 curl -X GET "$BLOCKS_API_URL/workflows/workflow-uuid-123/steps/step-uuid-1/conditions" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -83,7 +123,7 @@ Creates a new condition for a workflow step.
 ```bash
 curl -X POST "$BLOCKS_API_URL/workflows/workflow-uuid-123/steps/step-uuid-1/conditions" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "condition": {
@@ -130,7 +170,7 @@ Updates an existing condition.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/workflows/workflow-uuid-123/steps/step-uuid-1/conditions/cond-uuid-456" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "condition": {
@@ -166,7 +206,7 @@ Deletes a condition.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/workflows/workflow-uuid-123/steps/step-uuid-1/conditions/cond-uuid-456" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -181,7 +221,7 @@ Evaluates all conditions for a step against provided data.
 ```bash
 curl -X POST "$BLOCKS_API_URL/workflows/workflow-uuid-123/steps/step-uuid-1/conditions/evaluate" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "data": {
@@ -230,7 +270,7 @@ Lists all step transitions in a workflow.
 ```bash
 curl -X GET "$BLOCKS_API_URL/workflows/workflow-uuid-123/transitions" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -263,7 +303,7 @@ Creates a new step transition.
 ```bash
 curl -X POST "$BLOCKS_API_URL/workflows/workflow-uuid-123/transitions" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "transition": {
@@ -311,7 +351,7 @@ Updates a transition.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/workflows/workflow-uuid-123/transitions/trans-uuid-789" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "transition": {
@@ -347,7 +387,7 @@ Deletes a transition.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/workflows/workflow-uuid-123/transitions/trans-uuid-789" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content

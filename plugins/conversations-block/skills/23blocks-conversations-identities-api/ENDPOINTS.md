@@ -25,7 +25,7 @@ Retrieve a list of registered users.
 ```bash
 curl -s -X GET "https://conversations.api.us.23blocks.com/users/?page=1&per_page=25" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json"
 ```
 
@@ -76,7 +76,7 @@ Retrieve details of a specific user.
 ```bash
 curl -s -X GET "https://conversations.api.us.23blocks.com/users/usr_abc123/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json"
 ```
 
@@ -130,7 +130,7 @@ Register a user identity within the Conversations Block. This is required before
 ```bash
 curl -s -X POST "https://conversations.api.us.23blocks.com/users/usr_abc123/register/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "display_name": "John Doe",
@@ -194,7 +194,7 @@ Update a registered user's profile information.
 ```bash
 curl -s -X PUT "https://conversations.api.us.23blocks.com/users/usr_abc123/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "display_name": "John D.",
@@ -247,7 +247,7 @@ Retrieve the current status of a user.
 ```bash
 curl -s -X GET "https://conversations.api.us.23blocks.com/users/usr_abc123/status" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json"
 ```
 
@@ -292,7 +292,7 @@ Set the current user's status message and availability.
 ```bash
 curl -s -X POST "https://conversations.api.us.23blocks.com/users/status" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "status": "busy",
@@ -332,7 +332,7 @@ Clear the current user's custom status.
 ```bash
 curl -s -X DELETE "https://conversations.api.us.23blocks.com/users/status" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json"
 ```
 
@@ -373,7 +373,7 @@ Generate a token for establishing a WebSocket connection for real-time messaging
 ```bash
 curl -s -X POST "https://conversations.api.us.23blocks.com/ws-tokens" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "user_unique_id": "usr_abc123",

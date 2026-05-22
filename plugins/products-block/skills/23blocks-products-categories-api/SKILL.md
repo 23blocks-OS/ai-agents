@@ -16,12 +16,21 @@ Complete API reference for 23blocks product category management with images and 
 | Variable | Description | Example |
 |----------|-------------|---------|
 | `BLOCKS_API_URL` | Products API base URL | `https://products.api.us.23blocks.com` |
-| `BLOCKS_AUTH_TOKEN` | Bearer token (human or AID) | `eyJhbGciOiJSUzI1NiJ9...` |
-| `BLOCKS_API_KEY` | API key (AppId) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
+| `BLOCKS_AUTH_TOKEN` | Bearer token — your identity & scopes (from login or AID token exchange) | `eyJhbGciOiJSUzI1NiJ9...` |
+| `BLOCKS_API_KEY` | Tenant routing key (X-API-KEY header) — static, from company config | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
 
 ## Authentication
 
-Two methods are supported. The Bearer token works the same either way.
+**These two credentials serve different purposes and come from different sources:**
+
+| Credential | Purpose | Source | Changes? |
+|------------|---------|--------|----------|
+| `BLOCKS_API_KEY` | **Tenant routing** — identifies which company/app | Company config (static `pk_live_sh_...` key) | No — same key for all blocks |
+| `BLOCKS_AUTH_TOKEN` | **Identity & authorization** — who you are + what you can do | Login (`/auth/sign_in`), AID token exchange, or human-provided | Yes — expires, must be refreshed |
+
+> The API key used during AID registration is NOT the same as `BLOCKS_API_KEY`. The registration key authenticates the agent with the Auth API; `BLOCKS_API_KEY` routes requests to the correct tenant across all blocks.
+
+Two methods to obtain the Bearer token:
 
 **Method 1: Agent Identity (AID)** -- For AI agents with AMP identity:
 ```bash
@@ -50,7 +59,7 @@ Lists all product categories.
 ```bash
 curl -X GET "$BLOCKS_API_URL/categories/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -59,7 +68,7 @@ curl -X GET "$BLOCKS_API_URL/categories/" \
   "data": [
     {
       "id": "category-uuid-123",
-      "type": "category",
+      "type": "Category",
       "attributes": {
         "unique_id": "category-uuid-123",
         "name": "Electronics",
@@ -85,7 +94,7 @@ Retrieves a single category by unique ID.
 ```bash
 curl -X GET "$BLOCKS_API_URL/categories/category-uuid-123/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -93,7 +102,7 @@ curl -X GET "$BLOCKS_API_URL/categories/category-uuid-123/" \
 {
   "data": {
     "id": "category-uuid-123",
-    "type": "category",
+    "type": "Category",
     "attributes": {
       "unique_id": "category-uuid-123",
       "name": "Electronics",
@@ -106,7 +115,7 @@ curl -X GET "$BLOCKS_API_URL/categories/category-uuid-123/" \
     "relationships": {
       "children": {
         "data": [
-          { "id": "category-uuid-456", "type": "category" }
+          { "id": "category-uuid-456", "type": "Category" }
         ]
       }
     }
@@ -127,7 +136,7 @@ Creates a new product category.
 ```bash
 curl -X POST "$BLOCKS_API_URL/categories/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "category": {
@@ -150,7 +159,7 @@ curl -X POST "$BLOCKS_API_URL/categories/" \
 {
   "data": {
     "id": "new-category-uuid",
-    "type": "category",
+    "type": "Category",
     "attributes": {
       "unique_id": "new-category-uuid",
       "name": "Keyboards",
@@ -176,7 +185,7 @@ Updates an existing category.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/categories/category-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "category": {
@@ -198,7 +207,7 @@ Soft-deletes a category.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/categories/category-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -213,7 +222,7 @@ Deletes a category and all its child categories.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/categories/category-uuid-123/cascade" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -228,7 +237,7 @@ Recovers a soft-deleted category.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/categories/category-uuid-123/recover" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -236,7 +245,7 @@ curl -X PUT "$BLOCKS_API_URL/categories/category-uuid-123/recover" \
 {
   "data": {
     "id": "category-uuid-123",
-    "type": "category",
+    "type": "Category",
     "attributes": {
       "unique_id": "category-uuid-123",
       "status": "active",
@@ -258,7 +267,7 @@ Gets a presigned URL for category image upload.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/categories/category-uuid-123/presign" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "file_name": "category-image.jpg",
@@ -270,7 +279,7 @@ curl -X PUT "$BLOCKS_API_URL/categories/category-uuid-123/presign" \
 ```json
 {
   "data": {
-    "type": "presigned_url",
+    "type": "PresignedUrl",
     "attributes": {
       "upload_url": "https://s3.amazonaws.com/bucket/presigned-upload-url",
       "file_url": "https://cdn.example.com/categories/category-image.jpg",
@@ -290,7 +299,7 @@ Registers an uploaded image to a category.
 ```bash
 curl -X POST "$BLOCKS_API_URL/categories/category-uuid-123/images" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "image": {
@@ -305,7 +314,7 @@ curl -X POST "$BLOCKS_API_URL/categories/category-uuid-123/images" \
 {
   "data": {
     "id": "image-uuid-123",
-    "type": "category_image",
+    "type": "CategoryImage",
     "attributes": {
       "unique_id": "image-uuid-123",
       "file_url": "https://cdn.example.com/categories/category-image.jpg",
@@ -326,7 +335,7 @@ Deletes a category image.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/categories/category-uuid-123/images/image-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -341,7 +350,7 @@ Approves a category image.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/categories/category-uuid-123/images/image-uuid-123/approve" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -349,7 +358,7 @@ curl -X PUT "$BLOCKS_API_URL/categories/category-uuid-123/images/image-uuid-123/
 {
   "data": {
     "id": "image-uuid-123",
-    "type": "category_image",
+    "type": "CategoryImage",
     "attributes": {
       "status": "approved"
     }
@@ -367,7 +376,7 @@ Publishes an approved category image.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/categories/category-uuid-123/images/image-uuid-123/publish" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -375,7 +384,7 @@ curl -X PUT "$BLOCKS_API_URL/categories/category-uuid-123/images/image-uuid-123/
 {
   "data": {
     "id": "image-uuid-123",
-    "type": "category_image",
+    "type": "CategoryImage",
     "attributes": {
       "status": "published"
     }

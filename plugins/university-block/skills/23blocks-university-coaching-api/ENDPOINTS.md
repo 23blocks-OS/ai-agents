@@ -14,7 +14,7 @@ Creates a coaching match (student-teacher pairing).
 ```bash
 curl -X POST "$BLOCKS_API_URL/matches" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "match": {
@@ -60,7 +60,7 @@ Activates a pending coaching match.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/matches/match-uuid-789/activate" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -94,7 +94,7 @@ Deactivates an active coaching match.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/matches/match-uuid-789/deactivate" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -126,7 +126,7 @@ Deletes a coaching match.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/matches/match-uuid-789" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -141,7 +141,7 @@ Evaluates potential student-teacher matches based on criteria.
 ```bash
 curl -X POST "$BLOCKS_API_URL/matches/evaluate" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "student_id": "student-uuid-123",
@@ -180,7 +180,7 @@ Evaluates availability compatibility between student and teacher.
 ```bash
 curl -X POST "$BLOCKS_API_URL/matches/availabilities" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "student_id": "student-uuid-123",
@@ -224,7 +224,7 @@ Gets the student's currently active coaching match.
 ```bash
 curl -X GET "$BLOCKS_API_URL/users/student-uuid-123/coaching/active" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -257,7 +257,7 @@ Lists all coaching matches for a student.
 ```bash
 curl -X GET "$BLOCKS_API_URL/users/student-uuid-123/coaching/matches" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -300,7 +300,7 @@ Lists available coaches for a student.
 ```bash
 curl -X GET "$BLOCKS_API_URL/users/student-uuid-123/coaching/available" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -332,7 +332,7 @@ Searches for coaches matching specific criteria.
 ```bash
 curl -X POST "$BLOCKS_API_URL/users/student-uuid-123/coaches/find" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "criteria": {
@@ -377,16 +377,16 @@ Lists coaching sessions with pagination and date filters.
 
 **Request:**
 ```bash
-curl -X GET "$BLOCKS_API_URL/coaching/sessions?page=1&records=20&start_date=2025-01-01&end_date=2025-01-31" \
+curl -X GET "$BLOCKS_API_URL/coaching/sessions?page=1&size=20&start_date=2025-01-01&end_date=2025-01-31" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Query Parameters:**
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `page` | integer | No | Page number (default: 1) |
-| `records` | integer | No | Records per page (default: 20) |
+| `size` | integer | No | Items per page (default: 15, max: 100) |
 | `start_date` | date | No | Filter by start date (YYYY-MM-DD) |
 | `end_date` | date | No | Filter by end date (YYYY-MM-DD) |
 
@@ -428,7 +428,7 @@ Retrieves a specific coaching session.
 ```bash
 curl -X GET "$BLOCKS_API_URL/coaching/sessions/session-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -466,7 +466,7 @@ Creates a new coaching session.
 ```bash
 curl -X POST "$BLOCKS_API_URL/coaching/sessions" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "coaching_session": {
@@ -524,7 +524,7 @@ Updates a coaching session.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/coaching/sessions/session-uuid-456" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "coaching_session": {
@@ -561,7 +561,7 @@ Cancels a coaching session.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/coaching/sessions/session-uuid-456" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -576,7 +576,7 @@ Student confirms attendance for a session.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/coaching/sessions/session-uuid-123/students/confirmation" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -604,7 +604,7 @@ Student checks in to a session.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/coaching/sessions/session-uuid-123/students/checking" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -632,7 +632,7 @@ Student checks out of a session.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/coaching/sessions/session-uuid-123/students/checkout" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -660,7 +660,7 @@ Teacher confirms a coaching session.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/coaching/sessions/session-uuid-123/teachers/confirmation" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -688,7 +688,7 @@ Teacher checks in to a session.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/coaching/sessions/session-uuid-123/teachers/checking" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -716,7 +716,7 @@ Teacher checks out of a session.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/coaching/sessions/session-uuid-123/teachers/checkout" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -744,7 +744,7 @@ Adds or updates student notes for a session.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/coaching/sessions/session-uuid-123/students/notes" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "notes": "Great session. Need to review integration techniques."
@@ -775,7 +775,7 @@ Adds or updates admin notes for a session.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/coaching/sessions/session-uuid-123/admin/notes" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "notes": "Session rescheduled from original date due to holiday."
@@ -804,9 +804,9 @@ Lists all coaching sessions for a student.
 
 **Request:**
 ```bash
-curl -X GET "$BLOCKS_API_URL/users/student-uuid-123/coaching_sessions?page=1&records=20" \
+curl -X GET "$BLOCKS_API_URL/users/student-uuid-123/coaching_sessions?page=1&size=20" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -844,9 +844,9 @@ Lists all coaching sessions for a teacher.
 
 **Request:**
 ```bash
-curl -X GET "$BLOCKS_API_URL/teachers/teacher-uuid-456/coaching_sessions?page=1&records=20" \
+curl -X GET "$BLOCKS_API_URL/teachers/teacher-uuid-456/coaching_sessions?page=1&size=20" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**

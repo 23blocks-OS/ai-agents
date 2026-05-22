@@ -28,7 +28,7 @@ Retrieve all groups that a user belongs to.
 ```bash
 curl -s -X GET "https://conversations.api.us.23blocks.com/users/usr_abc123/groups?page=1&per_page=25" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json"
 ```
 
@@ -88,7 +88,7 @@ Retrieve all members of a specific group.
 ```bash
 curl -s -X GET "https://conversations.api.us.23blocks.com/groups/grp_001/members?page=1&per_page=25" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json"
 ```
 
@@ -152,7 +152,7 @@ Create a new group.
 ```bash
 curl -s -X POST "https://conversations.api.us.23blocks.com/groups/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "name": "Engineering Team",
@@ -218,7 +218,7 @@ Update an existing group's details.
 ```bash
 curl -s -X PUT "https://conversations.api.us.23blocks.com/groups/grp_001/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "name": "Engineering Core Team",
@@ -263,7 +263,7 @@ Retrieve a specific conversation within a group.
 ```bash
 curl -s -X GET "https://conversations.api.us.23blocks.com/groups/grp_001/conversations/conv_grp789" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json"
 ```
 
@@ -318,7 +318,7 @@ Add a user to an existing group.
 ```bash
 curl -s -X PUT "https://conversations.api.us.23blocks.com/groups/grp_001/users/usr_new001" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "role": "member"
@@ -362,7 +362,7 @@ Remove a user from a group.
 ```bash
 curl -s -X DELETE "https://conversations.api.us.23blocks.com/groups/grp_001/users/usr_new001" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json"
 ```
 
@@ -408,7 +408,7 @@ Create a group associated with a specific context, along with an initial convers
 ```bash
 curl -s -X POST "https://conversations.api.us.23blocks.com/groups/conversations/contexts" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "name": "Project Alpha Team",
@@ -467,7 +467,7 @@ Retrieve all groups associated with a specific context for a user.
 ```bash
 curl -s -X GET "https://conversations.api.us.23blocks.com/users/usr_abc123/context/ctx_proj_alpha/groups" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json"
 ```
 
@@ -517,7 +517,7 @@ Retrieve all active invite codes for a group.
 ```bash
 curl -s -X GET "https://conversations.api.us.23blocks.com/groups/grp_001/invites" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json"
 ```
 
@@ -569,7 +569,7 @@ Generate a new invite code for a group.
 ```bash
 curl -s -X POST "https://conversations.api.us.23blocks.com/groups/grp_001/invites" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "max_uses": 50,
@@ -617,7 +617,7 @@ Delete/revoke an invite code.
 ```bash
 curl -s -X DELETE "https://conversations.api.us.23blocks.com/groups/grp_001/invites/ABC123XY" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json"
 ```
 
@@ -664,7 +664,7 @@ Generate a QR code image for an invite code.
 ```bash
 curl -s -X GET "https://conversations.api.us.23blocks.com/groups/grp_001/invites/ABC123XY/qr?size=512&format=png" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   --output invite_qr.png
 ```
 
@@ -697,7 +697,7 @@ Join a group using an invite code.
 ```bash
 curl -s -X POST "https://conversations.api.us.23blocks.com/groups/join/XYZ789AB" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "user_unique_id": "usr_new002"

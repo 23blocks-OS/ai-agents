@@ -10,16 +10,16 @@ Lists all courses.
 
 **Request:**
 ```bash
-curl -X GET "$BLOCKS_API_URL/courses/?page=1&records=20" \
+curl -X GET "$BLOCKS_API_URL/courses/?page=1&size=20" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Query Parameters:**
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `page` | integer | No | Page number (default: 1) |
-| `records` | integer | No | Items per page (default: 15) |
+| `size` | integer | No | Items per page (default: 15, max: 100) |
 
 **Response 200:**
 ```json
@@ -42,9 +42,8 @@ curl -X GET "$BLOCKS_API_URL/courses/?page=1&records=20" \
     }
   ],
   "meta": {
-    "total_count": 25,
-    "page": 1,
-    "records": 20
+    "totalPages": 2,
+    "totalRecords": 25
   }
 }
 ```
@@ -59,7 +58,7 @@ Retrieves a single course with its subjects and resources.
 ```bash
 curl -X GET "$BLOCKS_API_URL/courses/course-uuid-456/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -108,7 +107,7 @@ Creates a new course.
 ```bash
 curl -X POST "$BLOCKS_API_URL/courses/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "course": {
@@ -166,7 +165,7 @@ Updates an existing course.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/courses/course-uuid-456" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "course": {
@@ -203,7 +202,7 @@ Lists all teachers assigned to a course.
 ```bash
 curl -X GET "$BLOCKS_API_URL/courses/course-uuid-456/teachers" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -235,7 +234,7 @@ Lists all students enrolled in a course.
 ```bash
 curl -X GET "$BLOCKS_API_URL/courses/course-uuid-456/students" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -255,7 +254,8 @@ curl -X GET "$BLOCKS_API_URL/courses/course-uuid-456/students" \
     }
   ],
   "meta": {
-    "total_count": 28
+    "totalPages": 2,
+    "totalRecords": 28
   }
 }
 ```
@@ -270,7 +270,7 @@ Enrolls a student in a course.
 ```bash
 curl -X POST "$BLOCKS_API_URL/courses/course-uuid-456/enrollment" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "enrollment": {
@@ -311,7 +311,7 @@ Assigns a teacher to a course.
 ```bash
 curl -X POST "$BLOCKS_API_URL/courses/course-uuid-456/teacher" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "teacher": {
@@ -342,7 +342,7 @@ Validates an enrollment code to confirm student enrollment.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/courses/course-uuid-456/enrollment/ENR-2025-001" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -370,7 +370,7 @@ Lists all groups for a course.
 ```bash
 curl -X GET "$BLOCKS_API_URL/courses/course-uuid-456/groups" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -404,7 +404,7 @@ Registers a student into a specific course group.
 ```bash
 curl -X POST "$BLOCKS_API_URL/course/course-uuid-456/course_groups/enrollment" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "enrollment": {
@@ -437,7 +437,7 @@ Gets all resources for a course.
 ```bash
 curl -X GET "$BLOCKS_API_URL/courses/course-uuid-456/resources" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -469,7 +469,7 @@ Adds a resource to a course.
 ```bash
 curl -X POST "$BLOCKS_API_URL/courses/course-uuid-456/resources" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "resource": {
@@ -513,7 +513,7 @@ Updates a course resource.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/courses/course-uuid-456/resources/resource-uuid-001" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "resource": {
@@ -546,7 +546,7 @@ Deletes a course resource.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/courses/course-uuid-456/resources/resource-uuid-001" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -566,7 +566,7 @@ Generates a presigned URL for file upload to a course.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/courses/course-uuid-456/presign_upload" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "file": {
@@ -603,7 +603,7 @@ Lists all assignments for a course.
 ```bash
 curl -X GET "$BLOCKS_API_URL/courses/course-uuid-456/assignments/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -637,7 +637,7 @@ Creates an assignment for a course.
 ```bash
 curl -X POST "$BLOCKS_API_URL/courses/course-uuid-456/assignments" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "assignment": {
@@ -677,7 +677,7 @@ Lists all content tests for a course.
 ```bash
 curl -X GET "$BLOCKS_API_URL/courses/course-uuid-456/tests" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -711,7 +711,7 @@ Lists placement tests for a course.
 ```bash
 curl -X GET "$BLOCKS_API_URL/courses/course-uuid-456/placement" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -743,7 +743,7 @@ Creates a placement test associated with a course.
 ```bash
 curl -X POST "$BLOCKS_API_URL/courses/course-uuid-456/placement/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "placement": {

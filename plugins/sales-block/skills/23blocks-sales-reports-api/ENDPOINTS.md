@@ -28,7 +28,7 @@ Generates a summary report of orders.
 ```bash
 curl -X POST "$BLOCKS_API_URL/reports/orders/summary" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "report": {
@@ -85,7 +85,7 @@ Generates a detailed list report of orders.
 ```bash
 curl -X POST "$BLOCKS_API_URL/reports/orders/list" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "report": {
@@ -134,7 +134,7 @@ Generates a list of provider assignments for orders.
 ```bash
 curl -X POST "$BLOCKS_API_URL/reports/orders/providers/list" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "report": {
@@ -177,7 +177,7 @@ curl -X POST "$BLOCKS_API_URL/reports/orders/providers/list" \
 ```bash
 curl -X POST "$BLOCKS_API_URL/reports/orders/providers/summary" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "report": {
@@ -222,7 +222,7 @@ curl -X POST "$BLOCKS_API_URL/reports/orders/providers/summary" \
 ```bash
 curl -X POST "$BLOCKS_API_URL/reports/flexible_orders/summary" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "report": {
@@ -276,7 +276,7 @@ curl -X POST "$BLOCKS_API_URL/reports/flexible_orders/summary" \
 ```bash
 curl -X POST "$BLOCKS_API_URL/reports/payments/list" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "report": {
@@ -320,7 +320,7 @@ curl -X POST "$BLOCKS_API_URL/reports/payments/list" \
 ```bash
 curl -X POST "$BLOCKS_API_URL/reports/payments/summary" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "report": {
@@ -363,7 +363,7 @@ curl -X POST "$BLOCKS_API_URL/reports/payments/summary" \
 ```bash
 curl -X POST "$BLOCKS_API_URL/reports/vendors/payments/list" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "report": {
@@ -406,7 +406,7 @@ curl -X POST "$BLOCKS_API_URL/reports/vendors/payments/list" \
 ```bash
 curl -X POST "$BLOCKS_API_URL/reports/vendors/payments/summary" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "report": {
@@ -452,7 +452,7 @@ curl -X POST "$BLOCKS_API_URL/reports/vendors/payments/summary" \
 ```bash
 curl -X POST "$BLOCKS_API_URL/reports/users/subscriptions/list" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "report": {
@@ -493,7 +493,7 @@ curl -X POST "$BLOCKS_API_URL/reports/users/subscriptions/list" \
 ```bash
 curl -X POST "$BLOCKS_API_URL/reports/users/subscriptions/summary" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "report": {

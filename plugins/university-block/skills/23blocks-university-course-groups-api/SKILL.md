@@ -16,12 +16,21 @@ Complete API reference for 23blocks University course group management with enro
 | Variable | Description | Example |
 |----------|-------------|---------|
 | `BLOCKS_API_URL` | University API base URL | `https://university.api.us.23blocks.com` |
-| `BLOCKS_AUTH_TOKEN` | Bearer token (human or AID) | `eyJhbGciOiJSUzI1NiJ9...` |
-| `BLOCKS_API_KEY` | API key (AppId) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
+| `BLOCKS_AUTH_TOKEN` | Bearer token — your identity & scopes (from login or AID token exchange) | `eyJhbGciOiJSUzI1NiJ9...` |
+| `BLOCKS_API_KEY` | Tenant routing key (X-API-KEY header) — static, from company config | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
 
 ## Authentication
 
-Two methods are supported. The Bearer token works the same either way.
+**These two credentials serve different purposes and come from different sources:**
+
+| Credential | Purpose | Source | Changes? |
+|------------|---------|--------|----------|
+| `BLOCKS_API_KEY` | **Tenant routing** — identifies which company/app | Company config (static `pk_live_sh_...` key) | No — same key for all blocks |
+| `BLOCKS_AUTH_TOKEN` | **Identity & authorization** — who you are + what you can do | Login (`/auth/sign_in`), AID token exchange, or human-provided | Yes — expires, must be refreshed |
+
+> The API key used during AID registration is NOT the same as `BLOCKS_API_KEY`. The registration key authenticates the agent with the Auth API; `BLOCKS_API_KEY` routes requests to the correct tenant across all blocks.
+
+Two methods to obtain the Bearer token:
 
 **Method 1: Agent Identity (AID)** -- For AI agents with AMP identity:
 ```bash
@@ -50,7 +59,7 @@ Retrieves a course group with its assigned teachers and enrolled students.
 ```bash
 curl -X GET "$BLOCKS_API_URL/course_groups/group-uuid-101/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -99,7 +108,7 @@ Creates a new course group.
 ```bash
 curl -X POST "$BLOCKS_API_URL/course_groups/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "course_group": {
@@ -157,7 +166,7 @@ Enrolls a student in a course group.
 ```bash
 curl -X POST "$BLOCKS_API_URL/course_groups/group-uuid-101/enrollment" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "enrollment": {
@@ -191,7 +200,7 @@ Assigns a teacher to a course group.
 ```bash
 curl -X POST "$BLOCKS_API_URL/course_groups/group-uuid-101/teachers" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "teacher": {
@@ -222,7 +231,7 @@ Lists all tests for a course group.
 ```bash
 curl -X GET "$BLOCKS_API_URL/course_groups/group-uuid-101/tests" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -256,7 +265,7 @@ Retrieves all student responses for a specific test in the group.
 ```bash
 curl -X GET "$BLOCKS_API_URL/course_groups/group-uuid-101/tests/test-uuid-001/responses" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -279,7 +288,8 @@ curl -X GET "$BLOCKS_API_URL/course_groups/group-uuid-101/tests/test-uuid-001/re
     }
   ],
   "meta": {
-    "total_count": 28,
+    "totalPages": 2,
+    "totalRecords": 28,
     "average_score": 72.5
   }
 }

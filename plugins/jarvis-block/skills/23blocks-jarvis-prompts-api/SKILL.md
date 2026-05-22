@@ -16,12 +16,21 @@ Complete API reference for 23blocks Jarvis prompt management with rendering and 
 | Variable | Description | Example |
 |----------|-------------|---------|
 | `BLOCKS_API_URL` | Jarvis API base URL | `https://jarvis.api.us.23blocks.com` |
-| `BLOCKS_AUTH_TOKEN` | Bearer token (human or AID) | `eyJhbGciOiJSUzI1NiJ9...` |
-| `BLOCKS_API_KEY` | API key (AppId) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
+| `BLOCKS_AUTH_TOKEN` | Bearer token — your identity & scopes (from login or AID token exchange) | `eyJhbGciOiJSUzI1NiJ9...` |
+| `BLOCKS_API_KEY` | Tenant routing key (X-API-KEY header) — static, from company config | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
 
 ## Authentication
 
-Two methods are supported. The Bearer token works the same either way.
+**These two credentials serve different purposes and come from different sources:**
+
+| Credential | Purpose | Source | Changes? |
+|------------|---------|--------|----------|
+| `BLOCKS_API_KEY` | **Tenant routing** — identifies which company/app | Company config (static `pk_live_sh_...` key) | No — same key for all blocks |
+| `BLOCKS_AUTH_TOKEN` | **Identity & authorization** — who you are + what you can do | Login (`/auth/sign_in`), AID token exchange, or human-provided | Yes — expires, must be refreshed |
+
+> The API key used during AID registration is NOT the same as `BLOCKS_API_KEY`. The registration key authenticates the agent with the Auth API; `BLOCKS_API_KEY` routes requests to the correct tenant across all blocks.
+
+Two methods to obtain the Bearer token:
 
 **Method 1: Agent Identity (AID)** -- For AI agents with AMP identity:
 ```bash
@@ -40,6 +49,22 @@ export BLOCKS_API_KEY="<your-api-key>"
 
 ---
 
+## Prerequisites
+
+**User identity must be registered** before calling any endpoint in this skill. Without registration, all requests return `404` with code `usr-not-registered`.
+
+```bash
+curl -X POST "$BLOCKS_API_URL/identities/$USER_UNIQUE_ID/register" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{ "name": "Your Name", "email": "you@example.com" }'
+```
+
+> Self-registration (your own JWT) requires no special scope. Registering other users requires `identities:write`.
+
+---
+
 ## Endpoints
 
 ### GET /prompts - List Prompts
@@ -50,7 +75,7 @@ Lists all prompts with pagination.
 ```bash
 curl -X GET "$BLOCKS_API_URL/prompts?page=1&records=20" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Query Parameters:**
@@ -97,7 +122,7 @@ Retrieves a single prompt by unique ID.
 ```bash
 curl -X GET "$BLOCKS_API_URL/prompts/prompt-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -141,7 +166,7 @@ Creates a new prompt.
 ```bash
 curl -X POST "$BLOCKS_API_URL/prompts" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "prompt": {
@@ -195,7 +220,7 @@ Updates an existing prompt.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/prompts/prompt-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "prompt": {
@@ -232,13 +257,15 @@ Deletes a prompt.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/prompts/prompt-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
 
 **Errors:**
 - `404 Not Found` - Prompt not found
+
+> **Required Scopes:** POST, PUT, and DELETE `/prompts` endpoints require the `prompts:write` scope.
 
 ---
 
@@ -250,7 +277,7 @@ Renders a prompt template by substituting variables.
 ```bash
 curl -X POST "$BLOCKS_API_URL/prompts/prompt-uuid-123/render" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "variables": {
@@ -289,7 +316,7 @@ Adds a like to the prompt.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/prompts/prompt-uuid-123/like" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -309,7 +336,7 @@ Removes like from the prompt.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/prompts/prompt-uuid-123/dislike" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -329,7 +356,7 @@ Follows a prompt to receive updates.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/prompts/prompt-uuid-123/follow" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -349,7 +376,7 @@ Unfollows a prompt.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/prompts/prompt-uuid-123/unfollow" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -369,7 +396,7 @@ Saves/bookmarks a prompt.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/prompts/prompt-uuid-123/save" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -389,7 +416,7 @@ Removes prompt from saved list.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/prompts/prompt-uuid-123/unsave" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**

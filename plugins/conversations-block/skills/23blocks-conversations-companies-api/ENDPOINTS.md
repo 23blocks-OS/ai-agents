@@ -23,7 +23,7 @@ Retrieve a company profile by its URL identifier.
 ```bash
 curl -s -X GET "https://conversations.api.us.23blocks.com/companies/acme-corp" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json"
 ```
 
@@ -79,7 +79,7 @@ Register a new company in the Conversations Block.
 ```bash
 curl -s -X POST "https://conversations.api.us.23blocks.com/companies/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "name": "Acme Corp",
@@ -143,7 +143,7 @@ Retrieve all API keys for a company.
 ```bash
 curl -s -X GET "https://conversations.api.us.23blocks.com/companies/acme-corp/keys" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json"
 ```
 
@@ -199,7 +199,7 @@ Generate a new API key for a company.
 ```bash
 curl -s -X POST "https://conversations.api.us.23blocks.com/companies/acme-corp/keys" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "name": "Staging Key",
@@ -261,7 +261,7 @@ Update an existing API key's properties.
 ```bash
 curl -s -X PUT "https://conversations.api.us.23blocks.com/companies/acme-corp/keys/key_002" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "name": "Development Key - Updated",
@@ -306,7 +306,7 @@ Permanently revoke and delete an API key.
 ```bash
 curl -s -X DELETE "https://conversations.api.us.23blocks.com/companies/acme-corp/keys/key_002" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json"
 ```
 
@@ -354,7 +354,7 @@ Exchange an API key from another 23blocks block to obtain credentials for this b
 ```bash
 curl -s -X POST "https://conversations.api.us.23blocks.com/companies/acme-corp/exchange" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "source_block": "content-block",
@@ -410,7 +410,7 @@ Generate an impersonation token to act on behalf of a user. Requires admin privi
 ```bash
 curl -s -X POST "https://conversations.api.us.23blocks.com/companies/acme-corp/impersonate" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "user_unique_id": "usr_abc123",

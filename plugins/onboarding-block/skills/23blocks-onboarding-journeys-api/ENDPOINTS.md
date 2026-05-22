@@ -14,10 +14,10 @@ Starts a new onboarding journey for the authenticated user. The `:unique_id` ref
 ```bash
 curl -X POST "$BLOCKS_API_URL/onboard/onboarding-uuid-456/start" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "journey": {
+    "onboard": {
       "metadata": {"source": "welcome_page"}
     }
   }'
@@ -62,7 +62,7 @@ Retrieves the current status of a journey. The `:unique_id` refers to the journe
 ```bash
 curl -X GET "$BLOCKS_API_URL/onboard/journey-uuid-789" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -97,7 +97,7 @@ Retrieves a journey with full step details and completion logs.
 ```bash
 curl -X GET "$BLOCKS_API_URL/onboard/journey-uuid-789/details" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -158,10 +158,10 @@ Marks the current step as completed and advances the journey to the next step. I
 ```bash
 curl -X PUT "$BLOCKS_API_URL/onboard/journey-uuid-789" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "journey": {
+    "onboard": {
       "metadata": {"completed_action": "email_verified"}
     }
   }'
@@ -224,10 +224,10 @@ Logs a step action without advancing the journey to the next step. Useful for tr
 ```bash
 curl -X PUT "$BLOCKS_API_URL/onboard/journey-uuid-789/log" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "log": {
+    "onboard": {
       "action": "field_completed",
       "metadata": {"field": "company_name", "value": "Acme Corp"}
     }
@@ -279,10 +279,10 @@ Suspends an active journey. Suspended journeys can be resumed later.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/onboard/journey-uuid-789/suspend" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "journey": {
+    "onboard": {
       "metadata": {"reason": "user_requested_pause"}
     }
   }'
@@ -326,10 +326,10 @@ Resumes a previously suspended journey from where it was paused.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/onboard/journey-uuid-789/resume" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "journey": {
+    "onboard": {
       "metadata": {"resumed_from": "remarketing_email"}
     }
   }'

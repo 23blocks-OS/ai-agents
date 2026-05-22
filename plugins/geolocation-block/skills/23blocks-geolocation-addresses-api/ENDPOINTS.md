@@ -14,7 +14,7 @@ Retrieves a single address by unique ID.
 ```bash
 curl -X GET "$BLOCKS_API_URL/addresses/addr-uuid-123/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -22,7 +22,7 @@ curl -X GET "$BLOCKS_API_URL/addresses/addr-uuid-123/" \
 {
   "data": {
     "id": "addr-uuid-123",
-    "type": "address",
+    "type": "Address",
     "attributes": {
       "unique_id": "addr-uuid-123",
       "street": "456 Oak Ave",
@@ -35,14 +35,14 @@ curl -X GET "$BLOCKS_API_URL/addresses/addr-uuid-123/" \
       "address_type": "home",
       "is_default": true,
       "owner_type": "user",
-      "owner_id": "user-uuid-123",
+      "owner_unique_id": "user-uuid-123",
       "created_at": "2025-01-10T10:30:00Z",
       "updated_at": "2025-01-10T10:30:00Z"
     },
     "relationships": {
       "tags": {
         "data": [
-          { "id": "tag-uuid", "type": "tag" }
+          { "id": "tag-uuid", "type": "Tag" }
         ]
       }
     }
@@ -63,7 +63,7 @@ Retrieves all addresses owned by a specific entity.
 ```bash
 curl -X GET "$BLOCKS_API_URL/addresses/owned_by/user-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -72,7 +72,7 @@ curl -X GET "$BLOCKS_API_URL/addresses/owned_by/user-uuid-123" \
   "data": [
     {
       "id": "addr-uuid-123",
-      "type": "address",
+      "type": "Address",
       "attributes": {
         "unique_id": "addr-uuid-123",
         "street": "456 Oak Ave",
@@ -83,7 +83,7 @@ curl -X GET "$BLOCKS_API_URL/addresses/owned_by/user-uuid-123" \
         "address_type": "home",
         "is_default": true,
         "owner_type": "user",
-        "owner_id": "user-uuid-123"
+        "owner_unique_id": "user-uuid-123"
       }
     }
   ]
@@ -100,7 +100,7 @@ Creates a new address.
 ```bash
 curl -X POST "$BLOCKS_API_URL/addresses/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "address": {
@@ -114,7 +114,7 @@ curl -X POST "$BLOCKS_API_URL/addresses/" \
       "address_type": "home",
       "is_default": true,
       "owner_type": "user",
-      "owner_id": "user-uuid-123"
+      "owner_unique_id": "user-uuid-123"
     }
   }'
 ```
@@ -132,14 +132,14 @@ curl -X POST "$BLOCKS_API_URL/addresses/" \
 | `address_type` | string | No | Type (home, work, billing, shipping) |
 | `is_default` | boolean | No | Whether this is the default address |
 | `owner_type` | string | Yes | Owner entity type (user, contact) |
-| `owner_id` | uuid | Yes | Owner entity unique ID |
+| `owner_unique_id` | uuid | Yes | Owner entity unique ID |
 
 **Response 201:**
 ```json
 {
   "data": {
     "id": "addr-uuid-123",
-    "type": "address",
+    "type": "Address",
     "attributes": {
       "unique_id": "addr-uuid-123",
       "street": "456 Oak Ave",
@@ -152,7 +152,7 @@ curl -X POST "$BLOCKS_API_URL/addresses/" \
       "address_type": "home",
       "is_default": true,
       "owner_type": "user",
-      "owner_id": "user-uuid-123",
+      "owner_unique_id": "user-uuid-123",
       "created_at": "2025-01-12T10:30:00Z"
     }
   }
@@ -172,7 +172,7 @@ Updates an existing address.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/addresses/addr-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "address": {
@@ -188,7 +188,7 @@ curl -X PUT "$BLOCKS_API_URL/addresses/addr-uuid-123" \
 {
   "data": {
     "id": "addr-uuid-123",
-    "type": "address",
+    "type": "Address",
     "attributes": {
       "unique_id": "addr-uuid-123",
       "street": "789 Pine St",
@@ -216,7 +216,7 @@ Deletes an address.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/addresses/addr-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -236,10 +236,12 @@ Adds a tag to an address.
 ```bash
 curl -X POST "$BLOCKS_API_URL/addresses/addr-uuid-123/tags/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "tag_unique_id": "tag-uuid-456"
+    "tag": {
+      "unique_id": "tag-uuid-456"
+    }
   }'
 ```
 
@@ -260,7 +262,7 @@ Removes a tag from an address.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/addresses/addr-uuid-123/tags/tag-uuid-456" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -282,7 +284,7 @@ Retrieves all addresses for a user.
 ```bash
 curl -X GET "$BLOCKS_API_URL/users/user-uuid-123/addresses" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -291,7 +293,7 @@ curl -X GET "$BLOCKS_API_URL/users/user-uuid-123/addresses" \
   "data": [
     {
       "id": "addr-uuid-123",
-      "type": "address",
+      "type": "Address",
       "attributes": {
         "unique_id": "addr-uuid-123",
         "street": "456 Oak Ave",
@@ -305,7 +307,7 @@ curl -X GET "$BLOCKS_API_URL/users/user-uuid-123/addresses" \
     },
     {
       "id": "addr-uuid-456",
-      "type": "address",
+      "type": "Address",
       "attributes": {
         "unique_id": "addr-uuid-456",
         "street": "100 Corporate Blvd",
@@ -331,7 +333,7 @@ Retrieves the default address for a user.
 ```bash
 curl -X GET "$BLOCKS_API_URL/users/user-uuid-123/default" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -339,7 +341,7 @@ curl -X GET "$BLOCKS_API_URL/users/user-uuid-123/default" \
 {
   "data": {
     "id": "addr-uuid-123",
-    "type": "address",
+    "type": "Address",
     "attributes": {
       "unique_id": "addr-uuid-123",
       "street": "456 Oak Ave",
@@ -369,7 +371,7 @@ Retrieves all addresses for a contact.
 ```bash
 curl -X GET "$BLOCKS_API_URL/contacts/contact-uuid-789/addresses" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -378,7 +380,7 @@ curl -X GET "$BLOCKS_API_URL/contacts/contact-uuid-789/addresses" \
   "data": [
     {
       "id": "addr-uuid-789",
-      "type": "address",
+      "type": "Address",
       "attributes": {
         "unique_id": "addr-uuid-789",
         "street": "200 Business Park Dr",

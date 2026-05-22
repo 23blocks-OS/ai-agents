@@ -16,12 +16,21 @@ Complete API reference for 23blocks Jarvis user identity management with context
 | Variable | Description | Example |
 |----------|-------------|---------|
 | `BLOCKS_API_URL` | Jarvis API base URL | `https://jarvis.api.us.23blocks.com` |
-| `BLOCKS_AUTH_TOKEN` | Bearer token (human or AID) | `eyJhbGciOiJSUzI1NiJ9...` |
-| `BLOCKS_API_KEY` | API key (AppId) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
+| `BLOCKS_AUTH_TOKEN` | Bearer token — your identity & scopes (from login or AID token exchange) | `eyJhbGciOiJSUzI1NiJ9...` |
+| `BLOCKS_API_KEY` | Tenant routing key (X-API-KEY header) — static, from company config | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
 
 ## Authentication
 
-Two methods are supported. The Bearer token works the same either way.
+**These two credentials serve different purposes and come from different sources:**
+
+| Credential | Purpose | Source | Changes? |
+|------------|---------|--------|----------|
+| `BLOCKS_API_KEY` | **Tenant routing** — identifies which company/app | Company config (static `pk_live_sh_...` key) | No — same key for all blocks |
+| `BLOCKS_AUTH_TOKEN` | **Identity & authorization** — who you are + what you can do | Login (`/auth/sign_in`), AID token exchange, or human-provided | Yes — expires, must be refreshed |
+
+> The API key used during AID registration is NOT the same as `BLOCKS_API_KEY`. The registration key authenticates the agent with the Auth API; `BLOCKS_API_KEY` routes requests to the correct tenant across all blocks.
+
+Two methods to obtain the Bearer token:
 
 **Method 1: Agent Identity (AID)** -- For AI agents with AMP identity:
 ```bash
@@ -38,6 +47,15 @@ export BLOCKS_AUTH_TOKEN="<your-bearer-token>"
 export BLOCKS_API_KEY="<your-api-key>"
 ```
 
+---
+
+## Prerequisites
+
+**User identity must be registered** before calling any other endpoint in this skill. The only exception is `POST /identities/:id/register` itself. Without registration, all other requests return `404` with code `usr-not-registered`.
+
+> This applies to all Jarvis block skills. Register the identity first, then use any other endpoint. Self-registration (your own JWT) requires no special scope. Registering other users requires `identities:write`.
+
+---
 
 ## Endpoints
 
@@ -47,7 +65,7 @@ export BLOCKS_API_KEY="<your-api-key>"
 |--------|------|-------------|
 | GET | `/identities` | List all identities |
 | GET | `/identities/:id` | Get a single identity |
-| POST | `/identities/:id/register` | Register a user |
+| POST | `/identities/:id/register` | Register a user (non-self requires `identities:write` scope) |
 | PUT | `/identities/:id` | Update an identity |
 | GET | `/identities/:id/contexts` | List user contexts |
 | POST | `/identities/:id/contexts` | Create user context |
@@ -85,7 +103,10 @@ export BLOCKS_API_KEY="<your-api-key>"
 | `unique_id` | uuid | Unique identifier |
 | `name` | string | Context name |
 | `content` | string | Context content |
+| `members` | array | Context members |
 | `created_at` | timestamp | Creation time |
+
+> **Context Creation Behavior:** When creating contexts, if no `members` array is provided, Jarvis auto-populates it from the JWT token (user_unique_id + user_email).
 
 ### Message
 | Field | Type | Description |
@@ -121,7 +142,7 @@ Creates a new delegation from this identity to another user.
 ```bash
 curl -X POST "$BLOCKS_API_URL/identities/user-uuid-123/delegations" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "delegation": {
@@ -137,9 +158,12 @@ curl -X POST "$BLOCKS_API_URL/identities/user-uuid-123/delegations" \
 **Request Parameters:**
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `delegate_uid` | uuid | Yes | User UID to delegate to |
-| `agent_uid` | uuid | Yes | Agent the delegation applies to |
+| `delegate_uid` | uuid | Yes | User UID to delegate to (alias: `grantee_user_unique_id`) |
+| `agent_uid` | uuid | No | Agent the delegation applies to |
 | `context_uid` | uuid | No | Context scope (omit for agent-wide) |
+| `access_type` | string | No | Access type for the delegation |
+| `resource_type` | string | No | Resource type the delegation applies to |
+| `resource_unique_id` | uuid | No | Specific resource ID the delegation applies to |
 | `permissions` | array | No | Permissions: `read`, `write`, `execute` |
 | `expires_at` | timestamp | No | Delegation expiration time |
 
@@ -177,7 +201,7 @@ Lists all delegations granted by this identity.
 ```bash
 curl -X GET "$BLOCKS_API_URL/identities/user-uuid-123/delegations/granted" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -211,7 +235,7 @@ Lists all delegations received by this identity.
 ```bash
 curl -X GET "$BLOCKS_API_URL/identities/user-uuid-456/delegations/received" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -245,7 +269,7 @@ Retrieves a single delegation by ID.
 ```bash
 curl -X GET "$BLOCKS_API_URL/identities/user-uuid-123/delegations/delegation-uuid-001" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -282,7 +306,7 @@ Revokes a delegation.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/identities/user-uuid-123/delegations/delegation-uuid-001" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content

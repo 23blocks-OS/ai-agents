@@ -26,7 +26,7 @@ Retrieve all contexts.
 ```bash
 curl -s -X GET "https://conversations.api.us.23blocks.com/contexts/?page=1&per_page=25&status=active" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json"
 ```
 
@@ -81,7 +81,7 @@ Retrieve details of a specific context.
 ```bash
 curl -s -X GET "https://conversations.api.us.23blocks.com/contexts/ctx_proj_alpha" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json"
 ```
 
@@ -148,7 +148,7 @@ Create a new context for organizing groups and conversations.
 ```bash
 curl -s -X POST "https://conversations.api.us.23blocks.com/contexts/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "name": "Project Beta",
@@ -217,7 +217,7 @@ Update an existing context.
 ```bash
 curl -s -X PUT "https://conversations.api.us.23blocks.com/contexts/ctx_proj_alpha" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "description": "Updated: All conversations related to Project Alpha - Phase 2",
@@ -276,7 +276,7 @@ Retrieve all groups associated with a specific context.
 ```bash
 curl -s -X GET "https://conversations.api.us.23blocks.com/context/ctx_proj_alpha/groups?page=1&per_page=25" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json"
 ```
 

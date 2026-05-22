@@ -14,7 +14,7 @@ Lists all calendar accounts for a user.
 ```bash
 curl -X GET "$BLOCKS_API_URL/users/user-uuid-123/calendar_accounts" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -48,7 +48,7 @@ Retrieves a specific calendar account.
 ```bash
 curl -X GET "$BLOCKS_API_URL/users/user-uuid-123/calendar_accounts/cal-account-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -83,7 +83,7 @@ Creates a new calendar account connection.
 ```bash
 curl -X POST "$BLOCKS_API_URL/users/user-uuid-123/calendar_accounts" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "calendar_account": {
@@ -133,7 +133,7 @@ Updates a calendar account connection.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/users/user-uuid-123/calendar_accounts/cal-account-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "calendar_account": {
@@ -167,7 +167,7 @@ Deletes a calendar account connection.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/users/user-uuid-123/calendar_accounts/cal-account-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -184,7 +184,7 @@ Triggers a calendar sync for a specific user.
 ```bash
 curl -X POST "$BLOCKS_API_URL/users/user-uuid-123/calendar/sync" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -209,7 +209,7 @@ Triggers a calendar sync for all users.
 ```bash
 curl -X POST "$BLOCKS_API_URL/calendar/sync" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -237,7 +237,7 @@ Lists all busy time blocks for a user.
 ```bash
 curl -X GET "$BLOCKS_API_URL/users/user-uuid-123/busy_blocks" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -271,7 +271,7 @@ Creates a new busy time block for a user.
 ```bash
 curl -X POST "$BLOCKS_API_URL/users/user-uuid-123/busy_blocks" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "busy_block": {
@@ -320,7 +320,7 @@ Deletes a busy time block.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/users/user-uuid-123/busy_blocks/busy-block-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -337,7 +337,7 @@ Lists all ICS feed tokens for a user.
 ```bash
 curl -X GET "$BLOCKS_API_URL/users/user-uuid-123/ics_tokens" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -369,7 +369,7 @@ Generates a new ICS feed token.
 ```bash
 curl -X POST "$BLOCKS_API_URL/users/user-uuid-123/ics_tokens" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "ics_token": {
@@ -410,7 +410,7 @@ Deletes an ICS feed token.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/users/user-uuid-123/ics_tokens/ics-token-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content

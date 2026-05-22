@@ -32,7 +32,7 @@ Mark a specific message as read for the authenticated user. Creates a `MessageRe
 ```bash
 curl -s -X PUT "$BLOCKS_API_URL/conversations/conv_def456/messages/msg_001/read" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "message": {
@@ -88,7 +88,7 @@ Mark a specific message as unread for the authenticated user. Removes the user's
 ```bash
 curl -s -X PUT "$BLOCKS_API_URL/conversations/conv_def456/messages/msg_001/unread" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "message": {
@@ -135,7 +135,7 @@ Mark all messages in a conversation as read for the authenticated user. Updates 
 ```bash
 curl -s -X PUT "$BLOCKS_API_URL/conversations/conv_def456/messages/read_all" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json"
 ```
 
@@ -156,7 +156,7 @@ The following endpoint is still supported but routes to the same `read_message` 
 ```bash
 curl -s -X PUT "$BLOCKS_API_URL/conversations/conv_def456/messages" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "message": {

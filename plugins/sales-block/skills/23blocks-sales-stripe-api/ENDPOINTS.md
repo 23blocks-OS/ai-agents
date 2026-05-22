@@ -14,7 +14,7 @@ Creates a new customer in Stripe.
 ```bash
 curl -X POST "$BLOCKS_API_URL/stripe/customers" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "customer": {
@@ -35,22 +35,21 @@ curl -X POST "$BLOCKS_API_URL/stripe/customers" \
 | `phone` | string | No | Phone number |
 | `metadata` | object | No | Custom metadata |
 
-**Response 201:**
+**Response 201 (raw Stripe JSON):**
 ```json
 {
-  "data": {
-    "id": "stripe-cust-uuid-001",
-    "type": "stripe_customer",
-    "attributes": {
-      "unique_id": "stripe-cust-uuid-001",
-      "stripe_customer_id": "cus_Abc123XYZ",
-      "email": "user@example.com",
-      "name": "John Doe",
-      "created_at": "2025-01-12T10:30:00Z"
-    }
-  }
+  "id": "cus_Abc123XYZ",
+  "object": "customer",
+  "email": "user@example.com",
+  "name": "John Doe",
+  "metadata": {
+    "user_id": "user-uuid-456"
+  },
+  "created": 1736674200
 }
 ```
+
+> **Note:** Stripe pass-through endpoints return raw Stripe JSON objects, not JSON:API format.
 
 ---
 
@@ -62,10 +61,11 @@ Generates a Stripe customer billing portal URL.
 ```bash
 curl -X POST "$BLOCKS_API_URL/stripe/customers/stripe-cust-uuid-001/portal" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "portal": {
+      "customer_id": "cus_Abc123XYZ",
       "return_url": "https://app.example.com/account"
     }
   }'
@@ -74,21 +74,17 @@ curl -X POST "$BLOCKS_API_URL/stripe/customers/stripe-cust-uuid-001/portal" \
 **Request Parameters:**
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
+| `customer_id` | string | Yes | Stripe customer ID |
 | `return_url` | string | Yes | URL to redirect after portal session |
 
-**Response 200:**
+**Response 200 (plain JSON):**
 ```json
 {
-  "data": {
-    "type": "portal_session",
-    "attributes": {
-      "url": "https://billing.stripe.com/session/sess_xyz123",
-      "return_url": "https://app.example.com/account",
-      "expires_at": "2025-01-12T11:30:00Z"
-    }
-  }
+  "url": "https://billing.stripe.com/session/sess_xyz123"
 }
 ```
+
+> **Note:** Portal returns plain JSON with just the URL, not JSON:API format.
 
 ---
 
@@ -102,19 +98,14 @@ Creates a Stripe checkout session for secure payment collection.
 ```bash
 curl -X POST "$BLOCKS_API_URL/stripe/sessions" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "session": {
-      "customer_id": "cus_Abc123XYZ",
+      "price": "price_1234567890",
       "success_url": "https://app.example.com/success",
       "cancel_url": "https://app.example.com/cancel",
-      "line_items": [
-        {
-          "price_id": "price_1234567890",
-          "quantity": 1
-        }
-      ],
+      "customer_id": "cus_Abc123XYZ",
       "mode": "payment"
     }
   }'
@@ -123,33 +114,32 @@ curl -X POST "$BLOCKS_API_URL/stripe/sessions" \
 **Request Parameters:**
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `customer_id` | string | No | Stripe customer ID |
+| `price` | string | Yes | Stripe price ID |
 | `success_url` | string | Yes | Redirect URL on success |
 | `cancel_url` | string | Yes | Redirect URL on cancel |
-| `line_items` | array | Yes | Array of line items |
-| `line_items[].price_id` | string | Yes | Stripe price ID |
-| `line_items[].quantity` | integer | Yes | Item quantity |
-| `mode` | enum | Yes | payment, subscription, setup |
+| `customer_id` | string | No | Stripe customer ID |
+| `mode` | enum | No | payment, subscription, setup (default: payment) |
+| `quantity` | integer | No | Quantity (default: 1) |
 | `metadata` | object | No | Custom metadata |
 
-**Response 201:**
+**Response 201 (raw Stripe JSON):**
 ```json
 {
-  "data": {
-    "id": "session-uuid-001",
-    "type": "checkout_session",
-    "attributes": {
-      "unique_id": "session-uuid-001",
-      "stripe_session_id": "cs_test_abc123",
-      "url": "https://checkout.stripe.com/pay/cs_test_abc123",
-      "status": "open",
-      "mode": "payment",
-      "expires_at": "2025-01-12T11:30:00Z",
-      "created_at": "2025-01-12T10:30:00Z"
-    }
-  }
+  "id": "cs_test_abc123",
+  "object": "checkout.session",
+  "url": "https://checkout.stripe.com/pay/cs_test_abc123",
+  "status": "open",
+  "payment_status": "unpaid",
+  "mode": "payment",
+  "amount_total": 9999,
+  "currency": "usd",
+  "customer": "cus_Abc123XYZ",
+  "expires_at": 1736678400,
+  "created": 1736674200
 }
 ```
+
+> **Note:** Stripe pass-through endpoints return raw Stripe JSON objects, not JSON:API format.
 
 ---
 
@@ -159,28 +149,24 @@ Retrieves a checkout session.
 
 **Request:**
 ```bash
-curl -X GET "$BLOCKS_API_URL/stripe/sessions/session-uuid-001" \
+curl -X GET "$BLOCKS_API_URL/stripe/sessions/cs_test_abc123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
-**Response 200:**
+**Response 200 (raw Stripe JSON):**
 ```json
 {
-  "data": {
-    "id": "session-uuid-001",
-    "type": "checkout_session",
-    "attributes": {
-      "unique_id": "session-uuid-001",
-      "stripe_session_id": "cs_test_abc123",
-      "status": "complete",
-      "payment_status": "paid",
-      "amount_total": 9999,
-      "currency": "usd",
-      "customer_email": "user@example.com",
-      "created_at": "2025-01-12T10:30:00Z"
-    }
-  }
+  "id": "cs_test_abc123",
+  "object": "checkout.session",
+  "status": "complete",
+  "payment_status": "paid",
+  "amount_total": 9999,
+  "currency": "usd",
+  "customer_details": {
+    "email": "user@example.com"
+  },
+  "created": 1736674200
 }
 ```
 
@@ -196,13 +182,14 @@ Creates a Stripe payment.
 ```bash
 curl -X POST "$BLOCKS_API_URL/stripe/payments" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "payment": {
+      "customer_id": "cus_Abc123XYZ",
+      "order_unique_id": "order-uuid-123",
       "amount": 9999,
       "currency": "usd",
-      "customer_id": "cus_Abc123XYZ",
       "payment_method": "pm_card_visa",
       "description": "Order payment"
     }
@@ -212,30 +199,30 @@ curl -X POST "$BLOCKS_API_URL/stripe/payments" \
 **Request Parameters:**
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
+| `customer_id` | string | No | Stripe customer ID |
+| `order_unique_id` | string | No | 23blocks order unique ID to associate |
 | `amount` | integer | Yes | Amount in cents |
 | `currency` | string | Yes | Currency code |
-| `customer_id` | string | No | Stripe customer ID |
 | `payment_method` | string | No | Stripe payment method ID |
 | `description` | string | No | Payment description |
 | `metadata` | object | No | Custom metadata |
 
-**Response 201:**
+**Response 201 (raw Stripe JSON):**
 ```json
 {
-  "data": {
-    "id": "stripe-payment-uuid-001",
-    "type": "stripe_payment",
-    "attributes": {
-      "unique_id": "stripe-payment-uuid-001",
-      "stripe_payment_id": "pi_3N1234567890",
-      "amount": 9999,
-      "currency": "usd",
-      "status": "succeeded",
-      "created_at": "2025-01-12T10:30:00Z"
-    }
-  }
+  "id": "pi_3N1234567890",
+  "object": "payment_intent",
+  "amount": 9999,
+  "currency": "usd",
+  "status": "succeeded",
+  "customer": "cus_Abc123XYZ",
+  "payment_method": "pm_card_visa",
+  "description": "Order payment",
+  "created": 1736674200
 }
 ```
+
+> **Note:** Stripe pass-through endpoints return raw Stripe JSON objects, not JSON:API format.
 
 ---
 
@@ -279,7 +266,7 @@ Lists configured Stripe webhook endpoints.
 ```bash
 curl -X GET "$BLOCKS_API_URL/stripe/webhooks" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -312,11 +299,12 @@ Creates a new Stripe webhook endpoint.
 ```bash
 curl -X POST "$BLOCKS_API_URL/stripe/webhooks" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "webhook": {
-      "events": [
+      "url": "https://app.example.com/webhooks/stripe",
+      "enabled_events": [
         "checkout.session.completed",
         "payment_intent.succeeded",
         "payment_intent.payment_failed",
@@ -331,7 +319,8 @@ curl -X POST "$BLOCKS_API_URL/stripe/webhooks" \
 **Request Parameters:**
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `events` | array | Yes | Stripe event types to listen for |
+| `url` | string | No | Webhook destination URL |
+| `enabled_events` | array | Yes | Stripe event types to listen for |
 
 **Response 201:**
 ```json
@@ -364,36 +353,41 @@ Lists all Stripe subscriptions.
 ```bash
 curl -X GET "$BLOCKS_API_URL/stripe/subscriptions?page=1&records=20" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
-**Response 200:**
+**Response 200 (raw Stripe JSON):**
 ```json
 {
+  "object": "list",
   "data": [
     {
-      "id": "stripe-sub-uuid-001",
-      "type": "stripe_subscription",
-      "attributes": {
-        "unique_id": "stripe-sub-uuid-001",
-        "stripe_subscription_id": "sub_1234567890",
-        "stripe_customer_id": "cus_Abc123XYZ",
-        "status": "active",
-        "current_period_start": "2025-01-01T00:00:00Z",
-        "current_period_end": "2025-02-01T00:00:00Z",
-        "plan_amount": 4999,
-        "plan_currency": "usd",
-        "plan_interval": "month",
-        "created_at": "2025-01-01T10:30:00Z"
-      }
+      "id": "sub_1234567890",
+      "object": "subscription",
+      "customer": "cus_Abc123XYZ",
+      "status": "active",
+      "current_period_start": 1735689600,
+      "current_period_end": 1738368000,
+      "items": {
+        "data": [
+          {
+            "price": {
+              "id": "price_1234567890",
+              "unit_amount": 4999,
+              "currency": "usd",
+              "recurring": { "interval": "month" }
+            }
+          }
+        ]
+      },
+      "created": 1735711800
     }
   ],
-  "meta": {
-    "totalPages": 3,
-    "totalRecords": 45
-  }
+  "has_more": true
 }
 ```
+
+> **Note:** Stripe pass-through endpoints return raw Stripe JSON objects, not JSON:API format.
 
 ---
 
@@ -405,7 +399,7 @@ Creates a new Stripe subscription.
 ```bash
 curl -X POST "$BLOCKS_API_URL/stripe/subscriptions" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "subscription": {
@@ -428,22 +422,32 @@ curl -X POST "$BLOCKS_API_URL/stripe/subscriptions" \
 | `coupon` | string | No | Coupon code |
 | `metadata` | object | No | Custom metadata |
 
-**Response 201:**
+**Response 201 (raw Stripe JSON):**
 ```json
 {
-  "data": {
-    "id": "stripe-sub-uuid-new",
-    "type": "stripe_subscription",
-    "attributes": {
-      "unique_id": "stripe-sub-uuid-new",
-      "stripe_subscription_id": "sub_new1234567890",
-      "status": "trialing",
-      "trial_end": "2025-01-26T10:30:00Z",
-      "created_at": "2025-01-12T10:30:00Z"
-    }
-  }
+  "id": "sub_new1234567890",
+  "object": "subscription",
+  "customer": "cus_Abc123XYZ",
+  "status": "trialing",
+  "trial_end": 1737884200,
+  "current_period_start": 1736674200,
+  "current_period_end": 1739352600,
+  "items": {
+    "data": [
+      {
+        "price": {
+          "id": "price_1234567890",
+          "unit_amount": 4999,
+          "currency": "usd"
+        }
+      }
+    ]
+  },
+  "created": 1736674200
 }
 ```
+
+> **Note:** Stripe pass-through endpoints return raw Stripe JSON objects, not JSON:API format.
 
 ---
 
@@ -455,7 +459,7 @@ Updates a Stripe subscription.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/stripe/subscriptions/sub_1234567890" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "subscription": {
@@ -473,18 +477,24 @@ curl -X PUT "$BLOCKS_API_URL/stripe/subscriptions/sub_1234567890" \
 | `cancel_at_period_end` | boolean | No | Cancel at end of period |
 | `metadata` | object | No | Custom metadata |
 
-**Response 200:**
+**Response 200 (raw Stripe JSON):**
 ```json
 {
-  "data": {
-    "id": "stripe-sub-uuid-001",
-    "type": "stripe_subscription",
-    "attributes": {
-      "stripe_subscription_id": "sub_1234567890",
-      "status": "active",
-      "updated_at": "2025-01-12T14:00:00Z"
-    }
-  }
+  "id": "sub_1234567890",
+  "object": "subscription",
+  "status": "active",
+  "items": {
+    "data": [
+      {
+        "price": {
+          "id": "price_new_plan_id",
+          "unit_amount": 7999,
+          "currency": "usd"
+        }
+      }
+    ]
+  },
+  "created": 1735711800
 }
 ```
 
@@ -498,21 +508,17 @@ Cancels a Stripe subscription.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/stripe/subscriptions/sub_1234567890" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
-**Response 200:**
+**Response 200 (raw Stripe JSON):**
 ```json
 {
-  "data": {
-    "id": "stripe-sub-uuid-001",
-    "type": "stripe_subscription",
-    "attributes": {
-      "stripe_subscription_id": "sub_1234567890",
-      "status": "canceled",
-      "canceled_at": "2025-01-12T15:00:00Z"
-    }
-  }
+  "id": "sub_1234567890",
+  "object": "subscription",
+  "status": "canceled",
+  "canceled_at": 1736694000,
+  "created": 1735711800
 }
 ```
 

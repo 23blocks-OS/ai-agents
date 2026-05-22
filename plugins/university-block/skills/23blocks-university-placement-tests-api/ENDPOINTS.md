@@ -12,7 +12,7 @@ Retrieves a placement test with its sections and routing rules.
 ```bash
 curl -X GET "$BLOCKS_API_URL/placements/placement-uuid-001" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -59,7 +59,7 @@ Creates a routing rule that determines placement based on test scores.
 ```bash
 curl -X POST "$BLOCKS_API_URL/placements/placement-uuid-001/rules" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "rule": {
@@ -109,7 +109,7 @@ Retrieves a specific section of a placement test.
 ```bash
 curl -X GET "$BLOCKS_API_URL/placements/placement-uuid-001/sections/section-uuid-001" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -146,7 +146,7 @@ Creates a new section in a placement test.
 ```bash
 curl -X POST "$BLOCKS_API_URL/placements/placement-uuid-001/sections" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "section": {
@@ -190,7 +190,7 @@ Retrieves a specific question from a placement test.
 ```bash
 curl -X GET "$BLOCKS_API_URL/placements/placement-uuid-001/questions/question-uuid-001" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -227,7 +227,7 @@ Creates a new question for a placement test.
 ```bash
 curl -X POST "$BLOCKS_API_URL/placements/placement-uuid-001/questions" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "question": {
@@ -272,7 +272,7 @@ Adds an existing question to a section.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/placements/placement-uuid-001/section/section-uuid-001/questions" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "question_unique_id": "question-uuid-001"
@@ -301,7 +301,7 @@ Lists all available options across placement questions.
 ```bash
 curl -X GET "$BLOCKS_API_URL/placements/questions/options" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -331,7 +331,7 @@ Creates a new answer option.
 ```bash
 curl -X POST "$BLOCKS_API_URL/placements/options" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "option": {
@@ -371,7 +371,7 @@ Adds an option to a question.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/placements/placement-uuid-001/questions/question-uuid-001/options" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "option_unique_id": "option-uuid-001"
@@ -400,7 +400,7 @@ Marks an option as the correct answer for a question.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/placements/placement-uuid-001/questions/question-uuid-001/options/option-uuid-001/set-right" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -428,7 +428,7 @@ Removes an option from a question.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/placements/placement-uuid-001/questions/question-uuid-001/options/option-uuid-001" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -448,7 +448,7 @@ Completes a placement test instance (admin/system level).
 ```bash
 curl -X PUT "$BLOCKS_API_URL/placements/instance-uuid-101/finish" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -480,7 +480,7 @@ Retrieves a student's placement test results.
 ```bash
 curl -X GET "$BLOCKS_API_URL/users/student-uuid-123/placement" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -515,7 +515,7 @@ Starts a placement test for a student.
 ```bash
 curl -X POST "$BLOCKS_API_URL/users/student-uuid-123/placement/placement-uuid-001" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 201:**
@@ -545,7 +545,7 @@ Submits a response to a placement test question.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/users/student-uuid-123/placement/instance-uuid-101" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "response": {
@@ -586,7 +586,7 @@ Finishes a student's placement test.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/users/student-uuid-123/placement/instance-uuid-101/finish" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**

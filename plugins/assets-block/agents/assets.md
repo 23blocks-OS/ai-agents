@@ -29,7 +29,7 @@ if [ -z "$BLOCKS_API_URL" ] || [ -z "$BLOCKS_AUTH_TOKEN" ] || [ -z "$BLOCKS_API_
   echo "Please set:"
   echo "  BLOCKS_API_URL     - API base URL (e.g., https://assets.api.us.23blocks.com)"
   echo "  BLOCKS_AUTH_TOKEN  - Your authentication token"
-  echo "  BLOCKS_API_KEY     - Your API key (AppId)"
+  echo "  BLOCKS_API_KEY     - Your API key (X-API-KEY header)"
   exit 1
 fi
 echo "All credentials configured"
@@ -40,7 +40,7 @@ echo "All credentials configured"
 |----------|-------------|---------|
 | `BLOCKS_API_URL` | Assets API base URL | `https://assets.api.us.23blocks.com` |
 | `BLOCKS_AUTH_TOKEN` | Bearer token for authentication | `eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...` |
-| `BLOCKS_API_KEY` | API key (AppId header) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
+| `BLOCKS_API_KEY` | API key (X-API-KEY header) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
 
 **Agent Behavior:**
 - ALWAYS run the pre-flight check before any API operation
@@ -64,7 +64,7 @@ Physical or digital assets with full lifecycle management:
 | Transfer | Transfer asset ownership |
 | Images | Upload and manage asset images with presigned URLs |
 | OTP | Generate one-time passwords for asset verification |
-| Trash | View and manage soft-deleted assets |
+| Trash | View deleted assets (enabled=false, status=deleted) |
 
 ### Digital Entities
 
@@ -177,7 +177,7 @@ All authenticated endpoints require:
 ```bash
 curl -X GET "$BLOCKS_API_URL/assets" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json"
 ```
 
@@ -304,7 +304,7 @@ curl -X GET "$BLOCKS_API_URL/assets" \
 # 1. Register user
 curl -X POST "$BLOCKS_API_URL/users/user-uuid-123/register" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "user": {
@@ -316,13 +316,13 @@ curl -X POST "$BLOCKS_API_URL/users/user-uuid-123/register" \
 # 2. Create asset
 curl -X POST "$BLOCKS_API_URL/assets" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "asset": {
       "name": "Laptop Dell XPS 15",
       "description": "Company laptop",
-      "serial_number": "SN-2025-001",
+      "serial": "SN-2025-001",
       "status": "active"
     }
   }'
@@ -333,7 +333,7 @@ curl -X POST "$BLOCKS_API_URL/assets" \
 # 1. Create entity
 curl -X POST "$BLOCKS_API_URL/entities" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "entity": {
@@ -349,7 +349,7 @@ curl -X POST "$BLOCKS_API_URL/entities" \
 # 3. Approve access request
 curl -X PUT "$BLOCKS_API_URL/entities/{entity_id}/access/requests/{request_id}/approve" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 ### Track Asset Events and Audits
@@ -357,7 +357,7 @@ curl -X PUT "$BLOCKS_API_URL/entities/{entity_id}/access/requests/{request_id}/a
 # 1. Create event on asset
 curl -X POST "$BLOCKS_API_URL/assets/{asset_id}/events" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "event": {
@@ -370,7 +370,7 @@ curl -X POST "$BLOCKS_API_URL/assets/{asset_id}/events" \
 # 2. Create audit entry
 curl -X POST "$BLOCKS_API_URL/assets/{asset_id}/audits" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "audit": {
@@ -386,7 +386,7 @@ curl -X POST "$BLOCKS_API_URL/assets/{asset_id}/audits" \
 # Events summary report
 curl -X POST "$BLOCKS_API_URL/reports/events/summary" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "report": {

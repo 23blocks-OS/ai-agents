@@ -16,12 +16,21 @@ Complete API reference for 23blocks product catalog management.
 | Variable | Description | Example |
 |----------|-------------|---------|
 | `BLOCKS_API_URL` | Products API base URL | `https://products.api.us.23blocks.com` |
-| `BLOCKS_AUTH_TOKEN` | Bearer token (human or AID) | `eyJhbGciOiJSUzI1NiJ9...` |
-| `BLOCKS_API_KEY` | API key (AppId) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
+| `BLOCKS_AUTH_TOKEN` | Bearer token — your identity & scopes (from login or AID token exchange) | `eyJhbGciOiJSUzI1NiJ9...` |
+| `BLOCKS_API_KEY` | Tenant routing key (X-API-KEY header) — static, from company config | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
 
 ## Authentication
 
-Two methods are supported. The Bearer token works the same either way.
+**These two credentials serve different purposes and come from different sources:**
+
+| Credential | Purpose | Source | Changes? |
+|------------|---------|--------|----------|
+| `BLOCKS_API_KEY` | **Tenant routing** — identifies which company/app | Company config (static `pk_live_sh_...` key) | No — same key for all blocks |
+| `BLOCKS_AUTH_TOKEN` | **Identity & authorization** — who you are + what you can do | Login (`/auth/sign_in`), AID token exchange, or human-provided | Yes — expires, must be refreshed |
+
+> The API key used during AID registration is NOT the same as `BLOCKS_API_KEY`. The registration key authenticates the agent with the Auth API; `BLOCKS_API_KEY` routes requests to the correct tenant across all blocks.
+
+Two methods to obtain the Bearer token:
 
 **Method 1: Agent Identity (AID)** -- For AI agents with AMP identity:
 ```bash
@@ -50,7 +59,7 @@ Lists all product catalogs.
 ```bash
 curl -X GET "$BLOCKS_API_URL/catalogs/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -59,7 +68,7 @@ curl -X GET "$BLOCKS_API_URL/catalogs/" \
   "data": [
     {
       "id": "catalog-uuid-123",
-      "type": "catalog",
+      "type": "Catalog",
       "attributes": {
         "unique_id": "catalog-uuid-123",
         "name": "Summer Collection 2025",
@@ -84,7 +93,7 @@ Retrieves a single catalog by unique ID.
 ```bash
 curl -X GET "$BLOCKS_API_URL/catalogs/catalog-uuid-123/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -92,7 +101,7 @@ curl -X GET "$BLOCKS_API_URL/catalogs/catalog-uuid-123/" \
 {
   "data": {
     "id": "catalog-uuid-123",
-    "type": "catalog",
+    "type": "Catalog",
     "attributes": {
       "unique_id": "catalog-uuid-123",
       "name": "Summer Collection 2025",
@@ -104,7 +113,7 @@ curl -X GET "$BLOCKS_API_URL/catalogs/catalog-uuid-123/" \
     "relationships": {
       "products": {
         "data": [
-          { "id": "product-uuid-001", "type": "product" }
+          { "id": "product-uuid-001", "type": "Product" }
         ]
       }
     }
@@ -125,7 +134,7 @@ Creates a new product catalog.
 ```bash
 curl -X POST "$BLOCKS_API_URL/catalogs/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "catalog": {
@@ -146,7 +155,7 @@ curl -X POST "$BLOCKS_API_URL/catalogs/" \
 {
   "data": {
     "id": "new-catalog-uuid",
-    "type": "catalog",
+    "type": "Catalog",
     "attributes": {
       "unique_id": "new-catalog-uuid",
       "name": "Holiday Collection 2025",
@@ -172,7 +181,7 @@ Updates an existing catalog.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/catalogs/catalog-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "catalog": {
@@ -194,7 +203,7 @@ Deletes a catalog.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/catalogs/catalog-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content

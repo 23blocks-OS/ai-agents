@@ -10,16 +10,16 @@ Lists all lessons.
 
 **Request:**
 ```bash
-curl -X GET "$BLOCKS_API_URL/lessons/?page=1&records=20" \
+curl -X GET "$BLOCKS_API_URL/lessons/?page=1&size=20" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Query Parameters:**
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `page` | integer | No | Page number (default: 1) |
-| `records` | integer | No | Items per page (default: 15) |
+| `size` | integer | No | Items per page (default: 15, max: 100) |
 
 **Response 200:**
 ```json
@@ -42,9 +42,8 @@ curl -X GET "$BLOCKS_API_URL/lessons/?page=1&records=20" \
     }
   ],
   "meta": {
-    "total_count": 48,
-    "page": 1,
-    "records": 20
+    "totalPages": 3,
+    "totalRecords": 48
   }
 }
 ```
@@ -59,7 +58,7 @@ Retrieves a single lesson with its resources.
 ```bash
 curl -X GET "$BLOCKS_API_URL/lessons/lesson-uuid-001/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -103,7 +102,7 @@ Creates a new lesson.
 ```bash
 curl -X POST "$BLOCKS_API_URL/lessons/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "lesson": {
@@ -161,7 +160,7 @@ Updates an existing lesson.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/lessons/lesson-uuid-001" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "lesson": {
@@ -198,7 +197,7 @@ Marks a lesson as completed for the current user.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/lessons/lesson-uuid-001/completed" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -227,7 +226,7 @@ Gets all resources for a lesson.
 ```bash
 curl -X GET "$BLOCKS_API_URL/lessons/lesson-uuid-001/resources" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -259,7 +258,7 @@ Adds a resource to a lesson.
 ```bash
 curl -X POST "$BLOCKS_API_URL/lessons/lesson-uuid-001/resources" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "resource": {
@@ -303,7 +302,7 @@ Updates a lesson resource.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/lessons/lesson-uuid-001/resources/resource-uuid-003" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "resource": {
@@ -336,7 +335,7 @@ Deletes a lesson resource.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/lessons/lesson-uuid-001/resources/resource-uuid-003" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -356,7 +355,7 @@ Generates a presigned URL for file upload to a lesson.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/lessons/lesson-uuid-001/presign_upload" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "file": {
@@ -393,7 +392,7 @@ Gets all content tests for a lesson.
 ```bash
 curl -X GET "$BLOCKS_API_URL/lessons/lesson-uuid-001/tests" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**

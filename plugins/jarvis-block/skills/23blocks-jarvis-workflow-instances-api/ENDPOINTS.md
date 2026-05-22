@@ -12,7 +12,7 @@ Starts a new workflow instance.
 ```bash
 curl -X POST "$BLOCKS_API_URL/workflows/workflow-uuid-123/instances" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "instance": {
@@ -58,7 +58,7 @@ Retrieves a workflow instance.
 ```bash
 curl -X GET "$BLOCKS_API_URL/workflows/workflow-uuid-123/instances/inst-uuid-789" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -96,7 +96,7 @@ Advances the workflow instance to the next step.
 ```bash
 curl -X POST "$BLOCKS_API_URL/workflows/workflow-uuid-123/instances/inst-uuid-789/step" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "step_output": {
@@ -133,7 +133,7 @@ Retrieves the execution log for an instance.
 ```bash
 curl -X GET "$BLOCKS_API_URL/workflows/workflow-uuid-123/instances/inst-uuid-789/log" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -168,7 +168,7 @@ Suspends a running workflow instance.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/workflows/workflow-uuid-123/instances/inst-uuid-789/suspend" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -196,7 +196,7 @@ Resumes a suspended workflow instance.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/workflows/workflow-uuid-123/instances/inst-uuid-789/resume" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -224,7 +224,7 @@ Executes a specific step in the workflow instance.
 ```bash
 curl -X POST "$BLOCKS_API_URL/workflows/workflow-uuid-123/instances/inst-uuid-789/steps/step-uuid-2/execute" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "input": {
@@ -262,7 +262,7 @@ Retrieves the available next steps for the current instance state.
 ```bash
 curl -X GET "$BLOCKS_API_URL/workflows/workflow-uuid-123/instances/inst-uuid-789/next_steps" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -296,7 +296,7 @@ Lists all participants in a workflow instance.
 ```bash
 curl -X GET "$BLOCKS_API_URL/workflows/workflow-uuid-123/instances/inst-uuid-789/participants" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -329,7 +329,7 @@ Adds a participant to a workflow instance.
 ```bash
 curl -X POST "$BLOCKS_API_URL/workflows/workflow-uuid-123/instances/inst-uuid-789/participants" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "participant": {
@@ -374,7 +374,7 @@ Removes a participant from a workflow instance.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/workflows/workflow-uuid-123/instances/inst-uuid-789/participants/part-uuid-101" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content

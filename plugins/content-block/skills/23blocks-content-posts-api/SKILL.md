@@ -16,12 +16,21 @@ Complete API reference for 23blocks post management with versioning and social i
 | Variable | Description | Example |
 |----------|-------------|---------|
 | `BLOCKS_API_URL` | Content API base URL | `https://content.api.us.23blocks.com` |
-| `BLOCKS_AUTH_TOKEN` | Bearer token (human or AID) | `eyJhbGciOiJSUzI1NiJ9...` |
-| `BLOCKS_API_KEY` | API key (AppId) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
+| `BLOCKS_AUTH_TOKEN` | Bearer token — your identity & scopes (from login or AID token exchange) | `eyJhbGciOiJSUzI1NiJ9...` |
+| `BLOCKS_API_KEY` | Tenant routing key (X-API-KEY header) — static, from company config | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
 
 ## Authentication
 
-Two methods are supported. The Bearer token works the same either way.
+**These two credentials serve different purposes and come from different sources:**
+
+| Credential | Purpose | Source | Changes? |
+|------------|---------|--------|----------|
+| `BLOCKS_API_KEY` | **Tenant routing** — identifies which company/app | Company config (static `pk_live_sh_...` key) | No — same key for all blocks |
+| `BLOCKS_AUTH_TOKEN` | **Identity & authorization** — who you are + what you can do | Login (`/auth/sign_in`), AID token exchange, or human-provided | Yes — expires, must be refreshed |
+
+> The API key used during AID registration is NOT the same as `BLOCKS_API_KEY`. The registration key authenticates the agent with the Auth API; `BLOCKS_API_KEY` routes requests to the correct tenant across all blocks.
+
+Two methods to obtain the Bearer token:
 
 **Method 1: Agent Identity (AID)** -- For AI agents with AMP identity:
 ```bash
@@ -43,23 +52,29 @@ export BLOCKS_API_KEY="<your-api-key>"
 
 > Full endpoint documentation: [ENDPOINTS.md](ENDPOINTS.md)
 
-| Method | Path | Description |
-|--------|------|-------------|
-| GET | `/posts` | List all posts |
-| POST | `/posts/query` | Query posts with filters |
-| GET | `/posts/:unique_id` | Get a single post |
-| POST | `/posts` | Create a post |
-| PUT | `/posts/:unique_id` | Update a post |
-| PUT | `/posts/:unique_id/replace` | Replace post content entirely |
-| DELETE | `/posts/:unique_id` | Delete a post |
-| PUT | `/posts/:unique_id/like` | Like a post |
-| DELETE | `/posts/:unique_id/dislike` | Remove like from post |
-| PUT | `/posts/:unique_id/follow` | Follow a post |
-| DELETE | `/posts/:unique_id/unfollow` | Unfollow a post |
-| PUT | `/posts/:unique_id/save` | Save a post |
-| DELETE | `/posts/:unique_id/unsave` | Unsave a post |
-| PUT | `/posts/:unique_id/own` | Transfer post ownership |
-| POST | `/posts/:unique_id/versions/:version_id/publish` | Publish a version |
+| Method | Path | Auth | Description |
+|--------|------|------|-------------|
+| GET | `/posts` | Public | List all posts |
+| POST | `/posts/query` | Public | Query posts with filters |
+| GET | `/posts/:unique_id` | Public | Get a single post |
+| POST | `/posts` | Bearer | Create a post |
+| PUT | `/posts/:unique_id` | Bearer | Update a post |
+| PUT | `/posts/:unique_id/replace` | Bearer | Replace post content entirely |
+| DELETE | `/posts/:unique_id` | Bearer | Delete a post |
+| PUT | `/posts/:unique_id/like` | Bearer | Like a post |
+| DELETE | `/posts/:unique_id/dislike` | Bearer | Remove like from post |
+| PUT | `/posts/:unique_id/follow` | Bearer | Follow a post |
+| DELETE | `/posts/:unique_id/unfollow` | Bearer | Unfollow a post |
+| PUT | `/posts/:unique_id/save` | Bearer | Save a post |
+| DELETE | `/posts/:unique_id/unsave` | Bearer | Unsave a post |
+| PUT | `/posts/:unique_id/own` | Bearer | Transfer post ownership |
+| POST | `/posts/:unique_id/versions/:version_id/publish` | Bearer | Publish a version |
+| GET | `/posts/:post_unique_id/attachments` | Bearer | List post attachments |
+| POST | `/posts/:post_unique_id/attachments` | Bearer | Add attachment to post |
+| GET | `/posts/:post_unique_id/attachments/:unique_id` | Bearer | Get attachment |
+| PUT | `/posts/:post_unique_id/attachments/:unique_id` | Bearer | Update attachment |
+| DELETE | `/posts/:post_unique_id/attachments/:unique_id` | Bearer | Delete attachment |
+| PUT | `/posts/:post_unique_id/attachments/reorder` | Bearer | Reorder attachments |
 
 ---
 

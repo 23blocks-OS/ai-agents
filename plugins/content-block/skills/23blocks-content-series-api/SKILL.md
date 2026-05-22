@@ -16,12 +16,21 @@ Complete API reference for 23blocks series management - grouping related posts (
 | Variable | Description | Example |
 |----------|-------------|---------|
 | `BLOCKS_API_URL` | Content API base URL | `https://content.api.us.23blocks.com` |
-| `BLOCKS_AUTH_TOKEN` | Bearer token (human or AID) | `eyJhbGciOiJSUzI1NiJ9...` |
-| `BLOCKS_API_KEY` | API key (AppId) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
+| `BLOCKS_AUTH_TOKEN` | Bearer token — your identity & scopes (from login or AID token exchange) | `eyJhbGciOiJSUzI1NiJ9...` |
+| `BLOCKS_API_KEY` | Tenant routing key (X-API-KEY header) — static, from company config | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
 
 ## Authentication
 
-Two methods are supported. The Bearer token works the same either way.
+**These two credentials serve different purposes and come from different sources:**
+
+| Credential | Purpose | Source | Changes? |
+|------------|---------|--------|----------|
+| `BLOCKS_API_KEY` | **Tenant routing** — identifies which company/app | Company config (static `pk_live_sh_...` key) | No — same key for all blocks |
+| `BLOCKS_AUTH_TOKEN` | **Identity & authorization** — who you are + what you can do | Login (`/auth/sign_in`), AID token exchange, or human-provided | Yes — expires, must be refreshed |
+
+> The API key used during AID registration is NOT the same as `BLOCKS_API_KEY`. The registration key authenticates the agent with the Auth API; `BLOCKS_API_KEY` routes requests to the correct tenant across all blocks.
+
+Two methods to obtain the Bearer token:
 
 **Method 1: Agent Identity (AID)** -- For AI agents with AMP identity:
 ```bash
@@ -43,24 +52,24 @@ export BLOCKS_API_KEY="<your-api-key>"
 
 > Full endpoint documentation: [ENDPOINTS.md](ENDPOINTS.md)
 
-| Method | Path | Description |
-|--------|------|-------------|
-| GET | `/series` | List all series |
-| POST | `/series/query` | Query series with filters |
-| GET | `/series/:unique_id` | Get a single series |
-| POST | `/series` | Create a series |
-| PUT | `/series/:unique_id` | Update a series |
-| DELETE | `/series/:unique_id` | Delete a series |
-| PUT | `/series/:unique_id/like` | Toggle like |
-| PUT | `/series/:unique_id/dislike` | Toggle dislike |
-| PUT | `/series/:unique_id/follow` | Follow a series |
-| DELETE | `/series/:unique_id/unfollow` | Unfollow a series |
-| PUT | `/series/:unique_id/save` | Save a series |
-| DELETE | `/series/:unique_id/unsave` | Unsave a series |
-| GET | `/series/:unique_id/posts` | List series posts |
-| POST | `/series/:unique_id/posts/:post_id` | Add post to series |
-| DELETE | `/series/:unique_id/posts/:post_id` | Remove post from series |
-| PUT | `/series/:unique_id/reorder` | Reorder posts |
+| Method | Path | Auth | Description |
+|--------|------|------|-------------|
+| GET | `/series` | Public | List all series |
+| POST | `/series/query` | Public | Query series with filters |
+| GET | `/series/:unique_id` | Public | Get a single series |
+| POST | `/series` | Bearer | Create a series |
+| PUT | `/series/:unique_id` | Bearer | Update a series |
+| DELETE | `/series/:unique_id` | Bearer | Delete a series |
+| PUT | `/series/:unique_id/like` | Bearer | Toggle like |
+| PUT | `/series/:unique_id/dislike` | Bearer | Toggle dislike |
+| PUT | `/series/:unique_id/follow` | Bearer | Follow a series |
+| DELETE | `/series/:unique_id/unfollow` | Bearer | Unfollow a series |
+| PUT | `/series/:unique_id/save` | Bearer | Save a series |
+| DELETE | `/series/:unique_id/unsave` | Bearer | Unsave a series |
+| GET | `/series/:unique_id/posts` | Bearer | List series posts |
+| POST | `/series/:unique_id/posts/:post_id` | Bearer | Add post to series |
+| DELETE | `/series/:unique_id/posts/:post_id` | Bearer | Remove post from series |
+| PUT | `/series/:unique_id/reorder` | Bearer | Reorder posts |
 
 ---
 

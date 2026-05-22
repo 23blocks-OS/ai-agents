@@ -4,7 +4,9 @@ description: Create and manage 23blocks positions via REST API. Use when creatin
 allowed-tools: Read, Write, Bash, Grep, Glob
 metadata:
   author: 23blocks
-  version: "1.0"
+  version: "1.1"
+  verified-by: 23blocks-api-company
+  verified-date: "2026-05-18"
 ---
 
 # Positions API
@@ -16,12 +18,21 @@ Complete API reference for 23blocks position management within organizational st
 | Variable | Description | Example |
 |----------|-------------|---------|
 | `BLOCKS_API_URL` | Company API base URL | `https://company.api.us.23blocks.com` |
-| `BLOCKS_AUTH_TOKEN` | Bearer token (human or AID) | `eyJhbGciOiJSUzI1NiJ9...` |
-| `BLOCKS_API_KEY` | API key (AppId) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
+| `BLOCKS_AUTH_TOKEN` | Bearer token — your identity & scopes (from login or AID token exchange) | `eyJhbGciOiJSUzI1NiJ9...` |
+| `BLOCKS_API_KEY` | Tenant routing key (X-API-KEY header) — static, from company config | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
 
 ## Authentication
 
-Two methods are supported. The Bearer token works the same either way.
+**These two credentials serve different purposes and come from different sources:**
+
+| Credential | Purpose | Source | Changes? |
+|------------|---------|--------|----------|
+| `BLOCKS_API_KEY` | **Tenant routing** — identifies which company/app | Company config (static `pk_live_sh_...` key) | No — same key for all blocks |
+| `BLOCKS_AUTH_TOKEN` | **Identity & authorization** — who you are + what you can do | Login (`/auth/sign_in`), AID token exchange, or human-provided | Yes — expires, must be refreshed |
+
+> The API key used during AID registration is NOT the same as `BLOCKS_API_KEY`. The registration key authenticates the agent with the Auth API; `BLOCKS_API_KEY` routes requests to the correct tenant across all blocks.
+
+Two methods to obtain the Bearer token:
 
 **Method 1: Agent Identity (AID)** -- For AI agents with AMP identity:
 ```bash
@@ -50,7 +61,7 @@ Lists all positions with pagination.
 ```bash
 curl -X GET "$BLOCKS_API_URL/positions?page=1&records=20" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Query Parameters:**
@@ -95,6 +106,11 @@ curl -X GET "$BLOCKS_API_URL/positions?page=1&records=20" \
   "meta": {
     "totalPages": 4,
     "totalRecords": 56
+  },
+  "links": {
+    "self": "/positions?page=1&records=20",
+    "next": "/positions?page=2&records=20",
+    "prev": null
   }
 }
 ```
@@ -109,7 +125,7 @@ Retrieves a single position by unique ID.
 ```bash
 curl -X GET "$BLOCKS_API_URL/positions/pos-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -150,7 +166,7 @@ Creates a new position.
 ```bash
 curl -X POST "$BLOCKS_API_URL/positions" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "position": {
@@ -205,7 +221,7 @@ Updates an existing position.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/positions/pos-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "position": {
@@ -249,10 +265,10 @@ Deletes a position.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/positions/pos-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
-**Response 204:** No content
+**Response 204:** Empty body `{}`
 
 **Errors:**
 - `404 Not Found` - Position not found
@@ -282,6 +298,7 @@ curl -X DELETE "$BLOCKS_API_URL/positions/pos-uuid-123" \
 {
   "errors": [{
     "status": "422",
+    "source": { "pointer": "/data/attributes/title" },
     "code": "validation_error",
     "title": "Validation Error",
     "detail": "Title can't be blank."

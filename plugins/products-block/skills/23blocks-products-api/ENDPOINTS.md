@@ -12,7 +12,7 @@ Lists all products with pagination and search.
 ```bash
 curl -X GET "$BLOCKS_API_URL/products/?page=1&records=20" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Query Parameters:**
@@ -28,7 +28,7 @@ curl -X GET "$BLOCKS_API_URL/products/?page=1&records=20" \
   "data": [
     {
       "id": "product-uuid-123",
-      "type": "product",
+      "type": "Product",
       "attributes": {
         "unique_id": "product-uuid-123",
         "name": "Wireless Keyboard",
@@ -60,7 +60,7 @@ Retrieves a single product by unique ID.
 ```bash
 curl -X GET "$BLOCKS_API_URL/products/product-uuid-123/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -68,7 +68,7 @@ curl -X GET "$BLOCKS_API_URL/products/product-uuid-123/" \
 {
   "data": {
     "id": "product-uuid-123",
-    "type": "product",
+    "type": "Product",
     "attributes": {
       "unique_id": "product-uuid-123",
       "name": "Wireless Keyboard",
@@ -83,10 +83,10 @@ curl -X GET "$BLOCKS_API_URL/products/product-uuid-123/" \
     },
     "relationships": {
       "brand": {
-        "data": { "id": "brand-uuid", "type": "brand" }
+        "data": { "id": "brand-uuid", "type": "Brand" }
       },
       "category": {
-        "data": { "id": "category-uuid", "type": "category" }
+        "data": { "id": "category-uuid", "type": "Category" }
       },
       "images": {
         "data": []
@@ -109,7 +109,7 @@ Creates a new product.
 ```bash
 curl -X POST "$BLOCKS_API_URL/products/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "product": {
@@ -140,7 +140,7 @@ curl -X POST "$BLOCKS_API_URL/products/" \
 {
   "data": {
     "id": "new-product-uuid",
-    "type": "product",
+    "type": "Product",
     "attributes": {
       "unique_id": "new-product-uuid",
       "name": "Wireless Mouse",
@@ -167,7 +167,7 @@ Updates an existing product.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/products/product-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "product": {
@@ -182,7 +182,7 @@ curl -X PUT "$BLOCKS_API_URL/products/product-uuid-123" \
 {
   "data": {
     "id": "product-uuid-123",
-    "type": "product",
+    "type": "Product",
     "attributes": {
       "unique_id": "product-uuid-123",
       "name": "Premium Wireless Keyboard",
@@ -203,7 +203,7 @@ Soft-deletes a product (moves to trash).
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/products/product-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -218,7 +218,7 @@ Recovers a soft-deleted product from trash.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/products/product-uuid-123/recover" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -226,7 +226,7 @@ curl -X PUT "$BLOCKS_API_URL/products/product-uuid-123/recover" \
 {
   "data": {
     "id": "product-uuid-123",
-    "type": "product",
+    "type": "Product",
     "attributes": {
       "unique_id": "product-uuid-123",
       "status": "active",
@@ -246,7 +246,7 @@ Lists all soft-deleted products.
 ```bash
 curl -X GET "$BLOCKS_API_URL/products/trash/show" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -255,7 +255,7 @@ curl -X GET "$BLOCKS_API_URL/products/trash/show" \
   "data": [
     {
       "id": "product-uuid-456",
-      "type": "product",
+      "type": "Product",
       "attributes": {
         "unique_id": "product-uuid-456",
         "name": "Deleted Product",
@@ -277,7 +277,7 @@ Returns a catalog-optimized view of products.
 ```bash
 curl -X GET "$BLOCKS_API_URL/catalog/?page=1&records=20" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -286,7 +286,7 @@ curl -X GET "$BLOCKS_API_URL/catalog/?page=1&records=20" \
   "data": [
     {
       "id": "product-uuid-123",
-      "type": "product",
+      "type": "Product",
       "attributes": {
         "unique_id": "product-uuid-123",
         "name": "Wireless Keyboard",
@@ -315,7 +315,7 @@ Full-text search across products.
 ```bash
 curl -X POST "$BLOCKS_API_URL/products/search" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "search": {
@@ -347,7 +347,7 @@ Lists replacement products for a given product.
 ```bash
 curl -X GET "$BLOCKS_API_URL/products/product-uuid-123/replacements" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -356,7 +356,7 @@ curl -X GET "$BLOCKS_API_URL/products/product-uuid-123/replacements" \
   "data": [
     {
       "id": "product-uuid-789",
-      "type": "product",
+      "type": "Product",
       "attributes": {
         "unique_id": "product-uuid-789",
         "name": "Replacement Keyboard V2",
@@ -380,14 +380,14 @@ Returns the payload structure for product operations.
 ```bash
 curl -X GET "$BLOCKS_API_URL/tools/products/payload/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
 ```json
 {
   "data": {
-    "type": "payload",
+    "type": "Payload",
     "attributes": {
       "fields": ["name", "description", "sku", "barcode", "brand_id", "category_id", "status"]
     }
@@ -405,14 +405,14 @@ Returns available filter fields for product payloads.
 ```bash
 curl -X GET "$BLOCKS_API_URL/tools/products/payload/filters" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
 ```json
 {
   "data": {
-    "type": "payload_filters",
+    "type": "PayloadFilters",
     "attributes": {
       "filters": ["category_id", "brand_id", "status", "sku", "barcode"]
     }
@@ -430,7 +430,7 @@ Lists saved product filters.
 ```bash
 curl -X GET "$BLOCKS_API_URL/tools/products/filters" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -439,7 +439,7 @@ curl -X GET "$BLOCKS_API_URL/tools/products/filters" \
   "data": [
     {
       "id": "filter-uuid-123",
-      "type": "product_filter",
+      "type": "ProductFilter",
       "attributes": {
         "unique_id": "filter-uuid-123",
         "name": "Active Electronics",
@@ -461,7 +461,7 @@ Creates a new product filter.
 ```bash
 curl -X POST "$BLOCKS_API_URL/tools/products/filters" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "filter": {
@@ -476,7 +476,7 @@ curl -X POST "$BLOCKS_API_URL/tools/products/filters" \
 {
   "data": {
     "id": "new-filter-uuid",
-    "type": "product_filter",
+    "type": "ProductFilter",
     "attributes": {
       "unique_id": "new-filter-uuid",
       "name": "Active Electronics",
@@ -497,7 +497,7 @@ Updates an existing product filter.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/tools/products/filters/filter-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "filter": {
@@ -518,7 +518,7 @@ Deletes a product filter.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/tools/products/filters/filter-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -535,7 +535,7 @@ Gets a presigned URL for image upload.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/products/product-uuid-123/presign" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "file_name": "product-image.jpg",
@@ -547,7 +547,7 @@ curl -X PUT "$BLOCKS_API_URL/products/product-uuid-123/presign" \
 ```json
 {
   "data": {
-    "type": "presigned_url",
+    "type": "PresignedUrl",
     "attributes": {
       "upload_url": "https://s3.amazonaws.com/bucket/presigned-upload-url",
       "file_url": "https://cdn.example.com/products/product-image.jpg",
@@ -567,7 +567,7 @@ Registers an uploaded image to a product.
 ```bash
 curl -X POST "$BLOCKS_API_URL/products/product-uuid-123/images" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "image": {
@@ -583,7 +583,7 @@ curl -X POST "$BLOCKS_API_URL/products/product-uuid-123/images" \
 {
   "data": {
     "id": "image-uuid-123",
-    "type": "product_image",
+    "type": "ProductImage",
     "attributes": {
       "unique_id": "image-uuid-123",
       "file_url": "https://cdn.example.com/products/product-image.jpg",
@@ -606,7 +606,7 @@ Lists all images for a product.
 ```bash
 curl -X GET "$BLOCKS_API_URL/products/product-uuid-123/images" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -615,7 +615,7 @@ curl -X GET "$BLOCKS_API_URL/products/product-uuid-123/images" \
   "data": [
     {
       "id": "image-uuid-123",
-      "type": "product_image",
+      "type": "ProductImage",
       "attributes": {
         "unique_id": "image-uuid-123",
         "file_url": "https://cdn.example.com/products/product-image.jpg",
@@ -638,7 +638,7 @@ Updates image metadata.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/products/product-uuid-123/images/image-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "image": {
@@ -660,7 +660,7 @@ Deletes a product image.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/products/product-uuid-123/images/image-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -675,7 +675,7 @@ Approves a product image for use.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/products/product-uuid-123/images/image-uuid-123/approve" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -683,7 +683,7 @@ curl -X PUT "$BLOCKS_API_URL/products/product-uuid-123/images/image-uuid-123/app
 {
   "data": {
     "id": "image-uuid-123",
-    "type": "product_image",
+    "type": "ProductImage",
     "attributes": {
       "status": "approved"
     }
@@ -701,7 +701,7 @@ Publishes an approved product image.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/products/product-uuid-123/images/image-uuid-123/publish" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -709,7 +709,7 @@ curl -X PUT "$BLOCKS_API_URL/products/product-uuid-123/images/image-uuid-123/pub
 {
   "data": {
     "id": "image-uuid-123",
-    "type": "product_image",
+    "type": "ProductImage",
     "attributes": {
       "status": "published"
     }
@@ -729,7 +729,7 @@ Assigns a category to a product.
 ```bash
 curl -X POST "$BLOCKS_API_URL/products/product-uuid-123/categories" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "category_unique_id": "category-uuid-456"
@@ -753,7 +753,7 @@ Removes a category from a product.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/products/product-uuid-123/categories/category-uuid-456" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -773,7 +773,7 @@ Assigns a product to a catalog.
 ```bash
 curl -X POST "$BLOCKS_API_URL/products/product-uuid-123/catalogs" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "catalog_unique_id": "catalog-uuid-789"
@@ -799,7 +799,7 @@ Lists suggested products.
 ```bash
 curl -X GET "$BLOCKS_API_URL/products/product-uuid-123/suggestions" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -808,7 +808,7 @@ curl -X GET "$BLOCKS_API_URL/products/product-uuid-123/suggestions" \
   "data": [
     {
       "id": "product-uuid-789",
-      "type": "product",
+      "type": "Product",
       "attributes": {
         "unique_id": "product-uuid-789",
         "name": "Suggested Product",
@@ -829,7 +829,7 @@ Adds a product as a suggestion.
 ```bash
 curl -X POST "$BLOCKS_API_URL/products/product-uuid-123/suggestions" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "product_unique_id": "product-uuid-789"
@@ -853,7 +853,7 @@ Removes a product suggestion.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/products/product-uuid-123/suggestions/product-uuid-789" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -873,7 +873,7 @@ Lists product addons.
 ```bash
 curl -X GET "$BLOCKS_API_URL/products/product-uuid-123/addons" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -882,7 +882,7 @@ curl -X GET "$BLOCKS_API_URL/products/product-uuid-123/addons" \
   "data": [
     {
       "id": "addon-uuid-456",
-      "type": "addon",
+      "type": "Addon",
       "attributes": {
         "unique_id": "addon-uuid-456",
         "name": "Extended Warranty",
@@ -903,7 +903,7 @@ Adds an addon to a product.
 ```bash
 curl -X POST "$BLOCKS_API_URL/products/product-uuid-123/addons" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "addon_unique_id": "addon-uuid-456"
@@ -927,7 +927,7 @@ Removes an addon from a product.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/products/product-uuid-123/addons/addon-uuid-456" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -947,7 +947,7 @@ Adds a replacement product.
 ```bash
 curl -X POST "$BLOCKS_API_URL/products/product-uuid-123/replacements" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "product_unique_id": "product-uuid-789"
@@ -973,7 +973,7 @@ Lists vendors associated with a product.
 ```bash
 curl -X GET "$BLOCKS_API_URL/products/product-uuid-123/vendors" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -982,7 +982,7 @@ curl -X GET "$BLOCKS_API_URL/products/product-uuid-123/vendors" \
   "data": [
     {
       "id": "vendor-uuid-123",
-      "type": "vendor",
+      "type": "Vendor",
       "attributes": {
         "unique_id": "vendor-uuid-123",
         "name": "Main Supplier Inc",

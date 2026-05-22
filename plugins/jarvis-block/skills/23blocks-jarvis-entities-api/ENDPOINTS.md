@@ -12,7 +12,7 @@ Lists all digital twin entities with pagination.
 ```bash
 curl -X GET "$BLOCKS_API_URL/entities?page=1&records=20" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Query Parameters:**
@@ -56,7 +56,7 @@ Retrieves a single entity by unique ID.
 ```bash
 curl -X GET "$BLOCKS_API_URL/entities/entity-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -92,7 +92,7 @@ Creates a new digital twin entity.
 ```bash
 curl -X POST "$BLOCKS_API_URL/entities" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "entity": {
@@ -109,6 +109,9 @@ curl -X POST "$BLOCKS_API_URL/entities" \
 | `name` | string | Yes | Entity name |
 | `entity_type` | string | Yes | Type classification |
 | `description` | string | No | Entity description |
+| `instructions` | string | No | Per-entity AI instructions |
+| `created_by` | string | No | User who created the entity (audit trail) |
+| `updated_by` | string | No | User who last updated the entity (audit trail) |
 
 **Response 201:**
 ```json
@@ -141,7 +144,7 @@ Updates an existing entity.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/entities/entity-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "entity": {
@@ -177,7 +180,7 @@ Deletes an entity.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/entities/entity-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -197,7 +200,7 @@ Retrieves all contexts for an entity.
 ```bash
 curl -X GET "$BLOCKS_API_URL/entities/entity-uuid-123/contexts" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -228,7 +231,7 @@ Creates a new context for an entity.
 ```bash
 curl -X POST "$BLOCKS_API_URL/entities/entity-uuid-123/contexts" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "context": {
@@ -243,6 +246,7 @@ curl -X POST "$BLOCKS_API_URL/entities/entity-uuid-123/contexts" \
 |-----------|------|----------|-------------|
 | `name` | string | Yes | Context name |
 | `content` | string | Yes | Context content/instructions |
+| `members` | array | No | Members array (user UIDs). If omitted, Jarvis auto-populates from the JWT token (user_unique_id + user_email). |
 
 **Response 201:**
 ```json
@@ -272,7 +276,7 @@ Lists all conversations for an entity.
 ```bash
 curl -X GET "$BLOCKS_API_URL/entities/entity-uuid-123/conversations?page=1&records=20" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -308,7 +312,7 @@ Creates a new conversation for an entity.
 ```bash
 curl -X POST "$BLOCKS_API_URL/entities/entity-uuid-123/conversations" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "conversation": {
@@ -344,7 +348,7 @@ Lists messages in an entity conversation.
 ```bash
 curl -X GET "$BLOCKS_API_URL/entities/entity-uuid-123/conversations/conv-uuid-789/messages" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -375,7 +379,7 @@ Sends a message in an entity conversation.
 ```bash
 curl -X POST "$BLOCKS_API_URL/entities/entity-uuid-123/conversations/conv-uuid-789/messages" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "message": {
@@ -411,7 +415,7 @@ Sends a message and streams the AI response in real-time.
 ```bash
 curl -X POST "$BLOCKS_API_URL/entities/entity-uuid-123/conversations/conv-uuid-789/messages/stream" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "message": {
@@ -441,7 +445,7 @@ Queries entity-associated files using AI-powered search (RAG).
 ```bash
 curl -X POST "$BLOCKS_API_URL/entities/entity-uuid-123/file_query" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "query": "What are the system requirements for installation?"

@@ -10,16 +10,16 @@ Lists all active teachers.
 
 **Request:**
 ```bash
-curl -X GET "$BLOCKS_API_URL/teachers/?page=1&records=20" \
+curl -X GET "$BLOCKS_API_URL/teachers/?page=1&size=20" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Query Parameters:**
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `page` | integer | No | Page number (default: 1) |
-| `records` | integer | No | Items per page (default: 15) |
+| `size` | integer | No | Items per page (default: 15, max: 100) |
 
 **Response 200:**
 ```json
@@ -40,9 +40,8 @@ curl -X GET "$BLOCKS_API_URL/teachers/?page=1&records=20" \
     }
   ],
   "meta": {
-    "total_count": 12,
-    "page": 1,
-    "records": 20
+    "totalPages": 1,
+    "totalRecords": 12
   }
 }
 ```
@@ -57,7 +56,7 @@ Lists all archived teachers.
 ```bash
 curl -X GET "$BLOCKS_API_URL/teachers/status/archive" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -90,7 +89,7 @@ Retrieves a single teacher by unique ID.
 ```bash
 curl -X GET "$BLOCKS_API_URL/teachers/teacher-uuid-789" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -125,7 +124,7 @@ Lists all courses assigned to a teacher.
 ```bash
 curl -X GET "$BLOCKS_API_URL/teachers/teacher-uuid-789/courses" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -157,7 +156,7 @@ Lists all course groups assigned to a teacher.
 ```bash
 curl -X GET "$BLOCKS_API_URL/teachers/teacher-uuid-789/groups" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -190,7 +189,7 @@ Retrieves the full content tree for a teacher's course group.
 ```bash
 curl -X GET "$BLOCKS_API_URL/teachers/teacher-uuid-789/content_tree/group-uuid-101" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -234,7 +233,7 @@ Retrieves the content tree for a specific student as viewed by a teacher, includ
 ```bash
 curl -X GET "$BLOCKS_API_URL/teachers/teacher-uuid-789/users/student-uuid-123/content_tree/group-uuid-101" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -287,7 +286,7 @@ Lists all active coaching matches for a teacher.
 ```bash
 curl -X GET "$BLOCKS_API_URL/teachers/teacher-uuid-789/coaching/active" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -319,7 +318,7 @@ Lists all coaching matches for a teacher (active, completed, cancelled).
 ```bash
 curl -X GET "$BLOCKS_API_URL/teachers/teacher-uuid-789/coaching/matches" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -362,7 +361,7 @@ Lists students available for coaching by this teacher.
 ```bash
 curl -X GET "$BLOCKS_API_URL/teachers/teacher-uuid-789/coaching/available" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -394,7 +393,7 @@ Searches for potential coachees matching criteria.
 ```bash
 curl -X POST "$BLOCKS_API_URL/teachers/teacher-uuid-789/coachees/find" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "filters": {
@@ -441,7 +440,7 @@ Gets the teacher's availability schedule.
 ```bash
 curl -X GET "$BLOCKS_API_URL/teachers/teacher-uuid-789/availability" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -484,7 +483,7 @@ Adds a new availability slot for a teacher.
 ```bash
 curl -X POST "$BLOCKS_API_URL/teachers/teacher-uuid-789/availability" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "availability": {
@@ -529,7 +528,7 @@ Updates an existing availability slot.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/teachers/teacher-uuid-789/availability/avail-uuid-001" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "availability": {
@@ -565,7 +564,7 @@ Deletes a specific availability slot.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/teachers/teacher-uuid-789/availability/avail-uuid-001" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -585,7 +584,7 @@ Deletes all availability slots for a teacher.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/teachers/teacher-uuid-789/availability" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -607,7 +606,7 @@ Lists all coaching sessions for a teacher.
 ```bash
 curl -X GET "$BLOCKS_API_URL/teachers/teacher-uuid-789/coaching_sessions" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -643,7 +642,7 @@ Lists all tests available to a teacher.
 ```bash
 curl -X GET "$BLOCKS_API_URL/teachers/teacher-uuid-789/tests" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -676,7 +675,7 @@ Starts a test for a teacher.
 ```bash
 curl -X POST "$BLOCKS_API_URL/teachers/teacher-uuid-789/test/test-uuid-001" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 201:**
@@ -706,7 +705,7 @@ Submits a response to a test question as a teacher.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/teachers/teacher-uuid-789/test/instance-uuid-301" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "response": {
@@ -747,7 +746,7 @@ Finishes a teacher's test.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/teachers/teacher-uuid-789/test/instance-uuid-301/finish" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -780,7 +779,7 @@ Retrieves attendance records for a teacher's sessions.
 ```bash
 curl -X GET "$BLOCKS_API_URL/teachers/teacher-uuid-789/attendance" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -814,7 +813,7 @@ Registers attendance for a student.
 ```bash
 curl -X POST "$BLOCKS_API_URL/teachers/teacher-uuid-789/attendance" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "attendance": {
@@ -864,7 +863,7 @@ Promotes a student to the next level or course.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/teachers/teacher-uuid-789/users/student-uuid-123/promote" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "promotion": {

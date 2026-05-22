@@ -16,12 +16,21 @@ Complete API reference for 23blocks Assets Block tag management.
 | Variable | Description | Example |
 |----------|-------------|---------|
 | `BLOCKS_API_URL` | Assets API base URL | `https://assets.api.us.23blocks.com` |
-| `BLOCKS_AUTH_TOKEN` | Bearer token (human or AID) | `eyJhbGciOiJSUzI1NiJ9...` |
-| `BLOCKS_API_KEY` | API key (AppId) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
+| `BLOCKS_AUTH_TOKEN` | Bearer token — your identity & scopes (from login or AID token exchange) | `eyJhbGciOiJSUzI1NiJ9...` |
+| `BLOCKS_API_KEY` | Tenant routing key (X-API-KEY header) — static, from company config | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
 
 ## Authentication
 
-Two methods are supported. The Bearer token works the same either way.
+**These two credentials serve different purposes and come from different sources:**
+
+| Credential | Purpose | Source | Changes? |
+|------------|---------|--------|----------|
+| `BLOCKS_API_KEY` | **Tenant routing** — identifies which company/app | Company config (static `pk_live_sh_...` key) | No — same key for all blocks |
+| `BLOCKS_AUTH_TOKEN` | **Identity & authorization** — who you are + what you can do | Login (`/auth/sign_in`), AID token exchange, or human-provided | Yes — expires, must be refreshed |
+
+> The API key used during AID registration is NOT the same as `BLOCKS_API_KEY`. The registration key authenticates the agent with the Auth API; `BLOCKS_API_KEY` routes requests to the correct tenant across all blocks.
+
+Two methods to obtain the Bearer token:
 
 **Method 1: Agent Identity (AID)** -- For AI agents with AMP identity:
 ```bash
@@ -50,7 +59,7 @@ Lists all tags.
 ```bash
 curl -X GET "$BLOCKS_API_URL/tags" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -62,8 +71,8 @@ curl -X GET "$BLOCKS_API_URL/tags" \
       "type": "tag",
       "attributes": {
         "unique_id": "tag-uuid-123",
-        "name": "high-value",
-        "description": "High-value assets",
+        "tag": "high-value",
+        "thumbnail_url": "https://example.com/high-value.png",
         "assets_count": 18,
         "created_at": "2025-01-10T10:30:00Z",
         "updated_at": "2025-01-10T10:30:00Z"
@@ -74,8 +83,8 @@ curl -X GET "$BLOCKS_API_URL/tags" \
       "type": "tag",
       "attributes": {
         "unique_id": "tag-uuid-456",
-        "name": "warranty-active",
-        "description": "Assets with active warranty",
+        "tag": "warranty-active",
+        "thumbnail_url": null,
         "assets_count": 32,
         "created_at": "2025-01-08T15:00:00Z",
         "updated_at": "2025-01-08T15:00:00Z"
@@ -95,7 +104,7 @@ Retrieves a single tag by unique ID.
 ```bash
 curl -X GET "$BLOCKS_API_URL/tags/tag-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -106,8 +115,8 @@ curl -X GET "$BLOCKS_API_URL/tags/tag-uuid-123" \
     "type": "tag",
     "attributes": {
       "unique_id": "tag-uuid-123",
-      "name": "high-value",
-      "description": "High-value assets",
+      "tag": "high-value",
+      "thumbnail_url": "https://example.com/high-value.png",
       "assets_count": 18,
       "created_at": "2025-01-10T10:30:00Z",
       "updated_at": "2025-01-10T10:30:00Z"
@@ -129,12 +138,12 @@ Creates a new tag.
 ```bash
 curl -X POST "$BLOCKS_API_URL/tags" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "tag": {
-      "name": "fragile",
-      "description": "Fragile assets requiring careful handling"
+      "tag": "fragile",
+      "thumbnail_url": "https://example.com/fragile-icon.png"
     }
   }'
 ```
@@ -142,8 +151,8 @@ curl -X POST "$BLOCKS_API_URL/tags" \
 **Request Parameters:**
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `name` | string | Yes | Tag name (unique) |
-| `description` | string | No | Tag description |
+| `tag` | string | Yes | Tag value (unique) |
+| `thumbnail_url` | string | No | Thumbnail image URL for the tag |
 
 **Response 201:**
 ```json
@@ -153,8 +162,8 @@ curl -X POST "$BLOCKS_API_URL/tags" \
     "type": "tag",
     "attributes": {
       "unique_id": "new-tag-uuid",
-      "name": "fragile",
-      "description": "Fragile assets requiring careful handling",
+      "tag": "fragile",
+      "thumbnail_url": "https://example.com/fragile-icon.png",
       "assets_count": 0,
       "created_at": "2025-01-12T10:30:00Z"
     }
@@ -175,12 +184,12 @@ Updates an existing tag.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/tags/tag-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "tag": {
-      "name": "premium",
-      "description": "Updated premium asset tag"
+      "tag": "premium",
+      "thumbnail_url": "https://example.com/premium-icon.png"
     }
   }'
 ```
@@ -193,8 +202,8 @@ curl -X PUT "$BLOCKS_API_URL/tags/tag-uuid-123" \
     "type": "tag",
     "attributes": {
       "unique_id": "tag-uuid-123",
-      "name": "premium",
-      "description": "Updated premium asset tag",
+      "tag": "premium",
+      "thumbnail_url": "https://example.com/premium-icon.png",
       "updated_at": "2025-01-12T14:00:00Z"
     }
   }
@@ -213,8 +222,8 @@ curl -X PUT "$BLOCKS_API_URL/tags/tag-uuid-123" \
 | Field | Type | Description |
 |-------|------|-------------|
 | `unique_id` | uuid | Unique identifier |
-| `name` | string | Tag name (unique) |
-| `description` | string | Tag description |
+| `tag` | string | Tag value (unique) |
+| `thumbnail_url` | string | Thumbnail image URL |
 | `assets_count` | integer | Number of assets with this tag |
 | `created_at` | timestamp | Creation time |
 | `updated_at` | timestamp | Last update |

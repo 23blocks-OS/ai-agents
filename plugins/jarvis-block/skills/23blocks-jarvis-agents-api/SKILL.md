@@ -16,12 +16,21 @@ Complete API reference for 23blocks Jarvis AI agent management with prompt assig
 | Variable | Description | Example |
 |----------|-------------|---------|
 | `BLOCKS_API_URL` | Jarvis API base URL | `https://jarvis.api.us.23blocks.com` |
-| `BLOCKS_AUTH_TOKEN` | Bearer token (human or AID) | `eyJhbGciOiJSUzI1NiJ9...` |
-| `BLOCKS_API_KEY` | API key (AppId) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
+| `BLOCKS_AUTH_TOKEN` | Bearer token — your identity & scopes (from login or AID token exchange) | `eyJhbGciOiJSUzI1NiJ9...` |
+| `BLOCKS_API_KEY` | Tenant routing key (X-API-KEY header) — static, from company config | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
 
 ## Authentication
 
-Two methods are supported. The Bearer token works the same either way.
+**These two credentials serve different purposes and come from different sources:**
+
+| Credential | Purpose | Source | Changes? |
+|------------|---------|--------|----------|
+| `BLOCKS_API_KEY` | **Tenant routing** — identifies which company/app | Company config (static `pk_live_sh_...` key) | No — same key for all blocks |
+| `BLOCKS_AUTH_TOKEN` | **Identity & authorization** — who you are + what you can do | Login (`/auth/sign_in`), AID token exchange, or human-provided | Yes — expires, must be refreshed |
+
+> The API key used during AID registration is NOT the same as `BLOCKS_API_KEY`. The registration key authenticates the agent with the Auth API; `BLOCKS_API_KEY` routes requests to the correct tenant across all blocks.
+
+Two methods to obtain the Bearer token:
 
 **Method 1: Agent Identity (AID)** -- For AI agents with AMP identity:
 ```bash
@@ -40,6 +49,22 @@ export BLOCKS_API_KEY="<your-api-key>"
 
 ---
 
+## Prerequisites
+
+**User identity must be registered** before calling any endpoint in this skill. Without registration, all requests return `404` with code `usr-not-registered`.
+
+```bash
+curl -X POST "$BLOCKS_API_URL/identities/$USER_UNIQUE_ID/register" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{ "name": "Your Name", "email": "you@example.com" }'
+```
+
+> Self-registration (your own JWT) requires no special scope. Registering other users requires `identities:write`.
+
+---
+
 ## Endpoints
 
 ### GET /agents - List Agents
@@ -50,7 +75,7 @@ Lists all AI agents with pagination.
 ```bash
 curl -X GET "$BLOCKS_API_URL/agents?page=1&records=20" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Query Parameters:**
@@ -96,7 +121,7 @@ Retrieves a single agent by unique ID.
 ```bash
 curl -X GET "$BLOCKS_API_URL/agents/agent-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -144,7 +169,7 @@ Creates a new AI agent.
 ```bash
 curl -X POST "$BLOCKS_API_URL/agents" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "agent": {
@@ -200,7 +225,7 @@ Updates an existing agent.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/agents/agent-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "agent": {
@@ -236,7 +261,7 @@ Deletes an agent.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/agents/agent-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -256,7 +281,7 @@ Assigns a prompt to an agent.
 ```bash
 curl -X POST "$BLOCKS_API_URL/agents/agent-uuid-123/prompts/prompt-uuid-456" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -276,7 +301,7 @@ Removes a prompt assignment from an agent.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/agents/agent-uuid-123/prompts/prompt-uuid-456" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -298,7 +323,7 @@ Binds a digital twin entity to an agent.
 ```bash
 curl -X POST "$BLOCKS_API_URL/agents/agent-uuid-123/entities/entity-uuid-789" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -318,7 +343,7 @@ Unbinds an entity from an agent.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/agents/agent-uuid-123/entities/entity-uuid-789" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -327,6 +352,12 @@ curl -X DELETE "$BLOCKS_API_URL/agents/agent-uuid-123/entities/entity-uuid-789" 
   "message": "Entity removed from agent successfully"
 }
 ```
+
+---
+
+## Context Creation Behavior
+
+When creating agent contexts, if no `members` array is provided, Jarvis auto-populates it from the JWT token (user_unique_id + user_email). The `members` parameter (array, optional) can be explicitly passed during context creation to override this default behavior.
 
 ---
 
@@ -340,7 +371,7 @@ Creates a supervisor handoff delegation for an agent context. Allows the supervi
 ```bash
 curl -X POST "$BLOCKS_API_URL/agents/agent-uuid-123/context/context-uuid-456/handoff" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "handoff": {
@@ -355,6 +386,9 @@ curl -X POST "$BLOCKS_API_URL/agents/agent-uuid-123/context/context-uuid-456/han
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `delegate_user_uid` | uuid | Yes | User UID to delegate to |
+| `access_type` | string | No | Access type for the handoff delegation |
+| `expires_in_hours` | integer | No | Number of hours until delegation expires |
+| `reason` | string | No | Reason for the handoff |
 | `permissions` | array | No | Permissions to grant: `read`, `write`, `execute` |
 | `expires_at` | timestamp | No | Delegation expiration time |
 
@@ -392,7 +426,7 @@ Lists all handoff delegations for an agent context.
 ```bash
 curl -X GET "$BLOCKS_API_URL/agents/agent-uuid-123/context/context-uuid-456/handoff" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -427,7 +461,7 @@ Revokes a supervisor handoff delegation.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/agents/agent-uuid-123/context/context-uuid-456/handoff/delegation-uuid-001" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content

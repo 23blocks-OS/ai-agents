@@ -16,12 +16,21 @@ Complete API reference for 23blocks user shopping list management.
 | Variable | Description | Example |
 |----------|-------------|---------|
 | `BLOCKS_API_URL` | Products API base URL | `https://products.api.us.23blocks.com` |
-| `BLOCKS_AUTH_TOKEN` | Bearer token (human or AID) | `eyJhbGciOiJSUzI1NiJ9...` |
-| `BLOCKS_API_KEY` | API key (AppId) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
+| `BLOCKS_AUTH_TOKEN` | Bearer token — your identity & scopes (from login or AID token exchange) | `eyJhbGciOiJSUzI1NiJ9...` |
+| `BLOCKS_API_KEY` | Tenant routing key (X-API-KEY header) — static, from company config | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
 
 ## Authentication
 
-Two methods are supported. The Bearer token works the same either way.
+**These two credentials serve different purposes and come from different sources:**
+
+| Credential | Purpose | Source | Changes? |
+|------------|---------|--------|----------|
+| `BLOCKS_API_KEY` | **Tenant routing** — identifies which company/app | Company config (static `pk_live_sh_...` key) | No — same key for all blocks |
+| `BLOCKS_AUTH_TOKEN` | **Identity & authorization** — who you are + what you can do | Login (`/auth/sign_in`), AID token exchange, or human-provided | Yes — expires, must be refreshed |
+
+> The API key used during AID registration is NOT the same as `BLOCKS_API_KEY`. The registration key authenticates the agent with the Auth API; `BLOCKS_API_KEY` routes requests to the correct tenant across all blocks.
+
+Two methods to obtain the Bearer token:
 
 **Method 1: Agent Identity (AID)** -- For AI agents with AMP identity:
 ```bash
@@ -50,7 +59,7 @@ Lists all shopping lists for a user.
 ```bash
 curl -X GET "$BLOCKS_API_URL/users/user-uuid-123/shoppinglists" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -59,7 +68,7 @@ curl -X GET "$BLOCKS_API_URL/users/user-uuid-123/shoppinglists" \
   "data": [
     {
       "id": "sl-uuid-123",
-      "type": "shopping_list",
+      "type": "ShoppingList",
       "attributes": {
         "unique_id": "sl-uuid-123",
         "user_unique_id": "user-uuid-123",
@@ -85,7 +94,7 @@ Creates a new shopping list for a user.
 ```bash
 curl -X POST "$BLOCKS_API_URL/users/user-uuid-123/shoppinglists" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "shopping_list": {
@@ -106,7 +115,7 @@ curl -X POST "$BLOCKS_API_URL/users/user-uuid-123/shoppinglists" \
 {
   "data": {
     "id": "new-sl-uuid",
-    "type": "shopping_list",
+    "type": "ShoppingList",
     "attributes": {
       "unique_id": "new-sl-uuid",
       "user_unique_id": "user-uuid-123",
@@ -133,7 +142,7 @@ Retrieves a specific shopping list with its products.
 ```bash
 curl -X GET "$BLOCKS_API_URL/users/user-uuid-123/shoppinglists/sl-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -141,7 +150,7 @@ curl -X GET "$BLOCKS_API_URL/users/user-uuid-123/shoppinglists/sl-uuid-123" \
 {
   "data": {
     "id": "sl-uuid-123",
-    "type": "shopping_list",
+    "type": "ShoppingList",
     "attributes": {
       "unique_id": "sl-uuid-123",
       "user_unique_id": "user-uuid-123",
@@ -154,8 +163,8 @@ curl -X GET "$BLOCKS_API_URL/users/user-uuid-123/shoppinglists/sl-uuid-123" \
     "relationships": {
       "products": {
         "data": [
-          { "id": "product-uuid-001", "type": "product" },
-          { "id": "product-uuid-002", "type": "product" }
+          { "id": "product-uuid-001", "type": "Product" },
+          { "id": "product-uuid-002", "type": "Product" }
         ]
       }
     }
@@ -176,7 +185,7 @@ Updates a shopping list.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/users/user-uuid-123/shoppinglists/sl-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "shopping_list": {
@@ -198,7 +207,7 @@ Deletes a shopping list.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/users/user-uuid-123/shoppinglists/sl-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -215,7 +224,7 @@ Adds a product to a shopping list.
 ```bash
 curl -X POST "$BLOCKS_API_URL/users/user-uuid-123/shoppinglists/sl-uuid-123/products" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "product_unique_id": "product-uuid-001",
@@ -248,7 +257,7 @@ Removes a product from a shopping list.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/users/user-uuid-123/shoppinglists/sl-uuid-123/products" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "product_unique_id": "product-uuid-001"

@@ -1,6 +1,6 @@
 ---
 name: 23blocks-products-carts-api
-description: Manage 23blocks shopping carts via REST API. Use when creating carts, updating cart items, processing checkout, placing orders, managing cart detail statuses, handling authenticated user carts (mycarts), creating visitors, or running abandoned cart remarketing.
+description: Manage 23blocks shopping carts via REST API. Use when creating carts, updating cart items, processing checkout, placing orders, managing cart detail statuses, handling authenticated user carts (mycarts), creating guests (or legacy visitors), or running abandoned cart remarketing.
 allowed-tools: Read, Write, Bash, Grep, Glob
 metadata:
   author: 23blocks
@@ -16,12 +16,21 @@ Complete API reference for 23blocks shopping cart management with checkout, orde
 | Variable | Description | Example |
 |----------|-------------|---------|
 | `BLOCKS_API_URL` | Products API base URL | `https://products.api.us.23blocks.com` |
-| `BLOCKS_AUTH_TOKEN` | Bearer token (human or AID) | `eyJhbGciOiJSUzI1NiJ9...` |
-| `BLOCKS_API_KEY` | API key (AppId) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
+| `BLOCKS_AUTH_TOKEN` | Bearer token — your identity & scopes (from login or AID token exchange) | `eyJhbGciOiJSUzI1NiJ9...` |
+| `BLOCKS_API_KEY` | Tenant routing key (X-API-KEY header) — static, from company config | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
 
 ## Authentication
 
-Two methods are supported. The Bearer token works the same either way.
+**These two credentials serve different purposes and come from different sources:**
+
+| Credential | Purpose | Source | Changes? |
+|------------|---------|--------|----------|
+| `BLOCKS_API_KEY` | **Tenant routing** — identifies which company/app | Company config (static `pk_live_sh_...` key) | No — same key for all blocks |
+| `BLOCKS_AUTH_TOKEN` | **Identity & authorization** — who you are + what you can do | Login (`/auth/sign_in`), AID token exchange, or human-provided | Yes — expires, must be refreshed |
+
+> The API key used during AID registration is NOT the same as `BLOCKS_API_KEY`. The registration key authenticates the agent with the Auth API; `BLOCKS_API_KEY` routes requests to the correct tenant across all blocks.
+
+Two methods to obtain the Bearer token:
 
 **Method 1: Agent Identity (AID)** -- For AI agents with AMP identity:
 ```bash
@@ -72,7 +81,12 @@ export BLOCKS_API_KEY="<your-api-key>"
 | PUT | `/mycarts/:unique_id/order` | Place authenticated user's order |
 | PUT | `/mycarts/:unique_id/cancel` | Cancel authenticated user's cart |
 | DELETE | `/mycarts/:unique_id` | Delete authenticated user's cart |
-| POST | `/visitors` | Create visitor session |
+| POST | `/guests/` | Create guest session (preferred) |
+| GET | `/guests/:user_unique_id` | Get guest |
+| PUT | `/guests/:user_unique_id` | Update guest |
+| PUT | `/guests/:unique_id/convert` | Convert guest to user |
+| POST | `/guests/:unique_id/auth` | Authenticate guest |
+| POST | `/visitors` | Create visitor session (**legacy alias** for `POST /guests/`) |
 | POST | `/tools/remarketing/carts/abandoned` | Get abandoned carts for remarketing |
 
 ---
@@ -191,7 +205,14 @@ orderAll(uniqueId: string): Promise<Cart>;
 cancelAll(uniqueId: string): Promise<Cart>;
 delete(uniqueId: string): Promise<void>;
 
-// VisitorsService — client.products.visitors
+// GuestsService — client.products.guests (preferred)
+create(data: CreateGuestRequest): Promise<Guest>;
+get(userUniqueId: string): Promise<Guest>;
+update(userUniqueId: string, data: UpdateGuestRequest): Promise<Guest>;
+convert(uniqueId: string): Promise<User>;
+auth(uniqueId: string): Promise<AuthToken>;
+
+// VisitorsService — client.products.visitors (legacy alias for guests)
 create(data: CreateVisitorRequest): Promise<Visitor>;
 
 // RemarketingService — client.products.remarketing

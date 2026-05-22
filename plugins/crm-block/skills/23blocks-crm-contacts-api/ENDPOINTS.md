@@ -14,7 +14,7 @@ Lists all contacts with pagination.
 ```bash
 curl -X GET "$BLOCKS_API_URL/contacts/?page=1&records=20" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Query Parameters:**
@@ -61,7 +61,7 @@ Retrieves a single contact by unique ID.
 ```bash
 curl -X GET "$BLOCKS_API_URL/contacts/contact-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -104,7 +104,7 @@ Lists all trashed (soft-deleted) contacts.
 ```bash
 curl -X GET "$BLOCKS_API_URL/contacts/trash/show" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:** Same format as List Contacts, filtered by trash status.
@@ -119,7 +119,7 @@ Creates a new contact.
 ```bash
 curl -X POST "$BLOCKS_API_URL/contacts/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "contact": {
@@ -177,7 +177,7 @@ Adds a history entry to a contact's record.
 ```bash
 curl -X POST "$BLOCKS_API_URL/contacts/contact-uuid-123/history" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "history": {
@@ -221,7 +221,7 @@ Updates an existing contact.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/contacts/contact-uuid-123/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "contact": {
@@ -257,7 +257,7 @@ Adds a profile to a contact.
 ```bash
 curl -X POST "$BLOCKS_API_URL/contacts/contact-uuid-123/profile" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "profile": {
@@ -294,7 +294,7 @@ Updates a contact's profile.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/contacts/contact-uuid-123/profile" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "profile": {
@@ -327,7 +327,7 @@ Soft-deletes a contact (moves to trash).
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/contacts/contact-uuid-123/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -345,7 +345,7 @@ Archives a contact instead of deleting it.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/contacts/contact-uuid-123/archive" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -374,7 +374,7 @@ Lists all documents for a contact.
 ```bash
 curl -X GET "$BLOCKS_API_URL/contacts/contact-uuid-123/documents" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -407,7 +407,7 @@ Registers an uploaded document with a contact.
 ```bash
 curl -X POST "$BLOCKS_API_URL/contacts/contact-uuid-123/documents" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "document": {
@@ -444,7 +444,7 @@ Deletes a document from a contact.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/contacts/contact-uuid-123/documents/doc-uuid-456" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -459,7 +459,7 @@ Gets a presigned URL for uploading a contact document.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/contacts/contact-uuid-123/presign_document" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "file": {

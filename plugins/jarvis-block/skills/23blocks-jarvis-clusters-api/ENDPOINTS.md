@@ -12,7 +12,7 @@ Lists all entity clusters with pagination.
 ```bash
 curl -X GET "$BLOCKS_API_URL/clusters?page=1&records=20" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Query Parameters:**
@@ -55,7 +55,7 @@ Retrieves a single cluster by unique ID.
 ```bash
 curl -X GET "$BLOCKS_API_URL/clusters/cluster-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -96,7 +96,7 @@ Creates a new entity cluster.
 ```bash
 curl -X POST "$BLOCKS_API_URL/clusters" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "cluster": {
@@ -139,7 +139,7 @@ Updates an existing cluster.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/clusters/cluster-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "cluster": {
@@ -175,7 +175,7 @@ Deletes a cluster.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/clusters/cluster-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -192,7 +192,7 @@ Adds an entity to the cluster.
 ```bash
 curl -X POST "$BLOCKS_API_URL/clusters/cluster-uuid-123/members/entity-uuid-456" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -212,7 +212,7 @@ Removes an entity from the cluster.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/clusters/cluster-uuid-123/members/entity-uuid-456" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -234,7 +234,7 @@ Lists prompts assigned to the cluster.
 ```bash
 curl -X GET "$BLOCKS_API_URL/clusters/cluster-uuid-123/prompts" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -264,7 +264,7 @@ Assigns a prompt to the cluster.
 ```bash
 curl -X POST "$BLOCKS_API_URL/clusters/cluster-uuid-123/prompts/prompt-uuid-789" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -284,7 +284,7 @@ Removes a prompt from the cluster.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/clusters/cluster-uuid-123/prompts/prompt-uuid-789" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -306,7 +306,7 @@ Retrieves all contexts for a cluster.
 ```bash
 curl -X GET "$BLOCKS_API_URL/clusters/cluster-uuid-123/contexts" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -337,7 +337,7 @@ Creates a new context for a cluster.
 ```bash
 curl -X POST "$BLOCKS_API_URL/clusters/cluster-uuid-123/contexts" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "context": {
@@ -375,7 +375,7 @@ Lists all conversations for a cluster.
 ```bash
 curl -X GET "$BLOCKS_API_URL/clusters/cluster-uuid-123/conversations" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -407,7 +407,7 @@ Creates a new conversation for a cluster.
 ```bash
 curl -X POST "$BLOCKS_API_URL/clusters/cluster-uuid-123/conversations" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "conversation": {
@@ -443,7 +443,7 @@ Lists messages in a cluster conversation.
 ```bash
 curl -X GET "$BLOCKS_API_URL/clusters/cluster-uuid-123/conversations/conv-uuid-789/messages" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -474,7 +474,7 @@ Sends a message in a cluster conversation.
 ```bash
 curl -X POST "$BLOCKS_API_URL/clusters/cluster-uuid-123/conversations/conv-uuid-789/messages" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "message": {

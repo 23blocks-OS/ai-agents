@@ -14,7 +14,7 @@ Assigns a provider to a source.
 ```bash
 curl -X POST "$BLOCKS_API_URL/sources/source-uuid-001/providers" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "provider": {
@@ -61,7 +61,7 @@ Assigns a provider to a specific order detail.
 ```bash
 curl -X POST "$BLOCKS_API_URL/orders/order-uuid-123/details/detail-uuid-1/providers" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "provider": {
@@ -109,7 +109,7 @@ Updates a provider assignment on an order detail.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/orders/order-uuid-123/details/detail-uuid-1/providers/provider-uuid-002" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "provider": {
@@ -149,7 +149,7 @@ Creates a payment record for a vendor.
 ```bash
 curl -X POST "$BLOCKS_API_URL/orders/order-uuid-123/details/detail-uuid-1/vendors/vendor-uuid-001/payments" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "payment": {
@@ -200,7 +200,7 @@ Updates a vendor payment.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/orders/order-uuid-123/details/detail-uuid-1/vendors/vendor-uuid-001/payments/vendor-payment-uuid-001" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "payment": {
@@ -236,7 +236,7 @@ Executes/pays out a vendor payment.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/orders/order-uuid-123/details/detail-uuid-1/vendors/vendor-uuid-001/payments/vendor-payment-uuid-001/pay" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "payment": {
@@ -276,7 +276,7 @@ Deletes a vendor payment.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/orders/order-uuid-123/details/detail-uuid-1/vendors/vendor-uuid-001/payments/vendor-payment-uuid-001" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -293,7 +293,7 @@ Retrieves a payable record.
 ```bash
 curl -X GET "$BLOCKS_API_URL/payables/vendor-payment-uuid-001" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -335,7 +335,7 @@ Generates a detailed list of vendor payments.
 ```bash
 curl -X POST "$BLOCKS_API_URL/reports/vendors/payments/list" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "report": {
@@ -379,7 +379,7 @@ curl -X POST "$BLOCKS_API_URL/reports/vendors/payments/list" \
 ```bash
 curl -X POST "$BLOCKS_API_URL/reports/vendors/payments/summary" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "report": {
@@ -425,7 +425,7 @@ Generates a list of provider assignments for orders.
 ```bash
 curl -X POST "$BLOCKS_API_URL/reports/orders/providers/list" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "report": {
@@ -467,7 +467,7 @@ curl -X POST "$BLOCKS_API_URL/reports/orders/providers/list" \
 ```bash
 curl -X POST "$BLOCKS_API_URL/reports/orders/providers/summary" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "report": {

@@ -14,7 +14,7 @@ Lists all comments on a prompt.
 ```bash
 curl -X GET "$BLOCKS_API_URL/prompts/prompt-uuid-123/comments" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -47,7 +47,7 @@ Retrieves a single prompt comment.
 ```bash
 curl -X GET "$BLOCKS_API_URL/prompts/prompt-uuid-123/comments/comment-uuid-456" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -81,7 +81,7 @@ Adds a comment to a prompt.
 ```bash
 curl -X POST "$BLOCKS_API_URL/prompts/prompt-uuid-123/comments" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "comment": {
@@ -121,7 +121,7 @@ Updates an existing comment.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/prompts/prompt-uuid-123/comments/comment-uuid-456" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "comment": {
@@ -155,7 +155,7 @@ Deletes a comment.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/prompts/prompt-uuid-123/comments/comment-uuid-456" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -170,7 +170,7 @@ Likes a prompt comment.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/prompts/prompt-uuid-123/comments/comment-uuid-456/like" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -190,7 +190,7 @@ Removes like from a prompt comment.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/prompts/prompt-uuid-123/comments/comment-uuid-456/dislike" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -212,7 +212,7 @@ Lists all comments on a prompt execution.
 ```bash
 curl -X GET "$BLOCKS_API_URL/prompts/prompt-uuid-123/executions/exec-uuid-789/comments" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -245,7 +245,7 @@ Adds a comment to a prompt execution.
 ```bash
 curl -X POST "$BLOCKS_API_URL/prompts/prompt-uuid-123/executions/exec-uuid-789/comments" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "comment": {
@@ -280,7 +280,7 @@ Updates an execution comment.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/prompts/prompt-uuid-123/executions/exec-uuid-789/comments/comment-uuid-101" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "comment": {
@@ -314,7 +314,7 @@ Deletes an execution comment.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/prompts/prompt-uuid-123/executions/exec-uuid-789/comments/comment-uuid-101" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -329,7 +329,7 @@ Likes an execution comment.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/prompts/prompt-uuid-123/executions/exec-uuid-789/comments/comment-uuid-101/like" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -349,7 +349,7 @@ Removes like from an execution comment.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/prompts/prompt-uuid-123/executions/exec-uuid-789/comments/comment-uuid-101/dislike" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**

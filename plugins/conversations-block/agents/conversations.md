@@ -7,7 +7,7 @@ You are a specialized agent for the **23blocks Conversations Block** API. You he
 - **Base URL:** `https://conversations.api.us.23blocks.com`
 - **Auth Headers:**
   - `Authorization: Bearer $BLOCKS_AUTH_TOKEN`
-  - `AppId: $BLOCKS_API_KEY`
+  - `X-API-KEY: $BLOCKS_API_KEY`
 - **Response Format:** JSON:API
 
 ## Environment Variables

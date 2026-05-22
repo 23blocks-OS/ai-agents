@@ -14,7 +14,7 @@ Lists all users with pagination.
 ```bash
 curl -X GET "$BLOCKS_API_URL/users?page=1&records=20" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Query Parameters:**
@@ -59,7 +59,7 @@ Retrieves a single user by unique ID.
 ```bash
 curl -X GET "$BLOCKS_API_URL/users/user-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -106,7 +106,7 @@ Creates a new user account.
 ```bash
 curl -X POST "$BLOCKS_API_URL/users" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "user": {
@@ -159,7 +159,7 @@ Updates an existing user account.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/users/user-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "user": {
@@ -198,7 +198,7 @@ Soft-deletes a user account.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/users/user-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -216,7 +216,7 @@ Retrieves the current authenticated user's profile.
 ```bash
 curl -X GET "$BLOCKS_API_URL/users/me" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -249,7 +249,7 @@ Updates the current authenticated user's profile.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/users/me" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "user": {
@@ -271,7 +271,7 @@ Changes a user's password.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/users/user-uuid-123/change_password" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "user": {
@@ -309,7 +309,7 @@ Sends a password reset email.
 **Request:**
 ```bash
 curl -X POST "$BLOCKS_API_URL/users/reset_password" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "user": {
@@ -334,7 +334,7 @@ Verifies a user's email address using the verification token.
 **Request:**
 ```bash
 curl -X POST "$BLOCKS_API_URL/users/verify_email" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "token": "email-verification-token"
@@ -361,7 +361,7 @@ Activates a deactivated user account.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/users/user-uuid-123/activate" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -389,7 +389,7 @@ Deactivates a user account.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/users/user-uuid-123/deactivate" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -417,7 +417,7 @@ Searches users with filters.
 ```bash
 curl -X POST "$BLOCKS_API_URL/users/search" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "query": {

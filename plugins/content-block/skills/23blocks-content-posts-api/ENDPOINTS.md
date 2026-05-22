@@ -10,11 +10,12 @@ Full endpoint documentation. See [SKILL.md](SKILL.md) for setup, data models, an
 
 Lists all posts with pagination.
 
+> **Public endpoint** — requires only `X-API-KEY`. No Bearer token needed.
+
 **Request:**
 ```bash
 curl -X GET "$BLOCKS_API_URL/posts?page=1&records=20" \
-  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Query Parameters:**
@@ -53,16 +54,17 @@ curl -X GET "$BLOCKS_API_URL/posts?page=1&records=20" \
 
 Query posts with advanced filters.
 
+> **Public endpoint** — requires only `X-API-KEY`. No Bearer token needed.
+
 **Request:**
 ```bash
 curl -X POST "$BLOCKS_API_URL/posts/query" \
-  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "query": {
       "status": "published",
-      "tag_id": "tag-uuid"
+      "tag": "technology"
     }
   }'
 ```
@@ -75,11 +77,12 @@ curl -X POST "$BLOCKS_API_URL/posts/query" \
 
 Retrieves a single post by unique ID.
 
+> **Public endpoint** — requires only `X-API-KEY`. No Bearer token needed.
+
 **Request:**
 ```bash
 curl -X GET "$BLOCKS_API_URL/posts/post-uuid-123" \
-  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -126,7 +129,7 @@ Creates a new post.
 ```bash
 curl -X POST "$BLOCKS_API_URL/posts" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "post": {
@@ -174,7 +177,7 @@ Updates an existing post.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/posts/post-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "post": {
@@ -213,7 +216,7 @@ Replaces post content entirely.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/posts/post-uuid-123/replace" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "post": {
@@ -235,7 +238,7 @@ Soft-deletes a post.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/posts/post-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -255,7 +258,7 @@ Adds a like to the post.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/posts/post-uuid-123/like" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -275,7 +278,7 @@ Removes like from the post.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/posts/post-uuid-123/dislike" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -295,7 +298,7 @@ Follows a post to receive updates.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/posts/post-uuid-123/follow" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -315,7 +318,7 @@ Unfollows a post.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/posts/post-uuid-123/unfollow" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -335,7 +338,7 @@ Saves/bookmarks a post.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/posts/post-uuid-123/save" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -355,7 +358,7 @@ Removes post from saved list.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/posts/post-uuid-123/unsave" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -377,7 +380,7 @@ Transfers post ownership to another user.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/posts/post-uuid-123/own" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "owner_id": "new-owner-uuid"
@@ -401,7 +404,7 @@ Publishes a specific version of the post.
 ```bash
 curl -X POST "$BLOCKS_API_URL/posts/post-uuid-123/versions/version-uuid/publish" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -415,5 +418,137 @@ curl -X POST "$BLOCKS_API_URL/posts/post-uuid-123/versions/version-uuid/publish"
       "published_version_id": "version-uuid"
     }
   }
+}
+```
+
+---
+
+## Attachments
+
+### GET /posts/:post_unique_id/attachments - List Attachments
+
+Lists all attachments for a post.
+
+**Request:**
+```bash
+curl -X GET "$BLOCKS_API_URL/posts/post-uuid-123/attachments" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "X-API-KEY: $BLOCKS_API_KEY"
+```
+
+**Response 200:**
+```json
+{
+  "data": [
+    {
+      "id": "attachment-uuid",
+      "type": "attachment",
+      "attributes": {
+        "unique_id": "attachment-uuid",
+        "file_url": "https://example.com/file.pdf",
+        "file_name": "document.pdf",
+        "content_type": "application/pdf",
+        "sequence": 1,
+        "created_at": "2025-01-10T10:30:00Z"
+      }
+    }
+  ]
+}
+```
+
+---
+
+### POST /posts/:post_unique_id/attachments - Add Attachment
+
+Adds an attachment to a post.
+
+**Request:**
+```bash
+curl -X POST "$BLOCKS_API_URL/posts/post-uuid-123/attachments" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "attachment": {
+      "file_url": "https://example.com/file.pdf",
+      "file_name": "document.pdf",
+      "content_type": "application/pdf"
+    }
+  }'
+```
+
+**Response 201:** Returns the created attachment in JSON:API format.
+
+---
+
+### GET /posts/:post_unique_id/attachments/:unique_id - Get Attachment
+
+Retrieves a single attachment.
+
+**Request:**
+```bash
+curl -X GET "$BLOCKS_API_URL/posts/post-uuid-123/attachments/attachment-uuid" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "X-API-KEY: $BLOCKS_API_KEY"
+```
+
+---
+
+### PUT /posts/:post_unique_id/attachments/:unique_id - Update Attachment
+
+Updates an attachment.
+
+**Request:**
+```bash
+curl -X PUT "$BLOCKS_API_URL/posts/post-uuid-123/attachments/attachment-uuid" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "attachment": {
+      "file_name": "renamed-document.pdf"
+    }
+  }'
+```
+
+---
+
+### DELETE /posts/:post_unique_id/attachments/:unique_id - Delete Attachment
+
+Deletes an attachment.
+
+**Request:**
+```bash
+curl -X DELETE "$BLOCKS_API_URL/posts/post-uuid-123/attachments/attachment-uuid" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "X-API-KEY: $BLOCKS_API_KEY"
+```
+
+**Response 204:** No content
+
+---
+
+### PUT /posts/:post_unique_id/attachments/reorder - Reorder Attachments
+
+Reorders attachments on a post.
+
+**Request:**
+```bash
+curl -X PUT "$BLOCKS_API_URL/posts/post-uuid-123/attachments/reorder" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "attachments": [
+      {"unique_id": "att-1", "sequence": 1},
+      {"unique_id": "att-2", "sequence": 2}
+    ]
+  }'
+```
+
+**Response 200:**
+```json
+{
+  "message": "Attachments reordered successfully"
 }
 ```

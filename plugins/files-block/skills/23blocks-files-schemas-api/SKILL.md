@@ -16,12 +16,21 @@ Complete API reference for 23blocks file schema management.
 | Variable | Description | Example |
 |----------|-------------|---------|
 | `BLOCKS_API_URL` | Files API base URL | `https://files.api.us.23blocks.com` |
-| `BLOCKS_AUTH_TOKEN` | Bearer token (human or AID) | `eyJhbGciOiJSUzI1NiJ9...` |
-| `BLOCKS_API_KEY` | API key (AppId) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
+| `BLOCKS_AUTH_TOKEN` | Bearer token — your identity & scopes (from login or AID token exchange) | `eyJhbGciOiJSUzI1NiJ9...` |
+| `BLOCKS_API_KEY` | Tenant routing key (X-API-KEY header) — static, from company config | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
 
 ## Authentication
 
-Two methods are supported. The Bearer token works the same either way.
+**These two credentials serve different purposes and come from different sources:**
+
+| Credential | Purpose | Source | Changes? |
+|------------|---------|--------|----------|
+| `BLOCKS_API_KEY` | **Tenant routing** — identifies which company/app | Company config (static `pk_live_sh_...` key) | No — same key for all blocks |
+| `BLOCKS_AUTH_TOKEN` | **Identity & authorization** — who you are + what you can do | Login (`/auth/sign_in`), AID token exchange, or human-provided | Yes — expires, must be refreshed |
+
+> The API key used during AID registration is NOT the same as `BLOCKS_API_KEY`. The registration key authenticates the agent with the Auth API; `BLOCKS_API_KEY` routes requests to the correct tenant across all blocks.
+
+Two methods to obtain the Bearer token:
 
 **Method 1: Agent Identity (AID)** -- For AI agents with AMP identity:
 ```bash
@@ -60,7 +69,7 @@ Lists all file schemas for the tenant.
 ```bash
 curl -X GET "$BLOCKS_API_URL/schemas" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -75,7 +84,7 @@ curl -X GET "$BLOCKS_API_URL/schemas" \
         "name": "Invoice Schema",
         "code": "INVOICE",
         "description": "Schema for invoice documents",
-        "schema_definition": {
+        "schema_model": {
           "type": "object",
           "properties": {
             "invoice_number": {"type": "string"},
@@ -104,7 +113,7 @@ Retrieves a single schema by ID.
 ```bash
 curl -X GET "$BLOCKS_API_URL/schemas/$SCHEMA_ID" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -118,7 +127,7 @@ curl -X GET "$BLOCKS_API_URL/schemas/$SCHEMA_ID" \
       "name": "Invoice Schema",
       "code": "INVOICE",
       "description": "Schema for invoice documents",
-      "schema_definition": {
+      "schema_model": {
         "type": "object",
         "properties": {
           "invoice_number": {"type": "string"},
@@ -159,14 +168,14 @@ Creates a new file schema.
 ```bash
 curl -X POST "$BLOCKS_API_URL/schemas" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "schema": {
       "name": "Contract Schema",
       "code": "CONTRACT",
       "description": "Schema for legal contracts",
-      "schema_definition": {
+      "schema_model": {
         "type": "object",
         "properties": {
           "contract_id": {"type": "string"},
@@ -191,7 +200,7 @@ curl -X POST "$BLOCKS_API_URL/schemas" \
 | `name` | string | Yes | Schema display name |
 | `code` | string | Yes | Unique schema code (uppercase) |
 | `description` | string | No | Schema description |
-| `schema_definition` | object | Yes | JSON Schema definition |
+| `schema_model` | object | Yes | JSON Schema definition |
 
 **Response 201:**
 ```json
@@ -221,12 +230,12 @@ Updates an existing schema.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/schemas/$SCHEMA_ID" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "schema": {
       "description": "Updated schema for legal contracts",
-      "schema_definition": {
+      "schema_model": {
         "type": "object",
         "properties": {
           "contract_id": {"type": "string"},
@@ -267,7 +276,7 @@ Deletes a file schema.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/schemas/$SCHEMA_ID" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -283,7 +292,7 @@ curl -X DELETE "$BLOCKS_API_URL/schemas/$SCHEMA_ID" \
 | `name` | string | Display name |
 | `code` | string | Unique code (uppercase) |
 | `description` | string | Description |
-| `schema_definition` | json | JSON Schema definition |
+| `schema_model` | json | JSON Schema definition |
 | `status` | enum | active, inactive |
 | `created_at` | timestamp | Creation time |
 | `updated_at` | timestamp | Last update |
@@ -299,7 +308,7 @@ When creating or updating a file, specify the schema:
 ```bash
 curl -X POST "$BLOCKS_API_URL/users/$USER_ID/files" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "file": {
@@ -342,7 +351,7 @@ Schemas enable AI-powered file processing:
 # AI query against file content
 curl -X POST "$BLOCKS_API_URL/users/$USER_ID/files/$FILE_ID/query" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "prompt": {

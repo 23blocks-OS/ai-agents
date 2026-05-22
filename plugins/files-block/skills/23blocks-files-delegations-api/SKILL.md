@@ -16,12 +16,21 @@ Complete API reference for 23blocks file access delegation management.
 | Variable | Description | Example |
 |----------|-------------|---------|
 | `BLOCKS_API_URL` | Files API base URL | `https://files.api.us.23blocks.com` |
-| `BLOCKS_AUTH_TOKEN` | Bearer token (human or AID) | `eyJhbGciOiJSUzI1NiJ9...` |
-| `BLOCKS_API_KEY` | API key (AppId) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
+| `BLOCKS_AUTH_TOKEN` | Bearer token — your identity & scopes (from login or AID token exchange) | `eyJhbGciOiJSUzI1NiJ9...` |
+| `BLOCKS_API_KEY` | Tenant routing key (X-API-KEY header) — static, from company config | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
 
 ## Authentication
 
-Two methods are supported. The Bearer token works the same either way.
+**These two credentials serve different purposes and come from different sources:**
+
+| Credential | Purpose | Source | Changes? |
+|------------|---------|--------|----------|
+| `BLOCKS_API_KEY` | **Tenant routing** — identifies which company/app | Company config (static `pk_live_sh_...` key) | No — same key for all blocks |
+| `BLOCKS_AUTH_TOKEN` | **Identity & authorization** — who you are + what you can do | Login (`/auth/sign_in`), AID token exchange, or human-provided | Yes — expires, must be refreshed |
+
+> The API key used during AID registration is NOT the same as `BLOCKS_API_KEY`. The registration key authenticates the agent with the Auth API; `BLOCKS_API_KEY` routes requests to the correct tenant across all blocks.
+
+Two methods to obtain the Bearer token:
 
 **Method 1: Agent Identity (AID)** -- For AI agents with AMP identity:
 ```bash
@@ -66,7 +75,7 @@ Lists all delegations this user has granted to others.
 ```bash
 curl -X GET "$BLOCKS_API_URL/users/$USER_ID/delegations/granted" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -102,7 +111,7 @@ Lists all delegations this user has received from others.
 ```bash
 curl -X GET "$BLOCKS_API_URL/users/$USER_ID/delegations/received" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -138,7 +147,7 @@ Retrieves details of a specific delegation.
 ```bash
 curl -X GET "$BLOCKS_API_URL/users/$USER_ID/delegations/$DELEGATION_ID" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -176,11 +185,13 @@ Creates a new delegation to grant another user access to manage your files.
 ```bash
 curl -X POST "$BLOCKS_API_URL/users/$USER_ID/delegations" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "delegation": {
+    "access": {
       "grantee_user_unique_id": "target-user-id",
+      "access_type": "manage",
+      "starts_at": "2025-01-10T10:30:00Z",
       "expires_at": "2025-12-31T23:59:59Z"
     }
   }'
@@ -190,6 +201,8 @@ curl -X POST "$BLOCKS_API_URL/users/$USER_ID/delegations" \
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `grantee_user_unique_id` | string | Yes | User to delegate access to |
+| `access_type` | string | No | Type of delegated access |
+| `starts_at` | timestamp | No | When delegation starts (default: now) |
 | `expires_at` | timestamp | No | When delegation expires (null = never) |
 
 **Response 201:**
@@ -221,7 +234,7 @@ Revokes an existing delegation.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/users/$USER_ID/delegations/$DELEGATION_ID" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -293,7 +306,7 @@ UserIdentityAccessDelegation.active
 ```bash
 # Executive delegates to assistant
 curl -X POST "$BLOCKS_API_URL/users/executive-id/delegations" \
-  -d '{"delegation": {"grantee_user_unique_id": "assistant-id"}}'
+  -d '{"access": {"grantee_user_unique_id": "assistant-id", "access_type": "manage"}}'
 ```
 
 **Contractor Pattern:**
@@ -301,8 +314,9 @@ curl -X POST "$BLOCKS_API_URL/users/executive-id/delegations" \
 # Temporary delegation with 30-day expiration
 curl -X POST "$BLOCKS_API_URL/users/user-id/delegations" \
   -d '{
-    "delegation": {
+    "access": {
       "grantee_user_unique_id": "contractor-id",
+      "access_type": "manage",
       "expires_at": "2025-02-10T23:59:59Z"
     }
   }'

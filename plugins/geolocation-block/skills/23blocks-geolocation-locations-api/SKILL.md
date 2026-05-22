@@ -16,12 +16,21 @@ Complete API reference for 23blocks location management with hours, images, slot
 | Variable | Description | Example |
 |----------|-------------|---------|
 | `BLOCKS_API_URL` | Geolocation API base URL | `https://geolocation.api.us.23blocks.com` |
-| `BLOCKS_AUTH_TOKEN` | Bearer token (human or AID) | `eyJhbGciOiJSUzI1NiJ9...` |
-| `BLOCKS_API_KEY` | API key (AppId) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
+| `BLOCKS_AUTH_TOKEN` | Bearer token — your identity & scopes (from login or AID token exchange) | `eyJhbGciOiJSUzI1NiJ9...` |
+| `BLOCKS_API_KEY` | Tenant routing key (X-API-KEY header) — static, from company config | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
 
 ## Authentication
 
-Two methods are supported. The Bearer token works the same either way.
+**These two credentials serve different purposes and come from different sources:**
+
+| Credential | Purpose | Source | Changes? |
+|------------|---------|--------|----------|
+| `BLOCKS_API_KEY` | **Tenant routing** — identifies which company/app | Company config (static `pk_live_sh_...` key) | No — same key for all blocks |
+| `BLOCKS_AUTH_TOKEN` | **Identity & authorization** — who you are + what you can do | Login (`/auth/sign_in`), AID token exchange, or human-provided | Yes — expires, must be refreshed |
+
+> The API key used during AID registration is NOT the same as `BLOCKS_API_KEY`. The registration key authenticates the agent with the Auth API; `BLOCKS_API_KEY` routes requests to the correct tenant across all blocks.
+
+Two methods to obtain the Bearer token:
 
 **Method 1: Agent Identity (AID)** -- For AI agents with AMP identity:
 ```bash
@@ -45,13 +54,13 @@ export BLOCKS_API_KEY="<your-api-key>"
 
 | Method | Path | Description |
 |--------|------|-------------|
-| GET | `/locations` | List all locations |
-| GET | `/locations/:unique_id/` | Get a single location |
-| GET | `/locations/:unique_id/qrcode` | Get QR code for a location |
+| GET | `/locations` | List all locations (public) |
+| GET | `/locations/:unique_id/` | Get a single location (public) |
+| GET | `/locations/:unique_id/qrcode` | Get QR code for a location (public) |
 | POST | `/locations/` | Create a location |
 | PUT | `/locations/:unique_id/` | Update a location |
 | DELETE | `/locations/:unique_id/` | Delete a location |
-| POST | `/locations/search/code` | Search location by code |
+| POST | `/locations/search/code` | Search location by code (public) |
 | POST | `/locations/:unique_id/tags/` | Add tag to location |
 | DELETE | `/locations/:unique_id/tags/:tag_unique_id` | Remove tag from location |
 | GET | `/locations/:unique_id/hours/` | List operating hours |
@@ -71,13 +80,13 @@ export BLOCKS_API_KEY="<your-api-key>"
 | POST | `/locations/:unique_id/taxes` | Add tax configuration |
 | PUT | `/locations/:unique_id/taxes/:tax_unique_id` | Update tax configuration |
 | DELETE | `/locations/:unique_id/taxes/:tax_unique_id` | Delete tax configuration |
-| GET | `/countries/:country_code/locations` | Locations by country |
-| GET | `/states/:code/locations` | Locations by state |
-| GET | `/counties/:code/locations` | Locations by county |
-| GET | `/cities/:code/locations` | Locations by city |
-| GET | `/divisions/:code/locations` | Locations by division |
-| GET | `/neighborhoods/:code/locations` | Locations by neighborhood |
-| GET | `/buildings/:code/locations` | Locations by building |
+| GET | `/countries/:country_code/locations` | Locations by country (public) |
+| GET | `/states/:code/locations` | Locations by state (public) |
+| GET | `/counties/:code/locations` | Locations by county (public) |
+| GET | `/cities/:code/locations` | Locations by city (public) |
+| GET | `/divisions/:code/locations` | Locations by division (public) |
+| GET | `/neighborhoods/:code/locations` | Locations by neighborhood (public) |
+| GET | `/buildings/:code/locations` | Locations by building (public) |
 | GET | `/location_groups` | List location groups |
 | GET | `/location_groups/:unique_id/` | Get a location group |
 | POST | `/location_groups/` | Create a location group |

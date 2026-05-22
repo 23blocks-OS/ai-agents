@@ -14,7 +14,7 @@ Lists all registered users in the sales system.
 ```bash
 curl -X GET "$BLOCKS_API_URL/users/?page=1&records=20" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Query Parameters:**
@@ -59,7 +59,7 @@ Retrieves a single user by unique ID.
 ```bash
 curl -X GET "$BLOCKS_API_URL/users/user-uuid-123/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -96,7 +96,7 @@ Registers a new user in the sales system.
 ```bash
 curl -X POST "$BLOCKS_API_URL/users/user-uuid-123/register/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "user": {
@@ -149,7 +149,7 @@ Updates an existing user profile.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/users/user-uuid-123/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "user": {
@@ -187,7 +187,7 @@ Lists all registered entities.
 ```bash
 curl -X GET "$BLOCKS_API_URL/entities/?page=1&records=20" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -223,7 +223,7 @@ Registers a new entity in the sales system.
 ```bash
 curl -X POST "$BLOCKS_API_URL/entities/entity-uuid-456/register/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "entity": {
@@ -271,7 +271,7 @@ Retrieves a customer profile.
 ```bash
 curl -X GET "$BLOCKS_API_URL/customers/customer-uuid-789/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -309,7 +309,7 @@ Registers a new customer in the sales system.
 ```bash
 curl -X POST "$BLOCKS_API_URL/customers/customer-uuid-789/register/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "customer": {

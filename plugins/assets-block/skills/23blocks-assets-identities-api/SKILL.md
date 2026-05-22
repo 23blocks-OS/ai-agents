@@ -16,12 +16,21 @@ Complete API reference for 23blocks Assets Block user identity management with a
 | Variable | Description | Example |
 |----------|-------------|---------|
 | `BLOCKS_API_URL` | Assets API base URL | `https://assets.api.us.23blocks.com` |
-| `BLOCKS_AUTH_TOKEN` | Bearer token (human or AID) | `eyJhbGciOiJSUzI1NiJ9...` |
-| `BLOCKS_API_KEY` | API key (AppId) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
+| `BLOCKS_AUTH_TOKEN` | Bearer token — your identity & scopes (from login or AID token exchange) | `eyJhbGciOiJSUzI1NiJ9...` |
+| `BLOCKS_API_KEY` | Tenant routing key (X-API-KEY header) — static, from company config | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
 
 ## Authentication
 
-Two methods are supported. The Bearer token works the same either way.
+**These two credentials serve different purposes and come from different sources:**
+
+| Credential | Purpose | Source | Changes? |
+|------------|---------|--------|----------|
+| `BLOCKS_API_KEY` | **Tenant routing** — identifies which company/app | Company config (static `pk_live_sh_...` key) | No — same key for all blocks |
+| `BLOCKS_AUTH_TOKEN` | **Identity & authorization** — who you are + what you can do | Login (`/auth/sign_in`), AID token exchange, or human-provided | Yes — expires, must be refreshed |
+
+> The API key used during AID registration is NOT the same as `BLOCKS_API_KEY`. The registration key authenticates the agent with the Auth API; `BLOCKS_API_KEY` routes requests to the correct tenant across all blocks.
+
+Two methods to obtain the Bearer token:
 
 **Method 1: Agent Identity (AID)** -- For AI agents with AMP identity:
 ```bash
@@ -50,7 +59,7 @@ Lists all user identities.
 ```bash
 curl -X GET "$BLOCKS_API_URL/users" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -86,7 +95,7 @@ Retrieves a single user identity by unique ID.
 ```bash
 curl -X GET "$BLOCKS_API_URL/users/user-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -123,27 +132,21 @@ Retrieves all digital entities associated with the user.
 ```bash
 curl -X GET "$BLOCKS_API_URL/users/user-uuid-123/entities" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
-**Response 200:**
+**Response 200 (plain JSON, not JSON:API):**
 ```json
-{
-  "data": [
-    {
-      "id": "entity-uuid-456",
-      "type": "entity",
-      "attributes": {
-        "unique_id": "entity-uuid-456",
-        "name": "Software License",
-        "entity_type": "digital_license",
-        "status": "active",
-        "access_level": "private",
-        "created_at": "2025-01-10T10:30:00Z"
-      }
-    }
-  ]
-}
+[
+  {
+    "unique_id": "entity-uuid-456",
+    "name": "Software License",
+    "entity_type": "digital_license",
+    "status": "active",
+    "access_level": "private",
+    "created_at": "2025-01-10T10:30:00Z"
+  }
+]
 ```
 
 ---
@@ -156,26 +159,20 @@ Retrieves all assets assigned to the user.
 ```bash
 curl -X GET "$BLOCKS_API_URL/users/user-uuid-123/assets" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
-**Response 200:**
+**Response 200 (plain JSON, not JSON:API):**
 ```json
-{
-  "data": [
-    {
-      "id": "asset-uuid-789",
-      "type": "asset",
-      "attributes": {
-        "unique_id": "asset-uuid-789",
-        "name": "Laptop Dell XPS 15",
-        "serial_number": "SN-2025-001",
-        "status": "active",
-        "created_at": "2025-01-10T10:30:00Z"
-      }
-    }
-  ]
-}
+[
+  {
+    "unique_id": "asset-uuid-789",
+    "name": "Laptop Dell XPS 15",
+    "serial": "SN-2025-001",
+    "status": "active",
+    "created_at": "2025-01-10T10:30:00Z"
+  }
+]
 ```
 
 ---
@@ -188,27 +185,21 @@ Retrieves ownership records for the user.
 ```bash
 curl -X GET "$BLOCKS_API_URL/users/user-uuid-123/ownership" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
-**Response 200:**
+**Response 200 (plain JSON, not JSON:API):**
 ```json
-{
-  "data": [
-    {
-      "id": "ownership-uuid",
-      "type": "ownership_record",
-      "attributes": {
-        "unique_id": "ownership-uuid",
-        "asset_unique_id": "asset-uuid-789",
-        "asset_name": "Laptop Dell XPS 15",
-        "ownership_type": "assigned",
-        "assigned_at": "2025-01-10T10:30:00Z",
-        "created_at": "2025-01-10T10:30:00Z"
-      }
-    }
-  ]
-}
+[
+  {
+    "unique_id": "ownership-uuid",
+    "asset_unique_id": "asset-uuid-789",
+    "asset_name": "Laptop Dell XPS 15",
+    "ownership_type": "assigned",
+    "assigned_at": "2025-01-10T10:30:00Z",
+    "created_at": "2025-01-10T10:30:00Z"
+  }
+]
 ```
 
 ---
@@ -221,7 +212,7 @@ Registers a new user in the assets system.
 ```bash
 curl -X POST "$BLOCKS_API_URL/users/user-uuid-123/register" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "user": {
@@ -268,7 +259,7 @@ Updates an existing user profile.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/users/user-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "user": {

@@ -35,7 +35,7 @@ if [ -z "$BLOCKS_API_URL" ] || [ -z "$BLOCKS_AUTH_TOKEN" ] || [ -z "$BLOCKS_API_
   echo "Please set:"
   echo "  BLOCKS_API_URL     - API base URL (e.g., https://university.api.us.23blocks.com)"
   echo "  BLOCKS_AUTH_TOKEN  - Your authentication token"
-  echo "  BLOCKS_API_KEY     - Your API key (AppId)"
+  echo "  BLOCKS_API_KEY     - Your API key (X-API-KEY header)"
   exit 1
 fi
 echo "All credentials configured"
@@ -46,7 +46,7 @@ echo "All credentials configured"
 |----------|-------------|---------|
 | `BLOCKS_API_URL` | University API base URL | `https://university.api.us.23blocks.com` |
 | `BLOCKS_AUTH_TOKEN` | Bearer token for authentication | `eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...` |
-| `BLOCKS_API_KEY` | API key (AppId header) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
+| `BLOCKS_API_KEY` | API key (X-API-KEY header) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
 
 **Agent Behavior:**
 - ALWAYS run the pre-flight check before any API operation
@@ -249,7 +249,7 @@ All authenticated endpoints require:
 ```bash
 curl -X GET "$BLOCKS_API_URL/courses" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json"
 ```
 
@@ -326,7 +326,6 @@ curl -X GET "$BLOCKS_API_URL/courses" \
 - `GET /course_groups/:unique_id/tests/:test_unique_id/responses` - Test responses
 
 ### Assignments
-- `GET /assignments/:unique_id/` - Get assignment
 - `POST /assignments/` - Create assignment
 - `PUT /assignment/:unique_id` - Update assignment
 - `DELETE /assignment/:unique_id` - Delete assignment
@@ -441,10 +440,10 @@ curl -X GET "$BLOCKS_API_URL/courses" \
 # 1. Register student
 curl -X POST "$BLOCKS_API_URL/users/student-uuid-123/register/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "user": {
+    "student": {
       "email": "student@example.com",
       "first_name": "Jane",
       "last_name": "Doe"
@@ -454,7 +453,7 @@ curl -X POST "$BLOCKS_API_URL/users/student-uuid-123/register/" \
 # 2. Enroll in course
 curl -X POST "$BLOCKS_API_URL/courses/course-uuid-456/enrollment" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "enrollment": {
@@ -465,7 +464,7 @@ curl -X POST "$BLOCKS_API_URL/courses/course-uuid-456/enrollment" \
 # 3. Assign to course group
 curl -X POST "$BLOCKS_API_URL/course/course-uuid-456/course_groups/enrollment" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "enrollment": {
@@ -480,7 +479,7 @@ curl -X POST "$BLOCKS_API_URL/course/course-uuid-456/course_groups/enrollment" \
 # 1. Create course
 curl -X POST "$BLOCKS_API_URL/courses/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "course": {
@@ -495,7 +494,7 @@ curl -X POST "$BLOCKS_API_URL/courses/" \
 # 2. Create subject
 curl -X POST "$BLOCKS_API_URL/subjects/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "subject": {
@@ -509,7 +508,7 @@ curl -X POST "$BLOCKS_API_URL/subjects/" \
 # 3. Add lesson to subject
 curl -X POST "$BLOCKS_API_URL/subjects/subject-uuid-789/lessons" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "lesson": {
@@ -527,13 +526,13 @@ curl -X POST "$BLOCKS_API_URL/subjects/subject-uuid-789/lessons" \
 # 1. Find available students for coaching
 curl -X POST "$BLOCKS_API_URL/teachers/teacher-uuid-123/coachees/find" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json"
 
 # 2. Set teacher availability
 curl -X POST "$BLOCKS_API_URL/teachers/teacher-uuid-123/availability" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "availability": {
@@ -546,7 +545,7 @@ curl -X POST "$BLOCKS_API_URL/teachers/teacher-uuid-123/availability" \
 # 3. View coaching sessions
 curl -X GET "$BLOCKS_API_URL/teachers/teacher-uuid-123/coaching_sessions" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 ### Placement Test Flow
@@ -554,17 +553,17 @@ curl -X GET "$BLOCKS_API_URL/teachers/teacher-uuid-123/coaching_sessions" \
 # 1. Get available placement test for course
 curl -X GET "$BLOCKS_API_URL/courses/course-uuid-456/placement" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 
 # 2. Start placement test for student
 curl -X POST "$BLOCKS_API_URL/users/student-uuid-123/placement/placement-uuid-789" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 
 # 3. Submit response
 curl -X PUT "$BLOCKS_API_URL/users/student-uuid-123/placement/instance-uuid-101" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "response": {
@@ -576,7 +575,7 @@ curl -X PUT "$BLOCKS_API_URL/users/student-uuid-123/placement/instance-uuid-101"
 # 4. Finish placement test
 curl -X PUT "$BLOCKS_API_URL/users/student-uuid-123/placement/instance-uuid-101/finish" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 ### Content Test Flow
@@ -584,17 +583,17 @@ curl -X PUT "$BLOCKS_API_URL/users/student-uuid-123/placement/instance-uuid-101/
 # 1. Get tests for a course
 curl -X GET "$BLOCKS_API_URL/courses/course-uuid-456/tests" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 
 # 2. Start test for student
 curl -X POST "$BLOCKS_API_URL/users/student-uuid-123/test/test-uuid-789" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 
 # 3. Submit response
 curl -X PUT "$BLOCKS_API_URL/users/student-uuid-123/test/instance-uuid-101" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "response": {
@@ -606,7 +605,7 @@ curl -X PUT "$BLOCKS_API_URL/users/student-uuid-123/test/instance-uuid-101" \
 # 4. Finish test
 curl -X PUT "$BLOCKS_API_URL/users/student-uuid-123/test/instance-uuid-101/finish" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 ## Error Handling

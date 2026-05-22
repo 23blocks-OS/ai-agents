@@ -16,12 +16,21 @@ Complete API reference for 23blocks University assignment management with respon
 | Variable | Description | Example |
 |----------|-------------|---------|
 | `BLOCKS_API_URL` | University API base URL | `https://university.api.us.23blocks.com` |
-| `BLOCKS_AUTH_TOKEN` | Bearer token (human or AID) | `eyJhbGciOiJSUzI1NiJ9...` |
-| `BLOCKS_API_KEY` | API key (AppId) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
+| `BLOCKS_AUTH_TOKEN` | Bearer token — your identity & scopes (from login or AID token exchange) | `eyJhbGciOiJSUzI1NiJ9...` |
+| `BLOCKS_API_KEY` | Tenant routing key (X-API-KEY header) — static, from company config | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
 
 ## Authentication
 
-Two methods are supported. The Bearer token works the same either way.
+**These two credentials serve different purposes and come from different sources:**
+
+| Credential | Purpose | Source | Changes? |
+|------------|---------|--------|----------|
+| `BLOCKS_API_KEY` | **Tenant routing** — identifies which company/app | Company config (static `pk_live_sh_...` key) | No — same key for all blocks |
+| `BLOCKS_AUTH_TOKEN` | **Identity & authorization** — who you are + what you can do | Login (`/auth/sign_in`), AID token exchange, or human-provided | Yes — expires, must be refreshed |
+
+> The API key used during AID registration is NOT the same as `BLOCKS_API_KEY`. The registration key authenticates the agent with the Auth API; `BLOCKS_API_KEY` routes requests to the correct tenant across all blocks.
+
+Two methods to obtain the Bearer token:
 
 **Method 1: Agent Identity (AID)** -- For AI agents with AMP identity:
 ```bash
@@ -42,42 +51,7 @@ export BLOCKS_API_KEY="<your-api-key>"
 
 ## Endpoints
 
-### GET /assignments/:unique_id/ - Get Assignment
-
-Retrieves a single assignment by unique ID.
-
-**Request:**
-```bash
-curl -X GET "$BLOCKS_API_URL/assignments/assignment-uuid-001/" \
-  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
-```
-
-**Response 200:**
-```json
-{
-  "data": {
-    "id": "assignment-uuid-001",
-    "type": "assignment",
-    "attributes": {
-      "unique_id": "assignment-uuid-001",
-      "title": "Homework 1: Arrays",
-      "description": "Complete exercises on array operations",
-      "course_id": "course-uuid-456",
-      "due_date": "2025-09-15T23:59:00Z",
-      "max_score": 100,
-      "assignment_type": "homework",
-      "status": "active",
-      "created_at": "2025-09-01T10:00:00Z"
-    }
-  }
-}
-```
-
-**Errors:**
-- `404 Not Found` - Assignment not found
-
----
+> **Note:** There is no standalone `GET /assignments/:unique_id` endpoint. Assignments are accessed via their parent course: `GET /courses/:unique_id/assignments/`.
 
 ### POST /assignments/ - Create Assignment
 
@@ -87,7 +61,7 @@ Creates a new assignment.
 ```bash
 curl -X POST "$BLOCKS_API_URL/assignments/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "assignment": {
@@ -145,7 +119,7 @@ Updates an existing assignment.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/assignment/assignment-uuid-001" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "assignment": {
@@ -182,7 +156,7 @@ Deletes an assignment.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/assignment/assignment-uuid-001" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -202,7 +176,7 @@ Generates a presigned URL for file upload to an assignment.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/assignments/assignment-uuid-001/presign_upload" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "file": {
@@ -239,7 +213,7 @@ Retrieves all responses for an assignment as viewed by a teacher.
 ```bash
 curl -X GET "$BLOCKS_API_URL/assignments/assignment-uuid-001/responses/teachers/teacher-uuid-789" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -262,7 +236,8 @@ curl -X GET "$BLOCKS_API_URL/assignments/assignment-uuid-001/responses/teachers/
     }
   ],
   "meta": {
-    "total_count": 25,
+    "totalPages": 2,
+    "totalRecords": 25,
     "graded_count": 10,
     "pending_count": 15
   }
@@ -279,7 +254,7 @@ Retrieves a specific student's responses for an assignment.
 ```bash
 curl -X GET "$BLOCKS_API_URL/assignments/assignment-uuid-001/responses/students/student-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -315,7 +290,7 @@ Submits a response/solution for an assignment.
 ```bash
 curl -X POST "$BLOCKS_API_URL/assignments/assignment-uuid-001/response" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "response": {
@@ -359,7 +334,7 @@ Grades a student's assignment response.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/assignments/assignment-uuid-001/response/response-uuid-001/grade" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "grade": {

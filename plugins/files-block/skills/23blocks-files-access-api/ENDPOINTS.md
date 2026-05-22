@@ -14,7 +14,7 @@ Retrieves the access list for a file.
 ```bash
 curl -X GET "$BLOCKS_API_URL/users/$USER_ID/files/$FILE_ID/access" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -59,7 +59,7 @@ Grants access to a file for another user.
 ```bash
 curl -X POST "$BLOCKS_API_URL/users/$USER_ID/files/$FILE_ID/access/grant" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "access": {
@@ -104,7 +104,7 @@ Revokes a specific access grant.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/users/$USER_ID/files/$FILE_ID/access/$ACCESS_ID/revoke" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -119,7 +119,7 @@ Changes file access level to public.
 ```bash
 curl -X POST "$BLOCKS_API_URL/users/$USER_ID/files/$FILE_ID/access/make_public" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -145,7 +145,7 @@ Changes file access level to private.
 ```bash
 curl -X POST "$BLOCKS_API_URL/users/$USER_ID/files/$FILE_ID/access/make_private" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -173,7 +173,7 @@ Grants a user access to multiple files at once.
 ```bash
 curl -X POST "$BLOCKS_API_URL/users/$USER_ID/files/access/grant" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "access": {
@@ -216,7 +216,7 @@ Revokes a user's access from multiple files.
 ```bash
 curl -X POST "$BLOCKS_API_URL/users/$USER_ID/files/access/revoke" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "access": {
@@ -246,7 +246,7 @@ Grants multiple users access to all of a user's files.
 ```bash
 curl -X POST "$BLOCKS_API_URL/users/$USER_ID/files/access/grant-to-users" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "access": {
@@ -282,7 +282,7 @@ Revokes multiple users' access from all of a user's files.
 ```bash
 curl -X POST "$BLOCKS_API_URL/users/$USER_ID/files/access/revoke-from-users" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "access": {
@@ -303,6 +303,37 @@ curl -X POST "$BLOCKS_API_URL/users/$USER_ID/files/access/revoke-from-users" \
 
 ---
 
+## Access Summary
+
+### GET /users/:unique_id/access/summary - Access Summary
+
+Returns a summary of all file access for a user.
+
+**Request:**
+```bash
+curl -X GET "$BLOCKS_API_URL/users/$USER_ID/access/summary" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "X-API-KEY: $BLOCKS_API_KEY"
+```
+
+**Response 200:**
+```json
+{
+  "data": {
+    "id": "user-123",
+    "type": "access_summary",
+    "attributes": {
+      "user_unique_id": "user-123",
+      "owned_files_count": 10,
+      "shared_files_count": 5,
+      "files_shared_with_me_count": 3
+    }
+  }
+}
+```
+
+---
+
 ## Access Request Endpoints
 
 ### POST /users/:unique_id/files/:unique_file_id/requests/access - Request Access
@@ -313,7 +344,7 @@ Submits an access request for a file.
 ```bash
 curl -X POST "$BLOCKS_API_URL/users/$USER_ID/files/$FILE_ID/requests/access" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "request": {
@@ -355,7 +386,7 @@ Lists pending access requests for a file.
 ```bash
 curl -X GET "$BLOCKS_API_URL/users/$USER_ID/files/$FILE_ID/access/requests" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -389,7 +420,7 @@ Approves an access request and grants access.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/users/$USER_ID/files/$FILE_ID/access/requests/$REQUEST_ID/approve" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -417,7 +448,7 @@ Denies an access request.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/users/$USER_ID/files/$FILE_ID/access/requests/$REQUEST_ID/deny" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content

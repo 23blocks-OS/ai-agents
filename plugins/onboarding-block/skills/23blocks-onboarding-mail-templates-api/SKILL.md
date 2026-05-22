@@ -16,12 +16,21 @@ Complete API reference for 23blocks onboarding email template management with Ma
 | Variable | Description | Example |
 |----------|-------------|---------|
 | `BLOCKS_API_URL` | Onboarding API base URL | `https://onboarding.api.us.23blocks.com` |
-| `BLOCKS_AUTH_TOKEN` | Bearer token (human or AID) | `eyJhbGciOiJSUzI1NiJ9...` |
-| `BLOCKS_API_KEY` | API key (AppId) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
+| `BLOCKS_AUTH_TOKEN` | Bearer token — your identity & scopes (from login or AID token exchange) | `eyJhbGciOiJSUzI1NiJ9...` |
+| `BLOCKS_API_KEY` | Tenant routing key (X-API-KEY header) — static, from company config | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
 
 ## Authentication
 
-Two methods are supported. The Bearer token works the same either way.
+**These two credentials serve different purposes and come from different sources:**
+
+| Credential | Purpose | Source | Changes? |
+|------------|---------|--------|----------|
+| `BLOCKS_API_KEY` | **Tenant routing** — identifies which company/app | Company config (static `pk_live_sh_...` key) | No — same key for all blocks |
+| `BLOCKS_AUTH_TOKEN` | **Identity & authorization** — who you are + what you can do | Login (`/auth/sign_in`), AID token exchange, or human-provided | Yes — expires, must be refreshed |
+
+> The API key used during AID registration is NOT the same as `BLOCKS_API_KEY`. The registration key authenticates the agent with the Auth API; `BLOCKS_API_KEY` routes requests to the correct tenant across all blocks.
+
+Two methods to obtain the Bearer token:
 
 **Method 1: Agent Identity (AID)** -- For AI agents with AMP identity:
 ```bash
@@ -50,7 +59,7 @@ Lists all email templates.
 ```bash
 curl -X GET "$BLOCKS_API_URL/mailtemplates?page=1&records=20" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Query Parameters:**
@@ -97,7 +106,7 @@ Retrieves a single email template by ID.
 ```bash
 curl -X GET "$BLOCKS_API_URL/mailtemplates/template-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -136,10 +145,10 @@ Creates a new email template.
 ```bash
 curl -X POST "$BLOCKS_API_URL/mailtemplates" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "mail_template": {
+    "template": {
       "name": "Journey Reminder",
       "template_name": "journey-reminder",
       "from_email": "noreply@example.com",
@@ -192,10 +201,10 @@ Updates an existing email template.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/mailtemplates/template-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "mail_template": {
+    "template": {
       "from_subject": "Don'\''t Miss Out - Continue Your Setup",
       "template_html": "<h1>Hi {{name}}</h1><p>Pick up where you left off.</p>"
     }
@@ -229,7 +238,7 @@ Creates the template in Mandrill from the local template content.
 ```bash
 curl -X POST "$BLOCKS_API_URL/mailtemplates/template-uuid-123/mandrill" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -257,7 +266,7 @@ Updates the template in Mandrill with latest local content.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/mailtemplates/template-uuid-123/mandrill" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -284,7 +293,7 @@ Publishes the template in Mandrill, making it available for sending.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/mailtemplates/template-uuid-123/mandrill/publish" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -309,31 +318,27 @@ curl -X PUT "$BLOCKS_API_URL/mailtemplates/template-uuid-123/mandrill/publish" \
 
 Retrieves delivery statistics for the template from Mandrill.
 
+> **Note:** This endpoint returns the **raw Mandrill API response**, NOT JSON:API format.
+
 **Request:**
 ```bash
 curl -X GET "$BLOCKS_API_URL/mailtemplates/template-uuid-123/mandrill/stats" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
-**Response 200:**
+**Response 200 (raw Mandrill response, not JSON:API):**
 ```json
 {
-  "data": {
-    "id": "template-uuid-123",
-    "type": "mail_template_stats",
-    "attributes": {
-      "sends": 1520,
-      "opens": 890,
-      "clicks": 342,
-      "hard_bounces": 5,
-      "soft_bounces": 12,
-      "rejects": 2,
-      "complaints": 0,
-      "unique_opens": 780,
-      "unique_clicks": 295
-    }
-  }
+  "sends": 1520,
+  "opens": 890,
+  "clicks": 342,
+  "hard_bounces": 5,
+  "soft_bounces": 12,
+  "rejects": 2,
+  "complaints": 0,
+  "unique_opens": 780,
+  "unique_clicks": 295
 }
 ```
 

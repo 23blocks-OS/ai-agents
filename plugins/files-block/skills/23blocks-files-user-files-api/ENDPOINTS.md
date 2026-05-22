@@ -12,7 +12,7 @@ Lists all files for a user with pagination and filtering.
 ```bash
 curl -X GET "$BLOCKS_API_URL/users/$USER_ID/files?page=1&records=20&search=contract" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Query Parameters:**
@@ -68,7 +68,7 @@ Retrieves a single file with a fresh signed URL.
 ```bash
 curl -X GET "$BLOCKS_API_URL/users/$USER_ID/files/$FILE_ID" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -115,9 +115,9 @@ Gets a presigned URL for direct S3 upload.
 
 **Request:**
 ```bash
-curl -X PUT "$BLOCKS_API_URL/users/$USER_ID/presign_upload?filename=document.pdf&serialization=jsonapi" \
+curl -X PUT "$BLOCKS_API_URL/users/$USER_ID/presign_upload?filename=document.pdf" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Query Parameters:**
@@ -125,9 +125,17 @@ curl -X PUT "$BLOCKS_API_URL/users/$USER_ID/presign_upload?filename=document.pdf
 |-----------|------|----------|-------------|
 | `filename` | string | Yes | Name of file to upload |
 | `file_name` | string | No | Alternative to filename (backward compat) |
-| `serialization` | string | No | Set to `jsonapi` for structured response |
+| `serialization` | string | No | Set to `jsonapi` for JSON:API response format |
 
-**Response 200 (JSONAPI):**
+**Response 200 (default — flat JSON):**
+```json
+{
+  "signed_url": "https://s3.us-east-2.amazonaws.com/...?X-Amz-Signature=...",
+  "public_url": "https://s3.us-east-2.amazonaws.com/.../document.pdf"
+}
+```
+
+**Response 200 (with `?serialization=jsonapi`):**
 ```json
 {
   "data": {
@@ -155,7 +163,7 @@ Initiates a multipart upload for large files (> 100MB recommended).
 ```bash
 curl -X POST "$BLOCKS_API_URL/users/$USER_ID/multipart_presign_upload" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "filename": "large-video.mp4",
@@ -170,7 +178,18 @@ curl -X POST "$BLOCKS_API_URL/users/$USER_ID/multipart_presign_upload" \
 | `part_count` | integer | Yes | Number of parts to split file into |
 | `serialization` | string | No | Set to `jsonapi` for structured response |
 
-**Response 200 (JSONAPI):**
+**Response 200 (default — flat JSON):**
+```json
+{
+  "upload_id": "abc123xyz",
+  "presigned_urls": [
+    "https://s3...?partNumber=1&uploadId=abc123xyz&X-Amz-Signature=...",
+    "https://s3...?partNumber=2&uploadId=abc123xyz&X-Amz-Signature=..."
+  ]
+}
+```
+
+**Response 200 (with `?serialization=jsonapi`):**
 ```json
 {
   "data": {
@@ -201,7 +220,7 @@ Finalizes a multipart upload after all parts are uploaded.
 ```bash
 curl -X POST "$BLOCKS_API_URL/users/$USER_ID/multipart_complete_upload" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "filename": "large-video.mp4",
@@ -220,7 +239,15 @@ curl -X POST "$BLOCKS_API_URL/users/$USER_ID/multipart_complete_upload" \
 | `upload_id` | string | Yes | Upload ID from multipart_presign |
 | `parts` | array | Yes | Array of part info with PartNumber and ETag |
 
-**Response 200:**
+**Response 200 (default — flat JSON):**
+```json
+{
+  "public_url": "https://s3.us-east-2.amazonaws.com/.../large-video.mp4",
+  "file_name": "large-video.mp4"
+}
+```
+
+**Response 200 (with `?serialization=jsonapi`):**
 ```json
 {
   "data": {
@@ -252,7 +279,7 @@ Registers an uploaded file in the system.
 ```bash
 curl -X POST "$BLOCKS_API_URL/users/$USER_ID/files" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "file": {
@@ -318,7 +345,7 @@ Updates file metadata.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/users/$USER_ID/files/$FILE_ID" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "file": {
@@ -356,7 +383,7 @@ Soft-deletes a file (marks as deleted, removes from S3).
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/users/$USER_ID/files/$FILE_ID" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -377,7 +404,7 @@ Sets file status to active.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/users/$USER_ID/files/$FILE_ID/approve" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -405,7 +432,7 @@ Sets file status back to review.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/users/$USER_ID/files/$FILE_ID/reject" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -433,7 +460,7 @@ Copies file to public bucket and makes it publicly accessible.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/users/$USER_ID/files/$FILE_ID/publish" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -453,7 +480,7 @@ Removes file from public bucket and makes it private.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/users/$USER_ID/files/$FILE_ID/unpublish" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content

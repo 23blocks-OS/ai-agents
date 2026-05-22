@@ -14,7 +14,7 @@ Retrieves company details by URL identifier.
 ```bash
 curl -X GET "$BLOCKS_API_URL/companies/my-company" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Path Parameters:**
@@ -57,7 +57,7 @@ Creates a new company tenant.
 ```bash
 curl -X POST "$BLOCKS_API_URL/companies/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "company": {
@@ -114,7 +114,7 @@ Lists all API keys for a company.
 ```bash
 curl -X GET "$BLOCKS_API_URL/companies/my-company/keys" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Path Parameters:**
@@ -168,7 +168,7 @@ Creates a new API key for a company.
 ```bash
 curl -X POST "$BLOCKS_API_URL/companies/company-uuid-123/keys" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "key": {
@@ -221,7 +221,7 @@ Deletes an API key from a company.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/companies/company-uuid-123/keys/key-uuid-003" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Path Parameters:**
@@ -245,7 +245,7 @@ Configures exchange rate settings for a company. Used for multi-currency wallet 
 ```bash
 curl -X POST "$BLOCKS_API_URL/companies/company-uuid-123/exchange" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "exchange": {
@@ -302,7 +302,7 @@ Generates an access token to perform operations on behalf of a company user. Use
 ```bash
 curl -X POST "$BLOCKS_API_URL/companies/my-company/access" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "access": {
@@ -354,7 +354,7 @@ Creates a storage configuration for company data.
 ```bash
 curl -X POST "$BLOCKS_API_URL/companies/my-company/storage" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "storage": {

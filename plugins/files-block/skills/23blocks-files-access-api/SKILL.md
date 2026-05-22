@@ -16,12 +16,21 @@ Complete API reference for 23blocks file access control management.
 | Variable | Description | Example |
 |----------|-------------|---------|
 | `BLOCKS_API_URL` | Files API base URL | `https://files.api.us.23blocks.com` |
-| `BLOCKS_AUTH_TOKEN` | Bearer token (human or AID) | `eyJhbGciOiJSUzI1NiJ9...` |
-| `BLOCKS_API_KEY` | API key (AppId) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
+| `BLOCKS_AUTH_TOKEN` | Bearer token — your identity & scopes (from login or AID token exchange) | `eyJhbGciOiJSUzI1NiJ9...` |
+| `BLOCKS_API_KEY` | Tenant routing key (X-API-KEY header) — static, from company config | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
 
 ## Authentication
 
-Two methods are supported. The Bearer token works the same either way.
+**These two credentials serve different purposes and come from different sources:**
+
+| Credential | Purpose | Source | Changes? |
+|------------|---------|--------|----------|
+| `BLOCKS_API_KEY` | **Tenant routing** — identifies which company/app | Company config (static `pk_live_sh_...` key) | No — same key for all blocks |
+| `BLOCKS_AUTH_TOKEN` | **Identity & authorization** — who you are + what you can do | Login (`/auth/sign_in`), AID token exchange, or human-provided | Yes — expires, must be refreshed |
+
+> The API key used during AID registration is NOT the same as `BLOCKS_API_KEY`. The registration key authenticates the agent with the Auth API; `BLOCKS_API_KEY` routes requests to the correct tenant across all blocks.
+
+Two methods to obtain the Bearer token:
 
 **Method 1: Agent Identity (AID)** -- For AI agents with AMP identity:
 ```bash
@@ -55,6 +64,7 @@ export BLOCKS_API_KEY="<your-api-key>"
 | POST | `/users/:unique_id/files/access/revoke` | Bulk revoke access |
 | POST | `/users/:unique_id/files/access/grant-to-users` | Grant to multiple users |
 | POST | `/users/:unique_id/files/access/revoke-from-users` | Revoke from multiple users |
+| GET | `/users/:unique_id/access/summary` | Access summary for user |
 | POST | `/users/:unique_id/files/:unique_file_id/requests/access` | Request access |
 | GET | `/users/:unique_id/files/:unique_file_id/access/requests` | List access requests |
 | PUT | `/users/:unique_id/files/:unique_file_id/access/requests/:request_unique_id/approve` | Approve request |

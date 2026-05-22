@@ -12,16 +12,16 @@ Lists attendance records for a student with pagination.
 
 **Request:**
 ```bash
-curl -X GET "$BLOCKS_API_URL/users/student-uuid-123/attendance?page=1&records=20" \
+curl -X GET "$BLOCKS_API_URL/users/student-uuid-123/attendance?page=1&size=20" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Query Parameters:**
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `page` | integer | No | Page number (default: 1) |
-| `records` | integer | No | Records per page (default: 20) |
+| `size` | integer | No | Items per page (default: 15, max: 100) |
 | `start_date` | date | No | Filter from date (YYYY-MM-DD) |
 | `end_date` | date | No | Filter to date (YYYY-MM-DD) |
 
@@ -73,7 +73,7 @@ Registers attendance for a student.
 ```bash
 curl -X POST "$BLOCKS_API_URL/users/student-uuid-123/attendance" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "attendance": {
@@ -124,16 +124,16 @@ Lists attendance records for a teacher with pagination.
 
 **Request:**
 ```bash
-curl -X GET "$BLOCKS_API_URL/teachers/teacher-uuid-456/attendance?page=1&records=20" \
+curl -X GET "$BLOCKS_API_URL/teachers/teacher-uuid-456/attendance?page=1&size=20" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Query Parameters:**
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `page` | integer | No | Page number (default: 1) |
-| `records` | integer | No | Records per page (default: 20) |
+| `size` | integer | No | Items per page (default: 15, max: 100) |
 | `start_date` | date | No | Filter from date (YYYY-MM-DD) |
 | `end_date` | date | No | Filter to date (YYYY-MM-DD) |
 
@@ -172,7 +172,7 @@ Registers attendance for a teacher.
 ```bash
 curl -X POST "$BLOCKS_API_URL/teachers/teacher-uuid-456/attendance" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "attendance": {
@@ -214,7 +214,7 @@ Lists availability slots for a student.
 ```bash
 curl -X GET "$BLOCKS_API_URL/users/student-uuid-123/availability" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -259,7 +259,7 @@ Adds an availability slot for a student.
 ```bash
 curl -X POST "$BLOCKS_API_URL/users/student-uuid-123/availability" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "availability": {
@@ -310,7 +310,7 @@ Updates an existing availability slot.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/users/student-uuid-123/availability/avail-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "availability": {
@@ -352,7 +352,7 @@ Bulk updates all availability slots for a student.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/users/student-uuid-123/availabilities/slots" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "availabilities": [
@@ -432,7 +432,7 @@ Deletes a specific availability slot.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/users/student-uuid-123/availability/avail-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -447,7 +447,7 @@ Deletes all availability slots for a student.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/users/student-uuid-123/availability" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content

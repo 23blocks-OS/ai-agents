@@ -25,7 +25,7 @@ if [ -z "$BLOCKS_API_URL" ] || [ -z "$BLOCKS_AUTH_TOKEN" ] || [ -z "$BLOCKS_API_
   echo "Please set:"
   echo "  BLOCKS_API_URL     - API base URL (e.g., https://rewards.api.us.23blocks.com)"
   echo "  BLOCKS_AUTH_TOKEN  - Your authentication token"
-  echo "  BLOCKS_API_KEY     - Your API key (AppId)"
+  echo "  BLOCKS_API_KEY     - Your API key (X-API-KEY header)"
   exit 1
 fi
 echo "All credentials configured"
@@ -36,7 +36,7 @@ echo "All credentials configured"
 |----------|-------------|---------|
 | `BLOCKS_API_URL` | Rewards API base URL | `https://rewards.api.us.23blocks.com` |
 | `BLOCKS_AUTH_TOKEN` | Bearer token for authentication | `eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...` |
-| `BLOCKS_API_KEY` | API key (AppId header) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
+| `BLOCKS_API_KEY` | API key (X-API-KEY header) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
 
 **Agent Behavior:**
 - ALWAYS run the pre-flight check before any API operation
@@ -145,7 +145,7 @@ All authenticated endpoints require:
 ```bash
 curl -X GET "$BLOCKS_API_URL/loyalties" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json"
 ```
 
@@ -263,7 +263,7 @@ curl -X GET "$BLOCKS_API_URL/loyalties" \
 # 1. Create loyalty program
 curl -X POST "$BLOCKS_API_URL/loyalties" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "loyalty": {
@@ -277,7 +277,7 @@ curl -X POST "$BLOCKS_API_URL/loyalties" \
 # 2. Add money earning rule
 curl -X POST "$BLOCKS_API_URL/loyalties/{loyalty_id}/rules/money" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "rule": {
@@ -293,7 +293,7 @@ curl -X POST "$BLOCKS_API_URL/loyalties/{loyalty_id}/rules/money" \
 # 1. Create coupon configuration
 curl -X POST "$BLOCKS_API_URL/configurations" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "configuration": {
@@ -309,14 +309,14 @@ curl -X POST "$BLOCKS_API_URL/configurations" \
 # 2. Generate batch of coupons
 curl -X POST "$BLOCKS_API_URL/configurations/{config_id}/batch" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"quantity": 50}'
 
 # 3. Redeem a coupon
 curl -X POST "$BLOCKS_API_URL/coupon/redeem" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "code": "SUMMER-ABC123",
@@ -329,21 +329,19 @@ curl -X POST "$BLOCKS_API_URL/coupon/redeem" \
 # 1. Create a badge
 curl -X POST "$BLOCKS_API_URL/badges" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "badge": {
-      "name": "First Purchase",
-      "description": "Awarded after first purchase",
-      "points_value": 50,
-      "criteria": "Complete first transaction"
-    }
+    "name": "First Purchase",
+    "description": "Awarded after first purchase",
+    "points_value": 50,
+    "criteria": "Complete first transaction"
   }'
 
 # 2. Award badge to user
 curl -X POST "$BLOCKS_API_URL/badge" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "customer_unique_id": "customer-uuid",
@@ -356,7 +354,7 @@ curl -X POST "$BLOCKS_API_URL/badge" \
 # 1. Preview reward calculation
 curl -X POST "$BLOCKS_API_URL/rewards/preview" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "customer_unique_id": "customer-uuid",
@@ -367,7 +365,7 @@ curl -X POST "$BLOCKS_API_URL/rewards/preview" \
 # 2. Create reward (earn points)
 curl -X POST "$BLOCKS_API_URL/rewards" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "reward": {
@@ -382,7 +380,7 @@ curl -X POST "$BLOCKS_API_URL/rewards" \
 # 3. Check customer rewards
 curl -X GET "$BLOCKS_API_URL/customers/{customer_id}/rewards" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 ## Error Handling

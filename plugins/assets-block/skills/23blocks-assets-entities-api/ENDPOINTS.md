@@ -14,7 +14,7 @@ Lists all digital entities.
 ```bash
 curl -X GET "$BLOCKS_API_URL/entities" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -50,7 +50,7 @@ Retrieves a single entity by unique ID.
 ```bash
 curl -X GET "$BLOCKS_API_URL/entities/entity-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -90,7 +90,7 @@ Creates a new digital entity.
 ```bash
 curl -X POST "$BLOCKS_API_URL/entities" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "entity": {
@@ -149,7 +149,7 @@ Updates an existing entity.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/entities/entity-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "entity": {
@@ -189,10 +189,10 @@ Deletes a digital entity.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/entities/entity-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
-**Response 204:** No content
+**Response 204:** Returns `{}` with status 204
 
 **Errors:**
 - `403 Forbidden` - Not the owner
@@ -210,28 +210,22 @@ Lists all users who have access to the entity.
 ```bash
 curl -X GET "$BLOCKS_API_URL/entities/entity-uuid-123/accesses" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
-**Response 200:**
+**Response 200 (plain JSON, not JSON:API):**
 ```json
-{
-  "data": [
-    {
-      "id": "access-uuid-001",
-      "type": "entity_access",
-      "attributes": {
-        "unique_id": "access-uuid-001",
-        "user_unique_id": "user-uuid-789",
-        "user_name": "Alice Smith",
-        "user_email": "alice@example.com",
-        "access_type": "granted",
-        "granted_at": "2025-01-10T10:30:00Z",
-        "created_at": "2025-01-10T10:30:00Z"
-      }
-    }
-  ]
-}
+[
+  {
+    "unique_id": "access-uuid-001",
+    "user_unique_id": "user-uuid-789",
+    "user_name": "Alice Smith",
+    "user_email": "alice@example.com",
+    "access_type": "granted",
+    "granted_at": "2025-01-10T10:30:00Z",
+    "created_at": "2025-01-10T10:30:00Z"
+  }
+]
 ```
 
 ---
@@ -244,7 +238,7 @@ Requests access to a private entity.
 ```bash
 curl -X POST "$BLOCKS_API_URL/entities/entity-uuid-123/requests/access" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "request": {
@@ -258,21 +252,15 @@ curl -X POST "$BLOCKS_API_URL/entities/entity-uuid-123/requests/access" \
 |-----------|------|----------|-------------|
 | `reason` | string | No | Reason for access request |
 
-**Response 201:**
+**Response 201 (plain JSON, not JSON:API):**
 ```json
 {
-  "data": {
-    "id": "request-uuid-001",
-    "type": "access_request",
-    "attributes": {
-      "unique_id": "request-uuid-001",
-      "entity_unique_id": "entity-uuid-123",
-      "user_unique_id": "requesting-user-uuid",
-      "reason": "Need access for Q1 project implementation",
-      "status": "pending",
-      "created_at": "2025-01-12T10:30:00Z"
-    }
-  }
+  "unique_id": "request-uuid-001",
+  "entity_unique_id": "entity-uuid-123",
+  "user_unique_id": "requesting-user-uuid",
+  "reason": "Need access for Q1 project implementation",
+  "status": "pending",
+  "created_at": "2025-01-12T10:30:00Z"
 }
 ```
 
@@ -286,7 +274,7 @@ Makes an entity publicly accessible to all users.
 ```bash
 curl -X POST "$BLOCKS_API_URL/entities/entity-uuid-123/access/make_public" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -314,26 +302,20 @@ Gets the full access list for an entity.
 ```bash
 curl -X GET "$BLOCKS_API_URL/entities/entity-uuid-123/access" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
-**Response 200:**
+**Response 200 (plain JSON, not JSON:API):**
 ```json
-{
-  "data": [
-    {
-      "id": "access-uuid-001",
-      "type": "entity_access",
-      "attributes": {
-        "unique_id": "access-uuid-001",
-        "user_unique_id": "user-uuid-789",
-        "user_name": "Alice Smith",
-        "access_type": "granted",
-        "granted_at": "2025-01-10T10:30:00Z"
-      }
-    }
-  ]
-}
+[
+  {
+    "unique_id": "access-uuid-001",
+    "user_unique_id": "user-uuid-789",
+    "user_name": "Alice Smith",
+    "access_type": "granted",
+    "granted_at": "2025-01-10T10:30:00Z"
+  }
+]
 ```
 
 ---
@@ -346,10 +328,10 @@ Revokes a user's access to the entity.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/entities/entity-uuid-123/access/access-uuid-001/revoke" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
-**Response 204:** No content
+**Response 204:** Returns `{}` with status 204
 
 **Errors:**
 - `403 Forbidden` - Not the entity owner
@@ -367,28 +349,22 @@ Lists pending access requests for the entity.
 ```bash
 curl -X GET "$BLOCKS_API_URL/entities/entity-uuid-123/access/requests" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
-**Response 200:**
+**Response 200 (plain JSON, not JSON:API):**
 ```json
-{
-  "data": [
-    {
-      "id": "request-uuid-001",
-      "type": "access_request",
-      "attributes": {
-        "unique_id": "request-uuid-001",
-        "user_unique_id": "user-uuid-999",
-        "user_name": "Bob Johnson",
-        "user_email": "bob@example.com",
-        "reason": "Need access for Q1 project",
-        "status": "pending",
-        "created_at": "2025-01-12T10:30:00Z"
-      }
-    }
-  ]
-}
+[
+  {
+    "unique_id": "request-uuid-001",
+    "user_unique_id": "user-uuid-999",
+    "user_name": "Bob Johnson",
+    "user_email": "bob@example.com",
+    "reason": "Need access for Q1 project",
+    "status": "pending",
+    "created_at": "2025-01-12T10:30:00Z"
+  }
+]
 ```
 
 ---
@@ -401,21 +377,15 @@ Approves a pending access request.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/entities/entity-uuid-123/access/requests/request-uuid-001/approve" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
-**Response 200:**
+**Response 200 (plain JSON, not JSON:API):**
 ```json
 {
-  "data": {
-    "id": "request-uuid-001",
-    "type": "access_request",
-    "attributes": {
-      "unique_id": "request-uuid-001",
-      "status": "approved",
-      "approved_at": "2025-01-12T14:00:00Z"
-    }
-  }
+  "unique_id": "request-uuid-001",
+  "status": "approved",
+  "approved_at": "2025-01-12T14:00:00Z"
 }
 ```
 
@@ -433,10 +403,10 @@ Denies a pending access request.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/entities/entity-uuid-123/access/requests/request-uuid-001/deny" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
-**Response 204:** No content
+**Response 204:** Returns `{}` with status 204
 
 **Errors:**
 - `403 Forbidden` - Not the entity owner

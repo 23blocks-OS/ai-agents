@@ -1,6 +1,6 @@
 ---
 name: 23blocks-onboarding-companies-api
-description: Manage 23blocks onboarding companies (tenants) via REST API. Use when creating companies, managing API keys for external integrations, configuring RabbitMQ exchange settings, configuring storage, or generating impersonation tokens.
+description: Manage 23blocks onboarding companies (tenants) via REST API. Use when creating companies, managing API keys for external integrations, configuring RabbitMQ exchange settings, or configuring storage.
 allowed-tools: Read, Write, Bash, Grep, Glob
 metadata:
   author: 23blocks
@@ -16,12 +16,21 @@ Complete API reference for 23blocks onboarding multi-tenant company management, 
 | Variable | Description | Example |
 |----------|-------------|---------|
 | `BLOCKS_API_URL` | Onboarding API base URL | `https://onboarding.api.us.23blocks.com` |
-| `BLOCKS_AUTH_TOKEN` | Bearer token (human or AID) | `eyJhbGciOiJSUzI1NiJ9...` |
-| `BLOCKS_API_KEY` | API key (AppId) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
+| `BLOCKS_AUTH_TOKEN` | Bearer token — your identity & scopes (from login or AID token exchange) | `eyJhbGciOiJSUzI1NiJ9...` |
+| `BLOCKS_API_KEY` | Tenant routing key (X-API-KEY header) — static, from company config | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
 
 ## Authentication
 
-Two methods are supported. The Bearer token works the same either way.
+**These two credentials serve different purposes and come from different sources:**
+
+| Credential | Purpose | Source | Changes? |
+|------------|---------|--------|----------|
+| `BLOCKS_API_KEY` | **Tenant routing** — identifies which company/app | Company config (static `pk_live_sh_...` key) | No — same key for all blocks |
+| `BLOCKS_AUTH_TOKEN` | **Identity & authorization** — who you are + what you can do | Login (`/auth/sign_in`), AID token exchange, or human-provided | Yes — expires, must be refreshed |
+
+> The API key used during AID registration is NOT the same as `BLOCKS_API_KEY`. The registration key authenticates the agent with the Auth API; `BLOCKS_API_KEY` routes requests to the correct tenant across all blocks.
+
+Two methods to obtain the Bearer token:
 
 **Method 1: Agent Identity (AID)** -- For AI agents with AMP identity:
 ```bash
@@ -50,7 +59,7 @@ Retrieves company details by URL identifier.
 ```bash
 curl -X GET "$BLOCKS_API_URL/companies/acme-corp" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -88,7 +97,7 @@ Creates a new company (tenant). Requires provisioning authorization.
 ```bash
 curl -X POST "$BLOCKS_API_URL/companies" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "company": {
@@ -139,46 +148,6 @@ curl -X POST "$BLOCKS_API_URL/companies" \
 
 ---
 
-### POST /companies/:url_id/access - Impersonate User
-
-Generates a temporary access token for a specified user. Used for administrative and debugging purposes.
-
-**Request:**
-```bash
-curl -X POST "$BLOCKS_API_URL/companies/acme-corp/access" \
-  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "user_unique_id": "user-uuid-456",
-    "elevated": false
-  }'
-```
-
-**Request Parameters:**
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `user_unique_id` | uuid | Yes | User to impersonate |
-| `elevated` | boolean | No | Grant elevated permissions |
-
-**Response 200:**
-```json
-{
-  "data": {
-    "access_token": "temporary-jwt-token...",
-    "token_type": "Bearer",
-    "expires_in": 3600,
-    "user_unique_id": "user-uuid-456"
-  }
-}
-```
-
-**Errors:**
-- `403 Forbidden` - Not authorized to impersonate
-- `404 Not Found` - User not found
-
----
-
 ## Company API Keys
 
 ### GET /companies/:url_id/keys - List Company API Keys
@@ -189,7 +158,7 @@ Lists all API keys for external integrations.
 ```bash
 curl -X GET "$BLOCKS_API_URL/companies/acme-corp/keys" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -221,7 +190,7 @@ Adds an API key for an external integration.
 ```bash
 curl -X POST "$BLOCKS_API_URL/companies/company-uuid-123/keys" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "company_key": {
@@ -270,7 +239,7 @@ Deletes a company API key.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/companies/company-uuid-123/keys/key-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -287,7 +256,7 @@ Retrieves RabbitMQ exchange settings for the company.
 ```bash
 curl -X GET "$BLOCKS_API_URL/companies/acme-corp/exchange" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -319,7 +288,7 @@ Configures RabbitMQ exchange settings for async messaging.
 ```bash
 curl -X POST "$BLOCKS_API_URL/companies/company-uuid-123/exchange" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "exchange": {
@@ -368,7 +337,7 @@ Deletes exchange settings for a company.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/companies/company-uuid-123/exchange/exchange-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -385,7 +354,7 @@ Configures storage settings for the company.
 ```bash
 curl -X POST "$BLOCKS_API_URL/companies/acme-corp/storage" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "storage": {

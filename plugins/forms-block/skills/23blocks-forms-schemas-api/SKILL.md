@@ -16,12 +16,21 @@ Complete API reference for 23blocks form schema management.
 | Variable | Description | Example |
 |----------|-------------|---------|
 | `BLOCKS_API_URL` | Forms API base URL | `https://forms.api.us.23blocks.com` |
-| `BLOCKS_AUTH_TOKEN` | Bearer token (human or AID) | `eyJhbGciOiJSUzI1NiJ9...` |
-| `BLOCKS_API_KEY` | API key (AppId) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
+| `BLOCKS_AUTH_TOKEN` | Bearer token — your identity & scopes (from login or AID token exchange) | `eyJhbGciOiJSUzI1NiJ9...` |
+| `BLOCKS_API_KEY` | Tenant routing key (X-API-KEY header) — static, from company config | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
 
 ## Authentication
 
-Two methods are supported. The Bearer token works the same either way.
+**These two credentials serve different purposes and come from different sources:**
+
+| Credential | Purpose | Source | Changes? |
+|------------|---------|--------|----------|
+| `BLOCKS_API_KEY` | **Tenant routing** — identifies which company/app | Company config (static `pk_live_sh_...` key) | No — same key for all blocks |
+| `BLOCKS_AUTH_TOKEN` | **Identity & authorization** — who you are + what you can do | Login (`/auth/sign_in`), AID token exchange, or human-provided | Yes — expires, must be refreshed |
+
+> The API key used during AID registration is NOT the same as `BLOCKS_API_KEY`. The registration key authenticates the agent with the Auth API; `BLOCKS_API_KEY` routes requests to the correct tenant across all blocks.
+
+Two methods to obtain the Bearer token:
 
 **Method 1: Agent Identity (AID)** -- For AI agents with AMP identity:
 ```bash
@@ -52,44 +61,46 @@ curl -X POST "$BLOCKS_API_URL/forms/schemas" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
-    "name": "contact_form",
-    "description": "Contact us form",
-    "fields": [
-      {
-        "name": "email",
-        "type": "email",
-        "label": "Email Address",
-        "required": true,
-        "placeholder": "you@example.com",
-        "validation": {
-          "format": "email"
+    "form_schema": {
+      "name": "contact_form",
+      "description": "Contact us form",
+      "fields": [
+        {
+          "name": "email",
+          "type": "email",
+          "label": "Email Address",
+          "required": true,
+          "placeholder": "you@example.com",
+          "validation": {
+            "format": "email"
+          }
+        },
+        {
+          "name": "subject",
+          "type": "select",
+          "label": "Subject",
+          "required": true,
+          "options": [
+            {"value": "support", "label": "Support"},
+            {"value": "sales", "label": "Sales"},
+            {"value": "other", "label": "Other"}
+          ]
+        },
+        {
+          "name": "message",
+          "type": "textarea",
+          "label": "Message",
+          "required": true,
+          "validation": {
+            "minLength": 10,
+            "maxLength": 2000
+          }
         }
-      },
-      {
-        "name": "subject",
-        "type": "select",
-        "label": "Subject",
-        "required": true,
-        "options": [
-          {"value": "support", "label": "Support"},
-          {"value": "sales", "label": "Sales"},
-          {"value": "other", "label": "Other"}
-        ]
-      },
-      {
-        "name": "message",
-        "type": "textarea",
-        "label": "Message",
-        "required": true,
-        "validation": {
-          "minLength": 10,
-          "maxLength": 2000
-        }
+      ],
+      "settings": {
+        "submitLabel": "Send Message",
+        "successMessage": "Thanks! We will get back to you soon."
       }
-    ],
-    "settings": {
-      "submitLabel": "Send Message",
-      "successMessage": "Thanks! We will get back to you soon."
     }
   }'
 ```
@@ -169,27 +180,29 @@ curl -X PUT "$BLOCKS_API_URL/forms/schemas/frm_abc123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
-    "description": "Updated contact form",
-    "fields": [
-      {
-        "name": "email",
-        "type": "email",
-        "label": "Your Email",
-        "required": true
-      },
-      {
-        "name": "phone",
-        "type": "tel",
-        "label": "Phone (optional)",
-        "required": false
-      },
-      {
-        "name": "message",
-        "type": "textarea",
-        "label": "Message",
-        "required": true
-      }
-    ]
+    "form_schema": {
+      "description": "Updated contact form",
+      "fields": [
+        {
+          "name": "email",
+          "type": "email",
+          "label": "Your Email",
+          "required": true
+        },
+        {
+          "name": "phone",
+          "type": "tel",
+          "label": "Phone (optional)",
+          "required": false
+        },
+        {
+          "name": "message",
+          "type": "textarea",
+          "label": "Message",
+          "required": true
+        }
+      ]
+    }
   }'
 ```
 

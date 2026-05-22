@@ -14,7 +14,7 @@ Lists all landing pages with pagination.
 ```bash
 curl -X GET "$BLOCKS_API_URL/landing_pages?page=1&records=20" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Query Parameters:**
@@ -63,7 +63,7 @@ Retrieves a single landing page by unique ID.
 ```bash
 curl -X GET "$BLOCKS_API_URL/landing_pages/lp-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -112,7 +112,7 @@ Creates a new landing page.
 ```bash
 curl -X POST "$BLOCKS_API_URL/landing_pages" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "landing_page": {
@@ -169,7 +169,7 @@ Updates an existing landing page.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/landing_pages/lp-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "landing_page": {
@@ -210,7 +210,7 @@ Deletes a landing page.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/landing_pages/lp-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -230,7 +230,7 @@ Lists all landing audiences with pagination.
 ```bash
 curl -X GET "$BLOCKS_API_URL/landing_audiences?page=1&records=20" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Query Parameters:**
@@ -273,7 +273,7 @@ Creates a new landing audience.
 ```bash
 curl -X POST "$BLOCKS_API_URL/landing_audiences" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "landing_audience": {
@@ -321,7 +321,7 @@ Updates an existing audience.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/landing_audiences/audience-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "landing_audience": {
@@ -360,7 +360,7 @@ Deletes an audience.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/landing_audiences/audience-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -380,7 +380,7 @@ Creates a Facebook-specific audience for social media targeting.
 ```bash
 curl -X POST "$BLOCKS_API_URL/audience/facebook" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "facebook_audience": {
@@ -447,7 +447,7 @@ Lists all landing page templates.
 ```bash
 curl -X GET "$BLOCKS_API_URL/landing_templates?page=1&records=20" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Query Parameters:**
@@ -490,7 +490,7 @@ Creates a new landing page template.
 ```bash
 curl -X POST "$BLOCKS_API_URL/landing_templates" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "landing_template": {

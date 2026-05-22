@@ -14,7 +14,7 @@ Lists all configured AI models with pagination.
 ```bash
 curl -X GET "$BLOCKS_API_URL/ai_models?page=1&records=20" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Query Parameters:**
@@ -61,7 +61,7 @@ Retrieves a single AI model by unique ID.
 ```bash
 curl -X GET "$BLOCKS_API_URL/ai_models/model-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -101,7 +101,7 @@ Creates a new AI model configuration.
 ```bash
 curl -X POST "$BLOCKS_API_URL/ai_models" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "ai_model": {
@@ -159,7 +159,7 @@ Updates an AI model configuration.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/ai_models/model-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "ai_model": {
@@ -195,7 +195,7 @@ Deletes an AI model configuration.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/ai_models/model-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -212,7 +212,7 @@ Lists all configured LLM providers.
 ```bash
 curl -X GET "$BLOCKS_API_URL/llm_providers" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -246,7 +246,7 @@ Creates a new LLM provider configuration.
 ```bash
 curl -X POST "$BLOCKS_API_URL/llm_providers" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "llm_provider": {
@@ -262,7 +262,7 @@ curl -X POST "$BLOCKS_API_URL/llm_providers" \
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `name` | string | Yes | Provider name |
-| `vendor` | string | Yes | Vendor: `openai`, `anthropic`, `google`, `mistral` (alias: `mistralai`), `perplexity` |
+| `vendor` | string | Yes | Vendor: `openai`, `anthropic`, `google`, `mistral` (alias: `mistralai`), `perplexity`, `openai_compatible`, `custom` |
 | `api_key` | string | Yes | Provider API key |
 | `api_endpoint` | string | No | Custom API endpoint |
 
@@ -291,7 +291,7 @@ curl -X POST "$BLOCKS_API_URL/llm_providers" \
 ```bash
 curl -X POST "$BLOCKS_API_URL/llm_providers" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "llm_provider": {
@@ -315,7 +315,7 @@ Updates a provider configuration.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/llm_providers/provider-uuid-456" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "llm_provider": {
@@ -350,7 +350,7 @@ Deletes a provider configuration.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/llm_providers/provider-uuid-456" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -365,7 +365,7 @@ Validates the provider connection and API key.
 ```bash
 curl -X POST "$BLOCKS_API_URL/llm_providers/provider-uuid-456/validate" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -394,7 +394,7 @@ Lists available models from the vendor.
 ```bash
 curl -X GET "$BLOCKS_API_URL/llm_providers/provider-uuid-456/vendor_models" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -437,13 +437,13 @@ Lists available models directly from a vendor without requiring a configured pro
 ```bash
 curl -X GET "$BLOCKS_API_URL/vendors/mistral/models" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Path Parameters:**
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `vendor` | string | Yes | Vendor name: `openai`, `anthropic`, `google`, `mistral`, `perplexity` |
+| `vendor` | string | Yes | Vendor name: `openai`, `anthropic`, `google`, `mistral`, `perplexity`, `openai_compatible`, `custom` |
 
 **Response 200:**
 ```json

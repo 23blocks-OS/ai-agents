@@ -1,27 +1,40 @@
 ---
 name: 23blocks-auth-sessions-api
-description: Manage 23blocks sessions via REST API. Use when logging in, logging out, refreshing tokens, managing active sessions, verifying tokens, or handling MFA challenges.
+description: Manage 23blocks sessions via REST API. Use when logging in, logging out, refreshing tokens, validating tokens, revoking tokens, or handling MFA during login.
 allowed-tools: Read, Write, Bash, Grep, Glob
 metadata:
   author: 23blocks
-  version: "1.0"
+  version: "2.0"
+  verified-by: 23blocks-api-authentication (Malachi)
+  verified-date: "2026-05-14"
 ---
 
 # Sessions API
 
-Complete API reference for 23blocks session management including login, logout, token refresh, and MFA.
+Complete API reference for 23blocks session management including login, logout, token refresh, OAuth token management, and MFA.
+
+> **Verified against Auth API codebase on 2026-05-14** by the Auth API team.
 
 ## Required Environment Variables
 
 | Variable | Description | Example |
 |----------|-------------|---------|
 | `BLOCKS_API_URL` | Auth API base URL | `https://auth.api.us.23blocks.com` |
-| `BLOCKS_AUTH_TOKEN` | Bearer token (human or AID) | `eyJhbGciOiJSUzI1NiJ9...` |
-| `BLOCKS_API_KEY` | API key (AppId) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
+| `BLOCKS_AUTH_TOKEN` | Bearer token — your identity & scopes (from login or AID token exchange) | `eyJhbGciOiJSUzI1NiJ9...` |
+| `BLOCKS_API_KEY` | Tenant routing key (X-API-KEY header) — static, from company config | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
 
 ## Authentication
 
-Two methods are supported. The Bearer token works the same either way.
+**These two credentials serve different purposes and come from different sources:**
+
+| Credential | Purpose | Source | Changes? |
+|------------|---------|--------|----------|
+| `BLOCKS_API_KEY` | **Tenant routing** — identifies which company/app | Company config (static `pk_live_sh_...` key) | No — same key for all blocks |
+| `BLOCKS_AUTH_TOKEN` | **Identity & authorization** — who you are + what you can do | Login (`/auth/sign_in`), AID token exchange, or human-provided | Yes — expires, must be refreshed |
+
+> The API key used during AID registration is NOT the same as `BLOCKS_API_KEY`. The registration key authenticates the agent with the Auth API; `BLOCKS_API_KEY` routes requests to the correct tenant across all blocks.
+
+Two methods to obtain the Bearer token:
 
 **Method 1: Agent Identity (AID)** -- For AI agents with AMP identity:
 ```bash
@@ -42,20 +55,18 @@ export BLOCKS_API_KEY="<your-api-key>"
 
 ## Endpoints
 
-### POST /sessions - Login
+### POST /auth/sign_in - Login
 
 Authenticates a user and creates a new session.
 
 **Request:**
 ```bash
-curl -X POST "$BLOCKS_API_URL/sessions" \
-  -H "AppId: $BLOCKS_API_KEY" \
+curl -X POST "$BLOCKS_API_URL/auth/sign_in" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "session": {
-      "email": "user@example.com",
-      "password": "secure_password"
-    }
+    "email": "user@example.com",
+    "password": "secure_password"
   }'
 ```
 
@@ -64,60 +75,114 @@ curl -X POST "$BLOCKS_API_URL/sessions" \
 |-----------|------|----------|-------------|
 | `email` | string | Yes | User email |
 | `password` | string | Yes | User password |
+| `mfa_code` | string | No | MFA code (if MFA enabled on account) |
+| `backup_code` | string | No | Backup code (alternative to mfa_code) |
 
-**Response 200:**
+**Optional Headers:**
+| Header | Description |
+|--------|-------------|
+| `X-OAuth-Mode: true` | Enables refresh token flow — response includes `refresh_token` |
+| `X-Device-ID: <id>` | Associates session with a device for per-device token revocation |
+
+**Response 200 (success):**
 ```json
 {
   "data": {
-    "id": "session-uuid-123",
-    "type": "session",
+    "id": "user-uuid-123",
+    "type": "user",
     "attributes": {
-      "unique_id": "session-uuid-123",
-      "access_token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...",
-      "refresh_token": "refresh-token-string",
+      "unique_id": "user-uuid-123",
+      "email": "user@example.com",
+      "first_name": "John",
+      "last_name": "Doe"
+    }
+  },
+  "meta": {
+    "auth": {
+      "access_token": "eyJhbGciOiJSUzI1NiJ9...",
       "token_type": "Bearer",
-      "expires_in": 3600,
-      "created_at": "2025-01-12T10:30:00Z"
-    },
-    "relationships": {
-      "user": {
-        "data": { "id": "user-uuid-123", "type": "user" }
-      }
+      "expires_in": 86400,
+      "expires_at": "2026-05-15T01:00:00Z",
+      "scope": "scope1 scope2",
+      "oauth_mode": false
     }
   }
 }
 ```
 
+**Response 200 (OAuth mode — with `X-OAuth-Mode: true`):**
+
+Same as above, but `meta.auth` also includes:
+```json
+{
+  "meta": {
+    "auth": {
+      "access_token": "eyJ...",
+      "refresh_token": "refresh-token-string",
+      "refresh_token_expires_in": 604800,
+      "token_type": "Bearer",
+      "expires_in": 86400,
+      "oauth_mode": true
+    }
+  }
+}
+```
+
+**Response 200 (MFA required):**
+```json
+{
+  "errors": [{
+    "code": "mfa_required",
+    "meta": { "mfa_required": true }
+  }]
+}
+```
+> Re-send the login request with `mfa_code` or `backup_code` parameter.
+
 **Errors:**
-- `401 Unauthorized` - Invalid credentials
+- `401 Unauthorized` - Invalid credentials or invalid MFA code (`{ errors: [{ code: "mfa_invalid" }] }`)
 - `422 Unprocessable Entity` - Missing email or password
 - `429 Too Many Requests` - Rate limit exceeded
 
 ---
 
-### DELETE /sessions - Logout
+### DELETE /auth/sign_out - Logout
 
 Destroys the current session and invalidates the token.
 
 **Request:**
 ```bash
-curl -X DELETE "$BLOCKS_API_URL/sessions" \
+curl -X DELETE "$BLOCKS_API_URL/auth/sign_out" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
-**Response 204:** No content
+**Optional Headers:**
+| Header | Description |
+|--------|-------------|
+| `X-Device-ID: <id>` | Revoke tokens for a specific device only |
+
+**Optional Body:**
+```json
+{ "revoke_all": "true" }
+```
+> Revokes ALL refresh tokens for the user, not just the current session.
+
+**Response 200:**
+```json
+{ "success": true, "message": "Signed out successfully" }
+```
 
 ---
 
-### POST /sessions/refresh - Refresh Token
+### POST /oauth/token/refresh - Refresh Token
 
-Refreshes an expired access token using a refresh token.
+Refreshes an expired access token using a refresh token. Requires OAuth mode to have been enabled during login.
 
 **Request:**
 ```bash
-curl -X POST "$BLOCKS_API_URL/sessions/refresh" \
-  -H "AppId: $BLOCKS_API_KEY" \
+curl -X POST "$BLOCKS_API_URL/oauth/token/refresh" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "refresh_token": "refresh-token-string"
@@ -127,215 +192,132 @@ curl -X POST "$BLOCKS_API_URL/sessions/refresh" \
 **Request Parameters:**
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `refresh_token` | string | Yes | Valid refresh token |
+| `refresh_token` | string | Yes | Valid refresh token from login |
 
-**Response 200:**
-```json
-{
-  "data": {
-    "id": "session-uuid-456",
-    "type": "session",
-    "attributes": {
-      "access_token": "new-access-token...",
-      "refresh_token": "new-refresh-token",
-      "token_type": "Bearer",
-      "expires_in": 3600
-    }
-  }
-}
-```
+**Response 200:** OAuth 2.0 standard token response with new access and refresh tokens.
 
 **Errors:**
-- `401 Unauthorized` - Invalid or expired refresh token
+- `400 Bad Request` - `{ "error": "invalid_grant", "error_description": "..." }`
 
 ---
 
-### GET /sessions - List Active Sessions
+### POST /oauth/token/revoke - Revoke Token
 
-Lists all active sessions for the current user.
+Revokes a specific token. Always returns 200 per RFC 7009, even if the token doesn't exist.
 
 **Request:**
 ```bash
-curl -X GET "$BLOCKS_API_URL/sessions?page=1&records=20" \
-  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+curl -X POST "$BLOCKS_API_URL/oauth/token/revoke" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "token": "token-to-revoke",
+    "token_type_hint": "refresh_token"
+  }'
 ```
+
+**Request Parameters:**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `token` | string | Yes | The token to revoke |
+| `token_type_hint` | string | No | `refresh_token` or `access_token` |
 
 **Response 200:**
 ```json
-{
-  "data": [
-    {
-      "id": "session-uuid-123",
-      "type": "session",
-      "attributes": {
-        "unique_id": "session-uuid-123",
-        "ip_address": "192.168.1.1",
-        "user_agent": "Mozilla/5.0...",
-        "last_active_at": "2025-01-12T10:30:00Z",
-        "created_at": "2025-01-10T08:00:00Z"
-      }
-    }
-  ],
-  "meta": {
-    "totalPages": 1,
-    "totalRecords": 3
-  }
-}
+{ "revoked": true }
 ```
 
 ---
 
-### DELETE /sessions/:unique_id - Revoke Session
+### POST /oauth/token/revoke_all - Revoke All Tokens
 
-Revokes a specific session by ID.
-
-**Request:**
-```bash
-curl -X DELETE "$BLOCKS_API_URL/sessions/session-uuid-123" \
-  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
-```
-
-**Response 204:** No content
-
-**Errors:**
-- `404 Not Found` - Session not found
-
----
-
-### POST /sessions/verify - Verify Token
-
-Verifies if the current token is valid.
+Revokes all tokens for a user, optionally scoped to a device.
 
 **Request:**
 ```bash
-curl -X POST "$BLOCKS_API_URL/sessions/verify" \
-  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+curl -X POST "$BLOCKS_API_URL/oauth/token/revoke_all" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "user_unique_id": "user-uuid-123",
+    "device_id": "optional-device-id"
+  }'
 ```
+
+**Request Parameters:**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `user_unique_id` | string | Yes | User UUID |
+| `device_id` | string | No | Scope revocation to a device |
 
 **Response 200:**
 ```json
-{
-  "data": {
-    "valid": true,
-    "user_id": "user-uuid-123",
-    "expires_at": "2025-01-12T11:30:00Z"
-  }
-}
+{ "revoked": true, "message": "All tokens revoked", "revoked_at": "2026-05-14T12:00:00Z" }
 ```
+
+---
+
+### GET /auth/validate_token - Validate Token
+
+Verifies if the current access token is valid and returns the user.
+
+**Request:**
+```bash
+curl -X GET "$BLOCKS_API_URL/auth/validate_token" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "X-API-KEY: $BLOCKS_API_KEY"
+```
+
+**Response 200:** JSON:API user object (same shape as login `data`).
 
 **Errors:**
 - `401 Unauthorized` - Token is invalid or expired
 
 ---
 
-### POST /sessions/mfa/challenge - Initiate MFA Challenge
+### POST /auth/introspect - Token Introspection (RFC 7662)
 
-Initiates a multi-factor authentication challenge.
+Introspects a token to determine its state and metadata.
 
 **Request:**
 ```bash
-curl -X POST "$BLOCKS_API_URL/sessions/mfa/challenge" \
-  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+curl -X POST "$BLOCKS_API_URL/auth/introspect" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "mfa": {
-      "method": "totp"
-    }
+    "token": "eyJhbGciOiJSUzI1NiJ9..."
   }'
 ```
 
 **Request Parameters:**
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `method` | string | Yes | MFA method (totp, sms, email) |
-
-**Response 200:**
-```json
-{
-  "data": {
-    "challenge_id": "challenge-uuid-123",
-    "method": "totp",
-    "expires_at": "2025-01-12T10:35:00Z"
-  }
-}
-```
+| `token` | string | Yes | Access token to introspect |
 
 ---
 
-### POST /sessions/mfa/verify - Verify MFA Code
+## JWKS & OIDC Discovery
 
-Verifies the MFA code to complete authentication.
+For local JWT verification without calling the API:
 
-**Request:**
 ```bash
-curl -X POST "$BLOCKS_API_URL/sessions/mfa/verify" \
-  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "mfa": {
-      "challenge_id": "challenge-uuid-123",
-      "code": "123456"
-    }
-  }'
+# JWKS - tenant-scoped (USE THIS ONE)
+curl "$BLOCKS_API_URL/<company_url_id>/.well-known/jwks.json"
+
+# JWKS - app-scoped
+curl "$BLOCKS_API_URL/apps/<app_url_id>/.well-known/jwks.json"
+
+# OIDC Discovery
+curl "$BLOCKS_API_URL/<company_url_id>/.well-known/openid-configuration"
 ```
 
-**Request Parameters:**
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `challenge_id` | string | Yes | Challenge ID from initiate |
-| `code` | string | Yes | MFA verification code |
-
-**Response 200:**
-```json
-{
-  "data": {
-    "id": "session-uuid-123",
-    "type": "session",
-    "attributes": {
-      "access_token": "fully-authenticated-token...",
-      "mfa_verified": true
-    }
-  }
-}
-```
-
-**Errors:**
-- `401 Unauthorized` - Invalid MFA code
-- `422 Unprocessable Entity` - Challenge expired
-
----
-
-## Data Models
-
-### Session
-| Field | Type | Description |
-|-------|------|-------------|
-| `unique_id` | uuid | Session identifier |
-| `access_token` | string | JWT access token |
-| `refresh_token` | string | Refresh token |
-| `token_type` | string | Token type (Bearer) |
-| `expires_in` | integer | Token TTL in seconds |
-| `ip_address` | string | Client IP address |
-| `user_agent` | string | Client user agent |
-| `last_active_at` | timestamp | Last activity time |
-| `created_at` | timestamp | Session creation time |
-
-### MFAChallenge
-| Field | Type | Description |
-|-------|------|-------------|
-| `challenge_id` | uuid | Challenge identifier |
-| `method` | string | MFA method (totp, sms, email) |
-| `expires_at` | timestamp | Challenge expiration |
+> **Important:** The bare `/.well-known/jwks.json` (no tenant prefix) returns empty. Always use the tenant-scoped version.
 
 ---
 
 ## Error Response Format
 
+All errors follow JSON:API format:
 ```json
 {
   "errors": [{
@@ -396,36 +378,6 @@ requestAccountRecovery(request: AccountRecoveryRequest): Promise<AccountRecovery
 completeAccountRecovery(request: CompleteRecoveryRequest): Promise<User>;
 ```
 
-### TypeScript Types
-
-```typescript
-import type {
-  SignInRequest,
-  SignInResponse,
-  SignUpRequest,
-  SignUpResponse,
-  PasswordResetRequest,
-  PasswordUpdateRequest,
-  TokenValidationResponse,
-  RefreshTokenRequest,
-  RefreshTokenResponse,
-  MagicLinkRequest,
-  MagicLinkVerifyRequest,
-  InvitationRequest,
-  AcceptInvitationRequest,
-  ResendConfirmationRequest,
-  ValidateEmailRequest,
-  ValidateEmailResponse,
-  ValidateDocumentRequest,
-  ValidateDocumentResponse,
-  ResendInvitationRequest,
-  AccountRecoveryRequest,
-  AccountRecoveryResponse,
-  CompleteRecoveryRequest,
-  User,
-} from '@23blocks/block-authentication';
-```
-
 ### React Hook
 
 ```typescript
@@ -441,3 +393,14 @@ function MyComponent() {
   });
 }
 ```
+
+---
+
+## reCAPTCHA Enforcement
+
+Tenants can enable inline reCAPTCHA v3 on auth endpoints (registration, login, passwordless). When enabled:
+- Frontend must send `recaptcha_token` as a top-level body parameter
+- Rate limit: 5 registrations per IP per 5 minutes (Rack::Attack)
+- Kill switch: set `recaptcha_enforcement` to `false` in tenant config
+
+**Agents using AID grant_type are NOT affected** — agent token exchange bypasses reCAPTCHA.

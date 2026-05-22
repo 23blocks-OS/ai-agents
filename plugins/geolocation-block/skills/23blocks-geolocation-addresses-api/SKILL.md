@@ -16,12 +16,21 @@ Complete API reference for 23blocks address management with user/contact associa
 | Variable | Description | Example |
 |----------|-------------|---------|
 | `BLOCKS_API_URL` | Geolocation API base URL | `https://geolocation.api.us.23blocks.com` |
-| `BLOCKS_AUTH_TOKEN` | Bearer token (human or AID) | `eyJhbGciOiJSUzI1NiJ9...` |
-| `BLOCKS_API_KEY` | API key (AppId) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
+| `BLOCKS_AUTH_TOKEN` | Bearer token — your identity & scopes (from login or AID token exchange) | `eyJhbGciOiJSUzI1NiJ9...` |
+| `BLOCKS_API_KEY` | Tenant routing key (X-API-KEY header) — static, from company config | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
 
 ## Authentication
 
-Two methods are supported. The Bearer token works the same either way.
+**These two credentials serve different purposes and come from different sources:**
+
+| Credential | Purpose | Source | Changes? |
+|------------|---------|--------|----------|
+| `BLOCKS_API_KEY` | **Tenant routing** — identifies which company/app | Company config (static `pk_live_sh_...` key) | No — same key for all blocks |
+| `BLOCKS_AUTH_TOKEN` | **Identity & authorization** — who you are + what you can do | Login (`/auth/sign_in`), AID token exchange, or human-provided | Yes — expires, must be refreshed |
+
+> The API key used during AID registration is NOT the same as `BLOCKS_API_KEY`. The registration key authenticates the agent with the Auth API; `BLOCKS_API_KEY` routes requests to the correct tenant across all blocks.
+
+Two methods to obtain the Bearer token:
 
 **Method 1: Agent Identity (AID)** -- For AI agents with AMP identity:
 ```bash
@@ -74,7 +83,7 @@ export BLOCKS_API_KEY="<your-api-key>"
 | `address_type` | string | Type (home, work, billing, shipping) |
 | `is_default` | boolean | Whether this is the default address |
 | `owner_type` | string | Owner entity type (user, contact) |
-| `owner_id` | uuid | Owner entity unique ID |
+| `owner_unique_id` | uuid | Owner entity unique ID |
 | `created_at` | timestamp | Creation time |
 | `updated_at` | timestamp | Last update |
 
@@ -121,14 +130,11 @@ const client = create23BlocksClient({
 
 ```typescript
 // AddressesService — client.geolocation.addresses
-client.geolocation.addresses.list(params?: ListAddressesParams): Promise<PageResult<Address>>;
 client.geolocation.addresses.get(uniqueId: string): Promise<Address>;
+client.geolocation.addresses.getByOwner(ownerUniqueId: string): Promise<Address[]>;
 client.geolocation.addresses.create(data: CreateAddressRequest): Promise<Address>;
 client.geolocation.addresses.update(uniqueId: string, data: UpdateAddressRequest): Promise<Address>;
 client.geolocation.addresses.delete(uniqueId: string): Promise<void>;
-client.geolocation.addresses.recover(uniqueId: string): Promise<Address>;
-client.geolocation.addresses.search(query: string, params?: ListAddressesParams): Promise<PageResult<Address>>;
-client.geolocation.addresses.listDeleted(params?: ListAddressesParams): Promise<PageResult<Address>>;
 client.geolocation.addresses.setDefault(uniqueId: string): Promise<Address>;
 ```
 

@@ -14,7 +14,7 @@ Validates a wallet's status and configuration.
 ```bash
 curl -X POST "$BLOCKS_API_URL/wallets/validate/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "wallet": {
@@ -59,7 +59,7 @@ Lists all wallets for a specific user with pagination.
 ```bash
 curl -X GET "$BLOCKS_API_URL/users/user-uuid-123/wallets?page=1&records=20" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Path Parameters:**
@@ -109,7 +109,7 @@ Retrieves a single wallet by wallet code.
 ```bash
 curl -X GET "$BLOCKS_API_URL/users/user-uuid-123/wallets/wal-abc-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Path Parameters:**
@@ -151,7 +151,7 @@ Creates a new wallet for a user.
 ```bash
 curl -X POST "$BLOCKS_API_URL/users/user-uuid-123/wallets/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "wallet": {
@@ -204,7 +204,7 @@ Updates an existing wallet.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/users/user-uuid-123/wallets/wal-abc-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "wallet": {
@@ -257,7 +257,7 @@ Creates a credit or debit transaction on a wallet.
 ```bash
 curl -X POST "$BLOCKS_API_URL/users/user-uuid-123/wallets/wal-abc-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "transaction": {
@@ -321,7 +321,7 @@ Lists all transactions for a wallet with pagination.
 ```bash
 curl -X GET "$BLOCKS_API_URL/users/user-uuid-123/wallets/wal-abc-123/transactions?page=1&records=20" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Path Parameters:**
@@ -374,7 +374,7 @@ Transfers funds from one wallet to another.
 ```bash
 curl -X POST "$BLOCKS_API_URL/users/user-uuid-123/wallets/wal-abc-123/transfer" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "transfer": {
@@ -439,7 +439,7 @@ Lists content stored in a wallet.
 ```bash
 curl -X GET "$BLOCKS_API_URL/users/user-uuid-123/wallets/wal-abc-123/content?page=1&records=20" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Path Parameters:**
@@ -491,7 +491,7 @@ Stores or updates content associated with a wallet.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/users/user-uuid-123/wallets/wal-abc-123/content" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "content": {
@@ -552,7 +552,7 @@ Generates a one-time password code for authorizing sensitive wallet operations.
 ```bash
 curl -X POST "$BLOCKS_API_URL/users/user-uuid-123/wallets/wal-abc-123/otp" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "otp": {
@@ -608,7 +608,7 @@ Webhook endpoint for external systems to post transaction notifications.
 ```bash
 curl -X POST "$BLOCKS_API_URL/companies/my-company/wallets/wal-abc-123/transactions" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "transaction": {

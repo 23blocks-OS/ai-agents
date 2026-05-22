@@ -16,12 +16,21 @@ Complete API reference for 23blocks multi-tenant company management, API keys, a
 | Variable | Description | Example |
 |----------|-------------|---------|
 | `BLOCKS_API_URL` | Geolocation API base URL | `https://geolocation.api.us.23blocks.com` |
-| `BLOCKS_AUTH_TOKEN` | Bearer token (human or AID) | `eyJhbGciOiJSUzI1NiJ9...` |
-| `BLOCKS_API_KEY` | API key (AppId) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
+| `BLOCKS_AUTH_TOKEN` | Bearer token — your identity & scopes (from login or AID token exchange) | `eyJhbGciOiJSUzI1NiJ9...` |
+| `BLOCKS_API_KEY` | Tenant routing key (X-API-KEY header) — static, from company config | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
 
 ## Authentication
 
-Two methods are supported. The Bearer token works the same either way.
+**These two credentials serve different purposes and come from different sources:**
+
+| Credential | Purpose | Source | Changes? |
+|------------|---------|--------|----------|
+| `BLOCKS_API_KEY` | **Tenant routing** — identifies which company/app | Company config (static `pk_live_sh_...` key) | No — same key for all blocks |
+| `BLOCKS_AUTH_TOKEN` | **Identity & authorization** — who you are + what you can do | Login (`/auth/sign_in`), AID token exchange, or human-provided | Yes — expires, must be refreshed |
+
+> The API key used during AID registration is NOT the same as `BLOCKS_API_KEY`. The registration key authenticates the agent with the Auth API; `BLOCKS_API_KEY` routes requests to the correct tenant across all blocks.
+
+Two methods to obtain the Bearer token:
 
 **Method 1: Agent Identity (AID)** -- For AI agents with AMP identity:
 ```bash
@@ -50,7 +59,7 @@ Retrieves company details by URL identifier.
 ```bash
 curl -X GET "$BLOCKS_API_URL/companies/acme-corp" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -58,7 +67,7 @@ curl -X GET "$BLOCKS_API_URL/companies/acme-corp" \
 {
   "data": {
     "id": "company-uuid-123",
-    "type": "company",
+    "type": "Company",
     "attributes": {
       "unique_id": "company-uuid-123",
       "code": "ACME",
@@ -88,7 +97,7 @@ Creates a new company (tenant). Requires provisioning authorization.
 ```bash
 curl -X POST "$BLOCKS_API_URL/companies" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "company": {
@@ -116,7 +125,7 @@ curl -X POST "$BLOCKS_API_URL/companies" \
 {
   "data": {
     "id": "new-company-uuid",
-    "type": "company",
+    "type": "Company",
     "attributes": {
       "unique_id": "new-company-uuid",
       "code": "NEWCO",
@@ -149,7 +158,7 @@ Lists all API keys for external integrations (e.g., Google Maps, Mapbox).
 ```bash
 curl -X GET "$BLOCKS_API_URL/companies/acme-corp/keys" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -158,7 +167,7 @@ curl -X GET "$BLOCKS_API_URL/companies/acme-corp/keys" \
   "data": [
     {
       "id": "key-uuid-123",
-      "type": "company_key",
+      "type": "CompanyKey",
       "attributes": {
         "unique_id": "key-uuid-123",
         "description": "Google Maps API Key",
@@ -181,7 +190,7 @@ Adds an API key for an external integration.
 ```bash
 curl -X POST "$BLOCKS_API_URL/companies/acme-corp/keys" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "company_key": {
@@ -208,7 +217,7 @@ curl -X POST "$BLOCKS_API_URL/companies/acme-corp/keys" \
 {
   "data": {
     "id": "new-key-uuid",
-    "type": "company_key",
+    "type": "CompanyKey",
     "attributes": {
       "unique_id": "new-key-uuid",
       "description": "Google Maps API Key",
@@ -230,7 +239,7 @@ Deletes a company API key.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/companies/acme-corp/keys/key-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -247,7 +256,7 @@ Configures RabbitMQ exchange settings for async messaging.
 ```bash
 curl -X POST "$BLOCKS_API_URL/companies/acme-corp/exchange" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "exchange": {
@@ -274,7 +283,7 @@ curl -X POST "$BLOCKS_API_URL/companies/acme-corp/exchange" \
 {
   "data": {
     "id": "exchange-uuid-123",
-    "type": "exchange_settings",
+    "type": "ExchangeSettings",
     "attributes": {
       "unique_id": "exchange-uuid-123",
       "host": "rabbitmq.example.com",
@@ -298,7 +307,7 @@ Configures cloud storage settings for the company (images, files).
 ```bash
 curl -X POST "$BLOCKS_API_URL/companies/acme-corp/storage" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "storage": {
@@ -325,7 +334,7 @@ curl -X POST "$BLOCKS_API_URL/companies/acme-corp/storage" \
 {
   "data": {
     "id": "storage-uuid-123",
-    "type": "storage_settings",
+    "type": "StorageSettings",
     "attributes": {
       "unique_id": "storage-uuid-123",
       "provider": "aws_s3",
@@ -349,7 +358,7 @@ Generates a temporary access token for a specified user. Used for administrative
 ```bash
 curl -X POST "$BLOCKS_API_URL/companies/acme-corp/access" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "user_unique_id": "user-uuid-456",

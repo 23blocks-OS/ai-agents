@@ -16,12 +16,21 @@ Complete API reference for 23blocks Assets Block report generation.
 | Variable | Description | Example |
 |----------|-------------|---------|
 | `BLOCKS_API_URL` | Assets API base URL | `https://assets.api.us.23blocks.com` |
-| `BLOCKS_AUTH_TOKEN` | Bearer token (human or AID) | `eyJhbGciOiJSUzI1NiJ9...` |
-| `BLOCKS_API_KEY` | API key (AppId) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
+| `BLOCKS_AUTH_TOKEN` | Bearer token — your identity & scopes (from login or AID token exchange) | `eyJhbGciOiJSUzI1NiJ9...` |
+| `BLOCKS_API_KEY` | Tenant routing key (X-API-KEY header) — static, from company config | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
 
 ## Authentication
 
-Two methods are supported. The Bearer token works the same either way.
+**These two credentials serve different purposes and come from different sources:**
+
+| Credential | Purpose | Source | Changes? |
+|------------|---------|--------|----------|
+| `BLOCKS_API_KEY` | **Tenant routing** — identifies which company/app | Company config (static `pk_live_sh_...` key) | No — same key for all blocks |
+| `BLOCKS_AUTH_TOKEN` | **Identity & authorization** — who you are + what you can do | Login (`/auth/sign_in`), AID token exchange, or human-provided | Yes — expires, must be refreshed |
+
+> The API key used during AID registration is NOT the same as `BLOCKS_API_KEY`. The registration key authenticates the agent with the Auth API; `BLOCKS_API_KEY` routes requests to the correct tenant across all blocks.
+
+Two methods to obtain the Bearer token:
 
 **Method 1: Agent Identity (AID)** -- For AI agents with AMP identity:
 ```bash
@@ -50,7 +59,7 @@ Generates a detailed events report across assets with filtering.
 ```bash
 curl -X POST "$BLOCKS_API_URL/reports/events/list" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "report": {
@@ -74,35 +83,27 @@ curl -X POST "$BLOCKS_API_URL/reports/events/list" \
 | `page` | integer | No | Page number (default: 1) |
 | `records` | integer | No | Items per page (default: 50) |
 
-**Response 200:**
+**Response 200 (plain JSON, not JSON:API):**
 ```json
 {
-  "data": [
+  "events": [
     {
-      "id": "event-uuid-001",
-      "type": "report_event",
-      "attributes": {
-        "event_unique_id": "event-uuid-001",
-        "asset_unique_id": "asset-uuid-123",
-        "asset_name": "Laptop Dell XPS 15",
-        "event_type": "inspection",
-        "description": "Quarterly hardware inspection",
-        "occurred_at": "2025-03-15T10:00:00Z",
-        "recorded_by_name": "John Doe"
-      }
+      "event_unique_id": "event-uuid-001",
+      "asset_unique_id": "asset-uuid-123",
+      "asset_name": "Laptop Dell XPS 15",
+      "event_type": "inspection",
+      "description": "Quarterly hardware inspection",
+      "occurred_at": "2025-03-15T10:00:00Z",
+      "recorded_by_name": "John Doe"
     },
     {
-      "id": "event-uuid-002",
-      "type": "report_event",
-      "attributes": {
-        "event_unique_id": "event-uuid-002",
-        "asset_unique_id": "asset-uuid-456",
-        "asset_name": "Monitor Samsung 27",
-        "event_type": "repair",
-        "description": "Replaced power cable",
-        "occurred_at": "2025-02-20T14:00:00Z",
-        "recorded_by_name": "Jane Smith"
-      }
+      "event_unique_id": "event-uuid-002",
+      "asset_unique_id": "asset-uuid-456",
+      "asset_name": "Monitor Samsung 27",
+      "event_type": "repair",
+      "description": "Replaced power cable",
+      "occurred_at": "2025-02-20T14:00:00Z",
+      "recorded_by_name": "Jane Smith"
     }
   ],
   "meta": {
@@ -124,7 +125,7 @@ Generates an aggregated summary of events across assets.
 ```bash
 curl -X POST "$BLOCKS_API_URL/reports/events/summary" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "report": {
@@ -142,58 +143,53 @@ curl -X POST "$BLOCKS_API_URL/reports/events/summary" \
 | `end_date` | date | No | Report end date (YYYY-MM-DD) |
 | `group_by` | string | No | Grouping dimension: event_type, asset, month (default: event_type) |
 
-**Response 200:**
+**Response 200 (plain JSON, not JSON:API):**
 ```json
 {
-  "data": {
-    "type": "events_summary",
-    "attributes": {
-      "total_events": 128,
-      "date_range": {
-        "start_date": "2025-01-01",
-        "end_date": "2025-03-31"
-      },
-      "by_type": [
-        {
-          "event_type": "inspection",
-          "count": 45,
-          "percentage": 35.2
-        },
-        {
-          "event_type": "repair",
-          "count": 32,
-          "percentage": 25.0
-        },
-        {
-          "event_type": "relocation",
-          "count": 28,
-          "percentage": 21.9
-        },
-        {
-          "event_type": "incident",
-          "count": 23,
-          "percentage": 17.9
-        }
-      ],
-      "top_assets": [
-        {
-          "asset_unique_id": "asset-uuid-123",
-          "asset_name": "Laptop Dell XPS 15",
-          "events_count": 12
-        },
-        {
-          "asset_unique_id": "asset-uuid-456",
-          "asset_name": "Server Rack A1",
-          "events_count": 9
-        }
-      ],
-      "monthly_trend": [
-        { "month": "2025-01", "count": 38 },
-        { "month": "2025-02", "count": 42 },
-        { "month": "2025-03", "count": 48 }
-      ]
+  "total_events": 128,
+  "date_range": {
+    "start_date": "2025-01-01",
+    "end_date": "2025-03-31"
+  },
+  "by_type": [
+    {
+      "event_type": "inspection",
+      "count": 45,
+      "percentage": 35.2
+    },
+    {
+      "event_type": "repair",
+      "count": 32,
+      "percentage": 25.0
+    },
+    {
+      "event_type": "relocation",
+      "count": 28,
+      "percentage": 21.9
+    },
+    {
+      "event_type": "incident",
+      "count": 23,
+      "percentage": 17.9
     }
-  }
+  ],
+  "top_assets": [
+    {
+      "asset_unique_id": "asset-uuid-123",
+      "asset_name": "Laptop Dell XPS 15",
+      "events_count": 12
+    },
+    {
+      "asset_unique_id": "asset-uuid-456",
+      "asset_name": "Server Rack A1",
+      "events_count": 9
+    }
+  ],
+  "monthly_trend": [
+    { "month": "2025-01", "count": 38 },
+    { "month": "2025-02", "count": 42 },
+    { "month": "2025-03", "count": 48 }
+  ]
 }
 ```
 
@@ -207,7 +203,7 @@ Generates an aggregated summary of operations across assets.
 ```bash
 curl -X POST "$BLOCKS_API_URL/reports/operations/summary" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "report": {
@@ -225,63 +221,58 @@ curl -X POST "$BLOCKS_API_URL/reports/operations/summary" \
 | `end_date` | date | No | Report end date (YYYY-MM-DD) |
 | `group_by` | string | No | Grouping dimension: operation_type, asset, month (default: operation_type) |
 
-**Response 200:**
+**Response 200 (plain JSON, not JSON:API):**
 ```json
 {
-  "data": {
-    "type": "operations_summary",
-    "attributes": {
-      "total_operations": 256,
-      "date_range": {
-        "start_date": "2025-01-01",
-        "end_date": "2025-03-31"
-      },
-      "by_type": [
-        {
-          "operation_type": "checkout",
-          "count": 89,
-          "percentage": 34.8
-        },
-        {
-          "operation_type": "checkin",
-          "count": 85,
-          "percentage": 33.2
-        },
-        {
-          "operation_type": "transfer",
-          "count": 42,
-          "percentage": 16.4
-        },
-        {
-          "operation_type": "deployment",
-          "count": 25,
-          "percentage": 9.8
-        },
-        {
-          "operation_type": "decommission",
-          "count": 15,
-          "percentage": 5.8
-        }
-      ],
-      "top_assets": [
-        {
-          "asset_unique_id": "asset-uuid-123",
-          "asset_name": "Laptop Dell XPS 15",
-          "operations_count": 18
-        },
-        {
-          "asset_unique_id": "asset-uuid-789",
-          "asset_name": "Projector Epson EB",
-          "operations_count": 14
-        }
-      ],
-      "monthly_trend": [
-        { "month": "2025-01", "count": 78 },
-        { "month": "2025-02", "count": 85 },
-        { "month": "2025-03", "count": 93 }
-      ]
+  "total_operations": 256,
+  "date_range": {
+    "start_date": "2025-01-01",
+    "end_date": "2025-03-31"
+  },
+  "by_type": [
+    {
+      "operation_type": "checkout",
+      "count": 89,
+      "percentage": 34.8
+    },
+    {
+      "operation_type": "checkin",
+      "count": 85,
+      "percentage": 33.2
+    },
+    {
+      "operation_type": "transfer",
+      "count": 42,
+      "percentage": 16.4
+    },
+    {
+      "operation_type": "deployment",
+      "count": 25,
+      "percentage": 9.8
+    },
+    {
+      "operation_type": "decommission",
+      "count": 15,
+      "percentage": 5.8
     }
-  }
+  ],
+  "top_assets": [
+    {
+      "asset_unique_id": "asset-uuid-123",
+      "asset_name": "Laptop Dell XPS 15",
+      "operations_count": 18
+    },
+    {
+      "asset_unique_id": "asset-uuid-789",
+      "asset_name": "Projector Epson EB",
+      "operations_count": 14
+    }
+  ],
+  "monthly_trend": [
+    { "month": "2025-01", "count": 78 },
+    { "month": "2025-02", "count": 85 },
+    { "month": "2025-03", "count": 93 }
+  ]
 }
 ```
 

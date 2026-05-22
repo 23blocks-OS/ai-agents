@@ -14,7 +14,7 @@ Lists all subscription models.
 ```bash
 curl -X GET "$BLOCKS_API_URL/subscription_models/?page=1&records=20" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -55,7 +55,7 @@ Retrieves a specific subscription model.
 ```bash
 curl -X GET "$BLOCKS_API_URL/subscription_models/model-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -98,7 +98,7 @@ Creates a new subscription model.
 ```bash
 curl -X POST "$BLOCKS_API_URL/subscription_models/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "subscription_model": {
@@ -154,7 +154,7 @@ Updates an existing subscription model.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/subscription_models/model-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "subscription_model": {
@@ -192,7 +192,7 @@ Lists all subscriptions for a user.
 ```bash
 curl -X GET "$BLOCKS_API_URL/users/user-uuid-456/subscriptions/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -228,7 +228,7 @@ Retrieves a specific user subscription.
 ```bash
 curl -X GET "$BLOCKS_API_URL/users/user-uuid-456/subscriptions/sub-uuid-001/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -267,11 +267,11 @@ Creates a new subscription for a user.
 ```bash
 curl -X POST "$BLOCKS_API_URL/users/user-uuid-456/subscriptions/sub-uuid-new/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "subscription": {
-      "model_id": "model-uuid-123",
+      "subscription_model_id": "model-uuid-123",
       "payment_method": "stripe",
       "start_date": "2025-01-15T00:00:00Z"
     }
@@ -281,7 +281,7 @@ curl -X POST "$BLOCKS_API_URL/users/user-uuid-456/subscriptions/sub-uuid-new/" \
 **Request Parameters:**
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `model_id` | uuid | Yes | Subscription model ID |
+| `subscription_model_id` | uuid | Yes | Subscription model ID |
 | `payment_method` | string | No | Payment method |
 | `start_date` | timestamp | No | Subscription start date |
 
@@ -313,11 +313,11 @@ Updates a user subscription.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/users/user-uuid-456/subscriptions/sub-uuid-001/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "subscription": {
-      "model_id": "model-uuid-enterprise"
+      "subscription_model_id": "model-uuid-enterprise"
     }
   }'
 ```
@@ -346,7 +346,7 @@ Records usage consumption for a subscription.
 ```bash
 curl -X POST "$BLOCKS_API_URL/users/user-uuid-456/subscriptions/sub-uuid-001/consumption" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "consumption": {
@@ -392,7 +392,7 @@ Cancels a user subscription.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/users/user-uuid-456/subscriptions/sub-uuid-001/cancel" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "cancellation": {
@@ -433,7 +433,7 @@ Deletes a user subscription immediately.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/users/user-uuid-456/subscriptions/sub-uuid-001/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -450,11 +450,11 @@ Creates a subscription for an entity.
 ```bash
 curl -X POST "$BLOCKS_API_URL/entities/entity-uuid-456/subscriptions/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "subscription": {
-      "model_id": "model-uuid-123",
+      "subscription_model_id": "model-uuid-123",
       "payment_method": "stripe"
     }
   }'
@@ -484,11 +484,11 @@ curl -X POST "$BLOCKS_API_URL/entities/entity-uuid-456/subscriptions/" \
 ```bash
 curl -X PUT "$BLOCKS_API_URL/entities/entity-uuid-456/subscriptions/sub-uuid-entity-001" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "subscription": {
-      "model_id": "model-uuid-enterprise"
+      "subscription_model_id": "model-uuid-enterprise"
     }
   }'
 ```
@@ -519,11 +519,11 @@ Creates an account-level subscription.
 ```bash
 curl -X POST "$BLOCKS_API_URL/subscriptions" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "subscription": {
-      "model_id": "model-uuid-123",
+      "subscription_model_id": "model-uuid-123",
       "name": "Company Subscription"
     }
   }'
@@ -554,7 +554,7 @@ curl -X POST "$BLOCKS_API_URL/subscriptions" \
 ```bash
 curl -X GET "$BLOCKS_API_URL/subscriptions/acct-sub-uuid-001" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -583,7 +583,7 @@ curl -X GET "$BLOCKS_API_URL/subscriptions/acct-sub-uuid-001" \
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/subscriptions/acct-sub-uuid-001" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -596,7 +596,7 @@ curl -X DELETE "$BLOCKS_API_URL/subscriptions/acct-sub-uuid-001" \
 ```bash
 curl -X GET "$BLOCKS_API_URL/subscriptions/acct-sub-uuid-001/items" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -626,7 +626,7 @@ curl -X GET "$BLOCKS_API_URL/subscriptions/acct-sub-uuid-001/items" \
 ```bash
 curl -X POST "$BLOCKS_API_URL/subscriptions/acct-sub-uuid-001/items" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "item": {
@@ -662,7 +662,7 @@ curl -X POST "$BLOCKS_API_URL/subscriptions/acct-sub-uuid-001/items" \
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/subscriptions/acct-sub-uuid-001/items/item-uuid-001" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -679,7 +679,7 @@ Creates a one-time purchase.
 ```bash
 curl -X POST "$BLOCKS_API_URL/purchases" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "purchase": {
@@ -717,7 +717,7 @@ curl -X POST "$BLOCKS_API_URL/purchases" \
 ```bash
 curl -X POST "$BLOCKS_API_URL/reports/users/subscriptions/list" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "report": {
@@ -757,7 +757,7 @@ curl -X POST "$BLOCKS_API_URL/reports/users/subscriptions/list" \
 ```bash
 curl -X POST "$BLOCKS_API_URL/reports/users/subscriptions/summary" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "report": {

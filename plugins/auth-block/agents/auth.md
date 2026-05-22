@@ -30,7 +30,7 @@ if [ -z "$BLOCKS_API_URL" ] || [ -z "$BLOCKS_AUTH_TOKEN" ] || [ -z "$BLOCKS_API_
   echo "Please set:"
   echo "  BLOCKS_API_URL     - API base URL (e.g., https://auth.api.us.23blocks.com)"
   echo "  BLOCKS_AUTH_TOKEN  - Your authentication token"
-  echo "  BLOCKS_API_KEY     - Your API key (AppId)"
+  echo "  BLOCKS_API_KEY     - Your API key (X-API-KEY header)"
   exit 1
 fi
 echo "All credentials configured"
@@ -41,7 +41,7 @@ echo "All credentials configured"
 |----------|-------------|---------|
 | `BLOCKS_API_URL` | Auth API base URL | `https://auth.api.us.23blocks.com` |
 | `BLOCKS_AUTH_TOKEN` | Bearer token for authentication | `eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...` |
-| `BLOCKS_API_KEY` | API key (AppId header) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
+| `BLOCKS_API_KEY` | API key (X-API-KEY header) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
 
 **Agent Behavior:**
 - ALWAYS run the pre-flight check before any API operation
@@ -195,7 +195,7 @@ All authenticated endpoints require:
 ```bash
 curl -X GET "$BLOCKS_API_URL/users" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json"
 ```
 
@@ -219,15 +219,16 @@ curl -X GET "$BLOCKS_API_URL/users" \
 - `PUT /users/:unique_id/deactivate` - Deactivate user
 - `POST /users/search` - Search users
 
-### Sessions
-- `POST /sessions` - Login (create session)
-- `DELETE /sessions` - Logout (destroy session)
-- `POST /sessions/refresh` - Refresh token
-- `GET /sessions` - List active sessions
-- `DELETE /sessions/:unique_id` - Revoke session
-- `POST /sessions/verify` - Verify token
-- `POST /sessions/mfa/challenge` - Initiate MFA challenge
-- `POST /sessions/mfa/verify` - Verify MFA code
+### Sessions & Tokens
+- `POST /auth/sign_in` - Login (create session, get access token)
+- `DELETE /auth/sign_out` - Logout (destroy session)
+- `POST /oauth/token/refresh` - Refresh token (requires OAuth mode)
+- `POST /oauth/token/revoke` - Revoke a specific token (RFC 7009)
+- `POST /oauth/token/revoke_all` - Revoke all tokens for a user
+- `GET /auth/validate_token` - Validate current token
+- `POST /auth/introspect` - Token introspection (RFC 7662)
+- `GET /<tenant>/.well-known/jwks.json` - JWKS for local JWT verification
+- `GET /<tenant>/.well-known/openid-configuration` - OIDC discovery
 
 ### API Keys
 - `GET /api_keys` - List API keys
@@ -326,7 +327,7 @@ curl -X GET "$BLOCKS_API_URL/users" \
 # 1. Register identity in auth
 curl -X POST "$BLOCKS_API_URL/identities/user-uuid-123/register" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "user": {
@@ -336,21 +337,19 @@ curl -X POST "$BLOCKS_API_URL/identities/user-uuid-123/register" \
     }
   }'
 
-# 2. Login to create session
-curl -X POST "$BLOCKS_API_URL/sessions" \
-  -H "AppId: $BLOCKS_API_KEY" \
+# 2. Login
+curl -X POST "$BLOCKS_API_URL/auth/sign_in" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "session": {
-      "email": "user@example.com",
-      "password": "secure_password"
-    }
+    "email": "user@example.com",
+    "password": "secure_password"
   }'
 
 # 3. Get current user profile
 curl -X GET "$BLOCKS_API_URL/users/me" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 ### Create Organization, Invite Members, Assign Roles
@@ -358,7 +357,7 @@ curl -X GET "$BLOCKS_API_URL/users/me" \
 # 1. Create organization
 curl -X POST "$BLOCKS_API_URL/organizations" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "organization": {
@@ -370,7 +369,7 @@ curl -X POST "$BLOCKS_API_URL/organizations" \
 # 2. Create a role
 curl -X POST "$BLOCKS_API_URL/roles" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "role": {
@@ -382,7 +381,7 @@ curl -X POST "$BLOCKS_API_URL/roles" \
 # 3. Invite a member
 curl -X POST "$BLOCKS_API_URL/invitations" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "invitation": {
@@ -395,7 +394,7 @@ curl -X POST "$BLOCKS_API_URL/invitations" \
 # 4. Send the invitation
 curl -X POST "$BLOCKS_API_URL/invitations/{invitation_id}/send" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 ### Setup OAuth and SSO Login
@@ -403,7 +402,7 @@ curl -X POST "$BLOCKS_API_URL/invitations/{invitation_id}/send" \
 # 1. Configure OAuth provider
 curl -X POST "$BLOCKS_API_URL/oauth/providers" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "provider": {
@@ -416,11 +415,11 @@ curl -X POST "$BLOCKS_API_URL/oauth/providers" \
 
 # 2. Get authorization URL
 curl -X GET "$BLOCKS_API_URL/oauth/authorize/google" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 
 # 3. Handle callback (after user authorizes)
 curl -X POST "$BLOCKS_API_URL/oauth/callback/google" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "code": "authorization-code-from-provider",

@@ -278,7 +278,7 @@ curl -X PATCH "$BLOCKS_API_URL/mycompany/forms/public?token=abc123xyz" \
 ```bash
 curl -X PUT "$BLOCKS_API_URL/forms/form-id" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "form": {

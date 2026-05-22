@@ -14,7 +14,7 @@ Lists all campaigns with pagination.
 ```bash
 curl -X GET "$BLOCKS_API_URL/campaigns?page=1&records=20" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Query Parameters:**
@@ -61,7 +61,7 @@ Retrieves a single campaign by unique ID.
 ```bash
 curl -X GET "$BLOCKS_API_URL/campaigns/campaign-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -120,7 +120,7 @@ Creates a new marketing campaign.
 ```bash
 curl -X POST "$BLOCKS_API_URL/campaigns" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "campaign": {
@@ -177,7 +177,7 @@ Updates an existing campaign.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/campaigns/campaign-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "campaign": {
@@ -220,7 +220,7 @@ Deletes a campaign.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/campaigns/campaign-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -240,7 +240,7 @@ Retrieves performance results for a campaign.
 ```bash
 curl -X GET "$BLOCKS_API_URL/campaigns/campaign-uuid-123/campaign_results" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -279,7 +279,7 @@ Lists market segments assigned to a campaign.
 ```bash
 curl -X GET "$BLOCKS_API_URL/campaigns/campaign-uuid-123/campaign_markets" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -311,7 +311,7 @@ Adds a market segment to a campaign.
 ```bash
 curl -X POST "$BLOCKS_API_URL/campaigns/campaign-uuid-123/campaign_markets" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "campaign_market": {
@@ -354,7 +354,7 @@ Removes a market segment from a campaign.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/campaigns/campaign-uuid-123/campaign_markets/market-uuid-1" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -371,7 +371,7 @@ Lists geographic locations assigned to a campaign.
 ```bash
 curl -X GET "$BLOCKS_API_URL/campaigns/campaign-uuid-123/campaign_locations" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -405,7 +405,7 @@ Adds a geographic location to a campaign.
 ```bash
 curl -X POST "$BLOCKS_API_URL/campaigns/campaign-uuid-123/campaign_locations" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "campaign_location": {
@@ -454,7 +454,7 @@ Removes a location from a campaign.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/campaigns/campaign-uuid-123/campaign_locations/location-uuid-1" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -471,7 +471,7 @@ Lists targeting rules for a campaign.
 ```bash
 curl -X GET "$BLOCKS_API_URL/campaigns/campaign-uuid-123/campaign_targets" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -508,7 +508,7 @@ Adds a targeting rule to a campaign.
 ```bash
 curl -X POST "$BLOCKS_API_URL/campaigns/campaign-uuid-123/campaign_targets" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "campaign_target": {
@@ -562,7 +562,7 @@ Removes a targeting rule from a campaign.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/campaigns/campaign-uuid-123/campaign_targets/target-uuid-1" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content

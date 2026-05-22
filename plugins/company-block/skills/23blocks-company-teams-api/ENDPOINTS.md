@@ -14,7 +14,7 @@ Lists all teams with pagination.
 ```bash
 curl -X GET "$BLOCKS_API_URL/teams?page=1&records=20" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Query Parameters:**
@@ -59,6 +59,11 @@ curl -X GET "$BLOCKS_API_URL/teams?page=1&records=20" \
   "meta": {
     "totalPages": 2,
     "totalRecords": 18
+  },
+  "links": {
+    "self": "/teams?page=1&records=20",
+    "next": "/teams?page=2&records=20",
+    "prev": null
   }
 }
 ```
@@ -73,7 +78,7 @@ Retrieves a single team by unique ID.
 ```bash
 curl -X GET "$BLOCKS_API_URL/teams/team-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -114,7 +119,7 @@ Lists all members of a team.
 ```bash
 curl -X GET "$BLOCKS_API_URL/teams/team-uuid-123/members?page=1&records=20" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Query Parameters:**
@@ -157,6 +162,11 @@ curl -X GET "$BLOCKS_API_URL/teams/team-uuid-123/members?page=1&records=20" \
   "meta": {
     "totalPages": 1,
     "totalRecords": 8
+  },
+  "links": {
+    "self": "/teams/team-uuid-123/members?page=1&records=20",
+    "next": null,
+    "prev": null
   }
 }
 ```
@@ -174,7 +184,7 @@ Creates a new team.
 ```bash
 curl -X POST "$BLOCKS_API_URL/teams" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "team": {
@@ -229,7 +239,7 @@ Updates an existing team.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/teams/team-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "team": {
@@ -273,10 +283,10 @@ Deletes a team.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/teams/team-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
-**Response 204:** No content
+**Response 204:** Empty body `{}`
 
 **Errors:**
 - `404 Not Found` - Team not found
@@ -285,13 +295,17 @@ curl -X DELETE "$BLOCKS_API_URL/teams/team-uuid-123" \
 
 ### POST /teams/:unique_id/join - Join Team
 
-Adds the authenticated user to the team.
+Adds the authenticated user to the team. Body uses `team_member` wrapper.
 
 **Request:**
 ```bash
 curl -X POST "$BLOCKS_API_URL/teams/team-uuid-123/join" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "team_member": {}
+  }'
 ```
 
 **Response 201:**
@@ -324,10 +338,10 @@ Removes a member from a team.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/teams/team-uuid-123/members/user-uuid-456" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
-**Response 204:** No content
+**Response 204:** Empty body `{}`
 
 **Errors:**
 - `404 Not Found` - Member not found in team
@@ -342,7 +356,7 @@ Lists all teams a specific user belongs to.
 ```bash
 curl -X GET "$BLOCKS_API_URL/users/user-uuid-001/teams?page=1&records=20" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Query Parameters:**
@@ -385,6 +399,11 @@ curl -X GET "$BLOCKS_API_URL/users/user-uuid-001/teams?page=1&records=20" \
   "meta": {
     "totalPages": 1,
     "totalRecords": 3
+  },
+  "links": {
+    "self": "/users/user-uuid-001/teams?page=1&records=20",
+    "next": null,
+    "prev": null
   }
 }
 ```

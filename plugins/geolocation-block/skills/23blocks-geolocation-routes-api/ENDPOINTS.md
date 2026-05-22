@@ -14,7 +14,7 @@ Lists all routes with pagination.
 ```bash
 curl -X GET "$BLOCKS_API_URL/routes?page=1&records=20" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Query Parameters:**
@@ -29,7 +29,7 @@ curl -X GET "$BLOCKS_API_URL/routes?page=1&records=20" \
   "data": [
     {
       "id": "route-uuid-123",
-      "type": "route",
+      "type": "Route",
       "attributes": {
         "unique_id": "route-uuid-123",
         "name": "Morning Delivery Route",
@@ -71,7 +71,7 @@ Retrieves a single route by unique ID.
 ```bash
 curl -X GET "$BLOCKS_API_URL/routes/route-uuid-123/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -79,7 +79,7 @@ curl -X GET "$BLOCKS_API_URL/routes/route-uuid-123/" \
 {
   "data": {
     "id": "route-uuid-123",
-    "type": "route",
+    "type": "Route",
     "attributes": {
       "unique_id": "route-uuid-123",
       "name": "Morning Delivery Route",
@@ -110,7 +110,7 @@ curl -X GET "$BLOCKS_API_URL/routes/route-uuid-123/" \
     "relationships": {
       "users": {
         "data": [
-          { "id": "user-uuid-456", "type": "user_identity" }
+          { "id": "user-uuid-456", "type": "UserIdentity" }
         ]
       }
     }
@@ -131,7 +131,7 @@ Creates a new route.
 ```bash
 curl -X POST "$BLOCKS_API_URL/routes/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "route": {
@@ -152,7 +152,7 @@ curl -X POST "$BLOCKS_API_URL/routes/" \
 {
   "data": {
     "id": "route-uuid-123",
-    "type": "route",
+    "type": "Route",
     "attributes": {
       "unique_id": "route-uuid-123",
       "name": "Morning Delivery Route",
@@ -180,7 +180,7 @@ Updates an existing route.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/routes/route-uuid-123/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "route": {
@@ -195,7 +195,7 @@ curl -X PUT "$BLOCKS_API_URL/routes/route-uuid-123/" \
 {
   "data": {
     "id": "route-uuid-123",
-    "type": "route",
+    "type": "Route",
     "attributes": {
       "unique_id": "route-uuid-123",
       "name": "Morning Delivery Route - Updated",
@@ -219,7 +219,7 @@ Deletes a route.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/routes/route-uuid-123/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -239,7 +239,7 @@ Adds a location stop to a route.
 ```bash
 curl -X POST "$BLOCKS_API_URL/routes/route-uuid-123/locations" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "location_unique_id": "loc-uuid-001",
@@ -258,7 +258,7 @@ curl -X POST "$BLOCKS_API_URL/routes/route-uuid-123/locations" \
 {
   "data": {
     "id": "route-loc-uuid",
-    "type": "route_location",
+    "type": "RouteLocation",
     "attributes": {
       "route_unique_id": "route-uuid-123",
       "location_unique_id": "loc-uuid-001",
@@ -285,7 +285,7 @@ Assigns a user to a route.
 ```bash
 curl -X POST "$BLOCKS_API_URL/routes/route-uuid-123/users" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "user_unique_id": "user-uuid-456"
@@ -302,7 +302,7 @@ curl -X POST "$BLOCKS_API_URL/routes/route-uuid-123/users" \
 {
   "data": {
     "id": "route-user-uuid",
-    "type": "route_user",
+    "type": "RouteUser",
     "attributes": {
       "route_unique_id": "route-uuid-123",
       "user_unique_id": "user-uuid-456",
@@ -326,7 +326,7 @@ Retrieves all routes assigned to a user.
 ```bash
 curl -X GET "$BLOCKS_API_URL/users/user-uuid-456/routes?page=1&records=20" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -335,7 +335,7 @@ curl -X GET "$BLOCKS_API_URL/users/user-uuid-456/routes?page=1&records=20" \
   "data": [
     {
       "id": "route-uuid-123",
-      "type": "route",
+      "type": "Route",
       "attributes": {
         "unique_id": "route-uuid-123",
         "name": "Morning Delivery Route",
@@ -365,7 +365,7 @@ Reports the current location of a user on a route for real-time tracking.
 ```bash
 curl -X POST "$BLOCKS_API_URL/users/user-uuid-456/routes/route-uuid-123/tracker/location" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "tracker": {
@@ -392,7 +392,7 @@ curl -X POST "$BLOCKS_API_URL/users/user-uuid-456/routes/route-uuid-123/tracker/
 {
   "data": {
     "id": "tracker-uuid",
-    "type": "tracker_location",
+    "type": "TrackerLocation",
     "attributes": {
       "user_unique_id": "user-uuid-456",
       "route_unique_id": "route-uuid-123",

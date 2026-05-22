@@ -14,7 +14,7 @@ Lists all user identities.
 ```bash
 curl -X GET "$BLOCKS_API_URL/identities" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -53,7 +53,7 @@ Retrieves a single user identity by unique ID.
 ```bash
 curl -X GET "$BLOCKS_API_URL/identities/user-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -99,7 +99,7 @@ Registers a new user in the content system.
 ```bash
 curl -X POST "$BLOCKS_API_URL/identities/user-uuid-123/register" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "user": {
@@ -144,7 +144,7 @@ Updates an existing user profile.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/identities/user-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "user": {
@@ -184,7 +184,7 @@ Adds a tag to a user's profile.
 ```bash
 curl -X POST "$BLOCKS_API_URL/identities/user-uuid-123/tags" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "tag_unique_id": "tag-uuid-456"
@@ -208,7 +208,7 @@ Removes a tag from a user's profile.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/identities/user-uuid-123/tags/tag-uuid-456" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -230,7 +230,7 @@ Retrieves all draft posts by the user.
 ```bash
 curl -X GET "$BLOCKS_API_URL/identities/user-uuid-123/drafts" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -261,7 +261,7 @@ Retrieves all published posts by the user.
 ```bash
 curl -X GET "$BLOCKS_API_URL/identities/user-uuid-123/posts" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -294,7 +294,7 @@ Retrieves all comments by the user.
 ```bash
 curl -X GET "$BLOCKS_API_URL/identities/user-uuid-123/comments" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -332,7 +332,7 @@ Retrieves all users following this user.
 ```bash
 curl -X GET "$BLOCKS_API_URL/identities/user-uuid-123/followers" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -366,7 +366,7 @@ Retrieves all users this user is following.
 ```bash
 curl -X GET "$BLOCKS_API_URL/identities/user-uuid-123/following" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -400,7 +400,7 @@ Follows another user.
 ```bash
 curl -X POST "$BLOCKS_API_URL/identities/user-uuid-123/follows/target-user-uuid" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -420,7 +420,7 @@ Unfollows a user.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/identities/user-uuid-123/unfollows/target-user-uuid" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -442,7 +442,7 @@ Retrieves the user's activity feed.
 ```bash
 curl -X GET "$BLOCKS_API_URL/identities/user-uuid-123/activities" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**

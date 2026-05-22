@@ -14,7 +14,7 @@ Lists all assets with pagination.
 ```bash
 curl -X GET "$BLOCKS_API_URL/assets?page=1&records=20" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Query Parameters:**
@@ -22,6 +22,10 @@ curl -X GET "$BLOCKS_API_URL/assets?page=1&records=20" \
 |-----------|------|----------|-------------|
 | `page` | integer | No | Page number (default: 1) |
 | `records` | integer | No | Items per page (default: 15) |
+| `search` | string | No | Search filter |
+| `sort` | string | No | Sort field |
+| `with_categories` | boolean | No | Include category data (true/false) |
+| `with_price` | boolean | No | Include price data (true/false) |
 
 **Response 200:**
 ```json
@@ -34,7 +38,7 @@ curl -X GET "$BLOCKS_API_URL/assets?page=1&records=20" \
         "unique_id": "asset-uuid-123",
         "name": "Laptop Dell XPS 15",
         "description": "Company laptop for engineering team",
-        "serial_number": "SN-2025-001",
+        "serial": "SN-2025-001",
         "status": "active",
         "condition": "good",
         "purchase_date": "2025-01-05",
@@ -72,7 +76,7 @@ Retrieves a single asset by unique ID.
 ```bash
 curl -X GET "$BLOCKS_API_URL/assets/asset-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -85,7 +89,7 @@ curl -X GET "$BLOCKS_API_URL/assets/asset-uuid-123" \
       "unique_id": "asset-uuid-123",
       "name": "Laptop Dell XPS 15",
       "description": "Company laptop for engineering team",
-      "serial_number": "SN-2025-001",
+      "serial": "SN-2025-001",
       "status": "active",
       "condition": "good",
       "purchase_date": "2025-01-05",
@@ -143,13 +147,13 @@ Creates a new asset.
 ```bash
 curl -X POST "$BLOCKS_API_URL/assets" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "asset": {
       "name": "MacBook Pro 16",
       "description": "Design team workstation",
-      "serial_number": "SN-2025-002",
+      "serial": "SN-2025-002",
       "status": "active",
       "condition": "new",
       "purchase_date": "2025-01-15",
@@ -167,7 +171,7 @@ curl -X POST "$BLOCKS_API_URL/assets" \
 |-----------|------|----------|-------------|
 | `name` | string | Yes | Asset name |
 | `description` | string | No | Asset description |
-| `serial_number` | string | No | Serial number |
+| `serial` | string | No | Serial number |
 | `status` | enum | No | active, inactive, retired, lost (default: active) |
 | `condition` | enum | No | new, good, fair, poor |
 | `purchase_date` | date | No | Purchase date (YYYY-MM-DD) |
@@ -189,7 +193,7 @@ curl -X POST "$BLOCKS_API_URL/assets" \
     "attributes": {
       "unique_id": "new-asset-uuid",
       "name": "MacBook Pro 16",
-      "serial_number": "SN-2025-002",
+      "serial": "SN-2025-002",
       "status": "active",
       "condition": "new",
       "owner_unique_id": "current-user-uuid",
@@ -212,7 +216,7 @@ Updates an existing asset.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/assets/asset-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "asset": {
@@ -248,16 +252,16 @@ curl -X PUT "$BLOCKS_API_URL/assets/asset-uuid-123" \
 
 ### DELETE /assets/:unique_id - Delete Asset
 
-Soft-deletes an asset (moves to trash).
+Deletes an asset. The record is marked `enabled=false, status=deleted` (no soft-delete/trash -- the record persists with deleted status).
 
 **Request:**
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/assets/asset-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
-**Response 204:** No content
+**Response 204:** Returns `{}` with status 204
 
 **Errors:**
 - `404 Not Found` - Asset not found
@@ -266,13 +270,13 @@ curl -X DELETE "$BLOCKS_API_URL/assets/asset-uuid-123" \
 
 ### GET /assets/trash/show - View Trash
 
-Lists soft-deleted assets.
+Lists deleted assets (records with `enabled=false, status=deleted`).
 
 **Request:**
 ```bash
 curl -X GET "$BLOCKS_API_URL/assets/trash/show" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -305,7 +309,7 @@ Assigns a category to an asset.
 ```bash
 curl -X POST "$BLOCKS_API_URL/assets/asset-uuid-123/categories" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "category_unique_id": "category-uuid-456"
@@ -329,18 +333,18 @@ Updates or adds parts/components to an asset.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/assets/asset-uuid-123/parts" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "parts": [
       {
         "name": "RAM Module",
-        "serial_number": "RAM-SN-001",
+        "serial": "RAM-SN-001",
         "description": "32GB DDR5"
       },
       {
         "name": "SSD",
-        "serial_number": "SSD-SN-001",
+        "serial": "SSD-SN-001",
         "description": "1TB NVMe"
       }
     ]
@@ -379,14 +383,14 @@ Removes parts from an asset.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/assets/asset-uuid-123/parts" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "part_unique_ids": ["part-uuid-001"]
   }'
 ```
 
-**Response 204:** No content
+**Response 204:** Returns `{}` with status 204
 
 ---
 
@@ -398,7 +402,7 @@ Sets the maintenance status and schedule for an asset.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/assets/asset-uuid-123/maintenance" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "maintenance": {
@@ -442,7 +446,7 @@ Lends an asset to a user.
 ```bash
 curl -X POST "$BLOCKS_API_URL/assets/asset-uuid-123/lend" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "lend": {
@@ -487,7 +491,7 @@ Transfers asset ownership to another user.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/assets/asset-uuid-123/transfer" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "transfer": {
@@ -530,7 +534,7 @@ Generates a presigned URL for uploading an asset image.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/assets/asset-uuid-123/presign" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "file": {
@@ -546,14 +550,12 @@ curl -X PUT "$BLOCKS_API_URL/assets/asset-uuid-123/presign" \
 | `filename` | string | Yes | Name of the file |
 | `content_type` | string | Yes | MIME type (e.g., image/jpeg, image/png) |
 
-**Response 200:**
+**Response 200 (plain JSON, not JSON:API):**
 ```json
 {
-  "data": {
-    "presigned_url": "https://storage.example.com/upload?signature=abc123",
-    "file_unique_id": "file-uuid-789",
-    "expires_at": "2025-01-12T11:30:00Z"
-  }
+  "presigned_url": "https://storage.example.com/upload?signature=abc123",
+  "file_unique_id": "file-uuid-789",
+  "expires_at": "2025-01-12T11:30:00Z"
 }
 ```
 
@@ -567,7 +569,7 @@ Confirms an image upload after using the presigned URL.
 ```bash
 curl -X POST "$BLOCKS_API_URL/assets/asset-uuid-123/images" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "file": {
@@ -576,20 +578,14 @@ curl -X POST "$BLOCKS_API_URL/assets/asset-uuid-123/images" \
   }'
 ```
 
-**Response 200:**
+**Response 200 (plain JSON, not JSON:API):**
 ```json
 {
-  "data": {
-    "id": "file-uuid-789",
-    "type": "image",
-    "attributes": {
-      "unique_id": "file-uuid-789",
-      "url": "https://storage.example.com/assets/asset-photo.jpg",
-      "filename": "asset-photo.jpg",
-      "content_type": "image/jpeg",
-      "created_at": "2025-01-12T10:30:00Z"
-    }
-  }
+  "unique_id": "file-uuid-789",
+  "url": "https://storage.example.com/assets/asset-photo.jpg",
+  "filename": "asset-photo.jpg",
+  "content_type": "image/jpeg",
+  "created_at": "2025-01-12T10:30:00Z"
 }
 ```
 
@@ -603,10 +599,10 @@ Deletes an asset image.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/assets/asset-uuid-123/images/file-uuid-789" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
-**Response 204:** No content
+**Response 204:** Returns `{}` with status 204
 
 ---
 
@@ -620,16 +616,14 @@ Generates a one-time password for asset verification.
 ```bash
 curl -X POST "$BLOCKS_API_URL/assets/asset-uuid-123/otp" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
-**Response 200:**
+**Response 200 (plain JSON, not JSON:API):**
 ```json
 {
-  "data": {
-    "otp": "847291",
-    "expires_at": "2025-01-12T10:45:00Z",
-    "asset_unique_id": "asset-uuid-123"
-  }
+  "otp": "847291",
+  "expires_at": "2025-01-12T10:45:00Z",
+  "asset_unique_id": "asset-uuid-123"
 }
 ```

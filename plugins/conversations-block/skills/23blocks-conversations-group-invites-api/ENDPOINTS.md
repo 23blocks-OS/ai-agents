@@ -25,7 +25,7 @@ Retrieve all active invite codes for a group. Results are ordered by creation da
 ```bash
 curl -s -X GET "$BLOCKS_API_URL/groups/grp_001/invites" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json"
 ```
 
@@ -88,7 +88,7 @@ Generate a new invite code for a group. The code is auto-generated as a URL-safe
 ```bash
 curl -s -X POST "$BLOCKS_API_URL/groups/grp_001/invites" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "name": "Team onboarding link",
@@ -102,7 +102,7 @@ curl -s -X POST "$BLOCKS_API_URL/groups/grp_001/invites" \
 ```bash
 curl -s -X POST "$BLOCKS_API_URL/groups/grp_001/invites" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "name": "24-hour invite",
@@ -158,7 +158,7 @@ Revoke an invite code so it can no longer be used. Sets the invite status to `re
 ```bash
 curl -s -X DELETE "$BLOCKS_API_URL/groups/grp_001/invites/Xk9Lm3Np7Qr2St4Uv6Wx-_" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json"
 ```
 
@@ -207,7 +207,7 @@ Generate a QR code image for an invite code. The QR encodes a join URL.
 ```bash
 curl -s -X GET "$BLOCKS_API_URL/groups/grp_001/invites/Xk9Lm3Np7Qr2St4Uv6Wx-_/qr?size=512" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   --output invite_qr.png
 ```
 
@@ -257,7 +257,7 @@ Join a group using an invite code. The authenticated user is added as a member. 
 ```bash
 curl -s -X POST "$BLOCKS_API_URL/groups/join/Ab3Cd5Ef7Gh9Ij1Kl3Mn-_" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "user": {

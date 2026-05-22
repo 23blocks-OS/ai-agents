@@ -25,7 +25,7 @@ if [ -z "$BLOCKS_API_URL" ] || [ -z "$BLOCKS_AUTH_TOKEN" ] || [ -z "$BLOCKS_API_
   echo "Please set:"
   echo "  BLOCKS_API_URL     - API base URL (e.g., https://content.api.us.23blocks.com)"
   echo "  BLOCKS_AUTH_TOKEN  - Your authentication token"
-  echo "  BLOCKS_API_KEY     - Your API key (AppId)"
+  echo "  BLOCKS_API_KEY     - Your API key (X-API-KEY header)"
   exit 1
 fi
 echo "All credentials configured"
@@ -36,7 +36,7 @@ echo "All credentials configured"
 |----------|-------------|---------|
 | `BLOCKS_API_URL` | Content API base URL | `https://content.api.us.23blocks.com` |
 | `BLOCKS_AUTH_TOKEN` | Bearer token for authentication | `eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...` |
-| `BLOCKS_API_KEY` | API key (AppId header) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
+| `BLOCKS_API_KEY` | API key (X-API-KEY header) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
 
 **Agent Behavior:**
 - ALWAYS run the pre-flight check before any API operation
@@ -58,6 +58,8 @@ Posts are the main content entity with full versioning support:
 | Social | Like, follow, save posts |
 | Ownership | Transfer post ownership |
 | Series | Group posts into ordered series |
+| Attachments | CRUD + reorder file attachments on posts |
+| Templates | CRUD post templates for reusable content structures |
 
 ### Series
 
@@ -114,14 +116,14 @@ All authenticated endpoints require:
 ```bash
 curl -X GET "$BLOCKS_API_URL/posts" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json"
 ```
 
 ### Posts CRUD
-- `GET /posts` - List all posts with pagination
-- `POST /posts/query` - Query posts with filters
-- `GET /posts/:unique_id` - Get post by ID
+- `GET /posts` - List all posts with pagination (**public**)
+- `POST /posts/query` - Query posts with filters (**public**)
+- `GET /posts/:unique_id` - Get post by ID (**public**)
 - `POST /posts` - Create new post
 - `PUT /posts/:unique_id` - Update post
 - `PUT /posts/:unique_id/replace` - Replace post content
@@ -140,9 +142,9 @@ curl -X GET "$BLOCKS_API_URL/posts" \
 - `POST /posts/:unique_id/versions/:version_unique_id/publish` - Publish version
 
 ### Series CRUD
-- `GET /series` - List all series with pagination
-- `POST /series/query` - Query series with filters
-- `GET /series/:unique_id` - Get series by ID or slug
+- `GET /series` - List all series with pagination (**public**)
+- `POST /series/query` - Query series with filters (**public**)
+- `GET /series/:unique_id` - Get series by ID or slug (**public**)
 - `POST /series` - Create new series
 - `PUT /series/:unique_id` - Update series
 - `DELETE /series/:unique_id` - Soft delete series
@@ -162,7 +164,7 @@ curl -X GET "$BLOCKS_API_URL/posts" \
 - `PUT /series/:unique_id/reorder` - Reorder posts in series
 
 ### Comments
-- `GET /posts/:post_id/comments` - List post comments
+- `GET /posts/:post_id/comments` - List post comments (**public**)
 - `GET /posts/:post_id/comments/:unique_id` - Get comment
 - `POST /posts/:post_id/comments` - Create comment
 - `PUT /posts/:post_id/comments/:unique_id` - Update comment
@@ -212,6 +214,21 @@ curl -X GET "$BLOCKS_API_URL/posts" \
 - `POST /identities/:unique_id/follows/:user_id` - Follow a user
 - `DELETE /identities/:unique_id/unfollows/:user_id` - Unfollow a user
 
+### Post Attachments
+- `GET /posts/:post_unique_id/attachments` - List post attachments
+- `POST /posts/:post_unique_id/attachments` - Add attachment to post
+- `GET /posts/:post_unique_id/attachments/:unique_id` - Get attachment
+- `PUT /posts/:post_unique_id/attachments/:unique_id` - Update attachment
+- `DELETE /posts/:post_unique_id/attachments/:unique_id` - Delete attachment
+- `PUT /posts/:post_unique_id/attachments/reorder` - Reorder attachments
+
+### Post Templates
+- `GET /post_templates` - List all post templates
+- `GET /post_templates/:unique_id` - Get a post template
+- `POST /post_templates` - Create a post template
+- `PUT /post_templates/:unique_id` - Update a post template
+- `DELETE /post_templates/:unique_id` - Delete a post template
+
 ### User Activity
 - `GET /identities/:unique_id/activities` - Get user activities
 
@@ -222,7 +239,7 @@ curl -X GET "$BLOCKS_API_URL/posts" \
 # 1. Create post
 curl -X POST "$BLOCKS_API_URL/posts" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "post": {
@@ -235,7 +252,7 @@ curl -X POST "$BLOCKS_API_URL/posts" \
 # 2. Publish specific version
 curl -X POST "$BLOCKS_API_URL/posts/{post_id}/versions/{version_id}/publish" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 ### Add Comment with Reply
@@ -243,7 +260,7 @@ curl -X POST "$BLOCKS_API_URL/posts/{post_id}/versions/{version_id}/publish" \
 # 1. Add comment to post
 curl -X POST "$BLOCKS_API_URL/posts/{post_id}/comments" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "comment": {
@@ -254,7 +271,7 @@ curl -X POST "$BLOCKS_API_URL/posts/{post_id}/comments" \
 # 2. Reply to comment
 curl -X POST "$BLOCKS_API_URL/posts/{post_id}/comments/{comment_id}/reply" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "comment": {
@@ -268,7 +285,7 @@ curl -X POST "$BLOCKS_API_URL/posts/{post_id}/comments/{comment_id}/reply" \
 # 1. Create a tag
 curl -X POST "$BLOCKS_API_URL/tags" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "tag": {
@@ -279,7 +296,7 @@ curl -X POST "$BLOCKS_API_URL/tags" \
 # 2. Add tag to user
 curl -X POST "$BLOCKS_API_URL/identities/{user_id}/tags" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "tag_unique_id": "{tag_id}"
@@ -291,12 +308,12 @@ curl -X POST "$BLOCKS_API_URL/identities/{user_id}/tags" \
 # Follow a user
 curl -X POST "$BLOCKS_API_URL/identities/{user_id}/follows/{target_user_id}" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 
 # Get user's followers
 curl -X GET "$BLOCKS_API_URL/identities/{user_id}/followers" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 ### Create Series and Add Posts
@@ -304,7 +321,7 @@ curl -X GET "$BLOCKS_API_URL/identities/{user_id}/followers" \
 # 1. Create a series
 curl -X POST "$BLOCKS_API_URL/series" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "series": {
@@ -318,14 +335,14 @@ curl -X POST "$BLOCKS_API_URL/series" \
 # 2. Add posts to series
 curl -X POST "$BLOCKS_API_URL/series/{series_id}/posts/{post_id}" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"sequence": 1}'
 
 # 3. Reorder posts in series
 curl -X PUT "$BLOCKS_API_URL/series/{series_id}/reorder" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "posts": [
@@ -335,6 +352,37 @@ curl -X PUT "$BLOCKS_API_URL/series/{series_id}/reorder" \
     ]
   }'
 ```
+
+## Public vs Authenticated Endpoints
+
+Some endpoints only require `X-API-KEY` (no Bearer token). These are **public** endpoints:
+
+| Endpoint | Method |
+|----------|--------|
+| `/posts` | GET |
+| `/posts/query` | POST |
+| `/posts/:unique_id` | GET |
+| `/posts/:post_unique_id/comments` | GET |
+| `/series` | GET |
+| `/series/query` | POST |
+| `/series/:unique_id` | GET |
+
+All other endpoints require both `X-API-KEY` and `Authorization: Bearer` token.
+
+## Required Scopes
+
+| Scope | Grants |
+|-------|--------|
+| `posts:write` | Create, update, delete posts |
+| `posts:moderate` | Moderate posts |
+| `series:write` | Create, update, delete series |
+| `series:moderate` | Moderate series |
+| `comments:write` | Create, update, delete comments |
+| `comments:moderate` | Moderate (remove) comments |
+| `tags:write` | Create, update tags |
+| `categories:write` | Create categories |
+| `templates:write` | Create, update, delete post templates |
+| `attachments:write` | Create, update, delete, reorder post attachments |
 
 ## Error Handling
 

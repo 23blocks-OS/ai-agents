@@ -14,7 +14,7 @@ Lists app form instances with filtering and metadata search.
 ```bash
 curl -X GET "$BLOCKS_API_URL/forms/9ebed093-574a-4be4-9076-cfca36493330/instances?page=1&records=20&by_status=pending" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Query Parameters:**
@@ -86,7 +86,7 @@ Retrieves a specific app form instance with its schema version.
 ```bash
 curl -X GET "$BLOCKS_API_URL/forms/9ebed093-574a-4be4-9076-cfca36493330/instances/inst-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -148,7 +148,7 @@ Creates and assigns a new app form instance. Automatically sends magic link emai
 ```bash
 curl -X POST "$BLOCKS_API_URL/forms/9ebed093-574a-4be4-9076-cfca36493330/instances" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "app_form_instance": {
@@ -209,7 +209,7 @@ Updates instance responses and metadata.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/forms/form-id/instances/inst-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "app_form_instance": {
@@ -238,7 +238,7 @@ Marks the instance as started (status: in_progress).
 ```bash
 curl -X POST "$BLOCKS_API_URL/forms/form-id/instances/inst-123/start" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -268,7 +268,7 @@ Validates responses, calculates scores, and marks as completed.
 ```bash
 curl -X POST "$BLOCKS_API_URL/forms/form-id/instances/inst-123/submit" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "app_form_instance": {
@@ -311,7 +311,7 @@ Cancels the instance (prevents further edits).
 ```bash
 curl -X POST "$BLOCKS_API_URL/forms/form-id/instances/inst-123/cancel" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:** Cancelled instance
@@ -329,7 +329,7 @@ Resends the magic link email.
 ```bash
 curl -X POST "$BLOCKS_API_URL/forms/form-id/instances/inst-123/resend_magic_link" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -355,7 +355,7 @@ Soft-deletes the instance.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/forms/form-id/instances/inst-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -370,7 +370,7 @@ curl -X DELETE "$BLOCKS_API_URL/forms/form-id/instances/inst-123" \
 ```bash
 curl -X GET "$BLOCKS_API_URL/forms/form-id/schemas" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 ---
@@ -381,7 +381,7 @@ curl -X GET "$BLOCKS_API_URL/forms/form-id/schemas" \
 ```bash
 curl -X POST "$BLOCKS_API_URL/forms/form-id/schemas" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "form_schema": {
@@ -401,7 +401,7 @@ curl -X POST "$BLOCKS_API_URL/forms/form-id/schemas" \
 ```bash
 curl -X GET "$BLOCKS_API_URL/forms/form-id/schemas/schema-id/versions" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 ---
@@ -412,7 +412,7 @@ curl -X GET "$BLOCKS_API_URL/forms/form-id/schemas/schema-id/versions" \
 ```bash
 curl -X POST "$BLOCKS_API_URL/forms/form-id/schemas/schema-id/versions" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "form_schema_version": {
@@ -464,7 +464,7 @@ Publishes a version (archives previously published versions).
 ```bash
 curl -X POST "$BLOCKS_API_URL/forms/form-id/schemas/schema-id/versions/version-id/publish" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**

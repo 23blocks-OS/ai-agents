@@ -14,7 +14,7 @@ Retrieves the current cart for a user.
 ```bash
 curl -X GET "$BLOCKS_API_URL/carts/user-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -22,7 +22,7 @@ curl -X GET "$BLOCKS_API_URL/carts/user-uuid-123" \
 {
   "data": {
     "id": "cart-uuid-123",
-    "type": "cart",
+    "type": "Cart",
     "attributes": {
       "unique_id": "cart-uuid-123",
       "user_unique_id": "user-uuid-123",
@@ -38,7 +38,7 @@ curl -X GET "$BLOCKS_API_URL/carts/user-uuid-123" \
     "relationships": {
       "details": {
         "data": [
-          { "id": "detail-uuid-1", "type": "cart_detail" }
+          { "id": "detail-uuid-1", "type": "CartDetail" }
         ]
       }
     }
@@ -59,7 +59,7 @@ Retrieves activity logs for a cart.
 ```bash
 curl -X GET "$BLOCKS_API_URL/carts/cart-uuid-123/logs" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -68,7 +68,7 @@ curl -X GET "$BLOCKS_API_URL/carts/cart-uuid-123/logs" \
   "data": [
     {
       "id": "log-uuid-123",
-      "type": "cart_log",
+      "type": "CartLog",
       "attributes": {
         "unique_id": "log-uuid-123",
         "action": "item_added",
@@ -90,7 +90,7 @@ Creates a new shopping cart.
 ```bash
 curl -X POST "$BLOCKS_API_URL/carts/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "cart": {
@@ -109,7 +109,7 @@ curl -X POST "$BLOCKS_API_URL/carts/" \
 {
   "data": {
     "id": "new-cart-uuid",
-    "type": "cart",
+    "type": "Cart",
     "attributes": {
       "unique_id": "new-cart-uuid",
       "user_unique_id": "user-uuid-123",
@@ -133,7 +133,7 @@ Updates a user's cart with product items.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/carts/user-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "cart": {
@@ -165,7 +165,7 @@ Updates services applied to a cart (shipping, handling, etc.).
 ```bash
 curl -X PUT "$BLOCKS_API_URL/carts/user-uuid-123/services" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "services": {
@@ -188,7 +188,7 @@ Saves the current cart state.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/carts/cart-uuid-123/save" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -208,7 +208,7 @@ Processes cart checkout.
 ```bash
 curl -X POST "$BLOCKS_API_URL/carts/user-uuid-123/checkout" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "checkout": {
@@ -224,7 +224,7 @@ curl -X POST "$BLOCKS_API_URL/carts/user-uuid-123/checkout" \
 {
   "data": {
     "id": "cart-uuid-123",
-    "type": "cart",
+    "type": "Cart",
     "attributes": {
       "unique_id": "cart-uuid-123",
       "status": "checkout",
@@ -247,7 +247,7 @@ Places the order from a checked-out cart.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/carts/cart-uuid-123/order" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -255,7 +255,7 @@ curl -X PUT "$BLOCKS_API_URL/carts/cart-uuid-123/order" \
 {
   "data": {
     "id": "cart-uuid-123",
-    "type": "cart",
+    "type": "Cart",
     "attributes": {
       "unique_id": "cart-uuid-123",
       "status": "ordered",
@@ -276,7 +276,7 @@ Cancels a cart or order.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/carts/cart-uuid-123/cancel" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -284,7 +284,7 @@ curl -X PUT "$BLOCKS_API_URL/carts/cart-uuid-123/cancel" \
 {
   "data": {
     "id": "cart-uuid-123",
-    "type": "cart",
+    "type": "Cart",
     "attributes": {
       "status": "cancelled"
     }
@@ -302,7 +302,7 @@ Clears all items from a user's cart.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/carts/user-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -317,7 +317,7 @@ Places a marketplace order (multi-vendor).
 ```bash
 curl -X PUT "$BLOCKS_API_URL/carts/cart-uuid-123/order/marketplace" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -325,7 +325,7 @@ curl -X PUT "$BLOCKS_API_URL/carts/cart-uuid-123/order/marketplace" \
 {
   "data": {
     "id": "cart-uuid-123",
-    "type": "cart",
+    "type": "Cart",
     "attributes": {
       "unique_id": "cart-uuid-123",
       "status": "ordered",
@@ -350,7 +350,7 @@ Marks a cart detail as ordered.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/carts/cart-uuid-123/details/detail-uuid-001/order" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -358,7 +358,7 @@ curl -X PUT "$BLOCKS_API_URL/carts/cart-uuid-123/details/detail-uuid-001/order" 
 {
   "data": {
     "id": "detail-uuid-001",
-    "type": "cart_detail",
+    "type": "CartDetail",
     "attributes": {
       "status": "ordered"
     }
@@ -376,7 +376,7 @@ Marks a cart detail as accepted.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/carts/cart-uuid-123/details/detail-uuid-001/accepted" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:** Cart detail with `"status": "accepted"`
@@ -391,7 +391,7 @@ Marks a cart detail as started.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/carts/cart-uuid-123/details/detail-uuid-001/start" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:** Cart detail with `"status": "started"`
@@ -406,7 +406,7 @@ Marks a cart detail as processing.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/carts/cart-uuid-123/details/detail-uuid-001/processing" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:** Cart detail with `"status": "processing"`
@@ -421,7 +421,7 @@ Marks a cart detail as ready.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/carts/cart-uuid-123/details/detail-uuid-001/ready" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:** Cart detail with `"status": "ready"`
@@ -436,7 +436,7 @@ Marks a cart detail as shipped.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/carts/cart-uuid-123/details/detail-uuid-001/ship" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:** Cart detail with `"status": "shipped"`
@@ -451,7 +451,7 @@ Marks a cart detail as delivered.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/carts/cart-uuid-123/details/detail-uuid-001/deliver" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:** Cart detail with `"status": "delivered"`
@@ -466,7 +466,7 @@ Cancels a cart detail.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/carts/cart-uuid-123/details/detail-uuid-001/cancel" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:** Cart detail with `"status": "cancelled"`
@@ -481,7 +481,7 @@ Marks a cart detail as returned.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/carts/cart-uuid-123/details/detail-uuid-001/return" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:** Cart detail with `"status": "returned"`
@@ -498,7 +498,7 @@ Endpoints for the currently authenticated user's carts.
 ```bash
 curl -X GET "$BLOCKS_API_URL/mycarts/cart-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:** Cart object (same format as GET /carts/:user_unique_id)
@@ -511,7 +511,7 @@ curl -X GET "$BLOCKS_API_URL/mycarts/cart-uuid-123" \
 ```bash
 curl -X POST "$BLOCKS_API_URL/mycarts/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "cart": {
@@ -532,7 +532,7 @@ curl -X POST "$BLOCKS_API_URL/mycarts/" \
 ```bash
 curl -X PUT "$BLOCKS_API_URL/mycarts/cart-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "cart": {
@@ -553,7 +553,7 @@ curl -X PUT "$BLOCKS_API_URL/mycarts/cart-uuid-123" \
 ```bash
 curl -X POST "$BLOCKS_API_URL/mycarts/cart-uuid-123/checkout" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:** Checked-out cart object
@@ -566,7 +566,7 @@ curl -X POST "$BLOCKS_API_URL/mycarts/cart-uuid-123/checkout" \
 ```bash
 curl -X PUT "$BLOCKS_API_URL/mycarts/cart-uuid-123/order" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:** Ordered cart object
@@ -579,7 +579,7 @@ curl -X PUT "$BLOCKS_API_URL/mycarts/cart-uuid-123/order" \
 ```bash
 curl -X PUT "$BLOCKS_API_URL/mycarts/cart-uuid-123/cancel" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:** Cancelled cart object
@@ -592,16 +592,147 @@ curl -X PUT "$BLOCKS_API_URL/mycarts/cart-uuid-123/cancel" \
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/mycarts/cart-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
 
 ---
 
-## Visitors & Remarketing
+## Guests & Remarketing
 
-### POST /visitors - Create Visitor
+### POST /guests/ - Create Guest (Preferred)
+
+Creates a guest session for anonymous cart tracking.
+
+**Request:**
+```bash
+curl -X POST "$BLOCKS_API_URL/guests/" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "guest": {
+      "email": "guest@example.com",
+      "name": "Jane Doe",
+      "session_id": "sess-abc123"
+    }
+  }'
+```
+
+**Response 201:**
+```json
+{
+  "data": {
+    "id": "guest-uuid-123",
+    "type": "Guest",
+    "attributes": {
+      "unique_id": "guest-uuid-123",
+      "email": "guest@example.com",
+      "name": "Jane Doe",
+      "session_id": "sess-abc123",
+      "created_at": "2025-01-12T10:30:00Z"
+    }
+  }
+}
+```
+
+---
+
+### GET /guests/:user_unique_id - Get Guest
+
+Retrieves a guest by user unique ID.
+
+**Request:**
+```bash
+curl -X GET "$BLOCKS_API_URL/guests/guest-uuid-123" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "X-API-KEY: $BLOCKS_API_KEY"
+```
+
+**Response 200:**
+```json
+{
+  "data": {
+    "id": "guest-uuid-123",
+    "type": "Guest",
+    "attributes": {
+      "unique_id": "guest-uuid-123",
+      "email": "guest@example.com",
+      "name": "Jane Doe",
+      "session_id": "sess-abc123",
+      "created_at": "2025-01-12T10:30:00Z"
+    }
+  }
+}
+```
+
+---
+
+### PUT /guests/:user_unique_id - Update Guest
+
+Updates guest information.
+
+**Request:**
+```bash
+curl -X PUT "$BLOCKS_API_URL/guests/guest-uuid-123" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "guest": {
+      "name": "Jane Smith",
+      "email": "jane.smith@example.com"
+    }
+  }'
+```
+
+**Response 200:** Updated guest object
+
+---
+
+### PUT /guests/:unique_id/convert - Convert Guest to User
+
+Converts a guest session into a registered user.
+
+**Request:**
+```bash
+curl -X PUT "$BLOCKS_API_URL/guests/guest-uuid-123/convert" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "X-API-KEY: $BLOCKS_API_KEY"
+```
+
+**Response 200:** Converted user object
+
+---
+
+### POST /guests/:unique_id/auth - Authenticate Guest
+
+Authenticates a guest and returns a session token.
+
+**Request:**
+```bash
+curl -X POST "$BLOCKS_API_URL/guests/guest-uuid-123/auth" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "X-API-KEY: $BLOCKS_API_KEY"
+```
+
+**Response 200:**
+```json
+{
+  "data": {
+    "access_token": "guest-jwt-token...",
+    "token_type": "Bearer",
+    "expires_in": 3600
+  }
+}
+```
+
+---
+
+### POST /visitors - Create Visitor (Legacy)
+
+> **Legacy:** This endpoint is an alias for `POST /guests/`. Prefer using `POST /guests/` for new integrations.
 
 Creates a visitor session for anonymous cart tracking.
 
@@ -609,7 +740,7 @@ Creates a visitor session for anonymous cart tracking.
 ```bash
 curl -X POST "$BLOCKS_API_URL/visitors" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "visitor": {
@@ -625,7 +756,7 @@ curl -X POST "$BLOCKS_API_URL/visitors" \
 {
   "data": {
     "id": "visitor-uuid-123",
-    "type": "visitor",
+    "type": "Guest",
     "attributes": {
       "unique_id": "visitor-uuid-123",
       "session_id": "sess-abc123",
@@ -645,7 +776,7 @@ Retrieves abandoned carts for remarketing campaigns.
 ```bash
 curl -X POST "$BLOCKS_API_URL/tools/remarketing/carts/abandoned" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "filter": {
@@ -661,7 +792,7 @@ curl -X POST "$BLOCKS_API_URL/tools/remarketing/carts/abandoned" \
   "data": [
     {
       "id": "cart-uuid-456",
-      "type": "cart",
+      "type": "Cart",
       "attributes": {
         "unique_id": "cart-uuid-456",
         "user_unique_id": "user-uuid-456",

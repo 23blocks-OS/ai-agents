@@ -12,7 +12,7 @@ Lists all user identities with pagination.
 ```bash
 curl -X GET "$BLOCKS_API_URL/identities?page=1&records=20" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Query Parameters:**
@@ -55,7 +55,7 @@ Retrieves a single identity by unique ID.
 ```bash
 curl -X GET "$BLOCKS_API_URL/identities/identity-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -90,7 +90,7 @@ Registers a new user identity in the Jarvis system.
 ```bash
 curl -X POST "$BLOCKS_API_URL/identities/identity-uuid-123/register" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "user": {
@@ -136,7 +136,7 @@ Updates an existing user identity.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/identities/identity-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "user": {
@@ -174,7 +174,7 @@ Retrieves all contexts for a user.
 ```bash
 curl -X GET "$BLOCKS_API_URL/identities/identity-uuid-123/contexts" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -205,7 +205,7 @@ Creates a new context for a user.
 ```bash
 curl -X POST "$BLOCKS_API_URL/identities/identity-uuid-123/contexts" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "context": {
@@ -249,7 +249,7 @@ Lists all conversations for a user.
 ```bash
 curl -X GET "$BLOCKS_API_URL/identities/identity-uuid-123/conversations?page=1&records=20" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -285,7 +285,7 @@ Creates a new conversation for a user.
 ```bash
 curl -X POST "$BLOCKS_API_URL/identities/identity-uuid-123/conversations" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "conversation": {
@@ -321,7 +321,7 @@ Lists messages in a user conversation.
 ```bash
 curl -X GET "$BLOCKS_API_URL/identities/identity-uuid-123/conversations/conv-uuid-789/messages?page=1&records=50" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -362,7 +362,7 @@ Sends a message in a user conversation.
 ```bash
 curl -X POST "$BLOCKS_API_URL/identities/identity-uuid-123/conversations/conv-uuid-789/messages" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "message": {
@@ -406,7 +406,7 @@ Retrieves content associated with a user.
 ```bash
 curl -X GET "$BLOCKS_API_URL/identities/identity-uuid-123/content" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**

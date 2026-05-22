@@ -16,12 +16,21 @@ Complete API reference for 23blocks Jarvis prompt versioning with publishing, ex
 | Variable | Description | Example |
 |----------|-------------|---------|
 | `BLOCKS_API_URL` | Jarvis API base URL | `https://jarvis.api.us.23blocks.com` |
-| `BLOCKS_AUTH_TOKEN` | Bearer token (human or AID) | `eyJhbGciOiJSUzI1NiJ9...` |
-| `BLOCKS_API_KEY` | API key (AppId) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
+| `BLOCKS_AUTH_TOKEN` | Bearer token — your identity & scopes (from login or AID token exchange) | `eyJhbGciOiJSUzI1NiJ9...` |
+| `BLOCKS_API_KEY` | Tenant routing key (X-API-KEY header) — static, from company config | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
 
 ## Authentication
 
-Two methods are supported. The Bearer token works the same either way.
+**These two credentials serve different purposes and come from different sources:**
+
+| Credential | Purpose | Source | Changes? |
+|------------|---------|--------|----------|
+| `BLOCKS_API_KEY` | **Tenant routing** — identifies which company/app | Company config (static `pk_live_sh_...` key) | No — same key for all blocks |
+| `BLOCKS_AUTH_TOKEN` | **Identity & authorization** — who you are + what you can do | Login (`/auth/sign_in`), AID token exchange, or human-provided | Yes — expires, must be refreshed |
+
+> The API key used during AID registration is NOT the same as `BLOCKS_API_KEY`. The registration key authenticates the agent with the Auth API; `BLOCKS_API_KEY` routes requests to the correct tenant across all blocks.
+
+Two methods to obtain the Bearer token:
 
 **Method 1: Agent Identity (AID)** -- For AI agents with AMP identity:
 ```bash
@@ -40,6 +49,22 @@ export BLOCKS_API_KEY="<your-api-key>"
 
 ---
 
+## Prerequisites
+
+**User identity must be registered** before calling any endpoint in this skill. Without registration, all requests return `404` with code `usr-not-registered`.
+
+```bash
+curl -X POST "$BLOCKS_API_URL/identities/$USER_UNIQUE_ID/register" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{ "name": "Your Name", "email": "you@example.com" }'
+```
+
+> Self-registration (your own JWT) requires no special scope. Registering other users requires `identities:write`.
+
+---
+
 ## Endpoints
 
 ### GET /prompts/:id/versions - List Versions
@@ -50,7 +75,7 @@ Lists all versions for a prompt.
 ```bash
 curl -X GET "$BLOCKS_API_URL/prompts/prompt-uuid-123/versions" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -97,7 +122,7 @@ Retrieves a single prompt version.
 ```bash
 curl -X GET "$BLOCKS_API_URL/prompts/prompt-uuid-123/versions/version-uuid-1" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -133,7 +158,7 @@ Publishes a prompt version for production use.
 ```bash
 curl -X POST "$BLOCKS_API_URL/prompts/prompt-uuid-123/versions/version-uuid-2/publish" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -163,20 +188,21 @@ Executes a prompt version with an LLM provider.
 ```bash
 curl -X POST "$BLOCKS_API_URL/prompts/prompt-uuid-123/versions/version-uuid-1/execute" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "variables": {
-      "tone": "professional",
-      "topic": "quarterly results"
+    "prompt": {
+      "content": "Write a professional email about quarterly results",
+      "additional_data": "{\"tone\":\"professional\",\"topic\":\"quarterly results\"}"
     }
   }'
 ```
 
-**Request Parameters:**
+**Request Parameters (wrapped in `"prompt"` key):**
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `variables` | object | No | Template variable values |
+| `content` | string | Yes | The prompt content / user message to execute |
+| `additional_data` | string | No | JSON-stringified additional variables/context |
 | `model` | string | No | Override LLM model |
 | `temperature` | float | No | Override temperature (0-1) |
 
@@ -210,12 +236,12 @@ Executes a prompt version and streams the response in real-time.
 ```bash
 curl -X POST "$BLOCKS_API_URL/prompts/prompt-uuid-123/versions/version-uuid-1/execute/stream" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "variables": {
-      "tone": "professional",
-      "topic": "quarterly results"
+    "prompt": {
+      "content": "Write a professional email about quarterly results",
+      "additional_data": "{\"tone\":\"professional\",\"topic\":\"quarterly results\"}"
     }
   }'
 ```

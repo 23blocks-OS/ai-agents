@@ -25,7 +25,7 @@ if [ -z "$BLOCKS_API_URL" ] || [ -z "$BLOCKS_AUTH_TOKEN" ] || [ -z "$BLOCKS_API_
   echo "Please set:"
   echo "  BLOCKS_API_URL     - API base URL (e.g., https://company.api.us.23blocks.com)"
   echo "  BLOCKS_AUTH_TOKEN  - Your authentication token"
-  echo "  BLOCKS_API_KEY     - Your API key (AppId)"
+  echo "  BLOCKS_API_KEY     - Your API key (X-API-KEY header)"
   exit 1
 fi
 echo "All credentials configured"
@@ -36,7 +36,7 @@ echo "All credentials configured"
 |----------|-------------|---------|
 | `BLOCKS_API_URL` | Company API base URL | `https://company.api.us.23blocks.com` |
 | `BLOCKS_AUTH_TOKEN` | Bearer token for authentication | `eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...` |
-| `BLOCKS_API_KEY` | API key (AppId header) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
+| `BLOCKS_API_KEY` | API key (X-API-KEY header) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
 
 **Agent Behavior:**
 - ALWAYS run the pre-flight check before any API operation
@@ -101,7 +101,7 @@ Multi-tenant company management:
 | Company Info | Get and create company tenants |
 | API Keys | Manage external integration API keys |
 | Exchange | Configure RabbitMQ exchange settings |
-| Impersonation | Generate temporary access tokens |
+| Health | Service health and readiness checks |
 
 ## API Endpoints
 
@@ -111,13 +111,35 @@ $BLOCKS_API_URL  # e.g., https://company.api.us.23blocks.com
 ```
 
 ### Authentication
-All authenticated endpoints require:
+All authenticated endpoints require a valid JWT and valid X-API-Key:
 ```bash
 curl -X GET "$BLOCKS_API_URL/departments" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json"
 ```
+
+**Auth Gates:**
+- `/companies/*` endpoints require valid JWT + valid X-API-Key. Some sub-actions require additional scopes (see endpoint list above).
+- All other resources (departments, teams, positions, employee_assignments) require only valid JWT + valid X-API-Key (no fine-grained scopes today).
+
+### Response Format
+All responses use JSON:API format (jsonapi-serializer gem):
+- **Single resource:** `{ "data": { "id": ..., "type": ..., "attributes": { ... } } }`
+- **Collection:** `{ "data": [...], "meta": { "totalPages": n, "totalRecords": n }, "links": { "self":..., "next":..., "prev":... } }`
+- **Errors:** `{ "errors": [{ "status":"401", "source":..., "code":..., "title":..., "detail":... }] }`
+- **Destroy:** returns 204 with `{}`
+
+### Body Format
+All POST/PUT endpoints use **wrapped bodies** with resource keys. Flat JSON will fail with a `ParameterMissing` error:
+- `POST /departments` -> `{ "department": { ... } }`
+- `POST /teams` -> `{ "team": { ... } }`
+- `POST /positions` -> `{ "position": { ... } }`
+- `POST /employee_assignments` -> `{ "employee_assignment": { ... } }`
+- `POST /companies` -> `{ "company": { ... } }`
+- `POST /companies/:url_id/keys` -> `{ "company_key": { ... } }`
+- `POST /companies/:url_id/exchange` -> `{ "exchange": { ... } }`
+- `POST /teams/:unique_id/join` -> `{ "team_member": { ... } }`
 
 ### Departments
 - `GET /departments` - List all departments
@@ -153,12 +175,16 @@ curl -X GET "$BLOCKS_API_URL/departments" \
 
 ### Companies (Multi-Tenant)
 - `GET /companies/:url_id` - Get company by URL ID
-- `POST /companies` - Create company
-- `GET /companies/:url_id/keys` - List API keys
-- `POST /companies/:unique_id/keys` - Add API key
-- `DELETE /companies/:unique_id/keys/:key_unique_id` - Delete API key
-- `POST /companies/:unique_id/exchange` - Add exchange settings
-- `POST /companies/:url_id/access` - Impersonate user
+- `POST /companies` - Create company (scope: `tenants:create`)
+- `GET /companies/:url_id/keys` - List API keys (scope: `keys:read`)
+- `POST /companies/:url_id/keys` - Add API key (scope: `keys:write`)
+- `DELETE /companies/:url_id/keys/:key_unique_id` - Delete API key (scope: `keys:write`)
+- `POST /companies/:url_id/exchange` - Add exchange settings (scope: `exchange:write`)
+
+### Health
+- `GET /health` - Basic health check
+- `GET /health/ready` - Readiness check
+- `GET /health/detailed` - Detailed health status
 
 ## Common Patterns
 
@@ -167,7 +193,7 @@ curl -X GET "$BLOCKS_API_URL/departments" \
 # 1. Create a department
 curl -X POST "$BLOCKS_API_URL/departments" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "department": {
@@ -180,7 +206,7 @@ curl -X POST "$BLOCKS_API_URL/departments" \
 # 2. Create a team within the department
 curl -X POST "$BLOCKS_API_URL/teams" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "team": {
@@ -194,7 +220,7 @@ curl -X POST "$BLOCKS_API_URL/teams" \
 # 3. Create a position
 curl -X POST "$BLOCKS_API_URL/positions" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "position": {
@@ -208,7 +234,7 @@ curl -X POST "$BLOCKS_API_URL/positions" \
 # 4. Assign an employee
 curl -X POST "$BLOCKS_API_URL/employee_assignments" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "employee_assignment": {
@@ -227,17 +253,19 @@ curl -X POST "$BLOCKS_API_URL/employee_assignments" \
 # Join a team
 curl -X POST "$BLOCKS_API_URL/teams/{team_id}/join" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{ "team_member": {} }'
 
 # List team members
 curl -X GET "$BLOCKS_API_URL/teams/{team_id}/members" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 
 # Get user's teams
 curl -X GET "$BLOCKS_API_URL/users/{user_id}/teams" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 ## Error Handling

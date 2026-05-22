@@ -26,7 +26,7 @@ Retrieve all email templates.
 ```bash
 curl -s -X GET "https://conversations.api.us.23blocks.com/mailtemplates?page=1&per_page=25" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json"
 ```
 
@@ -89,7 +89,7 @@ Create a new email template.
 ```bash
 curl -s -X POST "https://conversations.api.us.23blocks.com/mailtemplates" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "name": "invite-notification",
@@ -152,7 +152,7 @@ Update an existing email template.
 ```bash
 curl -s -X PUT "https://conversations.api.us.23blocks.com/mailtemplates" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "unique_id": "mt_new001",
@@ -200,7 +200,7 @@ Sync a local template to Mandrill.
 ```bash
 curl -s -X POST "https://conversations.api.us.23blocks.com/mailtemplates/mandrill/create" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "template_unique_id": "mt_new001"
@@ -244,7 +244,7 @@ Push local template changes to Mandrill.
 ```bash
 curl -s -X POST "https://conversations.api.us.23blocks.com/mailtemplates/mandrill/update" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "template_unique_id": "mt_new001"
@@ -287,7 +287,7 @@ Publish a template on Mandrill, making it available for sending.
 ```bash
 curl -s -X POST "https://conversations.api.us.23blocks.com/mailtemplates/mandrill/publish" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "template_unique_id": "mt_new001"
@@ -334,7 +334,7 @@ Retrieve sending statistics for a Mandrill template.
 ```bash
 curl -s -X GET "https://conversations.api.us.23blocks.com/mailtemplates/mandrill/stats?template_unique_id=mt_001&start_date=2025-01-01T00:00:00Z&end_date=2025-01-15T23:59:59Z" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json"
 ```
 

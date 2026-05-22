@@ -16,12 +16,21 @@ Complete API reference for 23blocks order lifecycle management.
 | Variable | Description | Example |
 |----------|-------------|---------|
 | `BLOCKS_API_URL` | Products API base URL | `https://products.api.us.23blocks.com` |
-| `BLOCKS_AUTH_TOKEN` | Bearer token (human or AID) | `eyJhbGciOiJSUzI1NiJ9...` |
-| `BLOCKS_API_KEY` | API key (AppId) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
+| `BLOCKS_AUTH_TOKEN` | Bearer token — your identity & scopes (from login or AID token exchange) | `eyJhbGciOiJSUzI1NiJ9...` |
+| `BLOCKS_API_KEY` | Tenant routing key (X-API-KEY header) — static, from company config | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
 
 ## Authentication
 
-Two methods are supported. The Bearer token works the same either way.
+**These two credentials serve different purposes and come from different sources:**
+
+| Credential | Purpose | Source | Changes? |
+|------------|---------|--------|----------|
+| `BLOCKS_API_KEY` | **Tenant routing** — identifies which company/app | Company config (static `pk_live_sh_...` key) | No — same key for all blocks |
+| `BLOCKS_AUTH_TOKEN` | **Identity & authorization** — who you are + what you can do | Login (`/auth/sign_in`), AID token exchange, or human-provided | Yes — expires, must be refreshed |
+
+> The API key used during AID registration is NOT the same as `BLOCKS_API_KEY`. The registration key authenticates the agent with the Auth API; `BLOCKS_API_KEY` routes requests to the correct tenant across all blocks.
+
+Two methods to obtain the Bearer token:
 
 **Method 1: Agent Identity (AID)** -- For AI agents with AMP identity:
 ```bash
@@ -50,7 +59,7 @@ Updates order details.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/orders/order-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "order": {
@@ -73,7 +82,7 @@ curl -X PUT "$BLOCKS_API_URL/orders/order-uuid-123" \
 {
   "data": {
     "id": "order-uuid-123",
-    "type": "order",
+    "type": "Order",
     "attributes": {
       "unique_id": "order-uuid-123",
       "shipping_address": "456 Customer St, Miami FL 33101",
@@ -103,7 +112,7 @@ Marks a specific product within a cart as ordered.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/carts/cart-uuid-123/products/product-uuid-001/order" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -111,7 +120,7 @@ curl -X PUT "$BLOCKS_API_URL/carts/cart-uuid-123/products/product-uuid-001/order
 {
   "data": {
     "id": "detail-uuid-001",
-    "type": "order_detail",
+    "type": "OrderDetail",
     "attributes": {
       "product_unique_id": "product-uuid-001",
       "status": "ordered",
@@ -131,7 +140,7 @@ Marks a product as shipped.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/carts/cart-uuid-123/products/product-uuid-001/ship" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -139,7 +148,7 @@ curl -X PUT "$BLOCKS_API_URL/carts/cart-uuid-123/products/product-uuid-001/ship"
 {
   "data": {
     "id": "detail-uuid-001",
-    "type": "order_detail",
+    "type": "OrderDetail",
     "attributes": {
       "product_unique_id": "product-uuid-001",
       "status": "shipped",
@@ -159,7 +168,7 @@ Marks a product as delivered.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/carts/cart-uuid-123/products/product-uuid-001/deliver" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -167,7 +176,7 @@ curl -X PUT "$BLOCKS_API_URL/carts/cart-uuid-123/products/product-uuid-001/deliv
 {
   "data": {
     "id": "detail-uuid-001",
-    "type": "order_detail",
+    "type": "OrderDetail",
     "attributes": {
       "product_unique_id": "product-uuid-001",
       "status": "delivered",
@@ -187,7 +196,7 @@ Cancels a product within an order.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/carts/cart-uuid-123/products/product-uuid-001/cancel" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -195,7 +204,7 @@ curl -X PUT "$BLOCKS_API_URL/carts/cart-uuid-123/products/product-uuid-001/cance
 {
   "data": {
     "id": "detail-uuid-001",
-    "type": "order_detail",
+    "type": "OrderDetail",
     "attributes": {
       "product_unique_id": "product-uuid-001",
       "status": "cancelled",

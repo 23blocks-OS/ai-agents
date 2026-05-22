@@ -28,7 +28,7 @@ if [ -z "$BLOCKS_API_URL" ] || [ -z "$BLOCKS_AUTH_TOKEN" ] || [ -z "$BLOCKS_API_
   echo "Please set:"
   echo "  BLOCKS_API_URL     - API base URL (e.g., https://files.api.us.23blocks.com)"
   echo "  BLOCKS_AUTH_TOKEN  - Your authentication token"
-  echo "  BLOCKS_API_KEY     - Your API key (AppId)"
+  echo "  BLOCKS_API_KEY     - Your API key (X-API-KEY header)"
   exit 1
 fi
 echo "All credentials configured"
@@ -39,7 +39,7 @@ echo "All credentials configured"
 |----------|-------------|---------|
 | `BLOCKS_API_URL` | Files API base URL | `https://files.api.us.23blocks.com` |
 | `BLOCKS_AUTH_TOKEN` | Bearer token for authentication | `eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...` |
-| `BLOCKS_API_KEY` | API key (AppId header) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
+| `BLOCKS_API_KEY` | API key (X-API-KEY header) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
 
 **Agent Behavior:**
 - ALWAYS run the pre-flight check before any API operation
@@ -100,7 +100,7 @@ All authenticated endpoints require:
 ```bash
 curl -X GET "$BLOCKS_API_URL/users/{user_id}/files" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json"
 ```
 
@@ -157,6 +157,9 @@ curl -X GET "$BLOCKS_API_URL/users/{user_id}/files" \
 - `POST /users/:unique_id/files/access/grant-to-users` - Grant user access to all files
 - `POST /users/:unique_id/files/access/revoke-from-users` - Revoke user access from all files
 
+### Access Summary
+- `GET /users/:unique_id/access/summary` - Get access summary for user
+
 ### Access Requests
 - `POST /users/:unique_id/files/:unique_file_id/requests/access` - Request access
 - `GET /users/:unique_id/files/:unique_file_id/access/requests` - List access requests
@@ -205,7 +208,7 @@ curl -X GET "$BLOCKS_API_URL/users/{user_id}/files" \
 # 1. Get presigned URL
 curl -X PUT "$BLOCKS_API_URL/users/$USER_ID/presign_upload?filename=document.pdf" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 
 # Response: { "signed_url": "...", "public_url": "..." }
 
@@ -217,7 +220,7 @@ curl -X PUT "$SIGNED_URL" \
 # 3. Register file metadata
 curl -X POST "$BLOCKS_API_URL/users/$USER_ID/files" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "file": {
@@ -237,7 +240,7 @@ curl -X POST "$BLOCKS_API_URL/users/$USER_ID/files" \
 # 1. Start multipart upload
 curl -X POST "$BLOCKS_API_URL/users/$USER_ID/multipart_presign_upload" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"filename": "large-video.mp4", "part_count": 5}'
 
@@ -248,7 +251,7 @@ curl -X POST "$BLOCKS_API_URL/users/$USER_ID/multipart_presign_upload" \
 # 3. Complete multipart upload
 curl -X POST "$BLOCKS_API_URL/users/$USER_ID/multipart_complete_upload" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "filename": "large-video.mp4",
@@ -264,7 +267,7 @@ curl -X POST "$BLOCKS_API_URL/users/$USER_ID/multipart_complete_upload" \
 ```bash
 curl -X POST "$BLOCKS_API_URL/users/$USER_ID/files/$FILE_ID/access/grant" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "access": {
@@ -278,11 +281,12 @@ curl -X POST "$BLOCKS_API_URL/users/$USER_ID/files/$FILE_ID/access/grant" \
 ```bash
 curl -X POST "$BLOCKS_API_URL/users/$USER_ID/delegations" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "delegation": {
+    "access": {
       "grantee_user_unique_id": "delegated-user-id",
+      "access_type": "manage",
       "expires_at": "2025-12-31T23:59:59Z"
     }
   }'

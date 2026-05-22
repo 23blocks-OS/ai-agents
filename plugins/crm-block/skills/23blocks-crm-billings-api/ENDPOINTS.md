@@ -16,7 +16,7 @@ Retrieves billing information for a specific meeting.
 ```bash
 curl -X GET "$BLOCKS_API_URL/meetings/meeting-uuid-123/billing" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -49,7 +49,7 @@ Creates a billing record for a meeting.
 ```bash
 curl -X POST "$BLOCKS_API_URL/meetings/meeting-uuid-123/billing" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "billing": {
@@ -104,7 +104,7 @@ Retrieves outstanding billing amounts grouped by payer.
 ```bash
 curl -X GET "$BLOCKS_API_URL/billings/outstanding_by_payer" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -139,7 +139,7 @@ Retrieves EAP (Employee Assistance Program) session billing for a participant an
 ```bash
 curl -X GET "$BLOCKS_API_URL/billings/eap_sessions/jane@acme.com/Acme%20Corp" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -178,7 +178,7 @@ Generates a revenue report.
 ```bash
 curl -X GET "$BLOCKS_API_URL/billings/reports/revenue?start_date=2026-01-01&end_date=2026-03-31" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Query Parameters:**
@@ -213,7 +213,7 @@ Generates an aging report for outstanding billings.
 ```bash
 curl -X GET "$BLOCKS_API_URL/billings/reports/aging" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -240,7 +240,7 @@ Generates a billing report for a specific participant.
 ```bash
 curl -X GET "$BLOCKS_API_URL/billings/reports/participant/jane@acme.com" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -276,7 +276,7 @@ Retrieves a single billing record.
 ```bash
 curl -X GET "$BLOCKS_API_URL/billings/billing-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -313,7 +313,7 @@ Updates a billing record.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/billings/billing-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "billing": {
@@ -349,7 +349,7 @@ Deletes a billing record.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/billings/billing-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -366,7 +366,7 @@ Retrieves the payment split details for a billing record.
 ```bash
 curl -X GET "$BLOCKS_API_URL/billings/billing-uuid-123/payment_split" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**

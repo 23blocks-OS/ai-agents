@@ -10,16 +10,16 @@ Lists all active students with pagination and search.
 
 **Request:**
 ```bash
-curl -X GET "$BLOCKS_API_URL/users/?page=1&records=20" \
+curl -X GET "$BLOCKS_API_URL/users/?page=1&size=20" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Query Parameters:**
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `page` | integer | No | Page number (default: 1) |
-| `records` | integer | No | Items per page (default: 15) |
+| `size` | integer | No | Items per page (default: 15, max: 100) |
 | `search` | string | No | Search by name or email |
 
 **Response 200:**
@@ -42,9 +42,8 @@ curl -X GET "$BLOCKS_API_URL/users/?page=1&records=20" \
     }
   ],
   "meta": {
-    "total_count": 150,
-    "page": 1,
-    "records": 20
+    "totalPages": 8,
+    "totalRecords": 150
   }
 }
 ```
@@ -59,7 +58,7 @@ Lists all archived students.
 ```bash
 curl -X GET "$BLOCKS_API_URL/users/status/archive" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -92,7 +91,7 @@ Retrieves a single student by unique ID.
 ```bash
 curl -X GET "$BLOCKS_API_URL/users/student-uuid-123/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -128,10 +127,10 @@ Registers a new user/student in the university system.
 ```bash
 curl -X POST "$BLOCKS_API_URL/users/student-uuid-123/register/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "user": {
+    "student": {
       "email": "newstudent@example.com",
       "first_name": "Jane",
       "last_name": "Doe",
@@ -180,10 +179,10 @@ Updates an existing student profile.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/users/student-uuid-123/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "user": {
+    "student": {
       "first_name": "Janet",
       "phone": "+0987654321"
     }
@@ -227,7 +226,7 @@ Updates the courses a student is enrolled in.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/users/student-uuid-123/courses" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "courses": ["course-uuid-456", "course-uuid-789"]
@@ -272,7 +271,7 @@ Restores a previously archived student.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/users/student-uuid-456/restore" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -299,7 +298,7 @@ Archives a student (soft delete).
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/users/student-uuid-123/archive" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -326,7 +325,7 @@ Retrieves all courses a student is enrolled in.
 ```bash
 curl -X GET "$BLOCKS_API_URL/users/student-uuid-123/courses" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -358,7 +357,7 @@ Retrieves courses available for enrollment (not yet enrolled).
 ```bash
 curl -X GET "$BLOCKS_API_URL/users/student-uuid-123/availables" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -391,7 +390,7 @@ Retrieves all course groups a student belongs to.
 ```bash
 curl -X GET "$BLOCKS_API_URL/users/student-uuid-123/groups" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -424,7 +423,7 @@ Retrieves the full content tree (courses, subjects, lessons) for a student in a 
 ```bash
 curl -X GET "$BLOCKS_API_URL/users/student-uuid-123/content_tree/group-uuid-101" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -475,7 +474,7 @@ Retrieves a student's notes for a specific subject.
 ```bash
 curl -X GET "$BLOCKS_API_URL/users/student-uuid-123/subjects/subject-uuid-001/notes" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**

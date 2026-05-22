@@ -14,7 +14,7 @@ Lists all loyalty programs with pagination.
 ```bash
 curl -X GET "$BLOCKS_API_URL/loyalties?page=1&records=20" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Query Parameters:**
@@ -58,7 +58,7 @@ Retrieves a single loyalty program by unique ID.
 ```bash
 curl -X GET "$BLOCKS_API_URL/loyalties/loyalty-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -103,7 +103,7 @@ Creates a new loyalty program.
 ```bash
 curl -X POST "$BLOCKS_API_URL/loyalties" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "loyalty": {
@@ -154,7 +154,7 @@ Updates an existing loyalty program.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/loyalties/loyalty-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "loyalty": {
@@ -195,7 +195,7 @@ Retrieves performance statistics for a loyalty program.
 ```bash
 curl -X GET "$BLOCKS_API_URL/loyalties/loyalty-uuid-123/stats" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -229,7 +229,7 @@ Adds supplementary detail information to a loyalty program.
 ```bash
 curl -X POST "$BLOCKS_API_URL/loyalties/loyalty-uuid-123/details" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "detail": {
@@ -271,7 +271,7 @@ Updates an existing loyalty program detail.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/loyalties/loyalty-uuid-123/details/detail-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "detail": {
@@ -308,7 +308,7 @@ Lists all money-based earning rules for a loyalty program.
 ```bash
 curl -X GET "$BLOCKS_API_URL/loyalties/loyalty-uuid-123/rules/money" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -342,7 +342,7 @@ Creates a money-based earning rule.
 ```bash
 curl -X POST "$BLOCKS_API_URL/loyalties/loyalty-uuid-123/rules/money" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "rule": {
@@ -392,7 +392,7 @@ Updates an existing money rule.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/loyalties/loyalty-uuid-123/rules/money/rule-uuid-1" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "rule": {
@@ -431,7 +431,7 @@ Attaches an expiration rule to a money earning rule.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/loyalties/loyalty-uuid-123/rules/money/rule-uuid-1/expirations" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "expiration_rule_unique_id": "expiration-uuid-1"
@@ -469,7 +469,7 @@ Removes an expiration rule from a money earning rule.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/loyalties/loyalty-uuid-123/rules/money/rule-uuid-1/expirations/expiration-uuid-1" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -486,7 +486,7 @@ Lists all product-based earning rules for a loyalty program.
 ```bash
 curl -X GET "$BLOCKS_API_URL/loyalties/loyalty-uuid-123/rules/products" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -520,7 +520,7 @@ Creates a product-based earning rule.
 ```bash
 curl -X POST "$BLOCKS_API_URL/loyalties/loyalty-uuid-123/rules/products" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "rule": {
@@ -567,7 +567,7 @@ Updates an existing product rule.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/loyalties/loyalty-uuid-123/rules/products/rule-uuid-2" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "rule": {
@@ -606,7 +606,7 @@ Deletes a product earning rule.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/loyalties/loyalty-uuid-123/rules/products/rule-uuid-2" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -626,7 +626,7 @@ Lists all event-based earning rules for a loyalty program.
 ```bash
 curl -X GET "$BLOCKS_API_URL/loyalties/loyalty-uuid-123/rules/events" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -660,7 +660,7 @@ Creates an event-based earning rule (e.g., sign-ups, referrals, reviews).
 ```bash
 curl -X POST "$BLOCKS_API_URL/loyalties/loyalty-uuid-123/rules/events" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "rule": {
@@ -704,7 +704,7 @@ Updates an existing event rule.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/loyalties/loyalty-uuid-123/rules/events/rule-uuid-3" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "rule": {
@@ -744,7 +744,7 @@ Disables an earning rule without deleting it.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/loyalties/loyalty-uuid-123/rules/rule-uuid-1/disable" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -772,7 +772,7 @@ Re-enables a previously disabled earning rule.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/loyalties/loyalty-uuid-123/rules/rule-uuid-1/enable" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**

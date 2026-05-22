@@ -14,7 +14,7 @@ Retrieves Zoom meeting details linked to a CRM meeting.
 ```bash
 curl -X GET "$BLOCKS_API_URL/users/user-uuid-123/meetings/meeting-uuid-456/zoom" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -50,7 +50,7 @@ Creates a Zoom meeting linked to a CRM meeting.
 ```bash
 curl -X POST "$BLOCKS_API_URL/users/user-uuid-123/meetings/meeting-uuid-456/zoom" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "zoom": {
@@ -99,7 +99,7 @@ Updates an existing Zoom meeting.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/users/user-uuid-123/meetings/meeting-uuid-456/zoom" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "zoom": {
@@ -133,7 +133,7 @@ Deletes a Zoom meeting linked to a CRM meeting.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/users/user-uuid-123/meetings/meeting-uuid-456/zoom" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -148,7 +148,7 @@ Checks a user's Zoom availability.
 ```bash
 curl -X GET "$BLOCKS_API_URL/users/user-uuid-123/zoom/availability?date=2026-03-15" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Query Parameters:**
@@ -193,7 +193,7 @@ Handles incoming Zoom webhook events.
 ```bash
 curl -X POST "$BLOCKS_API_URL/zoom/webhooks" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "event": "meeting.ended",
@@ -223,7 +223,7 @@ Lists users available as Zoom hosts.
 ```bash
 curl -X GET "$BLOCKS_API_URL/zoom_hosts/available_users" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -254,7 +254,7 @@ Lists all configured Zoom hosts.
 ```bash
 curl -X GET "$BLOCKS_API_URL/zoom_hosts/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -288,7 +288,7 @@ Retrieves a specific Zoom host.
 ```bash
 curl -X GET "$BLOCKS_API_URL/zoom_hosts/zoom-host-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -323,7 +323,7 @@ Configures a new Zoom host.
 ```bash
 curl -X POST "$BLOCKS_API_URL/zoom_hosts/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "zoom_host": {
@@ -369,7 +369,7 @@ Updates an existing Zoom host configuration.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/zoom_hosts/zoom-host-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "zoom_host": {
@@ -403,7 +403,7 @@ Deletes a Zoom host configuration.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/zoom_hosts/zoom-host-uuid-123" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -418,7 +418,7 @@ Checks a Zoom host's availability.
 ```bash
 curl -X GET "$BLOCKS_API_URL/zoom_hosts/zoom-host-uuid-123/availability?date=2026-03-15" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -451,7 +451,7 @@ Retrieves meeting allocations for a Zoom host.
 ```bash
 curl -X GET "$BLOCKS_API_URL/zoom_hosts/zoom-host-uuid-123/allocations" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**

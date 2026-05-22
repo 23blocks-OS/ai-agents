@@ -29,7 +29,7 @@ if [ -z "$BLOCKS_API_URL" ] || [ -z "$BLOCKS_AUTH_TOKEN" ] || [ -z "$BLOCKS_API_
   echo "Please set:"
   echo "  BLOCKS_API_URL     - API base URL (e.g., https://campaigns.api.us.23blocks.com)"
   echo "  BLOCKS_AUTH_TOKEN  - Your authentication token"
-  echo "  BLOCKS_API_KEY     - Your API key (AppId)"
+  echo "  BLOCKS_API_KEY     - Your API key (X-API-KEY header)"
   exit 1
 fi
 echo "All credentials configured"
@@ -40,7 +40,7 @@ echo "All credentials configured"
 |----------|-------------|---------|
 | `BLOCKS_API_URL` | Campaigns API base URL | `https://campaigns.api.us.23blocks.com` |
 | `BLOCKS_AUTH_TOKEN` | Bearer token for authentication | `eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...` |
-| `BLOCKS_API_KEY` | API key (AppId header) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
+| `BLOCKS_API_KEY` | API key (X-API-KEY header) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
 
 **Agent Behavior:**
 - ALWAYS run the pre-flight check before any API operation
@@ -124,7 +124,7 @@ All authenticated endpoints require:
 ```bash
 curl -X GET "$BLOCKS_API_URL/campaigns" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json"
 ```
 
@@ -197,7 +197,7 @@ curl -X GET "$BLOCKS_API_URL/campaigns" \
 # 1. Create campaign
 curl -X POST "$BLOCKS_API_URL/campaigns" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "campaign": {
@@ -213,7 +213,7 @@ curl -X POST "$BLOCKS_API_URL/campaigns" \
 # 2. Upload media
 curl -X POST "$BLOCKS_API_URL/media" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "media": {
@@ -226,7 +226,7 @@ curl -X POST "$BLOCKS_API_URL/media" \
 # 3. Assign media to campaign
 curl -X POST "$BLOCKS_API_URL/campaign_media" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "campaign_media": {
@@ -241,7 +241,7 @@ curl -X POST "$BLOCKS_API_URL/campaign_media" \
 # 1. Create landing page
 curl -X POST "$BLOCKS_API_URL/landing_pages" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "landing_page": {
@@ -256,7 +256,7 @@ curl -X POST "$BLOCKS_API_URL/landing_pages" \
 # 2. Create audience
 curl -X POST "$BLOCKS_API_URL/landing_audiences" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "landing_audience": {
@@ -269,7 +269,7 @@ curl -X POST "$BLOCKS_API_URL/landing_audiences" \
 # 3. Create Facebook audience
 curl -X POST "$BLOCKS_API_URL/audience/facebook" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "facebook_audience": {
@@ -287,7 +287,7 @@ curl -X POST "$BLOCKS_API_URL/audience/facebook" \
 # 1. Create template
 curl -X POST "$BLOCKS_API_URL/templates" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "template": {
@@ -302,7 +302,7 @@ curl -X POST "$BLOCKS_API_URL/templates" \
 # 2. Add template details
 curl -X POST "$BLOCKS_API_URL/template_details" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "template_detail": {

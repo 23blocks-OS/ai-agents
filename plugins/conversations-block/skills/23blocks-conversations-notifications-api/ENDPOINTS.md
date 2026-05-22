@@ -23,7 +23,7 @@ Retrieve notification preferences for a user.
 ```bash
 curl -s -X GET "https://conversations.api.us.23blocks.com/users/usr_abc123/notifications/settings" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json"
 ```
 
@@ -84,7 +84,7 @@ Update notification preferences for a user.
 ```bash
 curl -s -X PUT "https://conversations.api.us.23blocks.com/users/usr_abc123/notifications/settings" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "push_enabled": true,
@@ -149,7 +149,7 @@ Retrieve all notifications for a user.
 ```bash
 curl -s -X GET "https://conversations.api.us.23blocks.com/users/usr_abc123/notifications/?page=1&per_page=25&read=false" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json"
 ```
 
@@ -211,7 +211,7 @@ Create a new notification for a user.
 ```bash
 curl -s -X POST "https://conversations.api.us.23blocks.com/notifications/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "user_id": "usr_abc123",
@@ -267,7 +267,7 @@ Retrieve a specific notification.
 ```bash
 curl -s -X GET "https://conversations.api.us.23blocks.com/notifications/notif_001" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json"
 ```
 
@@ -322,7 +322,7 @@ Update a notification (e.g., mark as read).
 ```bash
 curl -s -X PUT "https://conversations.api.us.23blocks.com/notifications/notif_001" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "read": true
@@ -367,7 +367,7 @@ Update multiple notifications at once (e.g., mark all as read).
 ```bash
 curl -s -X PUT "https://conversations.api.us.23blocks.com/notifications/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "user_id": "usr_abc123",
@@ -416,7 +416,7 @@ Send a web browser notification to a user.
 ```bash
 curl -s -X POST "https://conversations.api.us.23blocks.com/web_notifications/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "user_id": "usr_abc123",
@@ -470,7 +470,7 @@ Send a push notification to a user's device.
 ```bash
 curl -s -X POST "https://conversations.api.us.23blocks.com/notify" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "user_id": "usr_abc123",
@@ -531,7 +531,7 @@ Configure VAPID keys for web push notification delivery for a company.
 ```bash
 curl -s -X POST "https://conversations.api.us.23blocks.com/companies/comp_001/vapid" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "subject": "mailto:admin@example.com"
@@ -582,7 +582,7 @@ Retrieve notifications associated with a specific entity (conversation, group, e
 ```bash
 curl -s -X GET "https://conversations.api.us.23blocks.com/entities/conv_def456/notifications?page=1&per_page=25" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json"
 ```
 
@@ -633,7 +633,7 @@ Retrieve details about a notification source.
 ```bash
 curl -s -X GET "https://conversations.api.us.23blocks.com/sources/src_001" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json"
 ```
 

@@ -10,11 +10,12 @@ Full endpoint documentation. See [SKILL.md](SKILL.md) for setup, data models, an
 
 Lists all locations with pagination.
 
+> **Public endpoint** -- No authentication required. The `Authorization` and `X-API-KEY` headers are optional.
+
 **Request:**
 ```bash
 curl -X GET "$BLOCKS_API_URL/locations?page=1&records=20" \
-  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Query Parameters:**
@@ -29,7 +30,7 @@ curl -X GET "$BLOCKS_API_URL/locations?page=1&records=20" \
   "data": [
     {
       "id": "loc-uuid-123",
-      "type": "location",
+      "type": "Location",
       "attributes": {
         "unique_id": "loc-uuid-123",
         "name": "Downtown Office",
@@ -59,11 +60,12 @@ curl -X GET "$BLOCKS_API_URL/locations?page=1&records=20" \
 
 Retrieves a single location by unique ID.
 
+> **Public endpoint** -- No authentication required. The `Authorization` and `X-API-KEY` headers are optional.
+
 **Request:**
 ```bash
 curl -X GET "$BLOCKS_API_URL/locations/loc-uuid-123/" \
-  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -71,7 +73,7 @@ curl -X GET "$BLOCKS_API_URL/locations/loc-uuid-123/" \
 {
   "data": {
     "id": "loc-uuid-123",
-    "type": "location",
+    "type": "Location",
     "attributes": {
       "unique_id": "loc-uuid-123",
       "name": "Downtown Office",
@@ -88,17 +90,17 @@ curl -X GET "$BLOCKS_API_URL/locations/loc-uuid-123/" \
     "relationships": {
       "hours": {
         "data": [
-          { "id": "hour-uuid", "type": "hour" }
+          { "id": "hour-uuid", "type": "LocationHour" }
         ]
       },
       "tags": {
         "data": [
-          { "id": "tag-uuid", "type": "tag" }
+          { "id": "tag-uuid", "type": "Tag" }
         ]
       },
       "images": {
         "data": [
-          { "id": "img-uuid", "type": "image" }
+          { "id": "img-uuid", "type": "Image" }
         ]
       }
     }
@@ -115,11 +117,12 @@ curl -X GET "$BLOCKS_API_URL/locations/loc-uuid-123/" \
 
 Generates a QR code image for the location.
 
+> **Public endpoint** -- No authentication required. The `Authorization` and `X-API-KEY` headers are optional.
+
 **Request:**
 ```bash
 curl -X GET "$BLOCKS_API_URL/locations/loc-uuid-123/qrcode" \
-  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -127,7 +130,7 @@ curl -X GET "$BLOCKS_API_URL/locations/loc-uuid-123/qrcode" \
 {
   "data": {
     "id": "loc-uuid-123",
-    "type": "qrcode",
+    "type": "QrCode",
     "attributes": {
       "location_unique_id": "loc-uuid-123",
       "qr_code_url": "https://geolocation.api.us.23blocks.com/qrcodes/loc-uuid-123.png",
@@ -147,7 +150,7 @@ Creates a new location.
 ```bash
 curl -X POST "$BLOCKS_API_URL/locations/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "location": {
@@ -182,7 +185,7 @@ curl -X POST "$BLOCKS_API_URL/locations/" \
 {
   "data": {
     "id": "loc-uuid-123",
-    "type": "location",
+    "type": "Location",
     "attributes": {
       "unique_id": "loc-uuid-123",
       "name": "Downtown Office",
@@ -213,7 +216,7 @@ Updates an existing location.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/locations/loc-uuid-123/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "location": {
@@ -228,7 +231,7 @@ curl -X PUT "$BLOCKS_API_URL/locations/loc-uuid-123/" \
 {
   "data": {
     "id": "loc-uuid-123",
-    "type": "location",
+    "type": "Location",
     "attributes": {
       "unique_id": "loc-uuid-123",
       "name": "Downtown Office - Main",
@@ -252,7 +255,7 @@ Deletes a location.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/locations/loc-uuid-123/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -266,11 +269,12 @@ curl -X DELETE "$BLOCKS_API_URL/locations/loc-uuid-123/" \
 
 Searches for a location by its code.
 
+> **Public endpoint** -- No authentication required. The `Authorization` and `X-API-KEY` headers are optional.
+
 **Request:**
 ```bash
 curl -X POST "$BLOCKS_API_URL/locations/search/code" \
-  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "code": "DT-001"
@@ -287,7 +291,7 @@ curl -X POST "$BLOCKS_API_URL/locations/search/code" \
 {
   "data": {
     "id": "loc-uuid-123",
-    "type": "location",
+    "type": "Location",
     "attributes": {
       "unique_id": "loc-uuid-123",
       "name": "Downtown Office",
@@ -314,10 +318,12 @@ Adds a tag to a location.
 ```bash
 curl -X POST "$BLOCKS_API_URL/locations/loc-uuid-123/tags/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "tag_unique_id": "tag-uuid-456"
+    "tag": {
+      "unique_id": "tag-uuid-456"
+    }
   }'
 ```
 
@@ -338,7 +344,7 @@ Removes a tag from a location.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/locations/loc-uuid-123/tags/tag-uuid-456" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -360,7 +366,7 @@ Lists all operating hours for a location.
 ```bash
 curl -X GET "$BLOCKS_API_URL/locations/loc-uuid-123/hours/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -369,7 +375,7 @@ curl -X GET "$BLOCKS_API_URL/locations/loc-uuid-123/hours/" \
   "data": [
     {
       "id": "hour-uuid-456",
-      "type": "hour",
+      "type": "LocationHour",
       "attributes": {
         "unique_id": "hour-uuid-456",
         "day_of_week": "monday",
@@ -393,7 +399,7 @@ Retrieves a specific operating hour entry.
 ```bash
 curl -X GET "$BLOCKS_API_URL/locations/loc-uuid-123/hours/hour-uuid-456" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -401,7 +407,7 @@ curl -X GET "$BLOCKS_API_URL/locations/loc-uuid-123/hours/hour-uuid-456" \
 {
   "data": {
     "id": "hour-uuid-456",
-    "type": "hour",
+    "type": "LocationHour",
     "attributes": {
       "unique_id": "hour-uuid-456",
       "day_of_week": "monday",
@@ -423,10 +429,10 @@ Creates an operating hour entry for a location.
 ```bash
 curl -X POST "$BLOCKS_API_URL/locations/loc-uuid-123/hours/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "hour": {
+    "location_hour": {
       "day_of_week": "monday",
       "open_time": "09:00",
       "close_time": "17:00",
@@ -448,7 +454,7 @@ curl -X POST "$BLOCKS_API_URL/locations/loc-uuid-123/hours/" \
 {
   "data": {
     "id": "hour-uuid-456",
-    "type": "hour",
+    "type": "LocationHour",
     "attributes": {
       "unique_id": "hour-uuid-456",
       "day_of_week": "monday",
@@ -471,10 +477,10 @@ Updates an existing operating hour entry.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/locations/loc-uuid-123/hours/hour-uuid-456" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "hour": {
+    "location_hour": {
       "open_time": "08:00",
       "close_time": "18:00"
     }
@@ -486,7 +492,7 @@ curl -X PUT "$BLOCKS_API_URL/locations/loc-uuid-123/hours/hour-uuid-456" \
 {
   "data": {
     "id": "hour-uuid-456",
-    "type": "hour",
+    "type": "LocationHour",
     "attributes": {
       "unique_id": "hour-uuid-456",
       "day_of_week": "monday",
@@ -508,7 +514,7 @@ Deletes an operating hour entry.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/locations/loc-uuid-123/hours/hour-uuid-456" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -525,7 +531,7 @@ Generates a presigned URL for uploading an image to a location.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/locations/loc-uuid-123/presign" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "file_name": "storefront.jpg",
@@ -560,7 +566,7 @@ Registers an uploaded image with a location after presigned upload is complete.
 ```bash
 curl -X POST "$BLOCKS_API_URL/locations/loc-uuid-123/images" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "image": {
@@ -583,7 +589,7 @@ curl -X POST "$BLOCKS_API_URL/locations/loc-uuid-123/images" \
 {
   "data": {
     "id": "img-uuid-789",
-    "type": "image",
+    "type": "Image",
     "attributes": {
       "unique_id": "img-uuid-789",
       "url": "https://cdn.23blocks.com/locations/loc-uuid-123/storefront.jpg",
@@ -605,7 +611,7 @@ Deletes an image from a location.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/locations/loc-uuid-123/images/img-uuid-789" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -622,7 +628,7 @@ Associates a user identity with a location.
 ```bash
 curl -X POST "$BLOCKS_API_URL/locations/loc-uuid-123/identities" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "user_unique_id": "user-uuid-456",
@@ -641,7 +647,7 @@ curl -X POST "$BLOCKS_API_URL/locations/loc-uuid-123/identities" \
 {
   "data": {
     "id": "assoc-uuid",
-    "type": "location_identity",
+    "type": "LocationIdentity",
     "attributes": {
       "user_unique_id": "user-uuid-456",
       "location_unique_id": "loc-uuid-123",
@@ -662,7 +668,7 @@ Removes a user identity from a location.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/locations/loc-uuid-123/identities/user-uuid-456" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -679,7 +685,7 @@ Lists all time slots for a location.
 ```bash
 curl -X GET "$BLOCKS_API_URL/locations/loc-uuid-123/slots" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -688,7 +694,7 @@ curl -X GET "$BLOCKS_API_URL/locations/loc-uuid-123/slots" \
   "data": [
     {
       "id": "slot-uuid-789",
-      "type": "slot",
+      "type": "Slot",
       "attributes": {
         "unique_id": "slot-uuid-789",
         "name": "Morning Slot",
@@ -713,7 +719,7 @@ Creates a time slot for a location.
 ```bash
 curl -X POST "$BLOCKS_API_URL/locations/loc-uuid-123/slots" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "slot": {
@@ -738,7 +744,7 @@ curl -X POST "$BLOCKS_API_URL/locations/loc-uuid-123/slots" \
 {
   "data": {
     "id": "slot-uuid-789",
-    "type": "slot",
+    "type": "Slot",
     "attributes": {
       "unique_id": "slot-uuid-789",
       "name": "Morning Slot",
@@ -762,7 +768,7 @@ Updates a time slot.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/locations/loc-uuid-123/slots/slot-uuid-789" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "slot": {
@@ -777,7 +783,7 @@ curl -X PUT "$BLOCKS_API_URL/locations/loc-uuid-123/slots/slot-uuid-789" \
 {
   "data": {
     "id": "slot-uuid-789",
-    "type": "slot",
+    "type": "Slot",
     "attributes": {
       "unique_id": "slot-uuid-789",
       "name": "Morning Slot",
@@ -800,7 +806,7 @@ Deletes a time slot.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/locations/loc-uuid-123/slots/slot-uuid-789" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -817,7 +823,7 @@ Adds a tax configuration to a location.
 ```bash
 curl -X POST "$BLOCKS_API_URL/locations/loc-uuid-123/taxes" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "tax": {
@@ -840,7 +846,7 @@ curl -X POST "$BLOCKS_API_URL/locations/loc-uuid-123/taxes" \
 {
   "data": {
     "id": "tax-uuid-101",
-    "type": "tax",
+    "type": "Tax",
     "attributes": {
       "unique_id": "tax-uuid-101",
       "name": "Sales Tax",
@@ -862,7 +868,7 @@ Updates a tax configuration.
 ```bash
 curl -X PUT "$BLOCKS_API_URL/locations/loc-uuid-123/taxes/tax-uuid-101" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "tax": {
@@ -876,7 +882,7 @@ curl -X PUT "$BLOCKS_API_URL/locations/loc-uuid-123/taxes/tax-uuid-101" \
 {
   "data": {
     "id": "tax-uuid-101",
-    "type": "tax",
+    "type": "Tax",
     "attributes": {
       "unique_id": "tax-uuid-101",
       "name": "Sales Tax",
@@ -897,7 +903,7 @@ Deletes a tax configuration from a location.
 ```bash
 curl -X DELETE "$BLOCKS_API_URL/locations/loc-uuid-123/taxes/tax-uuid-101" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 204:** No content
@@ -906,6 +912,8 @@ curl -X DELETE "$BLOCKS_API_URL/locations/loc-uuid-123/taxes/tax-uuid-101" \
 
 ## Geographic Hierarchy
 
+> All geographic hierarchy endpoints are **public** -- no authentication required. The `Authorization` and `X-API-KEY` headers are optional.
+
 ### GET /countries/:country_code/locations - Locations by Country
 
 Lists locations within a country.
@@ -913,8 +921,7 @@ Lists locations within a country.
 **Request:**
 ```bash
 curl -X GET "$BLOCKS_API_URL/countries/US/locations?page=1&records=20" \
-  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -923,7 +930,7 @@ curl -X GET "$BLOCKS_API_URL/countries/US/locations?page=1&records=20" \
   "data": [
     {
       "id": "loc-uuid-123",
-      "type": "location",
+      "type": "Location",
       "attributes": {
         "unique_id": "loc-uuid-123",
         "name": "Downtown Office",
@@ -949,8 +956,7 @@ Lists locations within a state.
 **Request:**
 ```bash
 curl -X GET "$BLOCKS_API_URL/states/NY/locations?page=1&records=20" \
-  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:** Same format as country locations.
@@ -964,8 +970,7 @@ Lists locations within a county.
 **Request:**
 ```bash
 curl -X GET "$BLOCKS_API_URL/counties/new-york-county/locations?page=1&records=20" \
-  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:** Same format as country locations.
@@ -979,8 +984,7 @@ Lists locations within a city.
 **Request:**
 ```bash
 curl -X GET "$BLOCKS_API_URL/cities/new-york/locations?page=1&records=20" \
-  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:** Same format as country locations.
@@ -994,8 +998,7 @@ Lists locations within an administrative division.
 **Request:**
 ```bash
 curl -X GET "$BLOCKS_API_URL/divisions/manhattan/locations?page=1&records=20" \
-  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:** Same format as country locations.
@@ -1009,8 +1012,7 @@ Lists locations within a neighborhood.
 **Request:**
 ```bash
 curl -X GET "$BLOCKS_API_URL/neighborhoods/soho/locations?page=1&records=20" \
-  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:** Same format as country locations.
@@ -1024,8 +1026,7 @@ Lists locations within a building.
 **Request:**
 ```bash
 curl -X GET "$BLOCKS_API_URL/buildings/empire-state/locations?page=1&records=20" \
-  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:** Same format as country locations.
@@ -1042,7 +1043,7 @@ Lists all location groups.
 ```bash
 curl -X GET "$BLOCKS_API_URL/location_groups?page=1&records=20" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -1051,7 +1052,7 @@ curl -X GET "$BLOCKS_API_URL/location_groups?page=1&records=20" \
   "data": [
     {
       "id": "group-uuid-123",
-      "type": "location_group",
+      "type": "LocationGroup",
       "attributes": {
         "unique_id": "group-uuid-123",
         "name": "East Coast Offices",
@@ -1078,7 +1079,7 @@ Retrieves a single location group.
 ```bash
 curl -X GET "$BLOCKS_API_URL/location_groups/group-uuid-123/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 ```
 
 **Response 200:**
@@ -1086,7 +1087,7 @@ curl -X GET "$BLOCKS_API_URL/location_groups/group-uuid-123/" \
 {
   "data": {
     "id": "group-uuid-123",
-    "type": "location_group",
+    "type": "LocationGroup",
     "attributes": {
       "unique_id": "group-uuid-123",
       "name": "East Coast Offices",
@@ -1097,7 +1098,7 @@ curl -X GET "$BLOCKS_API_URL/location_groups/group-uuid-123/" \
     "relationships": {
       "locations": {
         "data": [
-          { "id": "loc-uuid-123", "type": "location" }
+          { "id": "loc-uuid-123", "type": "Location" }
         ]
       }
     }
@@ -1115,7 +1116,7 @@ Creates a new location group.
 ```bash
 curl -X POST "$BLOCKS_API_URL/location_groups/" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "location_group": {
@@ -1136,7 +1137,7 @@ curl -X POST "$BLOCKS_API_URL/location_groups/" \
 {
   "data": {
     "id": "group-uuid-123",
-    "type": "location_group",
+    "type": "LocationGroup",
     "attributes": {
       "unique_id": "group-uuid-123",
       "name": "East Coast Offices",

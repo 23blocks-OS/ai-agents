@@ -30,7 +30,7 @@ if [ -z "$BLOCKS_API_URL" ] || [ -z "$BLOCKS_AUTH_TOKEN" ] || [ -z "$BLOCKS_API_
   echo "Please set:"
   echo "  BLOCKS_API_URL     - API base URL (e.g., https://jarvis.api.us.23blocks.com)"
   echo "  BLOCKS_AUTH_TOKEN  - Your authentication token"
-  echo "  BLOCKS_API_KEY     - Your API key (AppId)"
+  echo "  BLOCKS_API_KEY     - Your API key (X-API-KEY header)"
   exit 1
 fi
 echo "All credentials configured"
@@ -41,7 +41,7 @@ echo "All credentials configured"
 |----------|-------------|---------|
 | `BLOCKS_API_URL` | Jarvis API base URL | `https://jarvis.api.us.23blocks.com` |
 | `BLOCKS_AUTH_TOKEN` | Bearer token for authentication | `eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...` |
-| `BLOCKS_API_KEY` | API key (AppId header) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
+| `BLOCKS_API_KEY` | API key (X-API-KEY header) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
 
 **Agent Behavior:**
 - ALWAYS run the pre-flight check before any API operation
@@ -154,7 +154,7 @@ All authenticated endpoints require:
 ```bash
 curl -X GET "$BLOCKS_API_URL/agents" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json"
 ```
 
@@ -384,7 +384,7 @@ curl -X GET "$BLOCKS_API_URL/agents" \
 # 1. Create agent
 curl -X POST "$BLOCKS_API_URL/agents" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "agent": {
@@ -397,7 +397,7 @@ curl -X POST "$BLOCKS_API_URL/agents" \
 # 2. Create thread
 curl -X POST "$BLOCKS_API_URL/agents/{agent_id}/threads" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "thread": {
@@ -408,7 +408,7 @@ curl -X POST "$BLOCKS_API_URL/agents/{agent_id}/threads" \
 # 3. Send message and create run
 curl -X POST "$BLOCKS_API_URL/agents/{agent_id}/threads/{thread_id}/runs" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "run": {
@@ -422,7 +422,7 @@ curl -X POST "$BLOCKS_API_URL/agents/{agent_id}/threads/{thread_id}/runs" \
 # 1. Create prompt
 curl -X POST "$BLOCKS_API_URL/prompts" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "prompt": {
@@ -435,18 +435,17 @@ curl -X POST "$BLOCKS_API_URL/prompts" \
 # 2. Publish version
 curl -X POST "$BLOCKS_API_URL/prompts/{prompt_id}/versions/{version_id}/publish" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY"
 
 # 3. Execute version
 curl -X POST "$BLOCKS_API_URL/prompts/{prompt_id}/versions/{version_id}/execute" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "variables": {
-      "tone": "professional",
-      "topic": "project update",
-      "recipient": "the engineering team"
+    "prompt": {
+      "content": "Write a professional email about project update to the engineering team",
+      "additional_data": "{\"tone\":\"professional\",\"topic\":\"project update\",\"recipient\":\"the engineering team\"}"
     }
   }'
 ```
@@ -456,7 +455,7 @@ curl -X POST "$BLOCKS_API_URL/prompts/{prompt_id}/versions/{version_id}/execute"
 # 1. Create workflow
 curl -X POST "$BLOCKS_API_URL/workflows" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "workflow": {
@@ -468,7 +467,7 @@ curl -X POST "$BLOCKS_API_URL/workflows" \
 # 2. Add steps
 curl -X POST "$BLOCKS_API_URL/workflows/{workflow_id}/steps" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "step": {
@@ -481,7 +480,7 @@ curl -X POST "$BLOCKS_API_URL/workflows/{workflow_id}/steps" \
 # 3. Start instance
 curl -X POST "$BLOCKS_API_URL/workflows/{workflow_id}/instances" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "instance": {
@@ -495,7 +494,7 @@ curl -X POST "$BLOCKS_API_URL/workflows/{workflow_id}/instances" \
 # 1. Create entity
 curl -X POST "$BLOCKS_API_URL/entities" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "entity": {
@@ -508,7 +507,7 @@ curl -X POST "$BLOCKS_API_URL/entities" \
 # 2. Create conversation
 curl -X POST "$BLOCKS_API_URL/entities/{entity_id}/conversations" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "conversation": {
@@ -519,7 +518,7 @@ curl -X POST "$BLOCKS_API_URL/entities/{entity_id}/conversations" \
 # 3. Stream message
 curl -X POST "$BLOCKS_API_URL/entities/{entity_id}/conversations/{conv_id}/messages/stream" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "AppId: $BLOCKS_API_KEY" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "message": {
