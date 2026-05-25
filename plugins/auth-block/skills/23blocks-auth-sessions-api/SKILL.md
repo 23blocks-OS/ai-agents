@@ -94,7 +94,8 @@ curl -X POST "$BLOCKS_API_URL/auth/sign_in" \
       "unique_id": "user-uuid-123",
       "email": "user@example.com",
       "first_name": "John",
-      "last_name": "Doe"
+      "last_name": "Doe",
+      "has_password": true
     }
   },
   "meta": {

@@ -297,6 +297,7 @@ curl -X PUT "$BLOCKS_API_URL/users/user-uuid-123" \
 | `username` | string | Username |
 | `display_name` | string | Display name |
 | `avatar_url` | string | Avatar image URL |
+| `user_type` | enum | `human` or `ai_agent` — distinguishes human users from AI agents |
 | `assets_count` | integer | Number of assigned assets |
 | `entities_count` | integer | Number of entities |
 | `created_at` | timestamp | Creation time |

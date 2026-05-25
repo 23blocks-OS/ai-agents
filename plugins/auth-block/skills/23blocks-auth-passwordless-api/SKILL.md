@@ -96,6 +96,97 @@ curl -X POST "$BLOCKS_API_URL/auth/passwordless/request" \
 
 ---
 
+### POST /auth/passwordless/register - Request Registration OTP (v4.39)
+
+Starts a passwordless-first registration flow. User registers with email + name only, never sets a password.
+
+> This endpoint is for **human users only**. AI agents should use the AID protocol (`23blocks-auth-agent-identity-api`).
+
+**Request:**
+```bash
+curl -X POST "$BLOCKS_API_URL/auth/passwordless/register" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "newuser@example.com",
+    "first_name": "Jane",
+    "last_name": "Doe"
+  }'
+```
+
+**Request Parameters:**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `email` | string | Yes | User's email address |
+| `first_name` | string | Yes | First name |
+| `last_name` | string | Yes | Last name |
+
+**Response 200:**
+```json
+{
+  "data": {
+    "id": null,
+    "type": "passwordless",
+    "attributes": {
+      "status": "otp_sent",
+      "email_hint": "n***@example.com",
+      "expires_in": 600
+    }
+  }
+}
+```
+
+---
+
+### POST /auth/passwordless/register/verify - Verify OTP and Create User (v4.39)
+
+Verifies the OTP code and creates the user account. Returns a full-scope JWT. The created user has `has_password: false`.
+
+**Request:**
+```bash
+curl -X POST "$BLOCKS_API_URL/auth/passwordless/register/verify" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "newuser@example.com",
+    "code": "123456"
+  }'
+```
+
+**Request Parameters:**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `email` | string | Yes | Email used in registration request |
+| `code` | string | Yes | 6-digit OTP code from email |
+
+**Response 201 (Created):**
+```json
+{
+  "data": {
+    "id": "user-uuid-456",
+    "type": "user",
+    "attributes": {
+      "unique_id": "user-uuid-456",
+      "email": "newuser@example.com",
+      "first_name": "Jane",
+      "last_name": "Doe",
+      "has_password": false
+    }
+  },
+  "meta": {
+    "auth": {
+      "access_token": "eyJhbGciOiJSUzI1NiJ9...",
+      "token_type": "Bearer",
+      "expires_in": 3600
+    }
+  }
+}
+```
+
+> Future logins use the existing `POST /auth/passwordless/request` + `/verify` flow.
+
+---
+
 ### POST /auth/passwordless/verify - Verify OTP and Get JWT
 
 Validates the 6-digit OTP code and returns a full-scope JWT along with user data. Identical in shape to `POST /auth/sign_in`.
@@ -222,6 +313,8 @@ curl -X POST "$BLOCKS_API_URL/auth/passwordless/verify" \
 
 ## Important Notes
 
+- **`has_password` field (v4.39)**: User responses now include `has_password: boolean`. Passwordless-registered users have `false`. Detection: `user.provider === 'email' && user.has_password === false` means truly passwordless.
+- **Forgot password redirect (v4.39)**: When `POST /auth/password` is called for a passwordless user, it returns the same OTP envelope as `/auth/passwordless/request` instead of the classic Devise reset-link. Frontends can use one handler.
 - **Full-scope JWT**: Unlike password OTP (which returns a scoped `password:reset` token), passwordless verify returns a full-scope JWT identical to `POST /auth/sign_in` -- same scopes, same lifetime, same RS256 signing.
 - **Max 5 attempts**: After 5 failed verification attempts, the OTP is cleared and a new one must be requested.
 - **10-minute expiry**: OTP codes expire after 10 minutes.
