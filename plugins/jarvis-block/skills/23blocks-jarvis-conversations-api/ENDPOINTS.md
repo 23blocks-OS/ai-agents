@@ -309,7 +309,7 @@ curl -X PUT "$BLOCKS_API_URL/conversations/conv-uuid-123/rename" \
   -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "title": "Q1 Project Planning"
+    "name": "Q1 Project Planning"
   }'
 ```
 
@@ -321,7 +321,7 @@ curl -X PUT "$BLOCKS_API_URL/conversations/conv-uuid-123/rename" \
     "type": "conversation",
     "attributes": {
       "unique_id": "conv-uuid-123",
-      "title": "Q1 Project Planning",
+      "name": "Q1 Project Planning",
       "updated_at": "2025-01-12T14:00:00Z"
     }
   }
