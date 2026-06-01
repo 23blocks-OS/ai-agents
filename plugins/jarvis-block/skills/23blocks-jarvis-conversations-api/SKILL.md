@@ -136,6 +136,8 @@ curl -X POST "$BLOCKS_API_URL/identities/$USER_UNIQUE_ID/register" \
 
 When creating contexts (for conversations or agents), if no `members` array is provided, Jarvis auto-populates it from the JWT token (user_unique_id + user_email).
 
+> **Validation (May 2026):** Context `unique_id` must be a valid UUID. Non-UUID values return 400.
+
 ---
 
 ## SDK Usage (TypeScript)

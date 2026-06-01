@@ -4,7 +4,7 @@ description: Manage 23blocks Jarvis prompts via REST API. Use when creating prom
 allowed-tools: Read, Write, Bash, Grep, Glob
 metadata:
   author: 23blocks
-  version: "1.1"
+  version: "1.2"
 ---
 
 # Prompts API
@@ -62,6 +62,14 @@ curl -X POST "$BLOCKS_API_URL/identities/$USER_UNIQUE_ID/register" \
 ```
 
 > Self-registration (your own JWT) requires no special scope. Registering other users requires `identities:write`.
+
+---
+
+## Breaking Changes & Bug Fixes
+
+> **Breaking Change (May 2026):** POST and PUT responses now return `PromptVersion` objects instead of `Prompt` objects. The Location header and response body now both reference the created PromptVersion.
+
+> **Bug Fix (May 2026):** Partial PUT updates now preserve unpassed fields (previously wiped persona, model, temperature when not included in request).
 
 ---
 
@@ -189,18 +197,25 @@ curl -X POST "$BLOCKS_API_URL/prompts" \
 | `model` | string | No | Model identifier for the provider (e.g., `gpt-4`, `claude-sonnet-4-5-20241022`, `mistral-small-latest`) |
 
 **Response 201:**
+
+> **Breaking Change (May 2026):** This endpoint now returns a `PromptVersion` object instead of a `Prompt` object.
+
 ```json
 {
   "data": {
-    "id": "prompt-uuid-123",
-    "type": "prompt",
+    "id": "version-uuid-001",
+    "type": "prompt_version",
     "attributes": {
-      "unique_id": "prompt-uuid-123",
+      "unique_id": "version-uuid-001",
       "name": "Email Generator",
       "description": "Generates professional emails based on tone and topic",
       "content": "Write a {{tone}} email about {{topic}} to {{recipient}}.",
       "status": "draft",
-      "versions_count": 1,
+      "version": 1,
+      "revision": 0,
+      "prompt_unique_id": "prompt-uuid-123",
+      "user_unique_id": "user-uuid-456",
+      "user_name": "John Doe",
       "created_at": "2025-01-12T10:30:00Z"
     }
   }
@@ -214,7 +229,7 @@ curl -X POST "$BLOCKS_API_URL/prompts" \
 
 ### PUT /prompts/:id - Update Prompt
 
-Updates an existing prompt.
+Updates an existing prompt. Only the fields included in the request body are updated; omitted fields are preserved (e.g., persona, model, temperature are no longer wiped when not passed).
 
 **Request:**
 ```bash
@@ -231,16 +246,23 @@ curl -X PUT "$BLOCKS_API_URL/prompts/prompt-uuid-123" \
 ```
 
 **Response 200:**
+
+> **Breaking Change (May 2026):** This endpoint now returns a `PromptVersion` object instead of a `Prompt` object.
+
 ```json
 {
   "data": {
-    "id": "prompt-uuid-123",
-    "type": "prompt",
+    "id": "version-uuid-002",
+    "type": "prompt_version",
     "attributes": {
-      "unique_id": "prompt-uuid-123",
+      "unique_id": "version-uuid-002",
       "name": "Advanced Email Generator",
       "content": "Write a {{tone}} email about {{topic}} to {{recipient}}. Include a {{call_to_action}}.",
-      "versions_count": 2,
+      "version": 2,
+      "revision": 0,
+      "prompt_unique_id": "prompt-uuid-123",
+      "user_unique_id": "user-uuid-456",
+      "user_name": "John Doe",
       "updated_at": "2025-01-12T14:00:00Z"
     }
   }
@@ -446,6 +468,26 @@ curl -X DELETE "$BLOCKS_API_URL/prompts/prompt-uuid-123/unsave" \
 | `created_at` | timestamp | Creation time |
 | `updated_at` | timestamp | Last update |
 
+### PromptVersion (returned by POST/PUT since May 2026)
+| Field | Type | Description |
+|-------|------|-------------|
+| `unique_id` | uuid | Unique identifier of the version |
+| `name` | string | Prompt name |
+| `description` | string | Prompt description |
+| `content` | string | Template with {{variables}} |
+| `status` | enum | draft, published |
+| `version` | integer | Major version number |
+| `revision` | integer | Revision within the version |
+| `prompt_unique_id` | uuid | Parent prompt unique ID |
+| `user_unique_id` | uuid | Creator user unique ID |
+| `user_name` | string | Creator display name |
+| `is_published` | boolean | Whether currently published |
+| `variables` | array | List of template variables |
+| `executions_count` | integer | Number of executions |
+| `published_at` | timestamp | Publication time |
+| `created_at` | timestamp | Creation time |
+| `updated_at` | timestamp | Last update |
+
 ---
 
 ## Error Response Format
@@ -491,8 +533,8 @@ const client = create23BlocksClient({
 // PromptsService — client.jarvis.prompts
 list(params?: ListPromptsParams): Promise<PageResult<Prompt>>;
 get(uniqueId: string): Promise<Prompt>;
-create(data: CreatePromptRequest): Promise<Prompt>;
-update(uniqueId: string, data: UpdatePromptRequest): Promise<Prompt>;
+create(data: CreatePromptRequest): Promise<PromptVersion>;   // Breaking change: returns PromptVersion since May 2026
+update(uniqueId: string, data: UpdatePromptRequest): Promise<PromptVersion>;   // Breaking change: returns PromptVersion since May 2026
 delete(uniqueId: string): Promise<void>;
 execute(uniqueId: string, data: ExecutePromptRequest): Promise<ExecutePromptResponse>;
 render(uniqueId: string, data: RenderPromptRequest): Promise<RenderPromptResponse>;
@@ -503,6 +545,7 @@ render(uniqueId: string, data: RenderPromptRequest): Promise<RenderPromptRespons
 ```typescript
 import type {
   Prompt,
+  PromptVersion,
   CreatePromptRequest,
   UpdatePromptRequest,
   ListPromptsParams,

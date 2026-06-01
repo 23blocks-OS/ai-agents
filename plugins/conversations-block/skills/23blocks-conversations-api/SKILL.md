@@ -1,15 +1,15 @@
 ---
 name: 23blocks-conversations-api
-description: Create and manage conversations with metadata, archiving, file uploads, and AI summaries. Use when initiating user conversations, uploading files, generating presigned URLs, organizing conversation data, or generating AI-powered conversation summaries.
+description: Create and manage conversations with metadata, archiving, file uploads, AI summaries, and task management. Use when initiating user conversations, uploading files, generating presigned URLs, organizing conversation data, generating AI-powered conversation summaries, or managing conversation tasks.
 allowed-tools: Read, Write, Bash, Grep, Glob
 metadata:
   author: 23blocks
-  version: "1.4"
+  version: "1.5"
 ---
 
 # Conversations API
 
-Create and manage conversations between users. Supports metadata management, archiving, restoring, file uploads, and presigned URLs for direct file uploads.
+Create and manage conversations between users. Supports metadata management, archiving, restoring, file uploads, presigned URLs for direct file uploads, AI-powered summaries, and task management.
 
 ## Required Environment Variables
 
@@ -70,6 +70,11 @@ export BLOCKS_API_KEY="<your-api-key>"
 | DELETE | `/conversations/:unique_id/files/:file_unique_id` | Delete file |
 | GET | `/conversations/:unique_id/summary` | Get AI summary (via Jarvis) |
 | GET | `/users/:unique_id/conversations/summary` | Get user conversations digest |
+| GET | `/conversations/:context_id/tasks` | List tasks for a conversation |
+| GET | `/users/:user_id/tasks` | Task digest for a user (all conversations) |
+| POST | `/conversations/:context_id/tasks` | Create manual task |
+| PATCH | `/tasks/:unique_id` | Update task |
+| DELETE | `/tasks/:unique_id` | Delete task |
 
 ---
 
@@ -107,20 +112,23 @@ export BLOCKS_API_KEY="<your-api-key>"
 
 ### ConversationSummary
 
+> **Relationship:** Conversations have an optional `summary` (has_one) relationship. Include via `?include=summary`. User-scoped: each user gets their own summary perspective.
+
 | Field | Type | Description |
 |-------|------|-------------|
 | unique_id | string | Unique identifier for the summary |
 | conversation_id | string | Parent conversation ID |
 | overall_summary | text | AI-generated conversation summary |
 | action_items | jsonb | Extracted action items |
+| key_points | jsonb | Key discussion points extracted from conversation |
 | key_decisions | jsonb | Extracted key decisions |
 | important_info | jsonb | Important information extracted |
 | participants | jsonb | Participant details from summary |
-| sentiment | string | Conversation sentiment: `positive`, `neutral`, `negative`, `mixed` |
+| sentiment | string | Overall sentiment: `positive`, `neutral`, `negative`, `mixed` |
 | conversation_status | string | Status derived from content: `active`, `resolved`, `waiting`, `escalated` |
 | categories | jsonb | Auto-categorized topics |
 | stats | jsonb | Summary statistics (message counts, etc.) |
-| summary_type | string | Summary type: `conversation`, `digest` |
+| summary_type | string | Summary type: `conversation` (full summary) or `digest` (recent messages only) |
 | prompt_id | string | Jarvis prompt used for generation |
 | message_count | integer | Number of messages processed |
 | last_processed_message_id | string | ID of the last message included in summary |
@@ -129,6 +137,25 @@ export BLOCKS_API_KEY="<your-api-key>"
 | retry_count | integer | Number of LLM retries for valid output |
 | created_at | datetime | Summary creation timestamp |
 | updated_at | datetime | Last update timestamp |
+
+### Task
+
+> **Relationship:** Conversations have a `tasks` (has_many) relationship. Include via `?include=tasks`. Tasks are persistent action items extracted from AI summaries. A 7-day deduplication window prevents duplicate tasks from being created.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| unique_id | uuid | Unique identifier for the task |
+| description | string | Task description |
+| priority | string | Task priority: `normal`, `high`, `urgent` |
+| status | string | Task status: `pending`, `completed`, `dismissed` |
+| conversation_context_id | uuid | Parent conversation ID |
+| created_at | datetime | Task creation timestamp |
+| updated_at | datetime | Last update timestamp |
+
+> **Including relationships in conversation response:**
+> ```
+> GET /conversations/:id?include=summary,tasks
+> ```
 
 ---
 
@@ -176,6 +203,14 @@ When a conversation is retrieved via `GET /conversations/:unique_id`, all messag
 Generate AI-powered summaries via Jarvis integration. Supports incremental processing (only new messages since last summary), custom prompts via `prompt_id`, and batch digest for inbox-level overviews. Rate limited to 1 Jarvis call per 60s per conversation per user.
 
 > **Jarvis Passthrough Auth (v1.4).** The Conversations API no longer looks up per-tenant CompanyKeys for Jarvis. Consumer `Authorization` (Bearer JWT) and `X-API-Key` headers are forwarded directly to Jarvis as-is. The same credentials that authenticate with the Conversations API now authenticate with Jarvis — no separate Jarvis key is needed.
+
+### Summary Relationships (v1.5)
+
+Conversations now expose a `summary` relationship (has_one) that can be included via `?include=summary`. Summaries are user-scoped, so each user gets their own perspective. The summary includes `key_points` (key discussion points) in addition to the existing `action_items`.
+
+### Task Management (v1.5)
+
+Conversations now support persistent task management. Tasks are action items extracted from AI summaries or created manually. Each task has a `priority` (`normal`, `high`, `urgent`) and `status` (`pending`, `completed`, `dismissed`). A 7-day deduplication window prevents duplicate tasks. Tasks can be included in conversation responses via `?include=tasks`, or queried per-conversation or per-user for a full task digest.
 
 ---
 

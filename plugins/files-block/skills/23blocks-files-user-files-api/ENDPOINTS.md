@@ -4,6 +4,12 @@ Full endpoint documentation. See [SKILL.md](SKILL.md) for setup, data models, an
 
 ---
 
+## CRITICAL: File Upload `name` Field (Production Incident Fix)
+
+The presign endpoints return a `file_name` (UUID-based S3 key). You **MUST** use this value as the `name` field when calling `POST /files`. Using the original filename causes **404 errors on download**. See the [SKILL.md](SKILL.md) CRITICAL section for the full correct flow.
+
+---
+
 ### GET /users/:unique_id/files - List User Files
 
 Lists all files for a user with pagination and filtering.
@@ -130,10 +136,13 @@ curl -X PUT "$BLOCKS_API_URL/users/$USER_ID/presign_upload?filename=document.pdf
 **Response 200 (default — flat JSON):**
 ```json
 {
+  "file_name": "dcca6ec1-4f3a-4b2e-9a1c-8d7e6f5a4b3c.pdf",
   "signed_url": "https://s3.us-east-2.amazonaws.com/...?X-Amz-Signature=...",
-  "public_url": "https://s3.us-east-2.amazonaws.com/.../document.pdf"
+  "public_url": "https://s3.us-east-2.amazonaws.com/.../dcca6ec1-4f3a-4b2e-9a1c-8d7e6f5a4b3c.pdf"
 }
 ```
+
+> **CRITICAL:** Save `file_name` from this response. You MUST use it as the `name` field in `POST /files`.
 
 **Response 200 (with `?serialization=jsonapi`):**
 ```json
@@ -142,9 +151,10 @@ curl -X PUT "$BLOCKS_API_URL/users/$USER_ID/presign_upload?filename=document.pdf
     "type": "presigned_urls",
     "id": 1,
     "attributes": {
+      "file_name": "dcca6ec1-4f3a-4b2e-9a1c-8d7e6f5a4b3c.pdf",
       "signed_url": "https://s3.us-east-2.amazonaws.com/...?X-Amz-Signature=...",
-      "public_url": "https://s3.us-east-2.amazonaws.com/.../document.pdf",
-      "file_id": "document.pdf",
+      "public_url": "https://s3.us-east-2.amazonaws.com/.../dcca6ec1-4f3a-4b2e-9a1c-8d7e6f5a4b3c.pdf",
+      "file_id": "dcca6ec1-4f3a-4b2e-9a1c-8d7e6f5a4b3c.pdf",
       "expires_at": "2025-01-10T11:30:00Z"
     }
   }
@@ -181,6 +191,7 @@ curl -X POST "$BLOCKS_API_URL/users/$USER_ID/multipart_presign_upload" \
 **Response 200 (default — flat JSON):**
 ```json
 {
+  "file_name": "a1b2c3d4-5e6f-7a8b-9c0d-e1f2a3b4c5d6.mp4",
   "upload_id": "abc123xyz",
   "presigned_urls": [
     "https://s3...?partNumber=1&uploadId=abc123xyz&X-Amz-Signature=...",
@@ -189,6 +200,8 @@ curl -X POST "$BLOCKS_API_URL/users/$USER_ID/multipart_presign_upload" \
 }
 ```
 
+> **CRITICAL:** Save `file_name` from this response. You MUST use it as the `name` field in `POST /files`.
+
 **Response 200 (with `?serialization=jsonapi`):**
 ```json
 {
@@ -196,12 +209,13 @@ curl -X POST "$BLOCKS_API_URL/users/$USER_ID/multipart_presign_upload" \
     "type": "presigned_urls",
     "id": 1,
     "attributes": {
+      "file_name": "a1b2c3d4-5e6f-7a8b-9c0d-e1f2a3b4c5d6.mp4",
       "upload_id": "abc123xyz",
       "presigned_urls": [
         "https://s3...?partNumber=1&uploadId=abc123xyz&X-Amz-Signature=...",
         "https://s3...?partNumber=2&uploadId=abc123xyz&X-Amz-Signature=..."
       ],
-      "file_id": "large-video.mp4",
+      "file_id": "a1b2c3d4-5e6f-7a8b-9c0d-e1f2a3b4c5d6.mp4",
       "expires_at": "2025-01-10T11:30:00Z"
     }
   }
@@ -242,8 +256,8 @@ curl -X POST "$BLOCKS_API_URL/users/$USER_ID/multipart_complete_upload" \
 **Response 200 (default — flat JSON):**
 ```json
 {
-  "public_url": "https://s3.us-east-2.amazonaws.com/.../large-video.mp4",
-  "file_name": "large-video.mp4"
+  "public_url": "https://s3.us-east-2.amazonaws.com/.../a1b2c3d4-5e6f-7a8b-9c0d-e1f2a3b4c5d6.mp4",
+  "file_name": "a1b2c3d4-5e6f-7a8b-9c0d-e1f2a3b4c5d6.mp4"
 }
 ```
 
@@ -254,9 +268,9 @@ curl -X POST "$BLOCKS_API_URL/users/$USER_ID/multipart_complete_upload" \
     "type": "presigned_urls",
     "id": 1,
     "attributes": {
-      "public_url": "https://s3.us-east-2.amazonaws.com/.../large-video.mp4",
-      "file_name": "large-video.mp4",
-      "file_id": "large-video.mp4",
+      "public_url": "https://s3.us-east-2.amazonaws.com/.../a1b2c3d4-5e6f-7a8b-9c0d-e1f2a3b4c5d6.mp4",
+      "file_name": "a1b2c3d4-5e6f-7a8b-9c0d-e1f2a3b4c5d6.mp4",
+      "file_id": "a1b2c3d4-5e6f-7a8b-9c0d-e1f2a3b4c5d6.mp4",
       "expires_at": "2025-01-10T11:30:00Z"
     }
   }
@@ -300,8 +314,8 @@ curl -X POST "$BLOCKS_API_URL/users/$USER_ID/files" \
 **Request Parameters:**
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `name` | string | Yes | Generated filename (UUID recommended) |
-| `original_name` | string | Yes | Original user filename |
+| `name` | string | Yes | **MUST be `file_name` from presign response** (UUID-based S3 key). Using any other value causes 404 on download. |
+| `original_name` | string | Yes | Original user filename (display only) |
 | `url` | string | Yes | S3 URL from presigned upload |
 | `file_type` | string | Yes | MIME type |
 | `file_size` | integer | Yes | Size in bytes |

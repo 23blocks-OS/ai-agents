@@ -49,6 +49,35 @@ export BLOCKS_API_KEY="<your-api-key>"
 
 ---
 
+## CRITICAL: File Upload Process (Production Incident Fix)
+
+The Files API generates UUID-based S3 keys during presign. You **MUST** use the `file_name` returned from presign endpoints as the `name` field when registering file metadata. Using any other value (such as the original filename) causes **404 errors on download** because the S3 object key will not match.
+
+**Correct single-file upload flow:**
+1. `PUT /entities/:id/presign?filename=policy.pdf` returns `{ "file_name": "dcca6ec1-...pdf", "signed_url": "..." }`
+2. `PUT {signed_url}` with file bytes
+3. `POST /entities/:id/files` with `{ "name": "dcca6ec1-...pdf", "original_name": "policy.pdf" }` -- `name` **MUST** match `file_name` from step 1
+
+**Correct multipart upload flow (large files):**
+1. `POST /entities/:id/multipart_presign_upload` with `{ "filename": "large.pptx", "part_count": 3 }` returns `{ "file_name": "a1b2c3d4-...pptx", "upload_id": "...", "presigned_urls": [...] }`
+2. Upload each part to its presigned URL, collect ETags
+3. `POST /entities/:id/multipart_complete_upload` with `{ "file_name": "a1b2c3d4-...pptx", "upload_id": "...", "parts": [...] }`
+4. `POST /entities/:id/files` with `{ "name": "a1b2c3d4-...pptx", "original_name": "large.pptx" }` -- `name` **MUST** match `file_name` from step 1
+
+**Common mistake (causes 404 on download):**
+```
+PUT /presign?filename=policy.pdf  -->  { "file_name": "dcca6ec1-...pdf" }
+POST /files with { "name": "policy.pdf" }  <-- WRONG! S3 key mismatch = 404
+```
+
+**Field meanings:**
+| Field | Purpose | Example |
+|-------|---------|---------|
+| `name` | S3 object key (UUID-based). Used for downloads. NOT user-facing. | `dcca6ec1-4f3a-4b2e-9a1c-8d7e6f5a4b3c.pdf` |
+| `original_name` | User's original filename. Used for display only. | `policy.pdf` |
+
+---
+
 ## Overview
 
 Entity files are associated with business entities (companies, organizations, projects, etc.) rather than individual users. This is useful for:
@@ -98,8 +127,8 @@ Entity files are associated with business entities (companies, organizations, pr
 |-------|------|-------------|
 | `unique_id` | uuid | Unique identifier |
 | `entity_unique_id` | uuid | Parent entity ID |
-| `name` | string | Generated filename |
-| `original_name` | string | Original filename |
+| `name` | string | UUID-based S3 key (from presign `file_name`). Used for downloads. |
+| `original_name` | string | User's original filename (display only) |
 | `url` | string | S3 URL |
 | `thumbnail_url` | string | Thumbnail URL |
 | `file_type` | string | MIME type |

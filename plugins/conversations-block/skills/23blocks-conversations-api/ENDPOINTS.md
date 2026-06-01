@@ -268,6 +268,12 @@ Retrieve details of a specific conversation.
 |-----------|------|----------|-------------|
 | unique_id | string | Yes | The unique identifier of the conversation |
 
+**Query Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| include | string | No | Comma-separated relationships to include: `summary`, `tasks` |
+
 **cURL Example:**
 
 ```bash
@@ -785,6 +791,11 @@ curl -s -X GET "https://conversations.api.us.23blocks.com/conversations/conv_def
         { "owner": "Bob", "task": "Set up staging environment" },
         { "owner": "Charlie", "task": "Send budget breakdown to finance" }
       ],
+      "key_points": [
+        "Q2 roadmap covers three main deliverables",
+        "Budget approval needed before tooling procurement",
+        "Design review is the next milestone"
+      ],
       "key_decisions": [
         "Q2 roadmap finalized with 3 deliverables",
         "Budget approved for new tooling"
@@ -893,3 +904,377 @@ curl -s -X GET "https://conversations.api.us.23blocks.com/users/usr_abc123/conve
 - `content` contains the raw LLM output
 - `meta` includes `validation_status` and `retry_count` for observability
 - **Jarvis Passthrough Auth:** Consumer `Authorization` and `X-API-Key` headers are forwarded directly to Jarvis. No separate Jarvis key or per-tenant CompanyKey lookup is needed
+
+---
+
+## Task Management
+
+### List Conversation Tasks
+
+Retrieve all tasks for a specific conversation. Tasks are persistent action items extracted from AI summaries or created manually.
+
+**Endpoint:** `GET /conversations/:context_id/tasks`
+
+**Path Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| context_id | uuid | Yes | The conversation unique ID |
+
+**cURL Example:**
+
+```bash
+curl -s -X GET "https://conversations.api.us.23blocks.com/conversations/conv_def456/tasks" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
+  -H "Content-Type: application/json"
+```
+
+**Response (200 OK):**
+
+```json
+{
+  "data": [
+    {
+      "id": "task_001",
+      "type": "tasks",
+      "attributes": {
+        "unique_id": "task_001",
+        "description": "Prepare design mockups for Q2 roadmap",
+        "priority": "high",
+        "status": "pending",
+        "conversation_context_id": "conv_def456",
+        "created_at": "2026-05-20T10:00:00Z",
+        "updated_at": "2026-05-20T10:00:00Z"
+      }
+    },
+    {
+      "id": "task_002",
+      "type": "tasks",
+      "attributes": {
+        "unique_id": "task_002",
+        "description": "Send budget breakdown to finance",
+        "priority": "normal",
+        "status": "completed",
+        "conversation_context_id": "conv_def456",
+        "created_at": "2026-05-20T10:00:00Z",
+        "updated_at": "2026-05-21T14:30:00Z"
+      }
+    }
+  ],
+  "meta": {
+    "total": 2
+  }
+}
+```
+
+---
+
+### Get User Task Digest
+
+Retrieve a task digest for a user across all their conversations.
+
+**Endpoint:** `GET /users/:user_id/tasks`
+
+**Path Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| user_id | string | Yes | The user unique ID |
+
+**cURL Example:**
+
+```bash
+curl -s -X GET "https://conversations.api.us.23blocks.com/users/usr_abc123/tasks" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
+  -H "Content-Type: application/json"
+```
+
+**Response (200 OK):**
+
+```json
+{
+  "data": [
+    {
+      "id": "task_001",
+      "type": "tasks",
+      "attributes": {
+        "unique_id": "task_001",
+        "description": "Prepare design mockups for Q2 roadmap",
+        "priority": "high",
+        "status": "pending",
+        "conversation_context_id": "conv_def456",
+        "created_at": "2026-05-20T10:00:00Z",
+        "updated_at": "2026-05-20T10:00:00Z"
+      }
+    },
+    {
+      "id": "task_003",
+      "type": "tasks",
+      "attributes": {
+        "unique_id": "task_003",
+        "description": "Prioritize P0 bug fixes for sprint",
+        "priority": "urgent",
+        "status": "pending",
+        "conversation_context_id": "conv_abc123",
+        "created_at": "2026-05-19T08:00:00Z",
+        "updated_at": "2026-05-19T08:00:00Z"
+      }
+    }
+  ],
+  "meta": {
+    "total": 2
+  }
+}
+```
+
+---
+
+### Create Task
+
+Create a manual task for a conversation.
+
+**Endpoint:** `POST /conversations/:context_id/tasks`
+
+**Path Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| context_id | uuid | Yes | The conversation unique ID |
+
+**Request Body:**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| task.description | string | Yes | Task description |
+| task.priority | string | No | Priority: `normal` (default), `high`, `urgent` |
+
+**cURL Example:**
+
+```bash
+curl -s -X POST "https://conversations.api.us.23blocks.com/conversations/conv_def456/tasks" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "task": {
+      "description": "Review deployment checklist before release",
+      "priority": "high"
+    }
+  }'
+```
+
+**Response (201 Created):**
+
+```json
+{
+  "data": {
+    "id": "task_004",
+    "type": "tasks",
+    "attributes": {
+      "unique_id": "task_004",
+      "description": "Review deployment checklist before release",
+      "priority": "high",
+      "status": "pending",
+      "conversation_context_id": "conv_def456",
+      "created_at": "2026-05-21T11:00:00Z",
+      "updated_at": "2026-05-21T11:00:00Z"
+    }
+  }
+}
+```
+
+**Notes:**
+- A 7-day deduplication window prevents duplicate tasks. If a task with the same description already exists within the conversation and was created in the last 7 days, a `422 Unprocessable Entity` is returned.
+
+---
+
+### Update Task
+
+Update the status or priority of an existing task.
+
+**Endpoint:** `PATCH /tasks/:unique_id`
+
+**Path Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| unique_id | uuid | Yes | The task unique ID |
+
+**Request Body:**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| task.status | string | No | Status: `pending`, `completed`, `dismissed` |
+| task.priority | string | No | Priority: `normal`, `high`, `urgent` |
+
+**cURL Example (mark as completed):**
+
+```bash
+curl -s -X PATCH "https://conversations.api.us.23blocks.com/tasks/task_001" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "task": {
+      "status": "completed"
+    }
+  }'
+```
+
+**Response (200 OK):**
+
+```json
+{
+  "data": {
+    "id": "task_001",
+    "type": "tasks",
+    "attributes": {
+      "unique_id": "task_001",
+      "description": "Prepare design mockups for Q2 roadmap",
+      "priority": "high",
+      "status": "completed",
+      "conversation_context_id": "conv_def456",
+      "created_at": "2026-05-20T10:00:00Z",
+      "updated_at": "2026-05-21T12:00:00Z"
+    }
+  }
+}
+```
+
+---
+
+### Delete Task
+
+Delete a task permanently.
+
+**Endpoint:** `DELETE /tasks/:unique_id`
+
+**Path Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| unique_id | uuid | Yes | The task unique ID |
+
+**cURL Example:**
+
+```bash
+curl -s -X DELETE "https://conversations.api.us.23blocks.com/tasks/task_001" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
+  -H "Content-Type: application/json"
+```
+
+**Response (200 OK):**
+
+```json
+{
+  "data": {
+    "id": "task_001",
+    "type": "tasks",
+    "attributes": {
+      "unique_id": "task_001",
+      "deleted": true,
+      "deleted_at": "2026-05-21T14:00:00Z"
+    }
+  }
+}
+```
+
+---
+
+### Including Summary and Tasks in Conversation Response
+
+Use the `include` query parameter to sideload summary and tasks with a conversation.
+
+**cURL Example:**
+
+```bash
+curl -s -X GET "https://conversations.api.us.23blocks.com/conversations/conv_def456?include=summary,tasks" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
+  -H "Content-Type: application/json"
+```
+
+**Response (200 OK):**
+
+```json
+{
+  "data": {
+    "id": "conv_def456",
+    "type": "conversations",
+    "attributes": {
+      "unique_id": "conv_def456",
+      "participants": ["usr_abc123", "usr_xyz789"],
+      "last_message": {
+        "content": "Hello there!",
+        "sender_id": "usr_xyz789",
+        "sent_at": "2025-01-15T10:30:00Z"
+      },
+      "unread_count": 0,
+      "metadata": {
+        "topic": "Project Discussion"
+      },
+      "status": "active",
+      "created_at": "2025-01-10T08:00:00Z",
+      "updated_at": "2025-01-15T10:30:00Z"
+    },
+    "relationships": {
+      "summary": {
+        "data": {
+          "id": "summary_001",
+          "type": "conversation_summary"
+        }
+      },
+      "tasks": {
+        "data": [
+          { "id": "task_001", "type": "tasks" },
+          { "id": "task_002", "type": "tasks" }
+        ]
+      }
+    }
+  },
+  "included": [
+    {
+      "id": "summary_001",
+      "type": "conversation_summary",
+      "attributes": {
+        "unique_id": "summary_001",
+        "overall_summary": "The team discussed the Q2 roadmap...",
+        "action_items": [
+          { "owner": "Alice", "task": "Prepare design mockups" }
+        ],
+        "key_points": [
+          "Q2 roadmap finalized with 3 deliverables",
+          "Budget approved for new tooling"
+        ],
+        "sentiment": "positive",
+        "summary_type": "conversation"
+      }
+    },
+    {
+      "id": "task_001",
+      "type": "tasks",
+      "attributes": {
+        "unique_id": "task_001",
+        "description": "Prepare design mockups for Q2 roadmap",
+        "priority": "high",
+        "status": "pending",
+        "conversation_context_id": "conv_def456"
+      }
+    },
+    {
+      "id": "task_002",
+      "type": "tasks",
+      "attributes": {
+        "unique_id": "task_002",
+        "description": "Send budget breakdown to finance",
+        "priority": "normal",
+        "status": "completed",
+        "conversation_context_id": "conv_def456"
+      }
+    }
+  ]
+}
+```

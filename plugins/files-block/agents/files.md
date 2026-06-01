@@ -68,6 +68,25 @@ The Files Block supports three file types for different use cases:
 4. File is in "review" status until approved/published
 ```
 
+### CRITICAL: Upload `name` Field (Production Incident Fix)
+
+The Files API generates UUID-based S3 keys during presign. You **MUST** use the `file_name` returned from presign endpoints as the `name` field when registering file metadata. Using any other value (such as the original filename) causes **404 errors on download** because the S3 object key will not match.
+
+**Correct flow:**
+1. `GET /presign_upload?filename=photo.jpg` returns `{ "file_name": "dcca6ec1-...jpg", "presigned_url": "..." }`
+2. `PUT {presigned_url}` with file bytes
+3. `POST /files` with `{ "name": "dcca6ec1-...jpg", "original_name": "photo.jpg" }` -- `name` MUST match `file_name` from step 1
+
+**Common mistake (causes 404 on download):**
+```
+GET /presign_upload --> { file_name: "UUID.jpg" }
+POST /files with { name: "my_original_file.jpg" }  <-- WRONG! Causes 404 on download
+```
+
+**Field meanings:**
+- `name` -- S3 key (UUID). Used for downloads. NOT user-facing.
+- `original_name` -- User's original filename. Used for display.
+
 ### Access Control Model
 
 ```
@@ -210,21 +229,22 @@ curl -X PUT "$BLOCKS_API_URL/users/$USER_ID/presign_upload?filename=document.pdf
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
   -H "X-API-KEY: $BLOCKS_API_KEY"
 
-# Response: { "signed_url": "...", "public_url": "..." }
+# Response: { "file_name": "dcca6ec1-4f3a-4b2e-9a1c-8d7e6f5a4b3c.pdf", "signed_url": "...", "public_url": "..." }
+# IMPORTANT: Save file_name — you MUST use it as "name" in step 3
 
 # 2. Upload to S3 (use signed_url from response)
 curl -X PUT "$SIGNED_URL" \
   -H "Content-Type: application/pdf" \
   --data-binary @document.pdf
 
-# 3. Register file metadata
+# 3. Register file metadata — "name" MUST be file_name from step 1
 curl -X POST "$BLOCKS_API_URL/users/$USER_ID/files" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
   -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "file": {
-      "name": "uuid-generated-name.pdf",
+      "name": "dcca6ec1-4f3a-4b2e-9a1c-8d7e6f5a4b3c.pdf",
       "original_name": "document.pdf",
       "file_type": "application/pdf",
       "file_size": 1024000,
@@ -244,9 +264,10 @@ curl -X POST "$BLOCKS_API_URL/users/$USER_ID/multipart_presign_upload" \
   -H "Content-Type: application/json" \
   -d '{"filename": "large-video.mp4", "part_count": 5}'
 
-# Response: { "upload_id": "...", "presigned_urls": [...] }
+# Response: { "file_name": "a1b2c3d4-5e6f-7a8b-9c0d-e1f2a3b4c5d6.mp4", "upload_id": "...", "presigned_urls": [...] }
+# IMPORTANT: Save file_name — you MUST use it as "name" in step 4
 
-# 2. Upload each part using presigned URLs
+# 2. Upload each part using presigned URLs, collect ETag from each response
 
 # 3. Complete multipart upload
 curl -X POST "$BLOCKS_API_URL/users/$USER_ID/multipart_complete_upload" \
@@ -254,12 +275,27 @@ curl -X POST "$BLOCKS_API_URL/users/$USER_ID/multipart_complete_upload" \
   -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "filename": "large-video.mp4",
+    "file_name": "a1b2c3d4-5e6f-7a8b-9c0d-e1f2a3b4c5d6.mp4",
     "upload_id": "...",
     "parts": [
       {"PartNumber": 1, "ETag": "..."},
       {"PartNumber": 2, "ETag": "..."}
     ]
+  }'
+
+# 4. Register file metadata — "name" MUST be file_name from step 1
+curl -X POST "$BLOCKS_API_URL/users/$USER_ID/files" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "file": {
+      "name": "a1b2c3d4-5e6f-7a8b-9c0d-e1f2a3b4c5d6.mp4",
+      "original_name": "large-video.mp4",
+      "file_type": "video/mp4",
+      "file_size": 524288000,
+      "url": "https://s3.amazonaws.com/..."
+    }
   }'
 ```
 

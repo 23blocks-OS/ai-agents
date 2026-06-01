@@ -49,6 +49,35 @@ export BLOCKS_API_KEY="<your-api-key>"
 
 ---
 
+## CRITICAL: File Upload Process (Production Incident Fix)
+
+The Files API generates UUID-based S3 keys during presign. You **MUST** use the `file_name` returned from presign endpoints as the `name` field when registering file metadata. Using any other value (such as the original filename) causes **404 errors on download** because the S3 object key will not match.
+
+**Correct single-file upload flow:**
+1. `PUT /users/:id/presign_upload?filename=photo.jpg` returns `{ "file_name": "dcca6ec1-...jpg", "signed_url": "..." }`
+2. `PUT {signed_url}` with file bytes
+3. `POST /users/:id/files` with `{ "name": "dcca6ec1-...jpg", "original_name": "photo.jpg" }` -- `name` **MUST** match `file_name` from step 1
+
+**Correct multipart upload flow (large files):**
+1. `POST /users/:id/multipart_presign_upload` with `{ "filename": "large.mp4", "part_count": 5 }` returns `{ "file_name": "a1b2c3d4-...mp4", "upload_id": "...", "presigned_urls": [...] }`
+2. Upload each part to its presigned URL, collect ETags
+3. `POST /users/:id/multipart_complete_upload` with `{ "file_name": "a1b2c3d4-...mp4", "upload_id": "...", "parts": [...] }`
+4. `POST /users/:id/files` with `{ "name": "a1b2c3d4-...mp4", "original_name": "large.mp4" }` -- `name` **MUST** match `file_name` from step 1
+
+**Common mistake (causes 404 on download):**
+```
+PUT /presign_upload?filename=photo.jpg  -->  { "file_name": "dcca6ec1-...jpg" }
+POST /files with { "name": "photo.jpg" }  <-- WRONG! S3 key mismatch = 404
+```
+
+**Field meanings:**
+| Field | Purpose | Example |
+|-------|---------|---------|
+| `name` | S3 object key (UUID-based). Used for downloads. NOT user-facing. | `dcca6ec1-4f3a-4b2e-9a1c-8d7e6f5a4b3c.jpg` |
+| `original_name` | User's original filename. Used for display only. | `photo.jpg` |
+
+---
+
 ## Endpoints
 
 > Full endpoint documentation: [ENDPOINTS.md](ENDPOINTS.md)
@@ -77,8 +106,8 @@ export BLOCKS_API_KEY="<your-api-key>"
 |-------|------|-------------|
 | `unique_id` | uuid | Unique identifier |
 | `user_unique_id` | uuid | Owner user ID |
-| `name` | string | Generated filename |
-| `original_name` | string | Original filename |
+| `name` | string | UUID-based S3 key (from presign `file_name`). Used for downloads. |
+| `original_name` | string | User's original filename (display only) |
 | `url` | string | S3 URL (signed for private files) |
 | `thumbnail_url` | string | Thumbnail URL |
 | `file_type` | string | MIME type |

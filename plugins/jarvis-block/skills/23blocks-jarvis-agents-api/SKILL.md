@@ -359,6 +359,8 @@ curl -X DELETE "$BLOCKS_API_URL/agents/agent-uuid-123/entities/entity-uuid-789" 
 
 When creating agent contexts, if no `members` array is provided, Jarvis auto-populates it from the JWT token (user_unique_id + user_email). The `members` parameter (array, optional) can be explicitly passed during context creation to override this default behavior.
 
+> **Validation (May 2026):** Context `unique_id` must be a valid UUID. Non-UUID values return 400.
+
 ---
 
 ## Supervisor Handoff

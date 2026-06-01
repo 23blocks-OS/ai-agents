@@ -4,6 +4,12 @@ Full endpoint documentation. See [SKILL.md](SKILL.md) for setup, data models, an
 
 ---
 
+## CRITICAL: File Upload `name` Field (Production Incident Fix)
+
+The presign endpoints return a `file_name` (UUID-based S3 key). You **MUST** use this value as the `name` field when calling `POST /files`. Using the original filename causes **404 errors on download**. See the [SKILL.md](SKILL.md) CRITICAL section for the full correct flow.
+
+---
+
 ## Entity Management Endpoints
 
 ### GET /entities - List Entities
@@ -211,10 +217,13 @@ curl -X PUT "$BLOCKS_API_URL/entities/$ENTITY_ID/presign?filename=policy.pdf" \
 **Response 200:**
 ```json
 {
+  "file_name": "dcca6ec1-4f3a-4b2e-9a1c-8d7e6f5a4b3c.pdf",
   "signed_url": "https://s3.us-east-2.amazonaws.com/...?X-Amz-Signature=...",
-  "public_url": "https://s3.us-east-2.amazonaws.com/.../policy.pdf"
+  "public_url": "https://s3.us-east-2.amazonaws.com/.../dcca6ec1-4f3a-4b2e-9a1c-8d7e6f5a4b3c.pdf"
 }
 ```
+
+> **CRITICAL:** Save `file_name` from this response. You MUST use it as the `name` field in `POST /files`.
 
 ---
 
@@ -237,6 +246,7 @@ curl -X POST "$BLOCKS_API_URL/entities/$ENTITY_ID/multipart_presign_upload" \
 **Response 200:**
 ```json
 {
+  "file_name": "a1b2c3d4-5e6f-7a8b-9c0d-e1f2a3b4c5d6.pptx",
   "upload_id": "abc123xyz",
   "presigned_urls": [
     "https://s3...?partNumber=1&uploadId=abc123xyz&X-Amz-Signature=...",
@@ -245,6 +255,8 @@ curl -X POST "$BLOCKS_API_URL/entities/$ENTITY_ID/multipart_presign_upload" \
   ]
 }
 ```
+
+> **CRITICAL:** Save `file_name` from this response. You MUST use it as the `name` field in `POST /files`.
 
 ---
 
@@ -272,8 +284,8 @@ curl -X POST "$BLOCKS_API_URL/entities/$ENTITY_ID/multipart_complete_upload" \
 **Response 200:**
 ```json
 {
-  "public_url": "https://s3.us-east-2.amazonaws.com/.../large-presentation.pptx",
-  "file_name": "large-presentation.pptx"
+  "public_url": "https://s3.us-east-2.amazonaws.com/.../a1b2c3d4-5e6f-7a8b-9c0d-e1f2a3b4c5d6.pptx",
+  "file_name": "a1b2c3d4-5e6f-7a8b-9c0d-e1f2a3b4c5d6.pptx"
 }
 ```
 
@@ -291,9 +303,9 @@ curl -X POST "$BLOCKS_API_URL/entities/$ENTITY_ID/files" \
   -H "Content-Type: application/json" \
   -d '{
     "file": {
-      "name": "uuid-policy.pdf",
+      "name": "dcca6ec1-4f3a-4b2e-9a1c-8d7e6f5a4b3c.pdf",
       "original_name": "policy.pdf",
-      "url": "https://s3.us-east-2.amazonaws.com/.../uuid-policy.pdf",
+      "url": "https://s3.us-east-2.amazonaws.com/.../dcca6ec1-4f3a-4b2e-9a1c-8d7e6f5a4b3c.pdf",
       "file_type": "application/pdf",
       "file_size": 500000,
       "description": "Company policy document"
@@ -309,7 +321,7 @@ curl -X POST "$BLOCKS_API_URL/entities/$ENTITY_ID/files" \
     "type": "entity_file",
     "attributes": {
       "unique_id": "new-entity-file-id",
-      "name": "uuid-policy.pdf",
+      "name": "dcca6ec1-4f3a-4b2e-9a1c-8d7e6f5a4b3c.pdf",
       "original_name": "policy.pdf",
       "status": "active",
       "created_at": "2025-01-10T10:30:00Z"

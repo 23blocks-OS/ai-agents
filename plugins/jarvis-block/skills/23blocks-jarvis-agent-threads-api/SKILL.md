@@ -92,6 +92,8 @@ When creating contexts (via `GET /agents/:id/context` or context creation endpoi
 
 The `members` parameter (array, optional) can be explicitly passed during context creation to override this default behavior.
 
+> **Validation (May 2026):** Context `unique_id` must be a valid UUID. Non-UUID values return 400.
+
 ---
 
 ## Data Models

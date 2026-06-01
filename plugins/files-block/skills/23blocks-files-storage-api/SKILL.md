@@ -49,6 +49,29 @@ export BLOCKS_API_KEY="<your-api-key>"
 
 ---
 
+## CRITICAL: File Upload Process (Production Incident Fix)
+
+The Files API generates UUID-based S3 keys during presign. You **MUST** use the `file_name` returned from presign endpoints as the `name` field when registering file metadata. Using any other value (such as the original filename) causes **404 errors on download** because the S3 object key will not match.
+
+**Correct upload flow:**
+1. `PUT /storage/:url_id/presign_upload?filename=banner.jpg` returns `{ "file_name": "dcca6ec1-...jpg", "signed_url": "..." }`
+2. `PUT {signed_url}` with file bytes
+3. `POST /storage/:url_id/files` with `{ "name": "dcca6ec1-...jpg", "original_name": "banner.jpg" }` -- `name` **MUST** match `file_name` from step 1
+
+**Common mistake (causes 404 on download):**
+```
+PUT /presign_upload?filename=banner.jpg  -->  { "file_name": "dcca6ec1-...jpg" }
+POST /files with { "name": "banner.jpg" }  <-- WRONG! S3 key mismatch = 404
+```
+
+**Field meanings:**
+| Field | Purpose | Example |
+|-------|---------|---------|
+| `name` | S3 object key (UUID-based). Used for downloads. NOT user-facing. | `dcca6ec1-4f3a-4b2e-9a1c-8d7e6f5a4b3c.jpg` |
+| `original_name` | User's original filename. Used for display only. | `banner.jpg` |
+
+---
+
 ## Endpoints
 
 ### GET /storage/:url_id/files - List Storage Files
@@ -168,10 +191,13 @@ curl -X PUT "$BLOCKS_API_URL/storage/$URL_ID/presign_upload?filename=banner.jpg"
 **Response 200 (default — flat JSON):**
 ```json
 {
+  "file_name": "dcca6ec1-4f3a-4b2e-9a1c-8d7e6f5a4b3c.jpg",
   "signed_url": "https://s3.us-east-2.amazonaws.com/...?X-Amz-Signature=...",
-  "public_url": "https://s3.us-east-2.amazonaws.com/.../banner.jpg"
+  "public_url": "https://s3.us-east-2.amazonaws.com/.../dcca6ec1-4f3a-4b2e-9a1c-8d7e6f5a4b3c.jpg"
 }
 ```
+
+> **CRITICAL:** Save `file_name` from this response. You MUST use it as the `name` field in `POST /files`.
 
 **Response 200 (with `?serialization=jsonapi`):**
 ```json
@@ -180,9 +206,10 @@ curl -X PUT "$BLOCKS_API_URL/storage/$URL_ID/presign_upload?filename=banner.jpg"
     "type": "presigned_urls",
     "id": 1,
     "attributes": {
+      "file_name": "dcca6ec1-4f3a-4b2e-9a1c-8d7e6f5a4b3c.jpg",
       "signed_url": "https://s3.us-east-2.amazonaws.com/...?X-Amz-Signature=...",
-      "public_url": "https://s3.us-east-2.amazonaws.com/.../banner.jpg",
-      "file_id": "banner.jpg",
+      "public_url": "https://s3.us-east-2.amazonaws.com/.../dcca6ec1-4f3a-4b2e-9a1c-8d7e6f5a4b3c.jpg",
+      "file_id": "dcca6ec1-4f3a-4b2e-9a1c-8d7e6f5a4b3c.jpg",
       "expires_at": "2025-01-10T11:30:00Z"
     }
   }
@@ -205,9 +232,9 @@ curl -X POST "$BLOCKS_API_URL/storage/$URL_ID/files" \
   -H "Content-Type: application/json" \
   -d '{
     "file": {
-      "name": "uuid-banner.jpg",
+      "name": "dcca6ec1-4f3a-4b2e-9a1c-8d7e6f5a4b3c.jpg",
       "original_name": "banner.jpg",
-      "url": "https://s3.us-east-2.amazonaws.com/.../uuid-banner.jpg",
+      "url": "https://s3.us-east-2.amazonaws.com/.../dcca6ec1-4f3a-4b2e-9a1c-8d7e6f5a4b3c.jpg",
       "file_type": "image/jpeg",
       "file_size": 250000,
       "description": "Homepage banner",
@@ -221,8 +248,8 @@ curl -X POST "$BLOCKS_API_URL/storage/$URL_ID/files" \
 **Request Parameters:**
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `name` | string | Yes | Generated filename |
-| `original_name` | string | Yes | Original filename |
+| `name` | string | Yes | **MUST be `file_name` from presign response** (UUID-based S3 key). Using any other value causes 404 on download. |
+| `original_name` | string | Yes | Original filename (display only) |
 | `url` | string | Yes | S3 URL from presigned upload |
 | `file_type` | string | Yes | MIME type |
 | `file_size` | integer | Yes | Size in bytes |
@@ -242,7 +269,7 @@ curl -X POST "$BLOCKS_API_URL/storage/$URL_ID/files" \
     "type": "storage_file",
     "attributes": {
       "unique_id": "new-storage-file-id",
-      "name": "uuid-banner.jpg",
+      "name": "dcca6ec1-4f3a-4b2e-9a1c-8d7e6f5a4b3c.jpg",
       "original_name": "banner.jpg",
       "status": "review",
       "is_public": true,
@@ -391,8 +418,8 @@ curl -X PUT "$BLOCKS_API_URL/storage/$URL_ID/files/$FILE_ID/unpublish" \
 | Field | Type | Description |
 |-------|------|-------------|
 | `unique_id` | uuid | Unique identifier |
-| `name` | string | Generated filename |
-| `original_name` | string | Original filename |
+| `name` | string | UUID-based S3 key (from presign `file_name`). Used for downloads. |
+| `original_name` | string | User's original filename (display only) |
 | `url` | string | S3 URL |
 | `thumbnail_url` | string | Thumbnail URL |
 | `file_type` | string | MIME type |

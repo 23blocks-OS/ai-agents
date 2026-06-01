@@ -4,7 +4,7 @@ description: Manage 23blocks Jarvis prompt versions via REST API. Use when listi
 allowed-tools: Read, Write, Bash, Grep, Glob
 metadata:
   author: 23blocks
-  version: "1.0"
+  version: "1.1"
 ---
 
 # Prompt Versions API
@@ -62,6 +62,14 @@ curl -X POST "$BLOCKS_API_URL/identities/$USER_UNIQUE_ID/register" \
 ```
 
 > Self-registration (your own JWT) requires no special scope. Registering other users requires `identities:write`.
+
+---
+
+## Breaking Changes (May 2026)
+
+> **Breaking Change:** `POST /prompts` and `PUT /prompts/:id` now return `PromptVersion` objects instead of `Prompt` objects. See the `23blocks-jarvis-prompts-api` skill for details.
+
+> **New PromptVersion fields:** `version` (integer, major version number), `revision` (integer, revision within version), `prompt_unique_id` (uuid, parent prompt), `user_unique_id` (uuid, creator), `user_name` (string, creator name).
 
 ---
 
@@ -264,6 +272,13 @@ data: {"type":"done","execution_id":"exec-uuid-789","tokens_used":320}
 |-------|------|-------------|
 | `unique_id` | uuid | Unique identifier |
 | `version_number` | integer | Sequential version number |
+| `version` | integer | Major version number (added May 2026) |
+| `revision` | integer | Revision within the version (added May 2026) |
+| `prompt_unique_id` | uuid | Parent prompt unique ID (added May 2026) |
+| `user_unique_id` | uuid | Creator user unique ID (added May 2026) |
+| `user_name` | string | Creator display name (added May 2026) |
+| `name` | string | Prompt name |
+| `description` | string | Prompt description |
 | `content` | string | Prompt template content |
 | `status` | enum | draft, published |
 | `is_published` | boolean | Whether currently published |
@@ -271,6 +286,7 @@ data: {"type":"done","execution_id":"exec-uuid-789","tokens_used":320}
 | `executions_count` | integer | Number of executions |
 | `published_at` | timestamp | Publication time |
 | `created_at` | timestamp | Creation time |
+| `updated_at` | timestamp | Last update |
 
 ### PromptExecution
 | Field | Type | Description |
