@@ -73,7 +73,7 @@ export BLOCKS_API_KEY="<your-api-key>"
 | GET | `/conversations/:context_id/tasks` | List tasks for a conversation |
 | GET | `/users/:user_id/tasks` | Task digest for a user (all conversations) |
 | POST | `/conversations/:context_id/tasks` | Create manual task |
-| PATCH | `/tasks/:unique_id` | Update task |
+| PUT | `/tasks/:unique_id` | Update task (body or `?action_type=complete\|dismiss\|reopen`) |
 | DELETE | `/tasks/:unique_id` | Delete task |
 
 ---
@@ -211,6 +211,14 @@ Conversations now expose a `summary` relationship (has_one) that can be included
 ### Task Management (v1.5)
 
 Conversations now support persistent task management. Tasks are action items extracted from AI summaries or created manually. Each task has a `priority` (`normal`, `high`, `urgent`) and `status` (`pending`, `completed`, `dismissed`). A 7-day deduplication window prevents duplicate tasks. Tasks can be included in conversation responses via `?include=tasks`, or queried per-conversation or per-user for a full task digest.
+
+Task lifecycle transitions use `PUT /tasks/:uid?action_type=complete|dismiss|reopen`. Attribute updates (description, priority) use `PUT /tasks/:uid` with a request body. All updates use PUT (not PATCH) per platform convention.
+
+User task digest (`GET /users/:uid/tasks`) supports filtering by `status`, `context_unique_id`, `reference`, `source`, `source_type`, `source_id`.
+
+### Digest Persistence (v1.5)
+
+`GET /users/:uid/conversations/summary` now returns the last completed digest when the user has zero unread messages, preventing the digest from "disappearing" after the user catches up.
 
 ---
 

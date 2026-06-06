@@ -982,10 +982,21 @@ Retrieve a task digest for a user across all their conversations.
 |-----------|------|----------|-------------|
 | user_id | string | Yes | The user unique ID |
 
+**Query Parameters (filtering):**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| status | string | No | Filter by status: `pending`, `completed`, `dismissed` |
+| context_unique_id | uuid | No | Filter by conversation |
+| reference | string | No | Filter by reference value |
+| source | string | No | Filter by source |
+| source_type | string | No | Filter by source type |
+| source_id | string | No | Filter by source ID |
+
 **cURL Example:**
 
 ```bash
-curl -s -X GET "https://conversations.api.us.23blocks.com/users/usr_abc123/tasks" \
+curl -s -X GET "https://conversations.api.us.23blocks.com/users/usr_abc123/tasks?status=pending" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
   -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json"
@@ -1094,7 +1105,7 @@ curl -s -X POST "https://conversations.api.us.23blocks.com/conversations/conv_de
 
 Update the status or priority of an existing task.
 
-**Endpoint:** `PATCH /tasks/:unique_id`
+**Endpoint:** `PUT /tasks/:unique_id`
 
 **Path Parameters:**
 
@@ -1102,23 +1113,39 @@ Update the status or priority of an existing task.
 |-----------|------|----------|-------------|
 | unique_id | uuid | Yes | The task unique ID |
 
-**Request Body:**
+**Query Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| action_type | string | No | Lifecycle action: `complete`, `dismiss`, `reopen` |
+
+**Request Body (for attribute updates):**
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
-| task.status | string | No | Status: `pending`, `completed`, `dismissed` |
+| task.description | string | No | Updated description |
 | task.priority | string | No | Priority: `normal`, `high`, `urgent` |
 
-**cURL Example (mark as completed):**
+> Use `?action_type` for lifecycle transitions (no body needed). Use request body for attribute updates.
+
+**cURL Example (lifecycle — mark as completed):**
 
 ```bash
-curl -s -X PATCH "https://conversations.api.us.23blocks.com/tasks/task_001" \
+curl -s -X PUT "https://conversations.api.us.23blocks.com/tasks/task_001?action_type=complete" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "X-API-KEY: $BLOCKS_API_KEY"
+```
+
+**cURL Example (attribute update — change priority):**
+
+```bash
+curl -s -X PUT "https://conversations.api.us.23blocks.com/tasks/task_001" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
   -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "task": {
-      "status": "completed"
+      "priority": "urgent"
     }
   }'
 ```
