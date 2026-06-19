@@ -1,0 +1,27 @@
+{
+  "name": "rag-block",
+  "version": "1.0.0",
+  "description": "23blocks RAG Block - REST API for file ingestion, vector embeddings, object detection, and semantic search across products, accounts, contacts, users, and company storage",
+  "author": {
+    "name": "23blocks",
+    "email": "support@23blocks.com"
+  },
+  "homepage": "https://docs.23blocks.com/rag",
+  "repository": "https://github.com/23blocks-OS/ai-agents",
+  "license": "MIT",
+  "keywords": [
+    "23blocks",
+    "rag",
+    "retrieval-augmented-generation",
+    "vector-search",
+    "embeddings",
+    "object-detection",
+    "yolov8",
+    "clip",
+    "ocr",
+    "ingestion",
+    "semantic-search",
+    "visual-search",
+    "multi-object-detection"
+  ]
+}

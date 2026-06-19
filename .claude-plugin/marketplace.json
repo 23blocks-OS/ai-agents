@@ -154,6 +154,14 @@
       "version": "1.0.0",
       "keywords": ["wallet", "transactions", "transfers", "otp", "payments", "content-storage", "webhooks"],
       "category": "platform"
+    },
+    {
+      "name": "rag-block",
+      "source": "./plugins/rag-block",
+      "description": "23blocks RAG Block - file ingestion, vector embeddings, YOLOv8 object detection, CLIP embeddings, and semantic search across products, accounts, contacts, users, and company storage",
+      "version": "1.0.0",
+      "keywords": ["rag", "vector-search", "embeddings", "object-detection", "yolov8", "clip", "ocr", "semantic-search", "visual-search", "ingestion"],
+      "category": "platform"
     }
   ]
 }
