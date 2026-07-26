@@ -1,6 +1,6 @@
 {
   "name": "crm-block",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "23blocks CRM Block - REST API for customer relationship management including accounts, contacts, leads, opportunities, meetings, billings, quotes, referrals, Zoom integration, and calendar sync",
   "author": {
     "name": "23blocks",

@@ -204,6 +204,7 @@ Create a new notification for a user.
 | action_url | string | No | URL to navigate to on click |
 | source_id | string | No | ID of the source object |
 | source_type | string | No | Type of the source object |
+| event_name | string | No | Identifies the business event (e.g. `pcu_test_created`). Selects which notification template renders the resulting email/SMS. Optional — falls back to `source_type` when omitted |
 | metadata | object | No | Additional metadata |
 
 **cURL Example:**
@@ -220,7 +221,8 @@ curl -s -X POST "https://conversations.api.us.23blocks.com/notifications/" \
     "notification_type": "mention",
     "action_url": "/conversations/conv_grp789",
     "source_id": "msg_mention001",
-    "source_type": "message"
+    "source_type": "message",
+    "event_name": "user_mentioned"
   }'
 ```
 

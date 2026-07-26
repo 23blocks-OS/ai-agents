@@ -1,6 +1,6 @@
 {
   "name": "jarvis-block",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "23blocks Jarvis Block - REST API for AI agents, versioned prompts, BPMN workflows, conversations, tools, and LLM integrations",
   "author": {
     "name": "23blocks",

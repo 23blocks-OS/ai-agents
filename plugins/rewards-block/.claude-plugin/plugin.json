@@ -1,6 +1,6 @@
 {
   "name": "rewards-block",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "23blocks Rewards Block - REST API for loyalty programs, coupons, badges, customer rewards, offer codes, and expiration rules management",
   "author": {
     "name": "23blocks",

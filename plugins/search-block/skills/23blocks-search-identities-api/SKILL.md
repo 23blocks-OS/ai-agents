@@ -93,7 +93,9 @@ curl -X GET "$BLOCKS_API_URL/identities/user-uuid-123" \
 
 ### POST /identities/:unique_id/register - Register Identity
 
-Registers a new user identity in the search block.
+Registers a new user identity in the search block. The `:unique_id` in the path is the user's `user_unique_id` from the Auth (Gateway) block and is the only required value.
+
+> **Note:** Block identity records are notification routing caches, not identity models. The canonical user record lives in the Auth (Gateway) block. `email`/`phone` here are optional denormalized routing fields; duplicates across users are allowed.
 
 **Request:**
 ```bash
@@ -113,9 +115,9 @@ curl -X POST "$BLOCKS_API_URL/identities/user-uuid-123/register" \
 **Request Parameters:**
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `email` | string | Yes | User email address |
+| `email` | string | No | Optional denormalized routing field; if blank, the block skips email notifications |
 | `name` | string | No | User display name |
-| `phone` | string | No | Phone number |
+| `phone` | string | No | Optional denormalized routing field; if blank, the block skips SMS notifications |
 
 **Response 201:**
 ```json
@@ -139,8 +141,8 @@ curl -X POST "$BLOCKS_API_URL/identities/user-uuid-123/register" \
 ```
 
 **Errors:**
-- `409 Conflict` - Identity already registered
-- `422 Unprocessable Entity` - Validation errors
+- `409 Conflict` - Duplicate registration of the same `user_unique_id`
+- `422 Unprocessable Entity` - Missing `user_unique_id`
 
 ---
 

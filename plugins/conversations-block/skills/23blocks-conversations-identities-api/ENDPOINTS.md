@@ -108,20 +108,22 @@ curl -s -X GET "https://conversations.api.us.23blocks.com/users/usr_abc123/" \
 
 Register a user identity within the Conversations Block. This is required before the user can access private endpoints.
 
+> **Note:** Block identity records are notification routing caches, not identity models. The canonical user record lives in the Auth (Gateway) block. `email`/`phone` here are optional denormalized routing fields; duplicates across users are allowed.
+
 **Endpoint:** `POST /users/:unique_id/register/`
 
 **Path Parameters:**
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| unique_id | string | Yes | The unique identifier of the user to register |
+| unique_id | string | Yes | The unique identifier of the user to register (`user_unique_id`) — the only validated field |
 
 **Request Body:**
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
 | display_name | string | No | Display name for the user |
-| email | string | No | Email address |
+| email | string | No | Denormalized routing field for the email notification channel — if blank, that channel is skipped. Duplicates across different `user_unique_id`s are valid |
 | avatar_url | string | No | URL to user avatar |
 | metadata | object | No | Additional metadata |
 

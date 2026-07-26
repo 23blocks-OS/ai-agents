@@ -121,7 +121,9 @@ curl -X GET "$BLOCKS_API_URL/users/student-uuid-123/" \
 
 ## POST /users/:unique_id/register/ - Register New User
 
-Registers a new user/student in the university system.
+Registers a new user/student in the university system. The `:unique_id` in the path is the user's `user_unique_id` from the Auth (Gateway) block and is the only required value.
+
+> **Note:** Block identity records are notification routing caches, not identity models. The canonical user record lives in the Auth (Gateway) block. `email`/`phone` here are optional denormalized routing fields; duplicates across users are allowed.
 
 **Request:**
 ```bash
@@ -142,10 +144,10 @@ curl -X POST "$BLOCKS_API_URL/users/student-uuid-123/register/" \
 **Request Parameters:**
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `email` | string | Yes | Student email |
-| `first_name` | string | Yes | First name |
-| `last_name` | string | Yes | Last name |
-| `phone` | string | No | Phone number |
+| `email` | string | No | Optional denormalized routing field; if blank, the block skips email notifications |
+| `first_name` | string | No | First name |
+| `last_name` | string | No | Last name |
+| `phone` | string | No | Optional denormalized routing field; if blank, the block skips SMS notifications |
 
 **Response 201:**
 ```json
@@ -167,7 +169,8 @@ curl -X POST "$BLOCKS_API_URL/users/student-uuid-123/register/" \
 ```
 
 **Errors:**
-- `422 Unprocessable Entity` - Validation errors (missing email, duplicate user)
+- `422 Unprocessable Entity` - Missing `user_unique_id`
+- `409 Conflict` - Duplicate registration of the same `user_unique_id`
 
 ---
 

@@ -1,6 +1,6 @@
 {
   "name": "sales-block",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "23blocks Sales Block - REST API for order management, subscriptions, payments, Stripe integration, MercadoPago, flexible orders, vendor payments, and sales reporting",
   "author": {
     "name": "23blocks",

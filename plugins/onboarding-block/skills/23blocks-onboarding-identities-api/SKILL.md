@@ -132,7 +132,9 @@ curl -X GET "$BLOCKS_API_URL/users/user-uuid-123" \
 
 ### POST /users/:unique_id/register/ - Register Identity
 
-Registers a new user identity in the onboarding system.
+Registers a new user identity in the onboarding system. The `user_unique_id` (the `:unique_id` path parameter) is the only required value.
+
+> **Note:** Block identity records are notification routing caches, not identity models. The canonical user record lives in the Auth (Gateway) block. `email`/`phone` here are optional denormalized routing fields; duplicates across users are allowed.
 
 **Request:**
 ```bash
@@ -151,7 +153,7 @@ curl -X POST "$BLOCKS_API_URL/users/user-uuid-123/register" \
 **Request Parameters:**
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `email` | string | Yes | User email |
+| `email` | string | No | Optional denormalized routing field; if blank, the block skips email notifications |
 | `display_name` | string | No | Display name |
 
 **Response 201:**
@@ -172,7 +174,7 @@ curl -X POST "$BLOCKS_API_URL/users/user-uuid-123/register" \
 ```
 
 **Errors:**
-- `422 Unprocessable Entity` - Validation errors
+- `422 Unprocessable Entity` - Missing `user_unique_id`
 
 ---
 
@@ -197,7 +199,7 @@ curl -X POST "$BLOCKS_API_URL/users/user-uuid-123/register/onboarding-uuid-456" 
 **Request Parameters:**
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `email` | string | Yes | User email |
+| `email` | string | No | Optional denormalized routing field; if blank, the block skips email notifications |
 | `display_name` | string | No | Display name |
 
 **Response 201:**
@@ -227,7 +229,7 @@ curl -X POST "$BLOCKS_API_URL/users/user-uuid-123/register/onboarding-uuid-456" 
 
 **Errors:**
 - `404 Not Found` - Onboarding not found
-- `422 Unprocessable Entity` - Validation errors
+- `422 Unprocessable Entity` - Missing `user_unique_id`
 
 ---
 

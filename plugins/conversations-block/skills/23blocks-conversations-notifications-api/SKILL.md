@@ -86,6 +86,7 @@ export BLOCKS_API_KEY="<your-api-key>"
 | status | string | Delivery status: `pending`, `delivered`, `failed` |
 | source_id | string | ID of the originating object |
 | source_type | string | Type of the originating object |
+| event_name | string | Business event name (e.g. `pcu_test_created`) used to select the notification template — the mailer falls back to `source_type` when blank |
 | metadata | object | Arbitrary key-value metadata |
 | created_at | datetime | Notification creation timestamp |
 

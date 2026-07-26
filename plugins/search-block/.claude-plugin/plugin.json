@@ -1,6 +1,6 @@
 {
   "name": "search-block",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "23blocks Search Block - REST API for full-text search, entity management, AI-powered vector search, AWS CloudSearch, email templates, and multi-tenant company management",
   "author": {
     "name": "23blocks",

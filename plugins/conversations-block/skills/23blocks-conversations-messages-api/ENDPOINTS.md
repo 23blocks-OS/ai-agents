@@ -77,7 +77,8 @@ Send a new message to a conversation.
 | attachments | array | No | Array of attachment objects |
 | metadata | object | No | Additional message metadata |
 | expires_at | string | No | ISO 8601 expiration timestamp |
-| idempotency_key | string | No | Client-provided key for deduplication |
+| idempotency_key | string | No | Client-provided deduplication key. Format: `[A-Za-z0-9:._-]`, 20-128 chars — composite keys like `<event>:<uuid>` are valid without sanitizing |
+| event_name | string | No | Identifies the business event (e.g. `pcu_test_created`). Selects which notification template renders the resulting email/SMS. Optional — falls back to `source_type` when omitted |
 | rag_sources | object | No | RAG retrieval source references (JSONB) |
 | actions | array | No | Inline message actions (see Message Actions API) |
 
@@ -126,7 +127,7 @@ curl -s -X POST "https://conversations.api.us.23blocks.com/conversations/conv_de
 
 **Idempotent Response (200 OK — duplicate):**
 
-When the same `idempotency_key` is sent again, the response includes `X-Idempotency-Status: duplicate` header and returns the existing message.
+When the same `idempotency_key` is sent again within 72 hours, the response includes `X-Idempotency-Status: duplicate` header and returns the original message. Dedup is keyed only on `idempotency_key` — the API does not dedup on message content, so identical bodies without a key are distinct messages. Send a stable `idempotency_key` per logical action for retry-safety.
 
 ---
 
@@ -144,7 +145,8 @@ curl -s -X POST "https://conversations.api.us.23blocks.com/conversations/conv_de
       "source": "usr_abc123",
       "content": "Do you approve this request?",
       "sender_role": "assistant",
-      "idempotency_key": "client_dedup_001",
+      "idempotency_key": "pcu_test_created:6f1d0c9a-2b34-4c56-8d78-90ab12cd34ef",
+      "event_name": "pcu_test_created",
       "expires_at": "2025-02-15T00:00:00Z",
       "rag_sources": {
         "documents": [

@@ -95,6 +95,8 @@ curl -X GET "$BLOCKS_API_URL/identities/user-uuid-123" \
 
 Registers a new user in the content system.
 
+> **Note:** Block identity records are notification routing caches, not identity models. The canonical user record lives in the Auth (Gateway) block. `email`/`phone` here are optional denormalized routing fields; duplicates across users are allowed.
+
 **Request:**
 ```bash
 curl -X POST "$BLOCKS_API_URL/identities/user-uuid-123/register" \
@@ -113,7 +115,8 @@ curl -X POST "$BLOCKS_API_URL/identities/user-uuid-123/register" \
 **Request Parameters:**
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `email` | string | Yes | User email |
+| `user_unique_id` | uuid | Yes | User unique ID (from the URL path `:unique_id`) — the only required value |
+| `email` | string | No | Optional denormalized routing field for notifications; if blank, the block skips the email channel. Duplicates across users are allowed |
 | `username` | string | No | Username |
 | `display_name` | string | No | Display name |
 
@@ -133,6 +136,9 @@ curl -X POST "$BLOCKS_API_URL/identities/user-uuid-123/register" \
   }
 }
 ```
+
+**Errors:**
+- `422 Unprocessable Entity` - Missing `user_unique_id`
 
 ---
 

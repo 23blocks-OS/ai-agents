@@ -68,6 +68,8 @@ export BLOCKS_API_KEY="<your-api-key>"
 
 ## Data Models
 
+> **Note:** Block identity records are notification routing caches, not identity models. The canonical user record lives in the Auth (Gateway) block. `email`/`phone` here are optional denormalized routing fields; duplicates across users are allowed. Customer registration in this block is keyed by `user_unique_id` only.
+
 ### Customer
 | Field | Type | Description |
 |-------|------|-------------|

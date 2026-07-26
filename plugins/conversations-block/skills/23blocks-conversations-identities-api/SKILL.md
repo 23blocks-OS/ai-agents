@@ -11,6 +11,8 @@ metadata:
 
 Manage user identities within the Conversations Block. Users must register their identity before accessing private endpoints. This skill also handles user status management and WebSocket token generation for real-time connectivity.
 
+> **Note:** Block identity records are notification routing caches, not identity models. The canonical user record lives in the Auth (Gateway) block. `email`/`phone` here are optional denormalized routing fields; duplicates across users are allowed. The only validated field at registration is `user_unique_id`.
+
 ## Required Environment Variables
 
 | Variable | Description | Example |
@@ -72,7 +74,7 @@ export BLOCKS_API_KEY="<your-api-key>"
 | Field | Type | Description |
 |-------|------|-------------|
 | unique_id | string | Unique identifier for the user |
-| email | string | User email address |
+| email | string | Optional denormalized routing field — if blank, the email notification channel is skipped |
 | display_name | string | User display name |
 | avatar_url | string | URL to user avatar image |
 | status | string | Current status: `online`, `away`, `busy`, `offline` |
@@ -110,7 +112,7 @@ export BLOCKS_API_KEY="<your-api-key>"
 }
 ```
 
-Common status codes: `401` Unauthorized, `404` Not Found, `422` Unprocessable Entity (user already registered).
+Common status codes: `401` Unauthorized, `404` Not Found, `409` Conflict (duplicate `user_unique_id` — user already registered), `422` Unprocessable Entity (missing `user_unique_id`).
 
 ---
 

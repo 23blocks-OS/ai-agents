@@ -86,7 +86,7 @@ export BLOCKS_API_KEY="<your-api-key>"
 | extended_data | object | Custom data attached via /extend |
 | metadata | object | Arbitrary key-value metadata |
 | expires_at | datetime | Message expiration timestamp (null = never expires) |
-| idempotency_key | string | Client-provided key for deduplication |
+| idempotency_key | string | Client-provided deduplication key (`[A-Za-z0-9:._-]`, 20-128 chars) |
 | rag_sources | object (JSONB) | RAG retrieval source references |
 | actions | array | Inline message actions (created with message) |
 | created_at | datetime | Message creation timestamp |
@@ -126,7 +126,15 @@ export BLOCKS_API_KEY="<your-api-key>"
 
 ### Idempotency
 
-Pass an `idempotency_key` when creating a message to prevent duplicates. If a message with the same key already exists, the API returns the existing message with status `200 OK` and header `X-Idempotency-Status: duplicate` instead of creating a new one.
+Pass an `idempotency_key` when creating a message to prevent duplicates. If a message with the same key was created within the last 72 hours, the API returns the original message with status `200 OK` and header `X-Idempotency-Status: duplicate` instead of creating a new one.
+
+- Accepted format (widened in realtime API v8.10.6 — not a breaking change): `[A-Za-z0-9:._-]`, 20-128 chars. Composite/namespaced keys like `<event>:<uuid>` are valid without sanitizing.
+- Dedup is keyed ONLY on `idempotency_key`. The API does not dedup on message content — identical bodies without a key are distinct messages.
+- Recommendation: send a stable `idempotency_key` per logical action for retry-safety.
+
+### Event Name
+
+Pass an optional `event_name` (string) when creating a message. It identifies the business event (e.g. `pcu_test_created`) and selects which notification template renders the resulting email/SMS. The mailer prefers `event_name` and falls back to `source_type` when omitted.
 
 ### Message Expiration
 

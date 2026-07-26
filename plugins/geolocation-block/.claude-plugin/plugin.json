@@ -1,6 +1,6 @@
 {
   "name": "geolocation-block",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "23blocks Geolocation Block - REST API for location management, addresses, premises, bookings, routes, regions, and geographic hierarchies (countries, states, cities)",
   "author": {
     "name": "23blocks",

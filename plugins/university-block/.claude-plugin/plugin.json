@@ -1,6 +1,6 @@
 {
   "name": "university-block",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "23blocks University Block - REST API for learning management with courses, subjects, lessons, assignments, tests, placement tests, coaching, teachers, students, attendance, and calendar management",
   "author": {
     "name": "23blocks",

@@ -1,6 +1,6 @@
 {
   "name": "products-block",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "23blocks Products Block - REST API for product catalog management including products, categories, brands, vendors, warehouses, carts, orders, stock, pricing, catalogs, collections, reviews, and promotions",
   "author": {
     "name": "23blocks",
