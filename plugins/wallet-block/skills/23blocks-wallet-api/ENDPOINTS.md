@@ -2,6 +2,21 @@
 
 Full endpoint documentation. See [SKILL.md](SKILL.md) for setup, data models, and SDK usage.
 
+## Contents
+
+- POST `/wallets/validate/`: Validate Wallet
+- GET `/users/:unique_id/wallets`: List User Wallets
+- GET `/users/:unique_id/wallets/:wallet_code`: Get Wallet Details
+- POST `/users/:unique_id/wallets/`: Create Wallet
+- PUT `/users/:unique_id/wallets/:wallet_code`: Update Wallet
+- POST `/users/:unique_id/wallets/:wallet_code`: Create Transaction
+- GET `/users/:unique_id/wallets/:wallet_code/transactions`: List Wallet Transactions
+- POST `/users/:unique_id/wallets/:wallet_code/transfer`: Transfer Between Wallets
+- GET `/users/:unique_id/wallets/:wallet_code/content`: List Wallet Content
+- PUT `/users/:unique_id/wallets/:wallet_code/content`: Store Content in Wallet
+- POST `/users/:unique_id/wallets/:wallet_code/otp`: Generate OTP Authorization Code
+- POST `/companies/:url_id/wallets/:wallet_code/transactions`: Transaction Webhook
+
 ---
 
 ## Endpoints

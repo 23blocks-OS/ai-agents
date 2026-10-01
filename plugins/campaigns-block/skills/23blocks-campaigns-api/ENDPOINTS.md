@@ -2,6 +2,24 @@
 
 Full endpoint documentation. See [SKILL.md](SKILL.md) for setup, data models, and SDK usage.
 
+## Contents
+
+- GET `/campaigns`: List Campaigns
+- GET `/campaigns/:unique_id`: Get Campaign
+- POST `/campaigns`: Create Campaign
+- PUT `/campaigns/:unique_id`: Update Campaign
+- DELETE `/campaigns/:unique_id`: Delete Campaign
+- GET `/campaigns/:unique_id/campaign_results`: Get Campaign Results
+- GET `/campaigns/:unique_id/campaign_markets`: List Campaign Markets
+- POST `/campaigns/:unique_id/campaign_markets`: Add Campaign Market
+- DELETE `/campaigns/:unique_id/campaign_markets/:market_id`: Remove Campaign Market
+- GET `/campaigns/:unique_id/campaign_locations`: List Campaign Locations
+- POST `/campaigns/:unique_id/campaign_locations`: Add Campaign Location
+- DELETE `/campaigns/:unique_id/campaign_locations/:location_id`: Remove Campaign Location
+- GET `/campaigns/:unique_id/campaign_targets`: List Campaign Targets
+- POST `/campaigns/:unique_id/campaign_targets`: Add Campaign Target
+- DELETE `/campaigns/:unique_id/campaign_targets/:target_id`: Remove Campaign Target
+
 ---
 
 ## Endpoints

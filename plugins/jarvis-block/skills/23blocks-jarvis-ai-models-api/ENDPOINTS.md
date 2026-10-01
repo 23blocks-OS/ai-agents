@@ -2,6 +2,21 @@
 
 Full endpoint documentation. See [SKILL.md](SKILL.md) for setup, data models, and SDK usage.
 
+## Contents
+
+- GET `/ai_models`: List AI Models
+- GET `/ai_models/:id`: Get AI Model
+- POST `/ai_models`: Create AI Model
+- PUT `/ai_models/:id`: Update AI Model
+- DELETE `/ai_models/:id`: Delete AI Model
+- GET `/llm_providers`: List LLM Providers
+- POST `/llm_providers`: Create LLM Provider
+- PUT `/llm_providers/:id`: Update LLM Provider
+- DELETE `/llm_providers/:id`: Delete LLM Provider
+- POST `/llm_providers/:id/validate`: Validate Provider
+- GET `/llm_providers/:id/vendor_models`: Get Vendor Models
+- GET `/vendors/:vendor/models`: Discover Vendor Models
+
 ---
 
 ## AI Models

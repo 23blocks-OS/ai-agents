@@ -2,6 +2,22 @@
 
 Full endpoint documentation. See [SKILL.md](SKILL.md) for setup, data models, and SDK usage.
 
+## Contents
+
+- GET `/prompts/:id/comments`: List Prompt Comments
+- GET `/prompts/:id/comments/:comment_id`: Get Comment
+- POST `/prompts/:id/comments`: Create Comment
+- PUT `/prompts/:id/comments/:comment_id`: Update Comment
+- DELETE `/prompts/:id/comments/:comment_id`: Delete Comment
+- PUT `/prompts/:id/comments/:comment_id/like`: Like Comment
+- DELETE `/prompts/:id/comments/:comment_id/dislike`: Remove Like
+- GET `/prompts/:id/executions/:exec_id/comments`: List Execution Comments
+- POST `/prompts/:id/executions/:exec_id/comments`: Create Execution Comment
+- PUT `/prompts/:id/executions/:exec_id/comments/:comment_id`: Update Execution Comment
+- DELETE `/prompts/:id/executions/:exec_id/comments/:comment_id`: Delete Execution Comment
+- PUT `/prompts/:id/executions/:exec_id/comments/:comment_id/like`: Like Execution Comment
+- DELETE `/prompts/:id/executions/:exec_id/comments/:comment_id/dislike`: Remove Like
+
 ---
 
 ## Prompt Comments

@@ -2,6 +2,25 @@
 
 Full endpoint documentation. See [SKILL.md](SKILL.md) for setup, data models, and SDK usage.
 
+## Contents
+
+- GET `/series`: List Series
+- POST `/series/query`: Query Series
+- GET `/series/:unique_id`: Get Series
+- POST `/series`: Create Series
+- PUT `/series/:unique_id`: Update Series
+- DELETE `/series/:unique_id`: Delete Series
+- PUT `/series/:unique_id/like`: Toggle Like
+- PUT `/series/:unique_id/dislike`: Toggle Dislike
+- PUT `/series/:unique_id/follow`: Follow Series
+- DELETE `/series/:unique_id/unfollow`: Unfollow Series
+- PUT `/series/:unique_id/save`: Save Series
+- DELETE `/series/:unique_id/unsave`: Unsave Series
+- GET `/series/:unique_id/posts`: List Series Posts
+- POST `/series/:unique_id/posts/:post_id`: Add Post to Series
+- DELETE `/series/:unique_id/posts/:post_id`: Remove Post from Series
+- PUT `/series/:unique_id/reorder`: Reorder Posts
+
 ---
 
 ## CRUD Endpoints

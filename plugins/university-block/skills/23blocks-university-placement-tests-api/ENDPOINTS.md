@@ -2,6 +2,13 @@
 
 Full endpoint documentation. See [SKILL.md](SKILL.md) for setup, data models, and SDK usage.
 
+## Contents
+
+- GET `/users/:unique_id/placement`: Get User Placement
+- POST `/users/:unique_id/placement/:placement_unique_id`: Start Placement
+- PUT `/users/:unique_id/placement/:placement_instance_unique_id`: Submit Response
+- PUT `/users/:unique_id/placement/:placement_instance_unique_id/finish`: Finish
+
 ---
 
 ## GET /placements/:unique_id - Get Test with Sections/Rules

@@ -2,6 +2,27 @@
 
 Full endpoint documentation. See [SKILL.md](SKILL.md) for setup, data models, and SDK usage.
 
+## Contents
+
+- GET `/configurations/`: List Coupon Configurations
+- GET `/configurations/:unique_id`: Get Configuration
+- GET `/configurations/:unique_id/coupons`: Get Configuration Coupons
+- POST `/configurations/`: Create Configuration
+- PUT `/configurations/`: Update Configuration
+- DELETE `/configurations/:unique_id`: Delete Configuration
+- POST `/configurations/:unique_id/one`: Generate Single Coupon
+- POST `/configurations/:unique_id/batch`: Generate Batch
+- PUT `/configurations/:unique_id/batches/:batch_id/void`: Void Batch
+- POST `/configurations/:unique_id/load`: Load Coupons
+- GET `/coupons`: List Coupons
+- GET `/coupons/:unique_id`: Get Coupon
+- POST `/coupons/`: Create Coupon
+- PUT `/coupons/:unique_id`: Update Coupon
+- PUT `/coupons/:unique_id/void`: Void Coupon
+- DELETE `/coupons/:unique_id`: Delete Coupon
+- POST `/coupon/preview`: Preview Redemption
+- POST `/coupon/redeem`: Redeem Coupon
+
 ---
 
 ## Configurations

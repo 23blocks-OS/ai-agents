@@ -2,6 +2,23 @@
 
 Full endpoint documentation. See [SKILL.md](SKILL.md) for setup, data models, and SDK usage.
 
+## Contents
+
+- GET `/workflows`: List Workflows
+- GET `/workflows/:id`: Get Workflow
+- POST `/workflows`: Create Workflow
+- PUT `/workflows/:id`: Update Workflow
+- DELETE `/workflows/:id`: Delete Workflow
+- GET `/workflows/:id/steps`: List Steps
+- GET `/workflows/:id/steps/:step_id`: Get Step
+- POST `/workflows/:id/steps`: Create Step
+- PUT `/workflows/:id/steps/:step_id`: Update Step
+- DELETE `/workflows/:id/steps/:step_id`: Delete Step
+- POST `/workflows/:id/steps/:step_id/prompts/:prompt_id`: Add Prompt to Step
+- DELETE `/workflows/:id/steps/:step_id/prompts/:prompt_id`: Remove Prompt from Step
+- POST `/workflows/:id/steps/:step_id/agents/:agent_id`: Add Agent to Step
+- DELETE `/workflows/:id/steps/:step_id/agents/:agent_id`: Remove Agent from Step
+
 ---
 
 ### GET /workflows - List Workflows

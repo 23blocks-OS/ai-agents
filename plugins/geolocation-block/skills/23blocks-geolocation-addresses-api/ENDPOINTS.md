@@ -2,6 +2,19 @@
 
 Full endpoint documentation. See [SKILL.md](SKILL.md) for setup, data models, and SDK usage.
 
+## Contents
+
+- GET `/addresses/:unique_id/`: Get Address
+- GET `/addresses/owned_by/:unique_id`: Get Addresses by Owner
+- POST `/addresses/`: Create Address
+- PUT `/addresses/:unique_id`: Update Address
+- DELETE `/addresses/:unique_id`: Delete Address
+- POST `/addresses/:unique_id/tags/`: Add Tag
+- DELETE `/addresses/:unique_id/tags/:tag_unique_id`: Remove Tag
+- GET `/users/:unique_id/addresses`: User Addresses
+- GET `/users/:unique_id/default`: User Default Address
+- GET `/contacts/:unique_id/addresses`: Contact Addresses
+
 ---
 
 ## Endpoints

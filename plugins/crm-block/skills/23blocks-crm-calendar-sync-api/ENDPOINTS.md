@@ -2,6 +2,24 @@
 
 Full endpoint documentation. See [SKILL.md](SKILL.md) for setup, data models, and SDK usage.
 
+## Contents
+
+- GET `/users/:user_unique_id/calendar_accounts`: List Calendar Accounts
+- GET `/users/:user_unique_id/calendar_accounts/:id`: Get Calendar Account
+- POST `/users/:user_unique_id/calendar_accounts`: Create Calendar Account
+- PUT `/users/:user_unique_id/calendar_accounts/:id`: Update Calendar Account
+- DELETE `/users/:user_unique_id/calendar_accounts/:id`: Delete Calendar Account
+- POST `/users/:user_unique_id/calendar/sync`: Sync User Calendar
+- POST `/calendar/sync`: Sync All Calendars
+- GET `/users/:user_unique_id/busy_blocks`: List Busy Blocks
+- POST `/users/:user_unique_id/busy_blocks`: Create Busy Block
+- DELETE `/users/:user_unique_id/busy_blocks/:id`: Delete Busy Block
+- GET `/users/:user_unique_id/ics_tokens`: List ICS Tokens
+- POST `/users/:user_unique_id/ics_tokens`: Create ICS Token
+- DELETE `/users/:user_unique_id/ics_tokens/:id`: Delete ICS Token
+- GET `/calendars/:company_url_id/ics/:token`: Public ICS Feed
+- POST `/calcom/:url_id/webhook`: Cal.com Webhook
+
 ---
 
 ## Calendar Account Endpoints

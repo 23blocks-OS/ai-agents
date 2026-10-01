@@ -2,6 +2,21 @@
 
 Full endpoint documentation. See [SKILL.md](SKILL.md) for setup, data models, and SDK usage.
 
+## Contents
+
+- GET `/locations/:unique_id/premises`: List Premises
+- GET `/locations/:unique_id/premises/:premise_unique_id`: Get Premise
+- POST `/locations/:unique_id/premises`: Create Premise
+- PUT `/locations/:unique_id/premises/:premise_unique_id`: Update Premise
+- DELETE `/locations/:unique_id/premises/:premise_unique_id`: Delete Premise
+- POST `/locations/:unique_id/premises/:premise_unique_id/tags`: Add Tag
+- DELETE `/locations/:unique_id/premises/:premise_unique_id/tags/:tag_unique_id`: Remove Tag
+- GET `/locations/:unique_id/premises/:premise_unique_id/events`: List Events
+- POST `/locations/:unique_id/premises/:premise_unique_id/events`: Create Event
+- GET `/areas/:unique_id`: Get Area
+- POST `/areas/:unique_id/tags/`: Add Tag to Area
+- DELETE `/areas/:unique_id/tags/:tag_unique_id`: Remove Tag from Area
+
 ---
 
 ## Endpoints

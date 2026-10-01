@@ -2,6 +2,19 @@
 
 Full endpoint documentation. See [SKILL.md](SKILL.md) for setup, data models, and SDK usage.
 
+## Contents
+
+- GET `/leads/`: List Leads
+- GET `/leads/:unique_id`: Get Lead
+- POST `/leads/`: Create Lead
+- PUT `/leads/:unique_id/`: Update Lead
+- DELETE `/leads/:unique_id/`: Delete Lead
+- GET `/leads/:unique_id/follows`: List Follows
+- GET `/leads/:unique_id/follows/:follow_unique_id`: Get Follow
+- POST `/leads/:unique_id/follows`: Create Follow
+- PUT `/leads/:unique_id/follows/:follow_unique_id`: Update Follow
+- DELETE `/leads/:unique_id/follows/:follow_unique_id`: Delete Follow
+
 ---
 
 ## Endpoints

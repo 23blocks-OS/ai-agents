@@ -2,6 +2,19 @@
 
 Full endpoint documentation. See [SKILL.md](SKILL.md) for setup, data models, and SDK usage.
 
+## Contents
+
+- GET `/users/:unique_id/attendance`: Student Attendance
+- POST `/users/:unique_id/attendance`: Register Student Attendance
+- GET `/teachers/:unique_id/attendance`: Teacher Attendance
+- POST `/teachers/:unique_id/attendance`: Register Teacher Attendance
+- GET `/users/:unique_id/availability`: Student Availability Slots
+- POST `/users/:unique_id/availability`: Add Student Availability
+- PUT `/users/:unique_id/availability/:availability_unique_id`: Update Availability
+- PUT `/users/:unique_id/availabilities/slots`: Bulk Update Availability
+- DELETE `/users/:unique_id/availability/:availability_unique_id`: Delete Availability
+- DELETE `/users/:unique_id/availability`: Delete All Availability
+
 ---
 
 ## Student Attendance

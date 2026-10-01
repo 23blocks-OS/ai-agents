@@ -55,7 +55,7 @@ Each block in the 23blocks ecosystem is autonomous. Before a user can access pri
 POST /users/:unique_id/register/
 ```
 
-This is a prerequisite for most operations. Always verify that the user has registered before attempting other API calls.
+This is a prerequisite for most operations: register a user once, before their first call to a private endpoint. There is no need to re-check registration before every call.
 
 ## Common Patterns
 

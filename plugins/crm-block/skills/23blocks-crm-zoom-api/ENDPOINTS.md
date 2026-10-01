@@ -2,6 +2,23 @@
 
 Full endpoint documentation. See [SKILL.md](SKILL.md) for setup, data models, and SDK usage.
 
+## Contents
+
+- GET `/users/:user_unique_id/meetings/:meeting_unique_id/zoom`: Get Zoom Meeting
+- POST `/users/:user_unique_id/meetings/:meeting_unique_id/zoom`: Create Zoom Meeting
+- PUT `/users/:user_unique_id/meetings/:meeting_unique_id/zoom`: Update Zoom Meeting
+- DELETE `/users/:user_unique_id/meetings/:meeting_unique_id/zoom`: Delete Zoom Meeting
+- GET `/users/:user_unique_id/zoom/availability`: User Zoom Availability
+- POST `/zoom/webhooks`: Zoom Webhook
+- GET `/zoom_hosts/available_users`: Available Zoom Users
+- GET `/zoom_hosts/`: List Zoom Hosts
+- GET `/zoom_hosts/:unique_id`: Get Zoom Host
+- POST `/zoom_hosts/`: Create Zoom Host
+- PUT `/zoom_hosts/:unique_id`: Update Zoom Host
+- DELETE `/zoom_hosts/:unique_id`: Delete Zoom Host
+- GET `/zoom_hosts/:unique_id/availability`: Host Availability
+- GET `/zoom_hosts/:unique_id/allocations`: Host Allocations
+
 ---
 
 ## Zoom Meeting Endpoints

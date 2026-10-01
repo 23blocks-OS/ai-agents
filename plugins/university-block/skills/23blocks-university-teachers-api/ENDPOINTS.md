@@ -2,6 +2,26 @@
 
 Full endpoint documentation. See [SKILL.md](SKILL.md) for setup, data models, and SDK usage.
 
+## Contents
+
+- GET `/teachers/:unique_id/coaching/active`: Active Coaching
+- GET `/teachers/:unique_id/coaching/matches`: All Matches
+- GET `/teachers/:unique_id/coaching/available`: Available Students
+- POST `/teachers/:unique_id/coachees/find`: Find Coachees
+- GET `/teachers/:unique_id/availability`: Get Availability
+- POST `/teachers/:unique_id/availability`: Add Availability
+- PUT `/teachers/:unique_id/availability/:availability_unique_id`: Update Availability
+- DELETE `/teachers/:unique_id/availability/:availability_unique_id`: Delete Availability
+- DELETE `/teachers/:unique_id/availability`: Delete All Availability
+- GET `/teachers/:unique_id/coaching_sessions`: Sessions
+- GET `/teachers/:unique_id/tests`: Tests
+- POST `/teachers/:unique_id/test/:test_unique_id`: Start Test
+- PUT `/teachers/:unique_id/test/:test_instance_unique_id`: Submit Response
+- PUT `/teachers/:unique_id/test/:test_instance_unique_id/finish`: Finish Test
+- GET `/teachers/:unique_id/attendance`: Attendance
+- POST `/teachers/:unique_id/attendance`: Register Attendance
+- PUT `/teachers/:unique_id/users/:user_unique_id/promote`: Promote Student
+
 ---
 
 ## GET /teachers/ - List Active Teachers

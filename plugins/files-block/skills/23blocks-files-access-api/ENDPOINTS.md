@@ -2,6 +2,23 @@
 
 Full endpoint documentation. See [SKILL.md](SKILL.md) for setup, data models, and SDK usage.
 
+## Contents
+
+- GET `/users/:unique_id/files/:unique_file_id/access`: Get File Access
+- POST `/users/:unique_id/files/:unique_file_id/access/grant`: Grant Access
+- DELETE `/users/:unique_id/files/:unique_file_id/access/:access_unique_id/revoke`: Revoke Access
+- POST `/users/:unique_id/files/:unique_file_id/access/make_public`: Make File Public
+- POST `/users/:unique_id/files/:unique_file_id/access/make_private`: Make File Private
+- POST `/users/:unique_id/files/access/grant`: Bulk Grant Access
+- POST `/users/:unique_id/files/access/revoke`: Bulk Revoke Access
+- POST `/users/:unique_id/files/access/grant-to-users`: Grant Access to Multiple Users
+- POST `/users/:unique_id/files/access/revoke-from-users`: Revoke Access from Multiple Users
+- GET `/users/:unique_id/access/summary`: Access Summary
+- POST `/users/:unique_id/files/:unique_file_id/requests/access`: Request Access
+- GET `/users/:unique_id/files/:unique_file_id/access/requests`: List Access Requests
+- PUT `/users/:unique_id/files/:unique_file_id/access/requests/:request_unique_id/approve`: Approve Request
+- DELETE `/users/:unique_id/files/:unique_file_id/access/requests/:request_unique_id/deny`: Deny Request
+
 ---
 
 ## Access Control Endpoints

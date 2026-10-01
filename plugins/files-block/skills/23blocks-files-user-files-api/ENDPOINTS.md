@@ -2,11 +2,26 @@
 
 Full endpoint documentation. See [SKILL.md](SKILL.md) for setup, data models, and SDK usage.
 
+## Contents
+
+- GET `/users/:unique_id/files`: List User Files
+- GET `/users/:unique_id/files/:unique_file_id`: Get File
+- PUT `/users/:unique_id/presign_upload`: Get Presigned URL
+- POST `/users/:unique_id/multipart_presign_upload`: Start Multipart Upload
+- POST `/users/:unique_id/multipart_complete_upload`: Complete Multipart Upload
+- POST `/users/:unique_id/files`: Create File
+- PUT `/users/:unique_id/files/:unique_file_id`: Update File
+- DELETE `/users/:unique_id/files/:unique_file_id`: Delete File
+- PUT `/users/:unique_id/files/:unique_file_id/approve`: Approve File
+- PUT `/users/:unique_id/files/:unique_file_id/reject`: Reject File
+- PUT `/users/:unique_id/files/:unique_file_id/publish`: Publish File
+- PUT `/users/:unique_id/files/:unique_file_id/unpublish`: Unpublish File
+
 ---
 
-## CRITICAL: File Upload `name` Field (Production Incident Fix)
+## File upload: `name` is the presign `file_name`
 
-The presign endpoints return a `file_name` (UUID-based S3 key). You **MUST** use this value as the `name` field when calling `POST /files`. Using the original filename causes **404 errors on download**. See the [SKILL.md](SKILL.md) CRITICAL section for the full correct flow.
+The presign endpoints return a `file_name` (UUID-based S3 key). Use this value as the `name` field when calling `POST /files`. Using the original filename causes **404 errors on download**. The full flow is in [SKILL.md](SKILL.md).
 
 ---
 
@@ -142,7 +157,7 @@ curl -X PUT "$BLOCKS_API_URL/users/$USER_ID/presign_upload?filename=document.pdf
 }
 ```
 
-> **CRITICAL:** Save `file_name` from this response. You MUST use it as the `name` field in `POST /files`.
+> Keep `file_name` from this response: it is the `name` field for `POST /files`.
 
 **Response 200 (with `?serialization=jsonapi`):**
 ```json
@@ -200,7 +215,7 @@ curl -X POST "$BLOCKS_API_URL/users/$USER_ID/multipart_presign_upload" \
 }
 ```
 
-> **CRITICAL:** Save `file_name` from this response. You MUST use it as the `name` field in `POST /files`.
+> Keep `file_name` from this response: it is the `name` field for `POST /files`.
 
 **Response 200 (with `?serialization=jsonapi`):**
 ```json
@@ -314,7 +329,7 @@ curl -X POST "$BLOCKS_API_URL/users/$USER_ID/files" \
 **Request Parameters:**
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `name` | string | Yes | **MUST be `file_name` from presign response** (UUID-based S3 key). Using any other value causes 404 on download. |
+| `name` | string | Yes | The `file_name` from the presign response (UUID-based S3 key). Any other value causes 404 on download. |
 | `original_name` | string | Yes | Original user filename (display only) |
 | `url` | string | Yes | S3 URL from presigned upload |
 | `file_type` | string | Yes | MIME type |

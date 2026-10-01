@@ -2,6 +2,30 @@
 
 Full endpoint documentation. See [SKILL.md](SKILL.md) for setup, data models, and SDK usage.
 
+## Contents
+
+- GET `/posts`: List Posts
+- POST `/posts/query`: Query Posts
+- GET `/posts/:unique_id`: Get Post
+- POST `/posts`: Create Post
+- PUT `/posts/:unique_id`: Update Post
+- PUT `/posts/:unique_id/replace`: Replace Post
+- DELETE `/posts/:unique_id`: Delete Post
+- PUT `/posts/:unique_id/like`: Like Post
+- DELETE `/posts/:unique_id/dislike`: Remove Like
+- PUT `/posts/:unique_id/follow`: Follow Post
+- DELETE `/posts/:unique_id/unfollow`: Unfollow Post
+- PUT `/posts/:unique_id/save`: Save Post
+- DELETE `/posts/:unique_id/unsave`: Unsave Post
+- PUT `/posts/:unique_id/own`: Change Owner
+- POST `/posts/:unique_id/versions/:version_id/publish`: Publish Version
+- GET `/posts/:post_unique_id/attachments`: List Attachments
+- POST `/posts/:post_unique_id/attachments`: Add Attachment
+- GET `/posts/:post_unique_id/attachments/:unique_id`: Get Attachment
+- PUT `/posts/:post_unique_id/attachments/:unique_id`: Update Attachment
+- DELETE `/posts/:post_unique_id/attachments/:unique_id`: Delete Attachment
+- PUT `/posts/:post_unique_id/attachments/reorder`: Reorder Attachments
+
 ---
 
 ## Endpoints

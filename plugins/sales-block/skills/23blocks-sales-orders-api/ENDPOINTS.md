@@ -2,6 +2,30 @@
 
 Full endpoint documentation. See [SKILL.md](SKILL.md) for setup, data models, and SDK usage.
 
+## Contents
+
+- GET `/orders/`: List Orders
+- GET `/orders/:unique_id`: Get Order
+- GET `/orders/:unique_id/payments`: Get Order Payments
+- POST `/orders/`: Create Order
+- PUT `/orders/:unique_id`: Update Order
+- POST `/orders/:unique_id/details`: Add Order Details
+- POST `/orders/:unique_id/tips/add`: Add Tip
+- POST `/orders/:unique_id/payments/method`: Set Payment Method
+- POST `/orders/:unique_id/payments/`: Create Payment
+- PUT `/orders/:unique_id/payments/:payment_unique_id/confirm`: Confirm Payment
+- PUT `/orders/:unique_id/status`: Update Order Status
+- PUT `/orders/:unique_id/details/:details_unique_id/status`: Update Detail Status
+- DELETE `/orders/:unique_id/cancel`: Cancel Order
+- POST `/orders/:unique_id/refund`: Refund Order
+- PUT `/orders/:unique_id/logistics`: Update Order Logistics
+- PUT `/orders/:unique_id/details/:details_unique_id/logistics`: Update Detail Logistics
+- POST `/orders/:unique_id/taxes`: Add Tax
+- PUT `/orders/:unique_id/taxes/:tax_unique_id`: Update Tax
+- DELETE `/orders/:unique_id/taxes/:tax_unique_id`: Delete Tax
+- GET `/users/:unique_id/orders`: List User Orders
+- GET `/users/:unique_id/orders/:order_unique_id`: Get User Order
+
 ---
 
 ## Order CRUD

@@ -2,6 +2,14 @@
 
 Full endpoint documentation. See [SKILL.md](SKILL.md) for setup, data models, and SDK usage.
 
+## Contents
+
+- GET `/:url_id/forms/public`: Get Form
+- POST `/:url_id/forms/public/send-otp`: Send OTP Code
+- POST `/:url_id/forms/public/verify-otp`: Verify OTP Code
+- POST `/:url_id/forms/public`: Submit Form
+- PATCH `/:url_id/forms/public`: Save Draft
+
 ---
 
 ## OTP Verification Flow

@@ -2,6 +2,25 @@
 
 Full endpoint documentation. See [SKILL.md](SKILL.md) for setup, data models, and SDK usage.
 
+## Contents
+
+- GET `/clusters`: List Clusters
+- GET `/clusters/:id`: Get Cluster
+- POST `/clusters`: Create Cluster
+- PUT `/clusters/:id`: Update Cluster
+- DELETE `/clusters/:id`: Delete Cluster
+- POST `/clusters/:id/members/:entity_id`: Add Member
+- DELETE `/clusters/:id/members/:entity_id`: Remove Member
+- GET `/clusters/:id/prompts`: List Cluster Prompts
+- POST `/clusters/:id/prompts/:prompt_id`: Add Prompt to Cluster
+- DELETE `/clusters/:id/prompts/:prompt_id`: Remove Prompt from Cluster
+- GET `/clusters/:id/contexts`: List Cluster Contexts
+- POST `/clusters/:id/contexts`: Create Cluster Context
+- GET `/clusters/:id/conversations`: List Cluster Conversations
+- POST `/clusters/:id/conversations`: Create Cluster Conversation
+- GET `/clusters/:id/conversations/:conv_id/messages`: List Cluster Messages
+- POST `/clusters/:id/conversations/:conv_id/messages`: Send Cluster Message
+
 ---
 
 ### GET /clusters - List Clusters

@@ -2,6 +2,21 @@
 
 Full endpoint documentation. See [SKILL.md](SKILL.md) for setup, data models, and SDK usage.
 
+## Contents
+
+- POST `/sources/:source_id/providers`: Assign Provider to Source
+- POST `/orders/:unique_id/details/:order_details_unique_id/providers`: Assign Provider to Detail
+- PUT `/orders/:unique_id/details/:order_details_unique_id/providers/:provider_unique_id`: Update Provider
+- POST `/orders/:unique_id/details/:detail_unique_id/vendors/:vendor_unique_id/payments`: Create Vendor Payment
+- PUT `/orders/:unique_id/details/:detail_unique_id/vendors/:vendor_unique_id/payments/:payment_unique_id`: Update Vendor Payment
+- PUT `/orders/:unique_id/details/:detail_unique_id/vendors/:vendor_unique_id/payments/:payment_unique_id/pay`: Execute Vendor Payment
+- DELETE `/orders/:unique_id/details/:detail_unique_id/vendors/:vendor_unique_id/payments/:payment_unique_id`: Delete Vendor Payment
+- GET `/payables/:payment_unique_id`: Get Payable
+- POST `/reports/vendors/payments/list`: Vendor Payment List Report
+- POST `/reports/vendors/payments/summary`: Vendor Payment Summary Report
+- POST `/reports/orders/providers/list`: Provider List Report
+- POST `/reports/orders/providers/summary`: Provider Summary Report
+
 ---
 
 ## Provider Assignment

@@ -1,6 +1,6 @@
 ---
 name: 23blocks-jarvis-agents-api
-description: Manage 23blocks Jarvis AI agents via REST API. Use when creating agents, configuring agent settings, assigning prompts to agents, binding entities to agents, or managing supervisor handoffs.
+description: "Jarvis agent definitions: CRUD, settings, prompts, entity bindings, supervisor handoffs. Use when creating or configuring an agent."
 allowed-tools: Read, Write, Bash, Grep, Glob
 metadata:
   author: 23blocks
@@ -11,43 +11,12 @@ metadata:
 
 Complete API reference for 23blocks Jarvis AI agent management with prompt assignments, entity bindings, and supervisor handoffs.
 
-## Required Environment Variables
+## Setup
 
-| Variable | Description | Example |
-|----------|-------------|---------|
-| `BLOCKS_API_URL` | Jarvis API base URL | `https://jarvis.api.us.23blocks.com` |
-| `BLOCKS_AUTH_TOKEN` | Bearer token — your identity & scopes (from login or AID token exchange) | `eyJhbGciOiJSUzI1NiJ9...` |
-| `BLOCKS_API_KEY` | Tenant routing key (X-API-KEY header) — static, from company config | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
+Send requests to `$BLOCKS_API_URL` (this block: `https://jarvis.api.us.23blocks.com`) with two headers:
 
-## Authentication
-
-**These two credentials serve different purposes and come from different sources:**
-
-| Credential | Purpose | Source | Changes? |
-|------------|---------|--------|----------|
-| `BLOCKS_API_KEY` | **Tenant routing** — identifies which company/app | Company config (static `pk_live_sh_...` key) | No — same key for all blocks |
-| `BLOCKS_AUTH_TOKEN` | **Identity & authorization** — who you are + what you can do | Login (`/auth/sign_in`), AID token exchange, or human-provided | Yes — expires, must be refreshed |
-
-> The API key used during AID registration is NOT the same as `BLOCKS_API_KEY`. The registration key authenticates the agent with the Auth API; `BLOCKS_API_KEY` routes requests to the correct tenant across all blocks.
-
-Two methods to obtain the Bearer token:
-
-**Method 1: Agent Identity (AID)** -- For AI agents with AMP identity:
-```bash
-export BLOCKS_AUTH_TOKEN=$(aid-token.sh -a https://auth.api.us.23blocks.com/<tenant> -q)
-export BLOCKS_API_URL="https://jarvis.api.us.23blocks.com"
-export BLOCKS_API_KEY="<your-api-key>"
-```
-> First time? See the `23blocks-auth-agent-identity-api` skill for setup.
-
-**Method 2: User Token** -- For human-provided credentials:
-```bash
-export BLOCKS_API_URL="https://jarvis.api.us.23blocks.com"
-export BLOCKS_AUTH_TOKEN="<your-bearer-token>"
-export BLOCKS_API_KEY="<your-api-key>"
-```
-
----
+- `X-API-KEY: $BLOCKS_API_KEY`: static tenant routing key (`pk_live_sh_...`) from the company config, the same for every block. It is not the key used to register an agent identity.
+- `Authorization: Bearer $BLOCKS_AUTH_TOKEN`: the caller's identity and scopes; it expires. Get it from login (`/auth/sign_in`), from the user, or, for an agent, with `aid-token.sh -a https://auth.api.us.23blocks.com/<tenant> -q` (first-time setup: the `23blocks-auth-agent-identity-api` skill).
 
 ## Prerequisites
 
@@ -63,416 +32,30 @@ curl -X POST "$BLOCKS_API_URL/identities/$USER_UNIQUE_ID/register" \
 
 > Self-registration (your own JWT) requires no special scope. Registering other users requires `identities:write`.
 
----
-
 ## Endpoints
 
-### GET /agents - List Agents
+Request and response detail for each endpoint: [ENDPOINTS.md](ENDPOINTS.md).
 
-Lists all AI agents with pagination.
-
-**Request:**
-```bash
-curl -X GET "$BLOCKS_API_URL/agents?page=1&records=20" \
-  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "X-API-KEY: $BLOCKS_API_KEY"
-```
-
-**Query Parameters:**
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `page` | integer | No | Page number (default: 1) |
-| `records` | integer | No | Items per page (default: 15) |
-
-**Response 200:**
-```json
-{
-  "data": [
-    {
-      "id": "agent-uuid-123",
-      "type": "agent",
-      "attributes": {
-        "unique_id": "agent-uuid-123",
-        "name": "Customer Support Bot",
-        "description": "Handles customer inquiries",
-        "system_prompt": "You are a helpful customer support agent.",
-        "status": "active",
-        "prompts_count": 3,
-        "entities_count": 2,
-        "created_at": "2025-01-10T10:30:00Z",
-        "updated_at": "2025-01-10T10:30:00Z"
-      }
-    }
-  ],
-  "meta": {
-    "totalPages": 3,
-    "totalRecords": 35
-  }
-}
-```
-
----
-
-### GET /agents/:id - Get Agent
-
-Retrieves a single agent by unique ID.
-
-**Request:**
-```bash
-curl -X GET "$BLOCKS_API_URL/agents/agent-uuid-123" \
-  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "X-API-KEY: $BLOCKS_API_KEY"
-```
-
-**Response 200:**
-```json
-{
-  "data": {
-    "id": "agent-uuid-123",
-    "type": "agent",
-    "attributes": {
-      "unique_id": "agent-uuid-123",
-      "name": "Customer Support Bot",
-      "description": "Handles customer inquiries",
-      "system_prompt": "You are a helpful customer support agent.",
-      "status": "active",
-      "prompts_count": 3,
-      "entities_count": 2,
-      "created_at": "2025-01-10T10:30:00Z"
-    },
-    "relationships": {
-      "prompts": {
-        "data": [
-          { "id": "prompt-uuid-1", "type": "prompt" }
-        ]
-      },
-      "entities": {
-        "data": [
-          { "id": "entity-uuid-1", "type": "entity" }
-        ]
-      }
-    }
-  }
-}
-```
-
-**Errors:**
-- `404 Not Found` - Agent not found
-
----
-
-### POST /agents - Create Agent
-
-Creates a new AI agent.
-
-**Request:**
-```bash
-curl -X POST "$BLOCKS_API_URL/agents" \
-  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "X-API-KEY: $BLOCKS_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "agent": {
-      "name": "Customer Support Bot",
-      "description": "Handles customer inquiries and resolves issues",
-      "system_prompt": "You are a helpful customer support agent. Be polite and thorough.",
-      "provider": "mistral",
-      "model": "mistral-small-latest"
-    }
-  }'
-```
-
-**Request Parameters:**
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `name` | string | Yes | Agent name |
-| `description` | string | No | Agent description |
-| `system_prompt` | string | No | System prompt for agent behavior |
-| `provider` | string | No | LLM provider: `openai` (default), `anthropic`, `google`, `mistral`, `perplexity`, `openai_compatible`, `custom` |
-| `model` | string | No | Model identifier for the provider (e.g., `gpt-4`, `mistral-small-latest`) |
-| `code` | string | No | Agent code/identifier |
-| `supervisor_user_uid` | uuid | No | User UID to assign as agent supervisor |
-| `status` | string | No | Agent status: `active`, `inactive` |
-
-**Response 201:**
-```json
-{
-  "data": {
-    "id": "agent-uuid-123",
-    "type": "agent",
-    "attributes": {
-      "unique_id": "agent-uuid-123",
-      "name": "Customer Support Bot",
-      "description": "Handles customer inquiries and resolves issues",
-      "system_prompt": "You are a helpful customer support agent. Be polite and thorough.",
-      "status": "active",
-      "created_at": "2025-01-12T10:30:00Z"
-    }
-  }
-}
-```
-
-**Errors:**
-- `422 Unprocessable Entity` - Validation errors
-
----
-
-### PUT /agents/:id - Update Agent
-
-Updates an existing agent.
-
-**Request:**
-```bash
-curl -X PUT "$BLOCKS_API_URL/agents/agent-uuid-123" \
-  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "X-API-KEY: $BLOCKS_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "agent": {
-      "name": "Updated Support Bot",
-      "system_prompt": "You are an expert support agent specializing in billing."
-    }
-  }'
-```
-
-**Response 200:**
-```json
-{
-  "data": {
-    "id": "agent-uuid-123",
-    "type": "agent",
-    "attributes": {
-      "unique_id": "agent-uuid-123",
-      "name": "Updated Support Bot",
-      "system_prompt": "You are an expert support agent specializing in billing.",
-      "updated_at": "2025-01-12T14:00:00Z"
-    }
-  }
-}
-```
-
----
-
-### DELETE /agents/:id - Delete Agent
-
-Deletes an agent.
-
-**Request:**
-```bash
-curl -X DELETE "$BLOCKS_API_URL/agents/agent-uuid-123" \
-  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "X-API-KEY: $BLOCKS_API_KEY"
-```
-
-**Response 204:** No content
-
-**Errors:**
-- `404 Not Found` - Agent not found
-
----
-
-## Agent Prompts
-
-### POST /agents/:id/prompts/:prompt_id - Add Prompt to Agent
-
-Assigns a prompt to an agent.
-
-**Request:**
-```bash
-curl -X POST "$BLOCKS_API_URL/agents/agent-uuid-123/prompts/prompt-uuid-456" \
-  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "X-API-KEY: $BLOCKS_API_KEY"
-```
-
-**Response 200:**
-```json
-{
-  "message": "Prompt added to agent successfully"
-}
-```
-
----
-
-### DELETE /agents/:id/prompts/:prompt_id - Remove Prompt from Agent
-
-Removes a prompt assignment from an agent.
-
-**Request:**
-```bash
-curl -X DELETE "$BLOCKS_API_URL/agents/agent-uuid-123/prompts/prompt-uuid-456" \
-  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "X-API-KEY: $BLOCKS_API_KEY"
-```
-
-**Response 200:**
-```json
-{
-  "message": "Prompt removed from agent successfully"
-}
-```
-
----
-
-## Agent Entities
-
-### POST /agents/:id/entities/:entity_id - Add Entity to Agent
-
-Binds a digital twin entity to an agent.
-
-**Request:**
-```bash
-curl -X POST "$BLOCKS_API_URL/agents/agent-uuid-123/entities/entity-uuid-789" \
-  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "X-API-KEY: $BLOCKS_API_KEY"
-```
-
-**Response 200:**
-```json
-{
-  "message": "Entity added to agent successfully"
-}
-```
-
----
-
-### DELETE /agents/:id/entities/:entity_id - Remove Entity from Agent
-
-Unbinds an entity from an agent.
-
-**Request:**
-```bash
-curl -X DELETE "$BLOCKS_API_URL/agents/agent-uuid-123/entities/entity-uuid-789" \
-  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "X-API-KEY: $BLOCKS_API_KEY"
-```
-
-**Response 200:**
-```json
-{
-  "message": "Entity removed from agent successfully"
-}
-```
-
----
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/agents` | List Agents |
+| GET | `/agents/:id` | Get Agent |
+| POST | `/agents` | Create Agent |
+| PUT | `/agents/:id` | Update Agent |
+| DELETE | `/agents/:id` | Delete Agent |
+| POST | `/agents/:id/prompts/:prompt_id` | Add Prompt to Agent (Agent Prompts) |
+| DELETE | `/agents/:id/prompts/:prompt_id` | Remove Prompt from Agent (Agent Prompts) |
+| POST | `/agents/:id/entities/:entity_id` | Add Entity to Agent (Agent Entities) |
+| DELETE | `/agents/:id/entities/:entity_id` | Remove Entity from Agent (Agent Entities) |
+| POST | `/agents/:id/context/:context_id/handoff` | Create Handoff (Supervisor Handoff) |
+| GET | `/agents/:id/context/:context_id/handoff` | List Handoffs (Supervisor Handoff) |
+| DELETE | `/agents/:id/context/:context_id/handoff/:delegation_id` | Revoke Handoff (Supervisor Handoff) |
 
 ## Context Creation Behavior
 
 When creating agent contexts, if no `members` array is provided, Jarvis auto-populates it from the JWT token (user_unique_id + user_email). The `members` parameter (array, optional) can be explicitly passed during context creation to override this default behavior.
 
-> **Validation (May 2026):** Context `unique_id` must be a valid UUID. Non-UUID values return 400.
-
----
-
-## Supervisor Handoff
-
-### POST /agents/:id/context/:context_id/handoff - Create Handoff
-
-Creates a supervisor handoff delegation for an agent context. Allows the supervisor to delegate agent management to another user.
-
-**Request:**
-```bash
-curl -X POST "$BLOCKS_API_URL/agents/agent-uuid-123/context/context-uuid-456/handoff" \
-  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "X-API-KEY: $BLOCKS_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "handoff": {
-      "delegate_user_uid": "user-uuid-789",
-      "permissions": ["read", "write", "execute"],
-      "expires_at": "2025-06-01T00:00:00Z"
-    }
-  }'
-```
-
-**Request Parameters:**
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `delegate_user_uid` | uuid | Yes | User UID to delegate to |
-| `access_type` | string | No | Access type for the handoff delegation |
-| `expires_in_hours` | integer | No | Number of hours until delegation expires |
-| `reason` | string | No | Reason for the handoff |
-| `permissions` | array | No | Permissions to grant: `read`, `write`, `execute` |
-| `expires_at` | timestamp | No | Delegation expiration time |
-
-**Response 201:**
-```json
-{
-  "data": {
-    "id": "delegation-uuid-001",
-    "type": "delegation",
-    "attributes": {
-      "unique_id": "delegation-uuid-001",
-      "agent_uid": "agent-uuid-123",
-      "context_uid": "context-uuid-456",
-      "delegate_user_uid": "user-uuid-789",
-      "permissions": ["read", "write", "execute"],
-      "status": "active",
-      "expires_at": "2025-06-01T00:00:00Z",
-      "created_at": "2025-01-12T10:30:00Z"
-    }
-  }
-}
-```
-
-**Errors:**
-- `422 Unprocessable Entity` - Validation errors
-- `403 Forbidden` - Not the agent supervisor
-
----
-
-### GET /agents/:id/context/:context_id/handoff - List Handoffs
-
-Lists all handoff delegations for an agent context.
-
-**Request:**
-```bash
-curl -X GET "$BLOCKS_API_URL/agents/agent-uuid-123/context/context-uuid-456/handoff" \
-  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "X-API-KEY: $BLOCKS_API_KEY"
-```
-
-**Response 200:**
-```json
-{
-  "data": [
-    {
-      "id": "delegation-uuid-001",
-      "type": "delegation",
-      "attributes": {
-        "unique_id": "delegation-uuid-001",
-        "agent_uid": "agent-uuid-123",
-        "context_uid": "context-uuid-456",
-        "delegate_user_uid": "user-uuid-789",
-        "permissions": ["read", "write", "execute"],
-        "status": "active",
-        "expires_at": "2025-06-01T00:00:00Z",
-        "created_at": "2025-01-12T10:30:00Z"
-      }
-    }
-  ]
-}
-```
-
----
-
-### DELETE /agents/:id/context/:context_id/handoff/:delegation_id - Revoke Handoff
-
-Revokes a supervisor handoff delegation.
-
-**Request:**
-```bash
-curl -X DELETE "$BLOCKS_API_URL/agents/agent-uuid-123/context/context-uuid-456/handoff/delegation-uuid-001" \
-  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "X-API-KEY: $BLOCKS_API_KEY"
-```
-
-**Response 204:** No content
-
-**Errors:**
-- `404 Not Found` - Delegation not found
-- `403 Forbidden` - Not the agent supervisor
-
----
+> Context `unique_id` must be a valid UUID; other values return 400.
 
 ## Data Models
 
@@ -493,44 +76,13 @@ curl -X DELETE "$BLOCKS_API_URL/agents/agent-uuid-123/context/context-uuid-456/h
 | `created_at` | timestamp | Creation time |
 | `updated_at` | timestamp | Last update |
 
----
+## Errors
 
-## Error Response Format
+JSON:API error objects, e.g. `{"errors":[{"status":"404","code":"not_found","title":"Agent Not Found","detail":"The requested agent could not be found."}]}`.
 
-```json
-{
-  "errors": [{
-    "status": "404",
-    "code": "not_found",
-    "title": "Agent Not Found",
-    "detail": "The requested agent could not be found."
-  }]
-}
-```
+## SDK (TypeScript)
 
----
-
-## SDK Usage (TypeScript)
-
-> **When building web apps, use the SDK instead of raw API calls.**
-
-### Installation
-
-```bash
-npm install @23blocks/block-jarvis
-```
-
-### Setup
-
-```typescript
-import { create23BlocksClient } from '@23blocks/sdk';
-
-const client = create23BlocksClient({
-  authToken: process.env.BLOCKS_AUTH_TOKEN!,
-  apiKey: process.env.BLOCKS_API_KEY!,
-  apiUrl: process.env.BLOCKS_API_URL!,
-});
-```
+For web apps, prefer the SDK to raw calls: `npm install @23blocks/block-jarvis`, then create a client with `create23BlocksClient({ authToken, apiKey, apiUrl })` from `@23blocks/sdk`; in React, `const { client } = useJarvisBlock()` from `@23blocks/react`.
 
 ### Available Methods
 
@@ -557,17 +109,4 @@ import type {
   AddAgentPromptRequest,
   AddAgentEntityRequest,
 } from '@23blocks/block-jarvis';
-```
-
-### React Hook
-
-```typescript
-import { useJarvisBlock } from '@23blocks/react';
-
-function MyComponent() {
-  const { client } = useJarvisBlock();
-
-  // Example: list all agents
-  const result = await client.jarvis.agents.list();
-}
 ```

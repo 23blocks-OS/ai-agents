@@ -2,6 +2,18 @@
 
 Full endpoint documentation. See [SKILL.md](SKILL.md) for setup, data models, and SDK usage.
 
+## Contents
+
+- GET `/teams`: List Teams
+- GET `/teams/:unique_id`: Get Team
+- GET `/teams/:unique_id/members`: List Team Members
+- POST `/teams`: Create Team
+- PUT `/teams/:unique_id`: Update Team
+- DELETE `/teams/:unique_id`: Delete Team
+- POST `/teams/:unique_id/join`: Join Team
+- DELETE `/teams/:unique_id/members/:user_unique_id`: Remove Member
+- GET `/users/:unique_id/teams`: Get User's Teams
+
 ---
 
 ## Endpoints

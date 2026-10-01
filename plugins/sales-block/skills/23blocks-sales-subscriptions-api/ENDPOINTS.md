@@ -2,6 +2,31 @@
 
 Full endpoint documentation. See [SKILL.md](SKILL.md) for setup, data models, and SDK usage.
 
+## Contents
+
+- GET `/subscription_models/`: List Models
+- GET `/subscription_models/:unique_id`: Get Model
+- POST `/subscription_models/`: Create Model
+- PUT `/subscription_models/:unique_id`: Update Model
+- GET `/users/:user_unique_id/subscriptions/`: List User Subscriptions
+- GET `/users/:user_unique_id/subscriptions/:subscription_unique_id/`: Get User Subscription
+- POST `/users/:user_unique_id/subscriptions/:subscription_unique_id/`: Create User Subscription
+- PUT `/users/:user_unique_id/subscriptions/:subscription_unique_id/`: Update User Subscription
+- POST `/users/:user_unique_id/subscriptions/:subscription_unique_id/consumption`: Record Consumption
+- PUT `/users/:user_unique_id/subscriptions/:subscription_unique_id/cancel`: Cancel Subscription
+- DELETE `/users/:user_unique_id/subscriptions/:subscription_unique_id/`: Delete Subscription
+- POST `/entities/:unique_id/subscriptions/`: Create Entity Subscription
+- PUT `/entities/:unique_id/subscriptions/:subscription_unique_id`: Update Entity Subscription
+- POST `/subscriptions`: Create Account Subscription
+- GET `/subscriptions/:subscription_unique_id`: Get Account Subscription
+- DELETE `/subscriptions/:subscription_unique_id`: Delete Account Subscription
+- GET `/subscriptions/:subscription_unique_id/items`: List Subscription Items
+- POST `/subscriptions/:subscription_unique_id/items`: Add Subscription Item
+- DELETE `/subscriptions/:subscription_unique_id/items/:item_unique_id`: Remove Item
+- POST `/purchases`: Create Purchase
+- POST `/reports/users/subscriptions/list`: Subscription List Report
+- POST `/reports/users/subscriptions/summary`: Subscription Summary Report
+
 ---
 
 ## Subscription Models

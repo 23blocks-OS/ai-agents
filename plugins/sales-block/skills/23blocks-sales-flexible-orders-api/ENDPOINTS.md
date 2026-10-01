@@ -2,6 +2,25 @@
 
 Full endpoint documentation. See [SKILL.md](SKILL.md) for setup, data models, and SDK usage.
 
+## Contents
+
+- GET `/flexible_orders/`: List Flexible Orders
+- GET `/flexible_orders/:unique_id`: Get Flexible Order
+- POST `/flexible_orders/`: Create Flexible Order
+- PUT `/flexible_orders/:unique_id`: Update Flexible Order
+- POST `/flexible_orders/:unique_id/details`: Add Details
+- POST `/flexible_orders/:unique_id/tips/add`: Add Tip
+- POST `/flexible_orders/:unique_id/payments/method`: Set Payment Method
+- POST `/flexible_orders/:unique_id/payments/`: Create Payment
+- PUT `/flexible_orders/:unique_id/payments/:payment_unique_id/confirm`: Confirm Payment
+- PUT `/flexible_orders/:unique_id/status`: Update Status
+- PUT `/flexible_orders/:unique_id/details/:details_unique_id/status`: Update Detail Status
+- DELETE `/flexible_orders/:unique_id/cancel`: Cancel
+- POST `/flexible_orders/:unique_id/refund`: Refund
+- PUT `/flexible_orders/:unique_id/logistics`: Update Logistics
+- PUT `/flexible_orders/:unique_id/details/:details_unique_id/logistics`: Update Detail Logistics
+- POST `/reports/flexible_orders/summary`: Flexible Order Summary Report
+
 ---
 
 ## Flexible Order CRUD

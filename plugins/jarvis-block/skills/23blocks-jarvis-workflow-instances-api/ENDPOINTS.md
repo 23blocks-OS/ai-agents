@@ -2,6 +2,20 @@
 
 Full endpoint documentation. See [SKILL.md](SKILL.md) for setup, data models, and SDK usage.
 
+## Contents
+
+- POST `/workflows/:id/instances`: Start Instance
+- GET `/workflows/:id/instances/:inst_id`: Get Instance
+- POST `/workflows/:id/instances/:inst_id/step`: Advance Step
+- GET `/workflows/:id/instances/:inst_id/log`: Get Execution Log
+- PUT `/workflows/:id/instances/:inst_id/suspend`: Suspend Instance
+- PUT `/workflows/:id/instances/:inst_id/resume`: Resume Instance
+- POST `/workflows/:id/instances/:inst_id/steps/:step_id/execute`: Execute Step
+- GET `/workflows/:id/instances/:inst_id/next_steps`: Get Next Steps
+- GET `/workflows/:id/instances/:inst_id/participants`: List Participants
+- POST `/workflows/:id/instances/:inst_id/participants`: Add Participant
+- DELETE `/workflows/:id/instances/:inst_id/participants/:part_id`: Remove Participant
+
 ---
 
 ### POST /workflows/:id/instances - Start Instance

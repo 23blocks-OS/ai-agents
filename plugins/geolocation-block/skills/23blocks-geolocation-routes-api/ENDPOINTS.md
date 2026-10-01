@@ -2,6 +2,18 @@
 
 Full endpoint documentation. See [SKILL.md](SKILL.md) for setup, data models, and SDK usage.
 
+## Contents
+
+- GET `/routes`: List Routes
+- GET `/routes/:unique_id/`: Get Route
+- POST `/routes/`: Create Route
+- PUT `/routes/:unique_id/`: Update Route
+- DELETE `/routes/:unique_id/`: Delete Route
+- POST `/routes/:unique_id/locations`: Add Location to Route
+- POST `/routes/:unique_id/users`: Assign User to Route
+- GET `/users/:unique_id/routes`: User Routes
+- POST `/users/:unique_id/routes/:route_unique_id/tracker/location`: Track Location
+
 ---
 
 ## Endpoints

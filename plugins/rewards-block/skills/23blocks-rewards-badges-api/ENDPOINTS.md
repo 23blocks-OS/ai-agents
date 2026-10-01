@@ -2,6 +2,18 @@
 
 Full endpoint documentation. See [SKILL.md](SKILL.md) for setup, data models, and SDK usage.
 
+## Contents
+
+- GET `/badges`: List Badges
+- GET `/badges/:unique_id`: Get Badge
+- POST `/badges/`: Create Badge
+- PUT `/badges/`: Update Badge
+- DELETE `/badges/`: Delete Badge
+- POST `/badges/:unique_id/categories`: Assign Category
+- POST `/badge/`: Award Badge to User
+- GET `/categories/`: List Badge Categories
+- POST `/categories/`: Create Category
+
 ---
 
 ## Endpoints

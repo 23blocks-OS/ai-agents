@@ -2,6 +2,21 @@
 
 Full endpoint documentation. See [SKILL.md](SKILL.md) for setup, data models, and SDK usage.
 
+## Contents
+
+- GET `/agents/:id/context`: Get Agent Context
+- GET `/agents/:id/threads`: List Threads
+- GET `/agents/:id/threads/:thread_id`: Get Thread
+- POST `/agents/:id/threads`: Create Thread
+- DELETE `/agents/:id/threads/:thread_id`: Delete Thread
+- GET `/agents/:id/threads/:thread_id/messages`: List Messages
+- POST `/agents/:id/threads/:thread_id/messages`: Send Message
+- POST `/agents/:id/threads/:thread_id/messages/stream`: Stream Message
+- POST `/agents/:id/threads/:thread_id/runs`: Create Run
+- GET `/agents/:id/threads/:thread_id/runs`: List Runs
+- GET `/agents/:id/threads/:thread_id/runs/:run_id`: Get Run
+- GET `/agents/:id/threads/:thread_id/runs/:run_id/executions`: List Run Executions
+
 ---
 
 ## Agent Context

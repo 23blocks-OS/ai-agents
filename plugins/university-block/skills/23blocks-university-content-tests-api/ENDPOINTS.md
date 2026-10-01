@@ -2,6 +2,13 @@
 
 Full endpoint documentation. See [SKILL.md](SKILL.md) for setup, data models, and SDK usage.
 
+## Contents
+
+- GET `/users/:unique_id/tests`: User Tests
+- POST `/users/:unique_id/test/:test_unique_id`: Start Test
+- PUT `/users/:unique_id/test/:test_instance_unique_id`: Submit Response
+- PUT `/users/:unique_id/test/:test_instance_unique_id/finish`: Finish Test
+
 ---
 
 ## GET /tests - List Tests

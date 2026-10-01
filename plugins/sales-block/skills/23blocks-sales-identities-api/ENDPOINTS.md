@@ -2,6 +2,17 @@
 
 Full endpoint documentation. See [SKILL.md](SKILL.md) for setup, data models, and SDK usage.
 
+## Contents
+
+- GET `/users/`: List Users
+- GET `/users/:unique_id/`: Get User
+- POST `/users/:unique_id/register/`: Register User
+- PUT `/users/:unique_id/`: Update User
+- GET `/entities/`: List Entities
+- POST `/entities/:unique_id/register/`: Register Entity
+- GET `/customers/:unique_id/`: Get Customer
+- POST `/customers/:unique_id/register/`: Register Customer
+
 ---
 
 ## User Endpoints

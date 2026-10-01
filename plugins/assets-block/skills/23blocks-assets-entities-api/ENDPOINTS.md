@@ -2,6 +2,22 @@
 
 Full endpoint documentation. See [SKILL.md](SKILL.md) for setup, data models, and SDK usage.
 
+## Contents
+
+- GET `/entities/`: List Entities
+- GET `/entities/:unique_id/`: Get Entity
+- POST `/entities/`: Create Entity
+- PUT `/entities/:unique_id`: Update Entity
+- DELETE `/entities/:unique_id`: Delete Entity
+- GET `/entities/:unique_id/accesses`: List Accesses
+- POST `/entities/:unique_id/requests/access`: Request Access
+- POST `/entities/:unique_id/access/make_public`: Make Public
+- GET `/entities/:unique_id/access`: Get Access List
+- DELETE `/entities/:unique_id/access/:access_unique_id/revoke`: Revoke Access
+- GET `/entities/:unique_id/access/requests`: List Access Requests
+- PUT `/entities/:unique_id/access/requests/:request_unique_id/approve`: Approve Request
+- DELETE `/entities/:unique_id/access/requests/:request_unique_id/deny`: Deny Request
+
 ---
 
 ## CRUD Endpoints

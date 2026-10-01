@@ -2,6 +2,23 @@
 
 Full endpoint documentation. See [SKILL.md](SKILL.md) for setup, data models, and SDK usage.
 
+## Contents
+
+- GET `/contacts/`: List Contacts
+- GET `/contacts/:unique_id`: Get Contact
+- GET `/contacts/trash/show`: Trashed Contacts
+- POST `/contacts/`: Create Contact
+- POST `/contacts/:unique_id/history`: Add History
+- PUT `/contacts/:unique_id/`: Update Contact
+- POST `/contacts/:unique_id/profile`: Add Profile
+- PUT `/contacts/:unique_id/profile`: Update Profile
+- DELETE `/contacts/:unique_id/`: Delete Contact
+- DELETE `/contacts/:unique_id/archive`: Archive Contact
+- GET `/contacts/:unique_id/documents`: List Documents
+- POST `/contacts/:unique_id/documents`: Upload Document
+- DELETE `/contacts/:unique_id/documents/:unique_document_id`: Delete Document
+- PUT `/contacts/:contact_unique_id/presign_document`: Presign Document
+
 ---
 
 ## Endpoints

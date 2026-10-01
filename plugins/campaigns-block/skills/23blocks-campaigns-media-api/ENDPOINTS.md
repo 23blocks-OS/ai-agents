@@ -2,6 +2,18 @@
 
 Full endpoint documentation. See [SKILL.md](SKILL.md) for setup, data models, and SDK usage.
 
+## Contents
+
+- GET `/media`: List Media
+- GET `/media/:unique_id`: Get Media
+- POST `/media`: Create Media
+- PUT `/media/:unique_id`: Update Media
+- DELETE `/media/:unique_id`: Delete Media
+- GET `/campaign_media`: List Campaign Media
+- POST `/campaign_media`: Assign Media to Campaign
+- DELETE `/campaign_media/:unique_id`: Remove Media from Campaign
+- GET `/campaign_media_results`: Get Media Performance Results
+
 ---
 
 ## Media Endpoints

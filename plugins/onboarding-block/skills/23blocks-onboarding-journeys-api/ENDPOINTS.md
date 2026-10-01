@@ -2,6 +2,16 @@
 
 Full endpoint documentation. See [SKILL.md](SKILL.md) for setup, data models, and SDK usage.
 
+## Contents
+
+- POST `/onboard/:unique_id/start`: Start Journey
+- GET `/onboard/:unique_id`: Get Journey Status
+- GET `/onboard/:unique_id/details`: Get Detailed Journey with Logs
+- PUT `/onboard/:unique_id`: Progress to Next Step
+- PUT `/onboard/:unique_id/log`: Log Step Without Progressing
+- PUT `/onboard/:unique_id/suspend`: Suspend Journey
+- PUT `/onboard/:unique_id/resume`: Resume Journey
+
 ---
 
 ## Endpoints

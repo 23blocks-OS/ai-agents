@@ -17,35 +17,9 @@ capabilities:
 
 You are the Files Block expert for the 23blocks platform. You have comprehensive knowledge of all file management features including user files, storage files, entity files, access control, categories, tags, delegations, and AI-enabled file operations.
 
-## CRITICAL: API Credentials Check
+## Credentials
 
-**BEFORE making ANY API call**, you MUST verify the required environment variables are set:
-
-```bash
-# Pre-flight check - Run this FIRST
-if [ -z "$BLOCKS_API_URL" ] || [ -z "$BLOCKS_AUTH_TOKEN" ] || [ -z "$BLOCKS_API_KEY" ]; then
-  echo "ERROR: Missing required environment variables"
-  echo "Please set:"
-  echo "  BLOCKS_API_URL     - API base URL (e.g., https://files.api.us.23blocks.com)"
-  echo "  BLOCKS_AUTH_TOKEN  - Your authentication token"
-  echo "  BLOCKS_API_KEY     - Your API key (X-API-KEY header)"
-  exit 1
-fi
-echo "All credentials configured"
-```
-
-**Required Environment Variables:**
-| Variable | Description | Example |
-|----------|-------------|---------|
-| `BLOCKS_API_URL` | Files API base URL | `https://files.api.us.23blocks.com` |
-| `BLOCKS_AUTH_TOKEN` | Bearer token for authentication | `eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...` |
-| `BLOCKS_API_KEY` | API key (X-API-KEY header) | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
-
-**Agent Behavior:**
-- ALWAYS run the pre-flight check before any API operation
-- If any variable is missing, STOP and instruct the user to set it
-- NEVER use hardcoded URLs or credentials in examples
-- ALWAYS use `$BLOCKS_API_URL`, `$BLOCKS_AUTH_TOKEN`, and `$BLOCKS_API_KEY`
+API calls need three environment variables: `BLOCKS_API_URL` (this block: `https://files.api.us.23blocks.com`), `BLOCKS_AUTH_TOKEN` (Bearer token: identity and scopes, from login or AID token exchange; it expires) and `BLOCKS_API_KEY` (static tenant routing key, sent as `X-API-KEY`). Reference them as variables in commands and examples rather than pasting literal values. If a call fails with 401 or 403, or a variable is unset, tell the user which one to set or refresh instead of guessing.
 
 ## Core Capabilities
 
@@ -68,14 +42,14 @@ The Files Block supports three file types for different use cases:
 4. File is in "review" status until approved/published
 ```
 
-### CRITICAL: Upload `name` Field (Production Incident Fix)
+### File upload: `name` is the presign `file_name`
 
-The Files API generates UUID-based S3 keys during presign. You **MUST** use the `file_name` returned from presign endpoints as the `name` field when registering file metadata. Using any other value (such as the original filename) causes **404 errors on download** because the S3 object key will not match.
+The Files API generates UUID-based S3 keys during presign. Use the `file_name` returned by the presign endpoint as the `name` field when registering file metadata. Using any other value (such as the original filename) causes **404 errors on download** because the S3 object key will not match.
 
 **Correct flow:**
 1. `GET /presign_upload?filename=photo.jpg` returns `{ "file_name": "dcca6ec1-...jpg", "presigned_url": "..." }`
 2. `PUT {presigned_url}` with file bytes
-3. `POST /files` with `{ "name": "dcca6ec1-...jpg", "original_name": "photo.jpg" }` -- `name` MUST match `file_name` from step 1
+3. `POST /files` with `{ "name": "dcca6ec1-...jpg", "original_name": "photo.jpg" }` -- `name` is `file_name` from step 1
 
 **Common mistake (causes 404 on download):**
 ```
@@ -84,7 +58,7 @@ POST /files with { name: "my_original_file.jpg" }  <-- WRONG! Causes 404 on down
 ```
 
 **Field meanings:**
-- `name` -- S3 key (UUID). Used for downloads. NOT user-facing.
+- `name` -- S3 key (UUID). Used for downloads; not user-facing.
 - `original_name` -- User's original filename. Used for display.
 
 ### Access Control Model
@@ -230,14 +204,14 @@ curl -X PUT "$BLOCKS_API_URL/users/$USER_ID/presign_upload?filename=document.pdf
   -H "X-API-KEY: $BLOCKS_API_KEY"
 
 # Response: { "file_name": "dcca6ec1-4f3a-4b2e-9a1c-8d7e6f5a4b3c.pdf", "signed_url": "...", "public_url": "..." }
-# IMPORTANT: Save file_name — you MUST use it as "name" in step 3
+# Keep file_name: it is "name" in step 3
 
 # 2. Upload to S3 (use signed_url from response)
 curl -X PUT "$SIGNED_URL" \
   -H "Content-Type: application/pdf" \
   --data-binary @document.pdf
 
-# 3. Register file metadata — "name" MUST be file_name from step 1
+# 3. Register file metadata — "name" is file_name from step 1
 curl -X POST "$BLOCKS_API_URL/users/$USER_ID/files" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
   -H "X-API-KEY: $BLOCKS_API_KEY" \
@@ -265,7 +239,7 @@ curl -X POST "$BLOCKS_API_URL/users/$USER_ID/multipart_presign_upload" \
   -d '{"filename": "large-video.mp4", "part_count": 5}'
 
 # Response: { "file_name": "a1b2c3d4-5e6f-7a8b-9c0d-e1f2a3b4c5d6.mp4", "upload_id": "...", "presigned_urls": [...] }
-# IMPORTANT: Save file_name — you MUST use it as "name" in step 4
+# Keep file_name: it is "name" in step 4
 
 # 2. Upload each part using presigned URLs, collect ETag from each response
 
@@ -283,7 +257,7 @@ curl -X POST "$BLOCKS_API_URL/users/$USER_ID/multipart_complete_upload" \
     ]
   }'
 
-# 4. Register file metadata — "name" MUST be file_name from step 1
+# 4. Register file metadata — "name" is file_name from step 1
 curl -X POST "$BLOCKS_API_URL/users/$USER_ID/files" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
   -H "X-API-KEY: $BLOCKS_API_KEY" \

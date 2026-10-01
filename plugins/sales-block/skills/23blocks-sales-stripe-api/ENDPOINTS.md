@@ -2,6 +2,21 @@
 
 Full endpoint documentation. See [SKILL.md](SKILL.md) for setup, data models, and SDK usage.
 
+## Contents
+
+- POST `/stripe/customers`: Create Stripe Customer
+- POST `/stripe/customers/:unique_id/portal`: Customer Portal
+- POST `/stripe/sessions`: Create Checkout Session
+- GET `/stripe/sessions/:session_id`: Get Session
+- POST `/stripe/payments`: Create Payment
+- POST `/stripe/:url_id/webhook`: Stripe Webhook
+- GET `/stripe/webhooks`: List Webhooks
+- POST `/stripe/webhooks`: Create Webhook
+- GET `/stripe/subscriptions`: List Stripe Subscriptions
+- POST `/stripe/subscriptions`: Create Stripe Subscription
+- PUT `/stripe/subscriptions/:stripe_subscription_id`: Update Subscription
+- DELETE `/stripe/subscriptions/:stripe_subscription_id`: Cancel Subscription
+
 ---
 
 ## Customers

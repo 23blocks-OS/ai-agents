@@ -1,6 +1,6 @@
 ---
 name: 23blocks-company-teams-api
-description: Create and manage 23blocks company teams via REST API. Use when creating, updating, or deleting teams, managing team membership (join, remove, list members), or querying user team associations.
+description: "Company Block teams: CRUD, join, members, a user's teams. Use for org-chart teams; access-control teams are 23blocks-auth-teams-api."
 allowed-tools: Read, Write, Bash, Grep, Glob
 metadata:
   author: 23blocks
@@ -13,42 +13,12 @@ metadata:
 
 Complete API reference for 23blocks company team management with membership.
 
-## Required Environment Variables
+## Setup
 
-| Variable | Description | Example |
-|----------|-------------|---------|
-| `BLOCKS_API_URL` | Company API base URL | `https://company.api.us.23blocks.com` |
-| `BLOCKS_AUTH_TOKEN` | Bearer token — your identity & scopes (from login or AID token exchange) | `eyJhbGciOiJSUzI1NiJ9...` |
-| `BLOCKS_API_KEY` | Tenant routing key (X-API-KEY header) — static, from company config | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
+Send requests to `$BLOCKS_API_URL` (this block: `https://company.api.us.23blocks.com`) with two headers:
 
-## Authentication
-
-**These two credentials serve different purposes and come from different sources:**
-
-| Credential | Purpose | Source | Changes? |
-|------------|---------|--------|----------|
-| `BLOCKS_API_KEY` | **Tenant routing** — identifies which company/app | Company config (static `pk_live_sh_...` key) | No — same key for all blocks |
-| `BLOCKS_AUTH_TOKEN` | **Identity & authorization** — who you are + what you can do | Login (`/auth/sign_in`), AID token exchange, or human-provided | Yes — expires, must be refreshed |
-
-> The API key used during AID registration is NOT the same as `BLOCKS_API_KEY`. The registration key authenticates the agent with the Auth API; `BLOCKS_API_KEY` routes requests to the correct tenant across all blocks.
-
-Two methods to obtain the Bearer token:
-
-**Method 1: Agent Identity (AID)** -- For AI agents with AMP identity:
-```bash
-export BLOCKS_AUTH_TOKEN=$(aid-token.sh -a https://auth.api.us.23blocks.com/<tenant> -q)
-export BLOCKS_API_URL="https://company.api.us.23blocks.com"
-export BLOCKS_API_KEY="<your-api-key>"
-```
-> First time? See the `23blocks-auth-agent-identity-api` skill for setup.
-
-**Method 2: User Token** -- For human-provided credentials:
-```bash
-export BLOCKS_API_URL="https://company.api.us.23blocks.com"
-export BLOCKS_AUTH_TOKEN="<your-bearer-token>"
-export BLOCKS_API_KEY="<your-api-key>"
-```
-
+- `X-API-KEY: $BLOCKS_API_KEY`: static tenant routing key (`pk_live_sh_...`) from the company config, the same for every block. It is not the key used to register an agent identity.
+- `Authorization: Bearer $BLOCKS_AUTH_TOKEN`: the caller's identity and scopes; it expires. Get it from login (`/auth/sign_in`), from the user, or, for an agent, with `aid-token.sh -a https://auth.api.us.23blocks.com/<tenant> -q` (first-time setup: the `23blocks-auth-agent-identity-api` skill).
 
 ## Endpoints
 
@@ -95,43 +65,13 @@ export BLOCKS_API_KEY="<your-api-key>"
 
 ---
 
-## Error Response Format
+## Errors
 
-```json
-{
-  "errors": [{
-    "status": "409",
-    "source": { "pointer": "/teams/:unique_id/join" },
-    "code": "conflict",
-    "title": "Already a Member",
-    "detail": "This user is already a member of the team."
-  }]
-}
-```
+JSON:API error objects, e.g. `{"errors":[{"status":"409","source":{"pointer":"/teams/:unique_id/join"},"code":"conflict","title":"Already a Member","detail":"This user is already a member of the team."}]}`.
 
----
+## SDK (TypeScript)
 
-## SDK Usage (TypeScript)
-
-> **When building web apps, use the SDK instead of raw API calls.**
-
-### Installation
-
-```bash
-npm install @23blocks/block-company
-```
-
-### Setup
-
-```typescript
-import { create23BlocksClient } from '@23blocks/sdk';
-
-const client = create23BlocksClient({
-  authToken: process.env.BLOCKS_AUTH_TOKEN!,
-  apiKey: process.env.BLOCKS_API_KEY!,
-  apiUrl: process.env.BLOCKS_API_URL!,
-});
-```
+For web apps, prefer the SDK to raw calls: `npm install @23blocks/block-company`, then create a client with `create23BlocksClient({ authToken, apiKey, apiUrl })` from `@23blocks/sdk`; in React, `const { client } = useCompanyBlock()` from `@23blocks/react`.
 
 ### Available Methods
 
@@ -154,15 +94,4 @@ import type {
   UpdateTeamRequest,
   ListTeamsParams,
 } from '@23blocks/block-company';
-```
-
-### React Hook
-
-```typescript
-import { useCompanyBlock } from '@23blocks/react';
-
-function MyComponent() {
-  const { client } = useCompanyBlock();
-  const result = await client.company.teams.list();
-}
 ```

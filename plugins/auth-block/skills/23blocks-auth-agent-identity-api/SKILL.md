@@ -1,6 +1,6 @@
 ---
 name: 23blocks-auth-agent-identity-api
-description: Authenticate AI agents with 23blocks APIs using AID (Agent Identity) protocol. Use when an agent needs to obtain its own Bearer token via Ed25519 keypair authentication instead of requiring a human-provided token.
+description: "Gets an AI agent its own 23blocks Bearer token through the Agent Identity (AID) protocol and an Ed25519 keypair. Use when an agent needs BLOCKS_AUTH_TOKEN and has no human-provided token."
 allowed-tools: Read, Write, Bash, Grep, Glob
 metadata:
   author: 23blocks

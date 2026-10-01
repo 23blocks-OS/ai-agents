@@ -2,6 +2,24 @@
 
 Full endpoint documentation. See [SKILL.md](SKILL.md) for setup, data models, and SDK usage.
 
+## Contents
+
+- GET `/products/:product_unique_id/prices`: List Prices
+- GET `/products/:product_unique_id/prices/:price_unique_id`: Get Price
+- POST `/products/:product_unique_id/prices/`: Create Price
+- PUT `/products/:product_unique_id/prices/:price_unique_id`: Update Price
+- GET `/products/:unique_id/variations/:variation_unique_id/prices`: List Variation Prices
+- POST `/products/:unique_id/variations/:variation_unique_id/prices/`: Create Variation Price
+- PUT `/products/:unique_id/variations/:variation_unique_id/prices/:price_unique_id`: Update Variation Price
+- GET `/products/:unique_id/variations`: List Variations
+- POST `/products/:unique_id/variations`: Create Variation
+- PUT `/products/:unique_id/variations/:variation_unique_id`: Update Variation
+- DELETE `/products/:unique_id/variations/:variation_unique_id`: Delete Variation
+- GET `/channels/`: List Channels
+- POST `/channels/`: Create Channel
+- PUT `/channels/:unique_id`: Update Channel
+- DELETE `/channels/:unique_id`: Delete Channel
+
 ---
 
 ## Product Price Endpoints

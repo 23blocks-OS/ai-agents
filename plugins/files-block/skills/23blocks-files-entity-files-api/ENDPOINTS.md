@@ -2,11 +2,27 @@
 
 Full endpoint documentation. See [SKILL.md](SKILL.md) for setup, data models, and SDK usage.
 
+## Contents
+
+- GET `/entities`: List Entities
+- GET `/entities/:unique_id`: Get Entity
+- POST `/entities/:unique_id/register`: Register Entity
+- GET `/entities/:unique_id/files`: List Entity Files
+- GET `/entities/:unique_id/files/:unique_file_id`: Get Entity File
+- PUT `/entities/:unique_id/presign`: Get Presigned URL
+- POST `/entities/:unique_id/multipart_presign_upload`: Start Multipart Upload
+- POST `/entities/:unique_id/multipart_complete_upload`: Complete Multipart Upload
+- POST `/entities/:unique_id/files`: Create Entity File
+- PUT `/entities/:unique_id/files/:unique_file_id`: Update Entity File
+- DELETE `/entities/:unique_id/files/:unique_file_id`: Delete Entity File
+- POST `/entities/:unique_id/files/associate`: Associate File
+- DELETE `/entities/:unique_id/files/:unique_file_id/disassociate`: Disassociate File
+
 ---
 
-## CRITICAL: File Upload `name` Field (Production Incident Fix)
+## File upload: `name` is the presign `file_name`
 
-The presign endpoints return a `file_name` (UUID-based S3 key). You **MUST** use this value as the `name` field when calling `POST /files`. Using the original filename causes **404 errors on download**. See the [SKILL.md](SKILL.md) CRITICAL section for the full correct flow.
+The presign endpoints return a `file_name` (UUID-based S3 key). Use this value as the `name` field when calling `POST /files`. Using the original filename causes **404 errors on download**. The full flow is in [SKILL.md](SKILL.md).
 
 ---
 
@@ -223,7 +239,7 @@ curl -X PUT "$BLOCKS_API_URL/entities/$ENTITY_ID/presign?filename=policy.pdf" \
 }
 ```
 
-> **CRITICAL:** Save `file_name` from this response. You MUST use it as the `name` field in `POST /files`.
+> Keep `file_name` from this response: it is the `name` field for `POST /files`.
 
 ---
 
@@ -256,7 +272,7 @@ curl -X POST "$BLOCKS_API_URL/entities/$ENTITY_ID/multipart_presign_upload" \
 }
 ```
 
-> **CRITICAL:** Save `file_name` from this response. You MUST use it as the `name` field in `POST /files`.
+> Keep `file_name` from this response: it is the `name` field for `POST /files`.
 
 ---
 

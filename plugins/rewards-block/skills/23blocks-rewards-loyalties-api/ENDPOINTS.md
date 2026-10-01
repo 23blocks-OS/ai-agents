@@ -2,6 +2,30 @@
 
 Full endpoint documentation. See [SKILL.md](SKILL.md) for setup, data models, and SDK usage.
 
+## Contents
+
+- GET `/loyalties/`: List Loyalty Programs
+- GET `/loyalties/:unique_id`: Get Loyalty Program
+- POST `/loyalties/`: Create Loyalty Program
+- PUT `/loyalties/:unique_id`: Update Loyalty Program
+- GET `/loyalties/:unique_id/stats`: Get Program Stats
+- POST `/loyalties/:unique_id/details`: Add Detail
+- PUT `/loyalties/:unique_id/details/:details_unique_id`: Update Detail
+- GET `/loyalties/:unique_id/rules/money`: List Money Rules
+- POST `/loyalties/:unique_id/rules/money`: Create Money Rule
+- PUT `/loyalties/:unique_id/rules/money/:rule_unique_id`: Update Money Rule
+- PUT `/loyalties/:unique_id/rules/money/:rule_unique_id/expirations/`: Set Rule Expiration
+- DELETE `/loyalties/:unique_id/rules/money/:rule_unique_id/expirations/:expiration_rule_unique_id`: Remove Rule Expiration
+- GET `/loyalties/:unique_id/rules/products`: List Product Rules
+- POST `/loyalties/:unique_id/rules/products`: Create Product Rule
+- PUT `/loyalties/:unique_id/rules/products/:rule_unique_id`: Update Product Rule
+- DELETE `/loyalties/:unique_id/rules/products/:rule_unique_id`: Delete Product Rule
+- GET `/loyalties/:unique_id/rules/events`: List Event Rules
+- POST `/loyalties/:unique_id/rules/events`: Create Event Rule
+- PUT `/loyalties/:unique_id/rules/events/:rule_unique_id`: Update Event Rule
+- PUT `/loyalties/:unique_id/rules/:rule_unique_id/disable`: Disable Rule
+- PUT `/loyalties/:unique_id/rules/:rule_unique_id/enable`: Enable Rule
+
 ---
 
 ## Endpoints

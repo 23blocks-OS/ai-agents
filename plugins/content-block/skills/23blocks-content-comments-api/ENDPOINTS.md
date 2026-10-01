@@ -2,6 +2,22 @@
 
 Full endpoint documentation. See [SKILL.md](SKILL.md) for setup, data models, and SDK usage.
 
+## Contents
+
+- GET `/posts/:post_id/comments`: List Comments
+- GET `/posts/:post_id/comments/:unique_id`: Get Comment
+- POST `/posts/:post_id/comments`: Create Comment
+- PUT `/posts/:post_id/comments/:unique_id`: Update Comment
+- DELETE `/posts/:post_id/comments/:unique_id`: Delete Comment
+- POST `/posts/:post_id/comments/:unique_id/reply`: Reply to Comment
+- PUT `/posts/:post_id/comments/:unique_id/like`: Like Comment
+- PUT `/posts/:post_id/comments/:unique_id/dislike`: Dislike Comment
+- PUT `/posts/:post_id/comments/:unique_id/follow`: Follow Comment
+- DELETE `/posts/:post_id/comments/:unique_id/unfollow`: Unfollow Comment
+- PUT `/posts/:post_id/comments/:unique_id/save`: Save Comment
+- DELETE `/posts/:post_id/comments/:unique_id/unsave`: Unsave Comment
+- DELETE `/posts/:post_id/comments/:unique_id/moderate`: Moderate Comment
+
 ---
 
 ## Endpoints

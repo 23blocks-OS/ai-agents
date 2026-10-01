@@ -1,6 +1,6 @@
 ---
 name: 23blocks-conversations-read-receipts-api
-description: Track per-user read receipts for conversation messages with read horizon support. Use when marking messages as read or unread, bulk-reading all messages, or tracking who has read a message.
+description: "Conversations Block per-user read state: read, unread, read all, who read a message. Use for unread counts and receipts."
 allowed-tools: Read, Write, Bash, Grep, Glob
 metadata:
   author: 23blocks
@@ -11,46 +11,16 @@ metadata:
 
 Per-user read receipt tracking for conversation messages. Read status is tracked individually per user via `MessageReadReceipt` records and a read horizon (`last_read_at`) on context_users.
 
-## Required Environment Variables
+## Setup
 
-| Variable | Description | Example |
-|----------|-------------|---------|
-| `BLOCKS_API_URL` | Conversations API base URL | `https://realtime.api.us.23blocks.com` |
-| `BLOCKS_AUTH_TOKEN` | Bearer token — your identity & scopes (from login or AID token exchange) | `eyJhbGciOiJSUzI1NiJ9...` |
-| `BLOCKS_API_KEY` | Tenant routing key (X-API-KEY header) — static, from company config | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
+Send requests to `$BLOCKS_API_URL` (this block: `https://realtime.api.us.23blocks.com`) with two headers:
 
-## Authentication
+- `X-API-KEY: $BLOCKS_API_KEY`: static tenant routing key (`pk_live_sh_...`) from the company config, the same for every block. It is not the key used to register an agent identity.
+- `Authorization: Bearer $BLOCKS_AUTH_TOKEN`: the caller's identity and scopes; it expires. Get it from login (`/auth/sign_in`), from the user, or, for an agent, with `aid-token.sh -a https://auth.api.us.23blocks.com/<tenant> -q` (first-time setup: the `23blocks-auth-agent-identity-api` skill).
 
-**These two credentials serve different purposes and come from different sources:**
+## How read state works
 
-| Credential | Purpose | Source | Changes? |
-|------------|---------|--------|----------|
-| `BLOCKS_API_KEY` | **Tenant routing** — identifies which company/app | Company config (static `pk_live_sh_...` key) | No — same key for all blocks |
-| `BLOCKS_AUTH_TOKEN` | **Identity & authorization** — who you are + what you can do | Login (`/auth/sign_in`), AID token exchange, or human-provided | Yes — expires, must be refreshed |
-
-> The API key used during AID registration is NOT the same as `BLOCKS_API_KEY`. The registration key authenticates the agent with the Auth API; `BLOCKS_API_KEY` routes requests to the correct tenant across all blocks.
-
-Two methods to obtain the Bearer token:
-
-**Method 1: Agent Identity (AID)** -- For AI agents with AMP identity:
-```bash
-export BLOCKS_AUTH_TOKEN=$(aid-token.sh -a https://auth.api.us.23blocks.com/<tenant> -q)
-export BLOCKS_API_URL="https://realtime.api.us.23blocks.com"
-export BLOCKS_API_KEY="<your-api-key>"
-```
-> First time? See the `23blocks-auth-agent-identity-api` skill for setup.
-
-**Method 2: User Token** -- For human-provided credentials:
-```bash
-export BLOCKS_API_URL="https://realtime.api.us.23blocks.com"
-export BLOCKS_AUTH_TOKEN="<your-bearer-token>"
-export BLOCKS_API_KEY="<your-api-key>"
-```
-
-
-## Breaking Change
-
-> **Read status is now per-user.** Message `status` field no longer changes to `'read'`. Instead, read receipts are tracked individually via `MessageReadReceipt` records. The presence of a receipt row means the user has read the message; absence means unread. Deleting the row marks it as unread.
+Read state is per user. Message `status` never becomes `'read'`; each user's reads are `MessageReadReceipt` records. The presence of a receipt row means the user has read the message; absence means unread. Deleting the row marks it as unread.
 
 ## Endpoints
 

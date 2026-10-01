@@ -2,6 +2,20 @@
 
 Full endpoint documentation. See [SKILL.md](SKILL.md) for setup, data models, and SDK usage.
 
+## Contents
+
+- POST `/reports/orders/summary`: Order Summary Report
+- POST `/reports/orders/list`: Order List Report
+- POST `/reports/orders/providers/list`: Provider List Report
+- POST `/reports/orders/providers/summary`: Provider Summary Report
+- POST `/reports/flexible_orders/summary`: Flexible Order Summary Report
+- POST `/reports/payments/list`: Payment List Report
+- POST `/reports/payments/summary`: Payment Summary Report
+- POST `/reports/vendors/payments/list`: Vendor Payment List
+- POST `/reports/vendors/payments/summary`: Vendor Payment Summary
+- POST `/reports/users/subscriptions/list`: Subscription List Report
+- POST `/reports/users/subscriptions/summary`: Subscription Summary Report
+
 ---
 
 ## Common Report Parameters

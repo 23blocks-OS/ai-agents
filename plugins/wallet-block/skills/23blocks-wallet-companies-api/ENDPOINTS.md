@@ -2,6 +2,17 @@
 
 Full endpoint documentation. See [SKILL.md](SKILL.md) for setup, data models, and SDK usage.
 
+## Contents
+
+- GET `/companies/:url_id`: Get Company
+- POST `/companies/`: Create Company
+- GET `/companies/:url_id/keys`: List API Keys
+- POST `/companies/:unique_id/keys`: Add API Key
+- DELETE `/companies/:unique_id/keys/:key_unique_id`: Delete API Key
+- POST `/companies/:unique_id/exchange`: Add Exchange Settings
+- POST `/companies/:url_id/access`: Impersonate User
+- POST `/companies/:url_id/storage`: Create Storage
+
 ---
 
 ## Endpoints

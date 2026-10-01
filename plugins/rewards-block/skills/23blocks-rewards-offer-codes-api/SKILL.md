@@ -1,6 +1,6 @@
 ---
 name: 23blocks-rewards-offer-codes-api
-description: Manage 23blocks offer codes via REST API. Use when creating offer codes, sending codes via email, generating bulk codes, or distributing codes through API-to-API integrations.
+description: "Rewards Block offer codes: create, bulk, email, API-to-API distribution. Use for promo code distribution."
 allowed-tools: Read, Write, Bash, Grep, Glob
 metadata:
   author: 23blocks
@@ -11,43 +11,12 @@ metadata:
 
 Complete API reference for 23blocks offer code management, distribution, and API-to-API delivery.
 
-## Required Environment Variables
+## Setup
 
-| Variable | Description | Example |
-|----------|-------------|---------|
-| `BLOCKS_API_URL` | Rewards API base URL | `https://rewards.api.us.23blocks.com` |
-| `BLOCKS_AUTH_TOKEN` | Bearer token — your identity & scopes (from login or AID token exchange) | `eyJhbGciOiJSUzI1NiJ9...` |
-| `BLOCKS_API_KEY` | Tenant routing key (X-API-KEY header) — static, from company config | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
+Send requests to `$BLOCKS_API_URL` (this block: `https://rewards.api.us.23blocks.com`) with two headers:
 
-## Authentication
-
-**These two credentials serve different purposes and come from different sources:**
-
-| Credential | Purpose | Source | Changes? |
-|------------|---------|--------|----------|
-| `BLOCKS_API_KEY` | **Tenant routing** — identifies which company/app | Company config (static `pk_live_sh_...` key) | No — same key for all blocks |
-| `BLOCKS_AUTH_TOKEN` | **Identity & authorization** — who you are + what you can do | Login (`/auth/sign_in`), AID token exchange, or human-provided | Yes — expires, must be refreshed |
-
-> The API key used during AID registration is NOT the same as `BLOCKS_API_KEY`. The registration key authenticates the agent with the Auth API; `BLOCKS_API_KEY` routes requests to the correct tenant across all blocks.
-
-Two methods to obtain the Bearer token:
-
-**Method 1: Agent Identity (AID)** -- For AI agents with AMP identity:
-```bash
-export BLOCKS_AUTH_TOKEN=$(aid-token.sh -a https://auth.api.us.23blocks.com/<tenant> -q)
-export BLOCKS_API_URL="https://rewards.api.us.23blocks.com"
-export BLOCKS_API_KEY="<your-api-key>"
-```
-> First time? See the `23blocks-auth-agent-identity-api` skill for setup.
-
-**Method 2: User Token** -- For human-provided credentials:
-```bash
-export BLOCKS_API_URL="https://rewards.api.us.23blocks.com"
-export BLOCKS_AUTH_TOKEN="<your-bearer-token>"
-export BLOCKS_API_KEY="<your-api-key>"
-```
-
----
+- `X-API-KEY: $BLOCKS_API_KEY`: static tenant routing key (`pk_live_sh_...`) from the company config, the same for every block. It is not the key used to register an agent identity.
+- `Authorization: Bearer $BLOCKS_AUTH_TOKEN`: the caller's identity and scopes; it expires. Get it from login (`/auth/sign_in`), from the user, or, for an agent, with `aid-token.sh -a https://auth.api.us.23blocks.com/<tenant> -q` (first-time setup: the `23blocks-auth-agent-identity-api` skill).
 
 ## Endpoints
 
@@ -319,42 +288,13 @@ curl -X POST "$BLOCKS_API_URL/acme-corp/offer_codes/send" \
 
 ---
 
-## Error Response Format
+## Errors
 
-```json
-{
-  "errors": [{
-    "status": "409",
-    "code": "duplicate_code",
-    "title": "Offer Code Already Exists",
-    "detail": "An offer code with this code value already exists."
-  }]
-}
-```
+JSON:API error objects, e.g. `{"errors":[{"status":"409","code":"duplicate_code","title":"Offer Code Already Exists","detail":"An offer code with this code value already exists."}]}`.
 
----
+## SDK (TypeScript)
 
-## SDK Usage (TypeScript)
-
-> **When building web apps, use the SDK instead of raw API calls.**
-
-### Installation
-
-```bash
-npm install @23blocks/block-rewards
-```
-
-### Setup
-
-```typescript
-import { create23BlocksClient } from '@23blocks/sdk';
-
-const client = create23BlocksClient({
-  authToken: process.env.BLOCKS_AUTH_TOKEN!,
-  apiKey: process.env.BLOCKS_API_KEY!,
-  apiUrl: process.env.BLOCKS_API_URL!,
-});
-```
+For web apps, prefer the SDK to raw calls: `npm install @23blocks/block-rewards`, then create a client with `create23BlocksClient({ authToken, apiKey, apiUrl })` from `@23blocks/sdk`.
 
 ### Available Methods
 

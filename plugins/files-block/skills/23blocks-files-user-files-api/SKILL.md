@@ -1,6 +1,6 @@
 ---
 name: 23blocks-files-user-files-api
-description: Upload and manage user files via REST API. Use when uploading files, managing presigned URLs, handling multipart uploads, or processing file workflow operations.
+description: "Files Block per-user files: presigned and multipart upload, approve, reject, publish. Use when a user uploads or manages their files."
 allowed-tools: Read, Write, Bash, Grep, Glob
 metadata:
   author: 23blocks
@@ -11,69 +11,38 @@ metadata:
 
 Complete API reference for 23blocks user file management.
 
-## Required Environment Variables
+## Setup
 
-| Variable | Description | Example |
-|----------|-------------|---------|
-| `BLOCKS_API_URL` | Files API base URL | `https://files.api.us.23blocks.com` |
-| `BLOCKS_AUTH_TOKEN` | Bearer token — your identity & scopes (from login or AID token exchange) | `eyJhbGciOiJSUzI1NiJ9...` |
-| `BLOCKS_API_KEY` | Tenant routing key (X-API-KEY header) — static, from company config | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
+Send requests to `$BLOCKS_API_URL` (this block: `https://files.api.us.23blocks.com`) with two headers:
 
-## Authentication
+- `X-API-KEY: $BLOCKS_API_KEY`: static tenant routing key (`pk_live_sh_...`) from the company config, the same for every block. It is not the key used to register an agent identity.
+- `Authorization: Bearer $BLOCKS_AUTH_TOKEN`: the caller's identity and scopes; it expires. Get it from login (`/auth/sign_in`), from the user, or, for an agent, with `aid-token.sh -a https://auth.api.us.23blocks.com/<tenant> -q` (first-time setup: the `23blocks-auth-agent-identity-api` skill).
 
-**These two credentials serve different purposes and come from different sources:**
+## File upload: `name` is the presign `file_name`
 
-| Credential | Purpose | Source | Changes? |
-|------------|---------|--------|----------|
-| `BLOCKS_API_KEY` | **Tenant routing** — identifies which company/app | Company config (static `pk_live_sh_...` key) | No — same key for all blocks |
-| `BLOCKS_AUTH_TOKEN` | **Identity & authorization** — who you are + what you can do | Login (`/auth/sign_in`), AID token exchange, or human-provided | Yes — expires, must be refreshed |
-
-> The API key used during AID registration is NOT the same as `BLOCKS_API_KEY`. The registration key authenticates the agent with the Auth API; `BLOCKS_API_KEY` routes requests to the correct tenant across all blocks.
-
-Two methods to obtain the Bearer token:
-
-**Method 1: Agent Identity (AID)** -- For AI agents with AMP identity:
-```bash
-export BLOCKS_AUTH_TOKEN=$(aid-token.sh -a https://auth.api.us.23blocks.com/<tenant> -q)
-export BLOCKS_API_URL="https://files.api.us.23blocks.com"
-export BLOCKS_API_KEY="<your-api-key>"
-```
-> First time? See the `23blocks-auth-agent-identity-api` skill for setup.
-
-**Method 2: User Token** -- For human-provided credentials:
-```bash
-export BLOCKS_API_URL="https://files.api.us.23blocks.com"
-export BLOCKS_AUTH_TOKEN="<your-bearer-token>"
-export BLOCKS_API_KEY="<your-api-key>"
-```
-
----
-
-## CRITICAL: File Upload Process (Production Incident Fix)
-
-The Files API generates UUID-based S3 keys during presign. You **MUST** use the `file_name` returned from presign endpoints as the `name` field when registering file metadata. Using any other value (such as the original filename) causes **404 errors on download** because the S3 object key will not match.
+The Files API generates UUID-based S3 keys during presign. Use the `file_name` returned by the presign endpoint as the `name` field when registering file metadata. Using any other value (such as the original filename) causes **404 errors on download** because the S3 object key will not match.
 
 **Correct single-file upload flow:**
 1. `PUT /users/:id/presign_upload?filename=photo.jpg` returns `{ "file_name": "dcca6ec1-...jpg", "signed_url": "..." }`
 2. `PUT {signed_url}` with file bytes
-3. `POST /users/:id/files` with `{ "name": "dcca6ec1-...jpg", "original_name": "photo.jpg" }` -- `name` **MUST** match `file_name` from step 1
+3. `POST /users/:id/files` with `{ "name": "dcca6ec1-...jpg", "original_name": "photo.jpg" }` -- `name` is `file_name` from step 1
 
 **Correct multipart upload flow (large files):**
 1. `POST /users/:id/multipart_presign_upload` with `{ "filename": "large.mp4", "part_count": 5 }` returns `{ "file_name": "a1b2c3d4-...mp4", "upload_id": "...", "presigned_urls": [...] }`
 2. Upload each part to its presigned URL, collect ETags
 3. `POST /users/:id/multipart_complete_upload` with `{ "file_name": "a1b2c3d4-...mp4", "upload_id": "...", "parts": [...] }`
-4. `POST /users/:id/files` with `{ "name": "a1b2c3d4-...mp4", "original_name": "large.mp4" }` -- `name` **MUST** match `file_name` from step 1
+4. `POST /users/:id/files` with `{ "name": "a1b2c3d4-...mp4", "original_name": "large.mp4" }` -- `name` is `file_name` from step 1
 
 **Common mistake (causes 404 on download):**
 ```
 PUT /presign_upload?filename=photo.jpg  -->  { "file_name": "dcca6ec1-...jpg" }
-POST /files with { "name": "photo.jpg" }  <-- WRONG! S3 key mismatch = 404
+POST /files with { "name": "photo.jpg" }  <-- wrong: S3 key mismatch, 404 on download
 ```
 
 **Field meanings:**
 | Field | Purpose | Example |
 |-------|---------|---------|
-| `name` | S3 object key (UUID-based). Used for downloads. NOT user-facing. | `dcca6ec1-4f3a-4b2e-9a1c-8d7e6f5a4b3c.jpg` |
+| `name` | S3 object key (UUID-based). Used for downloads; not user-facing. | `dcca6ec1-4f3a-4b2e-9a1c-8d7e6f5a4b3c.jpg` |
 | `original_name` | User's original filename. Used for display only. | `photo.jpg` |
 
 ---
@@ -132,43 +101,13 @@ POST /files with { "name": "photo.jpg" }  <-- WRONG! S3 key mismatch = 404
 
 ---
 
-## Error Response Format
+## Errors
 
-```json
-{
-  "errors": [{
-    "status": "403",
-    "source": "Files Management",
-    "code": "uf832069",
-    "title": "Forbidden",
-    "detail": "Insufficient Scope"
-  }]
-}
-```
+JSON:API error objects, e.g. `{"errors":[{"status":"403","source":"Files Management","code":"uf832069","title":"Forbidden","detail":"Insufficient Scope"}]}`.
 
----
+## SDK (TypeScript)
 
-## SDK Usage (TypeScript)
-
-> **When building web apps, use the SDK instead of raw API calls.**
-
-### Installation
-
-```bash
-npm install @23blocks/block-files
-```
-
-### Setup
-
-```typescript
-import { create23BlocksClient } from '@23blocks/sdk';
-
-const client = create23BlocksClient({
-  authToken: process.env.BLOCKS_AUTH_TOKEN!,
-  apiKey: process.env.BLOCKS_API_KEY!,
-  apiUrl: process.env.BLOCKS_API_URL!,
-});
-```
+For web apps, prefer the SDK to raw calls: `npm install @23blocks/block-files`, then create a client with `create23BlocksClient({ authToken, apiKey, apiUrl })` from `@23blocks/sdk`.
 
 ### Available Methods
 

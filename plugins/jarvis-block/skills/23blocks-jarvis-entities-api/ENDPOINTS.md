@@ -2,6 +2,22 @@
 
 Full endpoint documentation. See [SKILL.md](SKILL.md) for setup, data models, and SDK usage.
 
+## Contents
+
+- GET `/entities`: List Entities
+- GET `/entities/:id`: Get Entity
+- POST `/entities`: Create Entity
+- PUT `/entities/:id`: Update Entity
+- DELETE `/entities/:id`: Delete Entity
+- GET `/entities/:id/contexts`: List Entity Contexts
+- POST `/entities/:id/contexts`: Create Entity Context
+- GET `/entities/:id/conversations`: List Entity Conversations
+- POST `/entities/:id/conversations`: Create Entity Conversation
+- GET `/entities/:id/conversations/:conv_id/messages`: List Entity Messages
+- POST `/entities/:id/conversations/:conv_id/messages`: Send Entity Message
+- POST `/entities/:id/conversations/:conv_id/messages/stream`: Stream Entity Message
+- POST `/entities/:id/file_query`: Query Entity Files with AI
+
 ---
 
 ### GET /entities - List Entities

@@ -2,6 +2,45 @@
 
 Full endpoint documentation. See [SKILL.md](SKILL.md) for setup, data models, and SDK usage.
 
+## Contents
+
+- GET `/locations`: List Locations
+- GET `/locations/:unique_id/`: Get Location
+- GET `/locations/:unique_id/qrcode`: Get QR Code
+- POST `/locations/`: Create Location
+- PUT `/locations/:unique_id/`: Update Location
+- DELETE `/locations/:unique_id/`: Delete Location
+- POST `/locations/search/code`: Search by Code
+- POST `/locations/:unique_id/tags/`: Add Tag
+- DELETE `/locations/:unique_id/tags/:tag_unique_id`: Remove Tag
+- GET `/locations/:unique_id/hours/`: List Hours
+- GET `/locations/:unique_id/hours/:hour_unique_id`: Get Hour
+- POST `/locations/:unique_id/hours/`: Create Hour
+- PUT `/locations/:unique_id/hours/:hour_unique_id`: Update Hour
+- DELETE `/locations/:unique_id/hours/:hour_unique_id`: Delete Hour
+- PUT `/locations/:unique_id/presign`: Presign Upload
+- POST `/locations/:unique_id/images`: Upload Image
+- DELETE `/locations/:unique_id/images/:image_unique_id`: Delete Image
+- POST `/locations/:unique_id/identities`: Add Identity
+- DELETE `/locations/:unique_id/identities/:user_unique_id`: Remove Identity
+- GET `/locations/:unique_id/slots`: List Slots
+- POST `/locations/:unique_id/slots`: Create Slot
+- PUT `/locations/:unique_id/slots/:slot_unique_id`: Update Slot
+- DELETE `/locations/:unique_id/slots/:slot_unique_id`: Delete Slot
+- POST `/locations/:unique_id/taxes`: Add Tax
+- PUT `/locations/:unique_id/taxes/:tax_unique_id`: Update Tax
+- DELETE `/locations/:unique_id/taxes/:tax_unique_id`: Delete Tax
+- GET `/countries/:country_code/locations`: Locations by Country
+- GET `/states/:code/locations`: Locations by State
+- GET `/counties/:code/locations`: Locations by County
+- GET `/cities/:code/locations`: Locations by City
+- GET `/divisions/:code/locations`: Locations by Division
+- GET `/neighborhoods/:code/locations`: Locations by Neighborhood
+- GET `/buildings/:code/locations`: Locations by Building
+- GET `/location_groups`: List Groups
+- GET `/location_groups/:unique_id/`: Get Group
+- POST `/location_groups/`: Create Group
+
 ---
 
 ## Endpoints

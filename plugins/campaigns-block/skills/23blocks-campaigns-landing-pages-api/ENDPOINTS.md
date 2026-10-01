@@ -2,6 +2,21 @@
 
 Full endpoint documentation. See [SKILL.md](SKILL.md) for setup, data models, and SDK usage.
 
+## Contents
+
+- GET `/landing_pages`: List Landing Pages
+- GET `/landing_pages/:unique_id`: Get Landing Page
+- POST `/landing_pages`: Create Landing Page
+- PUT `/landing_pages/:unique_id`: Update Landing Page
+- DELETE `/landing_pages/:unique_id`: Delete Landing Page
+- GET `/landing_audiences`: List Audiences
+- POST `/landing_audiences`: Create Audience
+- PUT `/landing_audiences/:unique_id`: Update Audience
+- DELETE `/landing_audiences/:unique_id`: Delete Audience
+- POST `/audience/facebook`: Create Facebook Audience
+- GET `/landing_templates`: List Landing Templates
+- POST `/landing_templates`: Create Landing Template
+
 ---
 
 ## Landing Page Endpoints

@@ -2,6 +2,34 @@
 
 Full endpoint documentation. See [SKILL.md](SKILL.md) for setup, data models, and SDK usage.
 
+## Contents
+
+- GET `/carts/:user_unique_id`: Get User Cart
+- GET `/carts/:cart_unique_id/logs`: Cart Logs
+- POST `/carts/`: Create Cart
+- PUT `/carts/:user_unique_id`: Update Cart
+- PUT `/carts/:user_unique_id/services`: Update Cart Services
+- PUT `/carts/:unique_id/save`: Save Cart
+- POST `/carts/:user_unique_id/checkout`: Checkout
+- PUT `/carts/:unique_id/order`: Place Order
+- PUT `/carts/:unique_id/cancel`: Cancel Cart
+- DELETE `/carts/:user_unique_id`: Clear Cart
+- PUT `/carts/:unique_id/order/marketplace`: Marketplace Order
+- GET `/mycarts/:unique_id`: Get My Cart
+- POST `/mycarts/`: Create My Cart
+- PUT `/mycarts/:unique_id`: Update My Cart
+- POST `/mycarts/:unique_id/checkout`: Checkout My Cart
+- PUT `/mycarts/:unique_id/order`: Place My Order
+- PUT `/mycarts/:unique_id/cancel`: Cancel My Cart
+- DELETE `/mycarts/:unique_id`: Delete My Cart
+- POST `/guests/`: Create Guest (Preferred)
+- GET `/guests/:user_unique_id`: Get Guest
+- PUT `/guests/:user_unique_id`: Update Guest
+- PUT `/guests/:unique_id/convert`: Convert Guest to User
+- POST `/guests/:unique_id/auth`: Authenticate Guest
+- POST `/visitors`: Create Visitor (Legacy)
+- POST `/tools/remarketing/carts/abandoned`: Abandoned Carts
+
 ---
 
 ## Cart Endpoints

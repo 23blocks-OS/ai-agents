@@ -2,6 +2,43 @@
 
 Full endpoint documentation. See [SKILL.md](SKILL.md) for setup, data models, and SDK usage.
 
+## Contents
+
+- GET `/products/`: List Products
+- GET `/products/:unique_id/`: Get Product
+- POST `/products/`: Create Product
+- PUT `/products/:unique_id`: Update Product
+- DELETE `/products/:unique_id`: Delete Product
+- PUT `/products/:unique_id/recover`: Recover Product
+- GET `/products/trash/show`: View Trash
+- GET `/catalog/`: Catalog View
+- POST `/products/search`: Search Products
+- GET `/products/:unique_id/replacements`: List Replacements
+- GET `/tools/products/payload/`: Payload Tool
+- GET `/tools/products/payload/filters`: Payload Filters
+- GET `/tools/products/filters`: List Filters
+- POST `/tools/products/filters`: Create Filter
+- PUT `/tools/products/filters/:unique_id`: Update Filter
+- DELETE `/tools/products/filters/:unique_id`: Delete Filter
+- PUT `/products/:unique_id/presign`: Get Presigned URL
+- POST `/products/:unique_id/images`: Upload Image
+- GET `/products/:unique_id/images`: List Images
+- PUT `/products/:unique_id/images/:unique_file_id`: Update Image
+- DELETE `/products/:unique_id/images/:unique_file_id`: Delete Image
+- PUT `/products/:unique_id/images/:unique_file_id/approve`: Approve Image
+- PUT `/products/:unique_id/images/:unique_file_id/publish`: Publish Image
+- POST `/products/:unique_id/categories`: Assign Category
+- DELETE `/products/:unique_id/categories/:category_unique_id`: Remove Category
+- POST `/products/:unique_id/catalogs`: Assign to Catalog
+- GET `/products/:unique_id/suggestions`: List Suggestions
+- POST `/products/:unique_id/suggestions`: Add Suggestion
+- DELETE `/products/:unique_id/suggestions/:product_unique_id`: Remove Suggestion
+- GET `/products/:unique_id/addons`: List Addons
+- POST `/products/:unique_id/addons`: Add Addon
+- DELETE `/products/:unique_id/addons/:addon_unique_id`: Remove Addon
+- POST `/products/:unique_id/replacements`: Add Replacement
+- GET `/products/:unique_id/vendors`: List Product Vendors
+
 ---
 
 ### GET /products/ - List Products

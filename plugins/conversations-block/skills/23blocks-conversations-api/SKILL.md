@@ -1,6 +1,6 @@
 ---
 name: 23blocks-conversations-api
-description: Create and manage conversations with metadata, archiving, file uploads, AI summaries, and task management. Use when initiating user conversations, uploading files, generating presigned URLs, organizing conversation data, generating AI-powered conversation summaries, or managing conversation tasks.
+description: "Conversations Block conversations: create, metadata, archive, files, AI summaries and digests, tasks. Use for conversation-level work."
 allowed-tools: Read, Write, Bash, Grep, Glob
 metadata:
   author: 23blocks
@@ -11,42 +11,12 @@ metadata:
 
 Create and manage conversations between users. Supports metadata management, archiving, restoring, file uploads, presigned URLs for direct file uploads, AI-powered summaries, and task management.
 
-## Required Environment Variables
+## Setup
 
-| Variable | Description | Example |
-|----------|-------------|---------|
-| `BLOCKS_API_URL` | Conversations API base URL | `https://realtime.api.us.23blocks.com` |
-| `BLOCKS_AUTH_TOKEN` | Bearer token — your identity & scopes (from login or AID token exchange) | `eyJhbGciOiJSUzI1NiJ9...` |
-| `BLOCKS_API_KEY` | Tenant routing key (X-API-KEY header) — static, from company config | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
+Send requests to `$BLOCKS_API_URL` (this block: `https://realtime.api.us.23blocks.com`) with two headers:
 
-## Authentication
-
-**These two credentials serve different purposes and come from different sources:**
-
-| Credential | Purpose | Source | Changes? |
-|------------|---------|--------|----------|
-| `BLOCKS_API_KEY` | **Tenant routing** — identifies which company/app | Company config (static `pk_live_sh_...` key) | No — same key for all blocks |
-| `BLOCKS_AUTH_TOKEN` | **Identity & authorization** — who you are + what you can do | Login (`/auth/sign_in`), AID token exchange, or human-provided | Yes — expires, must be refreshed |
-
-> The API key used during AID registration is NOT the same as `BLOCKS_API_KEY`. The registration key authenticates the agent with the Auth API; `BLOCKS_API_KEY` routes requests to the correct tenant across all blocks.
-
-Two methods to obtain the Bearer token:
-
-**Method 1: Agent Identity (AID)** -- For AI agents with AMP identity:
-```bash
-export BLOCKS_AUTH_TOKEN=$(aid-token.sh -a https://auth.api.us.23blocks.com/<tenant> -q)
-export BLOCKS_API_URL="https://realtime.api.us.23blocks.com"
-export BLOCKS_API_KEY="<your-api-key>"
-```
-> First time? See the `23blocks-auth-agent-identity-api` skill for setup.
-
-**Method 2: User Token** -- For human-provided credentials:
-```bash
-export BLOCKS_API_URL="https://realtime.api.us.23blocks.com"
-export BLOCKS_AUTH_TOKEN="<your-bearer-token>"
-export BLOCKS_API_KEY="<your-api-key>"
-```
-
+- `X-API-KEY: $BLOCKS_API_KEY`: static tenant routing key (`pk_live_sh_...`) from the company config, the same for every block. It is not the key used to register an agent identity.
+- `Authorization: Bearer $BLOCKS_AUTH_TOKEN`: the caller's identity and scopes; it expires. Get it from login (`/auth/sign_in`), from the user, or, for an agent, with `aid-token.sh -a https://auth.api.us.23blocks.com/<tenant> -q` (first-time setup: the `23blocks-auth-agent-identity-api` skill).
 
 ## Endpoints
 
@@ -178,13 +148,15 @@ Subscribe to real-time notifications when a user receives new conversations.
 
 ---
 
-## Breaking Changes
+## Behaviour notes
 
-> **Read status is now per-user via read horizon.** The conversation-level `unread_count` is now computed per-user using individual `MessageReadReceipt` records and a `last_read_at` read horizon on `context_users`. The old behavior where message `status` changed to `'read'` globally is no longer in effect. See the **23blocks-conversations-read-receipts-api** skill for details.
+### Read state
 
-> **Digest endpoint changed (v1.4).** `POST /conversations/digest` is now `GET /users/:id/conversations/summary`. Response structure changed: `attributes.digest` contains `{ summary, categories, action_items, stats }`, `attributes.content` has raw LLM output, `attributes.meta` includes `validation_status` and `retry_count`. The `conversations_found` boolean is now always present in digest responses — use it to distinguish "query found no conversations" (`false`) from "Jarvis failed to summarize" (`true` but empty summary).
+`unread_count` is computed per user from `MessageReadReceipt` records and a `last_read_at` read horizon on `context_users`; message `status` never becomes `'read'`. See the **23blocks-conversations-read-receipts-api** skill.
 
-## New Features
+### Digest
+
+The inbox digest is `GET /users/:id/conversations/summary` (there is no `POST /conversations/digest`). `attributes.digest` contains `{ summary, categories, action_items, stats }`, `attributes.content` has raw LLM output, `attributes.meta` includes `validation_status` and `retry_count`. The `conversations_found` boolean is always present in digest responses — use it to distinguish "query found no conversations" (`false`) from "Jarvis failed to summarize" (`true` but empty summary).
 
 ### First Response Tracking
 
@@ -194,31 +166,31 @@ The `first_response_tracking` field on contexts tracks when the first response w
 
 When a conversation is retrieved via `GET /conversations/:unique_id`, all messages are automatically marked as read for the requesting user via `MessageReadService.mark_conversation_as_read`.
 
-### Unread Counter Accuracy (v1.3)
+### Unread Counter
 
-`group_users.unread_count` is the single source of truth — incremented on message create, zeroed on conversation view. Viewing a conversation now correctly resets the counter.
+`group_users.unread_count` is the single source of truth — incremented on message create, zeroed on conversation view. Viewing a conversation resets the counter.
 
-### AI Conversation Summaries (v1.3)
+### AI Conversation Summaries
 
 Generate AI-powered summaries via Jarvis integration. Supports incremental processing (only new messages since last summary), custom prompts via `prompt_id`, and batch digest for inbox-level overviews. Rate limited to 1 Jarvis call per 60s per conversation per user.
 
-> **Jarvis Passthrough Auth (v1.4).** The Conversations API no longer looks up per-tenant CompanyKeys for Jarvis. Consumer `Authorization` (Bearer JWT) and `X-API-Key` headers are forwarded directly to Jarvis as-is. The same credentials that authenticate with the Conversations API now authenticate with Jarvis — no separate Jarvis key is needed.
+**Jarvis auth:** the caller's `Authorization` (Bearer JWT) and `X-API-Key` headers are forwarded to Jarvis as-is, so the same credentials work for both; no separate Jarvis key or per-tenant CompanyKey is needed.
 
-### Summary Relationships (v1.5)
+### Summary Relationships
 
-Conversations now expose a `summary` relationship (has_one) that can be included via `?include=summary`. Summaries are user-scoped, so each user gets their own perspective. The summary includes `key_points` (key discussion points) in addition to the existing `action_items`.
+Conversations expose a `summary` relationship (has_one) that can be included via `?include=summary`. Summaries are user-scoped, so each user gets their own perspective. The summary includes `key_points` (key discussion points) in addition to the existing `action_items`.
 
-### Task Management (v1.5)
+### Task Management
 
-Conversations now support persistent task management. Tasks are action items extracted from AI summaries or created manually. Each task has a `priority` (`normal`, `high`, `urgent`) and `status` (`pending`, `completed`, `dismissed`). A 7-day deduplication window prevents duplicate tasks. Tasks can be included in conversation responses via `?include=tasks`, or queried per-conversation or per-user for a full task digest.
+Conversations support persistent task management. Tasks are action items extracted from AI summaries or created manually. Each task has a `priority` (`normal`, `high`, `urgent`) and `status` (`pending`, `completed`, `dismissed`). A 7-day deduplication window prevents duplicate tasks. Tasks can be included in conversation responses via `?include=tasks`, or queried per-conversation or per-user for a full task digest.
 
 Task lifecycle transitions use `PUT /tasks/:uid?action_type=complete|dismiss|reopen`. Attribute updates (description, priority) use `PUT /tasks/:uid` with a request body. All updates use PUT (not PATCH) per platform convention.
 
 User task digest (`GET /users/:uid/tasks`) supports filtering by `status`, `context_unique_id`, `reference`, `source`, `source_type`, `source_id`.
 
-### Digest Persistence (v1.5)
+### Digest Persistence
 
-`GET /users/:uid/conversations/summary` now returns the last completed digest when the user has zero unread messages, preventing the digest from "disappearing" after the user catches up.
+`GET /users/:uid/conversations/summary` returns the last completed digest when the user has zero unread messages, preventing the digest from "disappearing" after the user catches up.
 
 ---
 
@@ -240,27 +212,9 @@ Common status codes: `401` Unauthorized, `404` Not Found, `413` Payload Too Larg
 
 ---
 
-## SDK Usage (TypeScript)
+## SDK (TypeScript)
 
-> **When building web apps, use the SDK instead of raw API calls.**
-
-### Installation
-
-```bash
-npm install @23blocks/block-conversations
-```
-
-### Setup
-
-```typescript
-import { create23BlocksClient } from '@23blocks/sdk';
-
-const client = create23BlocksClient({
-  authToken: process.env.BLOCKS_AUTH_TOKEN!,
-  apiKey: process.env.BLOCKS_API_KEY!,
-  apiUrl: process.env.BLOCKS_API_URL!,
-});
-```
+For web apps, prefer the SDK to raw calls: `npm install @23blocks/block-conversations`, then create a client with `create23BlocksClient({ authToken, apiKey, apiUrl })` from `@23blocks/sdk`.
 
 ### Available Methods
 

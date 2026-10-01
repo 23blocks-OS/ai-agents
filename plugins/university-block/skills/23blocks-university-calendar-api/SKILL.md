@@ -1,6 +1,6 @@
 ---
 name: 23blocks-university-calendar-api
-description: Manage 23blocks university calendar events via REST API. Use for creating, updating, and listing events including course-specific student events with recurrence support.
+description: "University Block calendar events, including course-specific student events. Use for class schedules."
 allowed-tools: Read, Write, Bash, Grep, Glob
 metadata:
   author: 23blocks
@@ -11,391 +11,27 @@ metadata:
 
 Complete API reference for 23blocks university calendar event management with course-specific scheduling.
 
-## Required Environment Variables
+## Setup
 
-| Variable | Description | Example |
-|----------|-------------|---------|
-| `BLOCKS_API_URL` | University API base URL | `https://university.api.us.23blocks.com` |
-| `BLOCKS_AUTH_TOKEN` | Bearer token — your identity & scopes (from login or AID token exchange) | `eyJhbGciOiJSUzI1NiJ9...` |
-| `BLOCKS_API_KEY` | Tenant routing key (X-API-KEY header) — static, from company config | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
+Send requests to `$BLOCKS_API_URL` (this block: `https://university.api.us.23blocks.com`) with two headers:
 
-## Authentication
-
-**These two credentials serve different purposes and come from different sources:**
-
-| Credential | Purpose | Source | Changes? |
-|------------|---------|--------|----------|
-| `BLOCKS_API_KEY` | **Tenant routing** — identifies which company/app | Company config (static `pk_live_sh_...` key) | No — same key for all blocks |
-| `BLOCKS_AUTH_TOKEN` | **Identity & authorization** — who you are + what you can do | Login (`/auth/sign_in`), AID token exchange, or human-provided | Yes — expires, must be refreshed |
-
-> The API key used during AID registration is NOT the same as `BLOCKS_API_KEY`. The registration key authenticates the agent with the Auth API; `BLOCKS_API_KEY` routes requests to the correct tenant across all blocks.
-
-Two methods to obtain the Bearer token:
-
-**Method 1: Agent Identity (AID)** -- For AI agents with AMP identity:
-```bash
-export BLOCKS_AUTH_TOKEN=$(aid-token.sh -a https://auth.api.us.23blocks.com/<tenant> -q)
-export BLOCKS_API_URL="https://university.api.us.23blocks.com"
-export BLOCKS_API_KEY="<your-api-key>"
-```
-> First time? See the `23blocks-auth-agent-identity-api` skill for setup.
-
-**Method 2: User Token** -- For human-provided credentials:
-```bash
-export BLOCKS_API_URL="https://university.api.us.23blocks.com"
-export BLOCKS_AUTH_TOKEN="<your-bearer-token>"
-export BLOCKS_API_KEY="<your-api-key>"
-```
-
----
+- `X-API-KEY: $BLOCKS_API_KEY`: static tenant routing key (`pk_live_sh_...`) from the company config, the same for every block. It is not the key used to register an agent identity.
+- `Authorization: Bearer $BLOCKS_AUTH_TOKEN`: the caller's identity and scopes; it expires. Get it from login (`/auth/sign_in`), from the user, or, for an agent, with `aid-token.sh -a https://auth.api.us.23blocks.com/<tenant> -q` (first-time setup: the `23blocks-auth-agent-identity-api` skill).
 
 ## Endpoints
 
-### GET /events/ - List Events
+Request and response detail for each endpoint: [ENDPOINTS.md](ENDPOINTS.md).
 
-Lists all calendar events.
-
-**Request:**
-```bash
-curl -X GET "$BLOCKS_API_URL/events?page=1&size=20" \
-  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "X-API-KEY: $BLOCKS_API_KEY"
-```
-
-**Query Parameters:**
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `page` | integer | No | Page number (default: 1) |
-| `size` | integer | No | Items per page (default: 15, max: 100) |
-| `start_date` | date | No | Filter events starting from (YYYY-MM-DD) |
-| `end_date` | date | No | Filter events ending before (YYYY-MM-DD) |
-| `event_type` | string | No | Filter by event type |
-
-**Response 200:**
-```json
-{
-  "data": [
-    {
-      "id": "event-uuid-123",
-      "type": "event",
-      "attributes": {
-        "unique_id": "event-uuid-123",
-        "title": "Midterm Exam - Calculus II",
-        "description": "Covers chapters 5-8",
-        "event_type": "exam",
-        "start_time": "2025-03-15T09:00:00Z",
-        "end_time": "2025-03-15T11:00:00Z",
-        "location": "Hall A, Room 101",
-        "recurrence": null,
-        "attendees": ["student-uuid-1", "student-uuid-2"],
-        "status": "active",
-        "created_at": "2025-01-10T10:30:00Z"
-      }
-    }
-  ],
-  "meta": {
-    "totalPages": 5,
-    "totalRecords": 92
-  }
-}
-```
-
----
-
-### GET /events/:unique_id - Get Event
-
-Retrieves a specific event.
-
-**Request:**
-```bash
-curl -X GET "$BLOCKS_API_URL/events/event-uuid-123" \
-  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "X-API-KEY: $BLOCKS_API_KEY"
-```
-
-**Response 200:**
-```json
-{
-  "data": {
-    "id": "event-uuid-123",
-    "type": "event",
-    "attributes": {
-      "unique_id": "event-uuid-123",
-      "title": "Midterm Exam - Calculus II",
-      "description": "Covers chapters 5-8. Bring calculator and ID.",
-      "event_type": "exam",
-      "start_time": "2025-03-15T09:00:00Z",
-      "end_time": "2025-03-15T11:00:00Z",
-      "location": "Hall A, Room 101",
-      "recurrence": null,
-      "attendees": ["student-uuid-1", "student-uuid-2"],
-      "status": "active",
-      "created_at": "2025-01-10T10:30:00Z"
-    }
-  }
-}
-```
-
-**Errors:**
-- `404 Not Found` - Event not found
-
----
-
-### POST /events/ - Create Event
-
-Creates a new calendar event.
-
-**Request:**
-```bash
-curl -X POST "$BLOCKS_API_URL/events" \
-  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "X-API-KEY: $BLOCKS_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "event": {
-      "title": "Weekly Study Group - Physics",
-      "description": "Open study group for Physics 101 students",
-      "event_type": "study_group",
-      "start_time": "2025-02-10T16:00:00Z",
-      "end_time": "2025-02-10T18:00:00Z",
-      "location": "Library, Study Room 3",
-      "recurrence": "weekly",
-      "attendees": ["student-uuid-1", "student-uuid-2", "student-uuid-3"],
-      "status": "active"
-    }
-  }'
-```
-
-**Request Parameters:**
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `title` | string | Yes | Event title |
-| `description` | string | No | Event description |
-| `event_type` | string | No | Event type (exam, lecture, study_group, office_hours, deadline, other) |
-| `start_time` | datetime | Yes | Start time (ISO 8601) |
-| `end_time` | datetime | Yes | End time (ISO 8601) |
-| `location` | string | No | Event location |
-| `recurrence` | string | No | Recurrence rule (daily, weekly, biweekly, monthly, null) |
-| `attendees` | array | No | Array of user unique IDs |
-| `status` | enum | No | active, cancelled (default: active) |
-
-**Response 201:**
-```json
-{
-  "data": {
-    "id": "event-uuid-new",
-    "type": "event",
-    "attributes": {
-      "unique_id": "event-uuid-new",
-      "title": "Weekly Study Group - Physics",
-      "description": "Open study group for Physics 101 students",
-      "event_type": "study_group",
-      "start_time": "2025-02-10T16:00:00Z",
-      "end_time": "2025-02-10T18:00:00Z",
-      "location": "Library, Study Room 3",
-      "recurrence": "weekly",
-      "attendees": ["student-uuid-1", "student-uuid-2", "student-uuid-3"],
-      "status": "active",
-      "created_at": "2025-01-12T10:30:00Z"
-    }
-  }
-}
-```
-
-**Errors:**
-- `422 Unprocessable Entity` - Validation errors
-
----
-
-### PUT /events/:unique_id - Update Event
-
-Updates an existing event.
-
-**Request:**
-```bash
-curl -X PUT "$BLOCKS_API_URL/events/event-uuid-123" \
-  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "X-API-KEY: $BLOCKS_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "event": {
-      "title": "Midterm Exam - Calculus II (Rescheduled)",
-      "start_time": "2025-03-17T09:00:00Z",
-      "end_time": "2025-03-17T11:00:00Z",
-      "location": "Hall B, Room 205"
-    }
-  }'
-```
-
-**Response 200:**
-```json
-{
-  "data": {
-    "id": "event-uuid-123",
-    "type": "event",
-    "attributes": {
-      "unique_id": "event-uuid-123",
-      "title": "Midterm Exam - Calculus II (Rescheduled)",
-      "start_time": "2025-03-17T09:00:00Z",
-      "end_time": "2025-03-17T11:00:00Z",
-      "location": "Hall B, Room 205",
-      "status": "active",
-      "created_at": "2025-01-10T10:30:00Z"
-    }
-  }
-}
-```
-
-**Errors:**
-- `404 Not Found` - Event not found
-- `422 Unprocessable Entity` - Validation errors
-
----
-
-### DELETE /events/:unique_id - Delete Event
-
-Deletes a calendar event.
-
-**Request:**
-```bash
-curl -X DELETE "$BLOCKS_API_URL/events/event-uuid-123" \
-  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "X-API-KEY: $BLOCKS_API_KEY"
-```
-
-**Response 204:** No content
-
----
-
-## Course-Specific Student Events
-
-### GET /courses/:unique_id/students/:user_unique_id/events - Student Course Events
-
-Lists all events for a student within a specific course.
-
-**Request:**
-```bash
-curl -X GET "$BLOCKS_API_URL/courses/course-uuid-789/students/student-uuid-123/events?page=1&size=20" \
-  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "X-API-KEY: $BLOCKS_API_KEY"
-```
-
-**Response 200:**
-```json
-{
-  "data": [
-    {
-      "id": "event-uuid-456",
-      "type": "event",
-      "attributes": {
-        "unique_id": "event-uuid-456",
-        "title": "Assignment Due - Problem Set 3",
-        "description": "Submit via course portal",
-        "event_type": "deadline",
-        "start_time": "2025-02-20T23:59:00Z",
-        "end_time": "2025-02-20T23:59:00Z",
-        "location": null,
-        "recurrence": null,
-        "status": "active",
-        "created_at": "2025-01-15T08:00:00Z"
-      }
-    }
-  ],
-  "meta": {
-    "totalPages": 2,
-    "totalRecords": 18
-  }
-}
-```
-
----
-
-### GET /courses/:unique_id/students/:user_unique_id/events/:event_unique_id - Specific Student Course Event
-
-Retrieves a specific event for a student within a course.
-
-**Request:**
-```bash
-curl -X GET "$BLOCKS_API_URL/courses/course-uuid-789/students/student-uuid-123/events/event-uuid-456" \
-  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "X-API-KEY: $BLOCKS_API_KEY"
-```
-
-**Response 200:**
-```json
-{
-  "data": {
-    "id": "event-uuid-456",
-    "type": "event",
-    "attributes": {
-      "unique_id": "event-uuid-456",
-      "title": "Assignment Due - Problem Set 3",
-      "description": "Submit via course portal",
-      "event_type": "deadline",
-      "start_time": "2025-02-20T23:59:00Z",
-      "end_time": "2025-02-20T23:59:00Z",
-      "location": null,
-      "recurrence": null,
-      "status": "active",
-      "created_at": "2025-01-15T08:00:00Z"
-    }
-  }
-}
-```
-
-**Errors:**
-- `404 Not Found` - Event, course, or student not found
-
----
-
-### POST /courses/:unique_id/students/:user_unique_id/events - Create Student Course Event
-
-Creates a new event for a student within a specific course.
-
-**Request:**
-```bash
-curl -X POST "$BLOCKS_API_URL/courses/course-uuid-789/students/student-uuid-123/events" \
-  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "X-API-KEY: $BLOCKS_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "event": {
-      "title": "Office Hours - Prof. Johnson",
-      "description": "Discuss midterm preparation",
-      "event_type": "office_hours",
-      "start_time": "2025-02-18T14:00:00Z",
-      "end_time": "2025-02-18T15:00:00Z",
-      "location": "Faculty Building, Room 302"
-    }
-  }'
-```
-
-**Response 201:**
-```json
-{
-  "data": {
-    "id": "event-uuid-new",
-    "type": "event",
-    "attributes": {
-      "unique_id": "event-uuid-new",
-      "title": "Office Hours - Prof. Johnson",
-      "description": "Discuss midterm preparation",
-      "event_type": "office_hours",
-      "start_time": "2025-02-18T14:00:00Z",
-      "end_time": "2025-02-18T15:00:00Z",
-      "location": "Faculty Building, Room 302",
-      "status": "active",
-      "created_at": "2025-01-12T10:30:00Z"
-    }
-  }
-}
-```
-
-**Errors:**
-- `404 Not Found` - Course or student not found
-- `422 Unprocessable Entity` - Validation errors
-
----
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/events/` | List Events |
+| GET | `/events/:unique_id` | Get Event |
+| POST | `/events/` | Create Event |
+| PUT | `/events/:unique_id` | Update Event |
+| DELETE | `/events/:unique_id` | Delete Event |
+| GET | `/courses/:unique_id/students/:user_unique_id/events` | Student Course Events (Course-Specific Student Events) |
+| GET | `/courses/:unique_id/students/:user_unique_id/events/:event_unique_id` | Specific Student Course Event (Course-Specific Student Events) |
+| POST | `/courses/:unique_id/students/:user_unique_id/events` | Create Student Course Event (Course-Specific Student Events) |
 
 ## Data Models
 
@@ -414,44 +50,13 @@ curl -X POST "$BLOCKS_API_URL/courses/course-uuid-789/students/student-uuid-123/
 | `status` | enum | active, cancelled |
 | `created_at` | timestamp | Creation time |
 
----
+## Errors
 
-## Error Response Format
+JSON:API error objects, e.g. `{"errors":[{"status":"422","code":"validation_error","title":"Validation Error","detail":"Start time must be before end time."}]}`.
 
-```json
-{
-  "errors": [{
-    "status": "422",
-    "code": "validation_error",
-    "title": "Validation Error",
-    "detail": "Start time must be before end time."
-  }]
-}
-```
+## SDK (TypeScript)
 
----
-
-## SDK Usage (TypeScript)
-
-> **When building web apps, use the SDK instead of raw API calls.**
-
-### Installation
-
-```bash
-npm install @23blocks/block-university
-```
-
-### Setup
-
-```typescript
-import { create23BlocksClient } from '@23blocks/sdk';
-
-const client = create23BlocksClient({
-  authToken: process.env.BLOCKS_AUTH_TOKEN!,
-  apiKey: process.env.BLOCKS_API_KEY!,
-  apiUrl: process.env.BLOCKS_API_URL!,
-});
-```
+For web apps, prefer the SDK to raw calls: `npm install @23blocks/block-university`, then create a client with `create23BlocksClient({ authToken, apiKey, apiUrl })` from `@23blocks/sdk`.
 
 ### Available Methods
 

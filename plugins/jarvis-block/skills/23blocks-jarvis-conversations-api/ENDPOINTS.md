@@ -2,6 +2,20 @@
 
 Full endpoint documentation. See [SKILL.md](SKILL.md) for setup, data models, and SDK usage.
 
+## Contents
+
+- GET `/conversations`: List Conversations
+- GET `/conversations/:id`: Get Conversation
+- POST `/conversations`: Create Conversation
+- PUT `/conversations/:id`: Update Conversation
+- DELETE `/conversations/:id`: Delete Conversation
+- GET `/conversations/:id/messages`: List Messages
+- POST `/conversations/:id/messages`: Send Message
+- POST `/conversations/:id/query`: Query Conversation
+- PUT `/conversations/:id/rename`: Rename Conversation
+- PUT `/conversations/:id/archive`: Archive Conversation
+- PUT `/conversations/:id/restore`: Restore Conversation
+
 ---
 
 ### GET /conversations - List Conversations

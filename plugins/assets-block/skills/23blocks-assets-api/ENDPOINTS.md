@@ -2,6 +2,25 @@
 
 Full endpoint documentation. See [SKILL.md](SKILL.md) for setup, data models, and SDK usage.
 
+## Contents
+
+- GET `/assets/`: List Assets
+- GET `/assets/:unique_id/`: Get Asset
+- POST `/assets/`: Create Asset
+- PUT `/assets/:unique_id`: Update Asset
+- DELETE `/assets/:unique_id`: Delete Asset
+- GET `/assets/trash/show`: View Trash
+- POST `/assets/:unique_id/categories`: Assign Category
+- PUT `/assets/:unique_id/parts`: Update Parts
+- DELETE `/assets/:unique_id/parts`: Remove Parts
+- PUT `/assets/:unique_id/maintenance`: Set Maintenance
+- POST `/assets/:unique_id/lend`: Lend Asset
+- PUT `/assets/:unique_id/transfer`: Transfer Ownership
+- PUT `/assets/:unique_id/presign`: Presign Image Upload
+- POST `/assets/:unique_id/images`: Upload Image
+- DELETE `/assets/:unique_id/images/:unique_file_id`: Delete Image
+- POST `/assets/:unique_id/otp`: Generate OTP
+
 ---
 
 ## CRUD Endpoints

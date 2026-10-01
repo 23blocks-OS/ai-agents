@@ -2,6 +2,22 @@
 
 Full endpoint documentation. See [SKILL.md](SKILL.md) for setup, data models, and SDK usage.
 
+## Contents
+
+- GET `/users`: List Users
+- GET `/users/:unique_id`: Get User
+- POST `/users`: Create User
+- PUT `/users/:unique_id`: Update User
+- DELETE `/users/:unique_id`: Delete User
+- GET `/users/me`: Get Current Profile
+- PUT `/users/me`: Update Current Profile
+- PUT `/users/:unique_id/change_password`: Change Password
+- POST `/users/reset_password`: Request Password Reset
+- POST `/users/verify_email`: Verify Email
+- PUT `/users/:unique_id/activate`: Activate User
+- PUT `/users/:unique_id/deactivate`: Deactivate User
+- POST `/users/search`: Search Users
+
 ---
 
 ## Endpoints

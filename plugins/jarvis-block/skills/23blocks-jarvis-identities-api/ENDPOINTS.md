@@ -2,6 +2,20 @@
 
 Full endpoint documentation. See [SKILL.md](SKILL.md) for setup, data models, and SDK usage.
 
+## Contents
+
+- GET `/identities`: List Identities
+- GET `/identities/:id`: Get Identity
+- POST `/identities/:id/register`: Register User
+- PUT `/identities/:id`: Update Identity
+- GET `/identities/:id/contexts`: List User Contexts
+- POST `/identities/:id/contexts`: Create User Context
+- GET `/identities/:id/conversations`: List User Conversations
+- POST `/identities/:id/conversations`: Create User Conversation
+- GET `/identities/:id/conversations/:conv_id/messages`: List User Messages
+- POST `/identities/:id/conversations/:conv_id/messages`: Send User Message
+- GET `/identities/:id/content`: Get User Content
+
 ---
 
 ### GET /identities - List Identities

@@ -1,6 +1,6 @@
 ---
 name: 23blocks-conversations-messages-api
-description: Send, receive, and manage messages within conversations with read tracking and drafts. Use when sending messages, managing read receipts, creating drafts, or updating message content.
+description: "Conversations Block messages: send, update, extend, drafts, idempotency. Use for message content; read state is 23blocks-conversations-read-receipts-api."
 allowed-tools: Read, Write, Bash, Grep, Glob
 metadata:
   author: 23blocks
@@ -11,42 +11,12 @@ metadata:
 
 Send, receive, update, and manage messages within conversations. Supports read/unread tracking, message extensions, and draft messages.
 
-## Required Environment Variables
+## Setup
 
-| Variable | Description | Example |
-|----------|-------------|---------|
-| `BLOCKS_API_URL` | Conversations API base URL | `https://realtime.api.us.23blocks.com` |
-| `BLOCKS_AUTH_TOKEN` | Bearer token — your identity & scopes (from login or AID token exchange) | `eyJhbGciOiJSUzI1NiJ9...` |
-| `BLOCKS_API_KEY` | Tenant routing key (X-API-KEY header) — static, from company config | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
+Send requests to `$BLOCKS_API_URL` (this block: `https://realtime.api.us.23blocks.com`) with two headers:
 
-## Authentication
-
-**These two credentials serve different purposes and come from different sources:**
-
-| Credential | Purpose | Source | Changes? |
-|------------|---------|--------|----------|
-| `BLOCKS_API_KEY` | **Tenant routing** — identifies which company/app | Company config (static `pk_live_sh_...` key) | No — same key for all blocks |
-| `BLOCKS_AUTH_TOKEN` | **Identity & authorization** — who you are + what you can do | Login (`/auth/sign_in`), AID token exchange, or human-provided | Yes — expires, must be refreshed |
-
-> The API key used during AID registration is NOT the same as `BLOCKS_API_KEY`. The registration key authenticates the agent with the Auth API; `BLOCKS_API_KEY` routes requests to the correct tenant across all blocks.
-
-Two methods to obtain the Bearer token:
-
-**Method 1: Agent Identity (AID)** -- For AI agents with AMP identity:
-```bash
-export BLOCKS_AUTH_TOKEN=$(aid-token.sh -a https://auth.api.us.23blocks.com/<tenant> -q)
-export BLOCKS_API_URL="https://realtime.api.us.23blocks.com"
-export BLOCKS_API_KEY="<your-api-key>"
-```
-> First time? See the `23blocks-auth-agent-identity-api` skill for setup.
-
-**Method 2: User Token** -- For human-provided credentials:
-```bash
-export BLOCKS_API_URL="https://realtime.api.us.23blocks.com"
-export BLOCKS_AUTH_TOKEN="<your-bearer-token>"
-export BLOCKS_API_KEY="<your-api-key>"
-```
-
+- `X-API-KEY: $BLOCKS_API_KEY`: static tenant routing key (`pk_live_sh_...`) from the company config, the same for every block. It is not the key used to register an agent identity.
+- `Authorization: Bearer $BLOCKS_AUTH_TOKEN`: the caller's identity and scopes; it expires. Get it from login (`/auth/sign_in`), from the user, or, for an agent, with `aid-token.sh -a https://auth.api.us.23blocks.com/<tenant> -q` (first-time setup: the `23blocks-auth-agent-identity-api` skill).
 
 ## Endpoints
 
@@ -118,18 +88,16 @@ export BLOCKS_API_KEY="<your-api-key>"
 
 ---
 
-## Breaking Changes
+## Behaviour notes
 
-> **Message status no longer changes to `'read'`.** Read tracking is now per-user via `MessageReadReceipt` records (see the **23blocks-conversations-read-receipts-api** skill). The `status` field remains `sent` or `delivered`.
-
-## New Features
+Message `status` is only ever `sent` or `delivered`. Read state is per user, in `MessageReadReceipt` records (see the **23blocks-conversations-read-receipts-api** skill).
 
 ### Idempotency
 
 Pass an `idempotency_key` when creating a message to prevent duplicates. If a message with the same key was created within the last 72 hours, the API returns the original message with status `200 OK` and header `X-Idempotency-Status: duplicate` instead of creating a new one.
 
-- Accepted format (widened in realtime API v8.10.6 — not a breaking change): `[A-Za-z0-9:._-]`, 20-128 chars. Composite/namespaced keys like `<event>:<uuid>` are valid without sanitizing.
-- Dedup is keyed ONLY on `idempotency_key`. The API does not dedup on message content — identical bodies without a key are distinct messages.
+- Accepted format: `[A-Za-z0-9:._-]`, 20-128 chars. Composite/namespaced keys like `<event>:<uuid>` are valid without sanitizing.
+- Dedup is keyed only on `idempotency_key`. The API does not dedup on message content — identical bodies without a key are distinct messages.
 - Recommendation: send a stable `idempotency_key` per logical action for retry-safety.
 
 ### Event Name
@@ -172,27 +140,9 @@ Common status codes: `401` Unauthorized, `403` Forbidden, `404` Not Found, `422`
 
 ---
 
-## SDK Usage (TypeScript)
+## SDK (TypeScript)
 
-> **When building web apps, use the SDK instead of raw API calls.**
-
-### Installation
-
-```bash
-npm install @23blocks/block-conversations
-```
-
-### Setup
-
-```typescript
-import { create23BlocksClient } from '@23blocks/sdk';
-
-const client = create23BlocksClient({
-  authToken: process.env.BLOCKS_AUTH_TOKEN!,
-  apiKey: process.env.BLOCKS_API_KEY!,
-  apiUrl: process.env.BLOCKS_API_URL!,
-});
-```
+For web apps, prefer the SDK to raw calls: `npm install @23blocks/block-conversations`, then create a client with `create23BlocksClient({ authToken, apiKey, apiUrl })` from `@23blocks/sdk`; in React, `const { client } = useConversationsBlock()` from `@23blocks/react`.
 
 ### Available Methods
 
@@ -218,15 +168,4 @@ import type {
   UpdateMessageRequest,
   ListMessagesParams,
 } from '@23blocks/block-conversations';
-```
-
-### React Hook
-
-```typescript
-import { useConversationsBlock } from '@23blocks/react';
-
-function MyComponent() {
-  const { client } = useConversationsBlock();
-  const result = await client.conversations.messages.list();
-}
 ```

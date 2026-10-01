@@ -1,6 +1,6 @@
 ---
 name: 23blocks-sales-flexible-orders-api
-description: Manage 23blocks Sales flexible orders via REST API. Use when creating flexible orders with custom schemas, managing details, processing payments, handling tips, updating status and logistics, or processing cancellations and refunds.
+description: "Sales Block flexible orders with custom schemas: payments, tips, status, logistics, refunds. Use when standard orders don't fit."
 allowed-tools: Read, Write, Bash, Grep, Glob
 metadata:
   author: 23blocks
@@ -11,42 +11,12 @@ metadata:
 
 Complete API reference for 23blocks flexible order management. Flexible orders follow the same structure as standard orders but support custom schemas and flexible data models.
 
-## Required Environment Variables
+## Setup
 
-| Variable | Description | Example |
-|----------|-------------|---------|
-| `BLOCKS_API_URL` | Sales API base URL | `https://sales.api.us.23blocks.com` |
-| `BLOCKS_AUTH_TOKEN` | Bearer token — your identity & scopes (from login or AID token exchange) | `eyJhbGciOiJSUzI1NiJ9...` |
-| `BLOCKS_API_KEY` | Tenant routing key (X-API-KEY header) — static, from company config | `pk_live_sh_f2b5ab3c7203d29b6d2937e2` |
+Send requests to `$BLOCKS_API_URL` (this block: `https://sales.api.us.23blocks.com`) with two headers:
 
-## Authentication
-
-**These two credentials serve different purposes and come from different sources:**
-
-| Credential | Purpose | Source | Changes? |
-|------------|---------|--------|----------|
-| `BLOCKS_API_KEY` | **Tenant routing** — identifies which company/app | Company config (static `pk_live_sh_...` key) | No — same key for all blocks |
-| `BLOCKS_AUTH_TOKEN` | **Identity & authorization** — who you are + what you can do | Login (`/auth/sign_in`), AID token exchange, or human-provided | Yes — expires, must be refreshed |
-
-> The API key used during AID registration is NOT the same as `BLOCKS_API_KEY`. The registration key authenticates the agent with the Auth API; `BLOCKS_API_KEY` routes requests to the correct tenant across all blocks.
-
-Two methods to obtain the Bearer token:
-
-**Method 1: Agent Identity (AID)** -- For AI agents with AMP identity:
-```bash
-export BLOCKS_AUTH_TOKEN=$(aid-token.sh -a https://auth.api.us.23blocks.com/<tenant> -q)
-export BLOCKS_API_URL="https://sales.api.us.23blocks.com"
-export BLOCKS_API_KEY="<your-api-key>"
-```
-> First time? See the `23blocks-auth-agent-identity-api` skill for setup.
-
-**Method 2: User Token** -- For human-provided credentials:
-```bash
-export BLOCKS_API_URL="https://sales.api.us.23blocks.com"
-export BLOCKS_AUTH_TOKEN="<your-bearer-token>"
-export BLOCKS_API_KEY="<your-api-key>"
-```
-
+- `X-API-KEY: $BLOCKS_API_KEY`: static tenant routing key (`pk_live_sh_...`) from the company config, the same for every block. It is not the key used to register an agent identity.
+- `Authorization: Bearer $BLOCKS_AUTH_TOKEN`: the caller's identity and scopes; it expires. Get it from login (`/auth/sign_in`), from the user, or, for an agent, with `aid-token.sh -a https://auth.api.us.23blocks.com/<tenant> -q` (first-time setup: the `23blocks-auth-agent-identity-api` skill).
 
 ## Endpoints
 
@@ -108,42 +78,13 @@ export BLOCKS_API_KEY="<your-api-key>"
 
 ---
 
-## Error Response Format
+## Errors
 
-```json
-{
-  "errors": [{
-    "status": "404",
-    "code": "not_found",
-    "title": "Flexible Order Not Found",
-    "detail": "The requested flexible order could not be found."
-  }]
-}
-```
+JSON:API error objects, e.g. `{"errors":[{"status":"404","code":"not_found","title":"Flexible Order Not Found","detail":"The requested flexible order could not be found."}]}`.
 
----
+## SDK (TypeScript)
 
-## SDK Usage (TypeScript)
-
-> **When building web apps, use the SDK instead of raw API calls.**
-
-### Installation
-
-```bash
-npm install @23blocks/block-sales
-```
-
-### Setup
-
-```typescript
-import { create23BlocksClient } from '@23blocks/sdk';
-
-const client = create23BlocksClient({
-  authToken: process.env.BLOCKS_AUTH_TOKEN!,
-  apiKey: process.env.BLOCKS_API_KEY!,
-  apiUrl: process.env.BLOCKS_API_URL!,
-});
-```
+For web apps, prefer the SDK to raw calls: `npm install @23blocks/block-sales`, then create a client with `create23BlocksClient({ authToken, apiKey, apiUrl })` from `@23blocks/sdk`; in React, `const { client } = useSalesBlock()` from `@23blocks/react`.
 
 ### Available Methods
 
@@ -180,15 +121,4 @@ import type {
   UpdateFlexibleOrderLogisticsRequest,
   ListFlexibleOrdersParams,
 } from '@23blocks/block-sales';
-```
-
-### React Hook
-
-```typescript
-import { useSalesBlock } from '@23blocks/react';
-
-function MyComponent() {
-  const { client } = useSalesBlock();
-  const result = await client.sales.flexibleOrders.list();
-}
 ```

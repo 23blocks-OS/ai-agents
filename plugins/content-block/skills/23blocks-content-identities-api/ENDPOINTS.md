@@ -2,6 +2,23 @@
 
 Full endpoint documentation. See [SKILL.md](SKILL.md) for setup, data models, and SDK usage.
 
+## Contents
+
+- GET `/identities`: List Identities
+- GET `/identities/:unique_id`: Get Identity
+- POST `/identities/:unique_id/register`: Register User
+- PUT `/identities/:unique_id`: Update User
+- POST `/identities/:unique_id/tags`: Add Tag to User
+- DELETE `/identities/:unique_id/tags/:tag_id`: Remove Tag from User
+- GET `/identities/:unique_id/drafts`: Get User Drafts
+- GET `/identities/:unique_id/posts`: Get User Posts
+- GET `/identities/:unique_id/comments`: Get User Comments
+- GET `/identities/:unique_id/followers`: Get User Followers
+- GET `/identities/:unique_id/following`: Get Following
+- POST `/identities/:unique_id/follows/:user_id`: Follow User
+- DELETE `/identities/:unique_id/unfollows/:user_id`: Unfollow User
+- GET `/identities/:unique_id/activities`: Get User Activities
+
 ---
 
 ## Endpoints

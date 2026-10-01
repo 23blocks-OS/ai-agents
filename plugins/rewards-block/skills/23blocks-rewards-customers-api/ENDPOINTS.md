@@ -2,6 +2,18 @@
 
 Full endpoint documentation. See [SKILL.md](SKILL.md) for setup, data models, and SDK usage.
 
+## Contents
+
+- GET `/customers`: List Customers
+- GET `/customers/:unique_id/`: Get Customer
+- GET `/customers/:unique_id/loyalty`: Customer Loyalty Status
+- GET `/customers/:unique_id/rewards`: Customer Rewards
+- GET `/customers/:unique_id/rewards/expirations`: Expiring Rewards
+- GET `/customers/:unique_id/rewards/history`: Reward History
+- GET `/customers/:unique_id/badges`: Customer Badges
+- GET `/customers/:unique_id/coupons`: Customer Coupons
+- GET `/customers/:unique_id/offer_codes`: Customer Offer Codes
+
 ---
 
 ## Endpoints

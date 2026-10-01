@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "Official 23blocks platform plugins for Claude Code. One plugin per block.",
-    "version": "2.0.0",
+    "version": "2.1.0",
     "homepage": "https://www.23blocks.com",
     "repository": "https://github.com/23blocks-OS/ai-agents"
   },
@@ -15,7 +15,7 @@
       "name": "forms-block",
       "source": "./plugins/forms-block",
       "description": "23blocks Forms Block - forms, surveys, appointments, app forms with scoring, magic links, OTP verification",
-      "version": "2.1.0",
+      "version": "2.2.0",
       "keywords": ["forms", "schemas", "validation", "surveys", "appointments", "magic-links", "otp"],
       "category": "platform"
     },
@@ -23,7 +23,7 @@
       "name": "content-block",
       "source": "./plugins/content-block",
       "description": "23blocks Content Block - posts, series, comments, tags, categories, user identities with social interactions",
-      "version": "1.1.0",
+      "version": "1.2.0",
       "keywords": ["content", "posts", "series", "comments", "tags", "categories", "identities", "social"],
       "category": "platform"
     },
@@ -31,7 +31,7 @@
       "name": "files-block",
       "source": "./plugins/files-block",
       "description": "23blocks Files Block - user files, storage, entity files, access control, delegations, AI-enabled querying",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "keywords": ["files", "storage", "access-control", "delegations", "presigned-urls", "multipart-upload"],
       "category": "platform"
     },
@@ -39,7 +39,7 @@
       "name": "jarvis-block",
       "source": "./plugins/jarvis-block",
       "description": "23blocks Jarvis Block - AI agents, versioned prompts, BPMN workflows, conversations, digital twins, tools, LLM integrations",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "keywords": ["jarvis", "ai-agents", "prompts", "workflows", "bpmn", "conversations", "tools", "llm", "entities", "clusters"],
       "category": "platform"
     },
@@ -47,7 +47,7 @@
       "name": "auth-block",
       "source": "./plugins/auth-block",
       "description": "23blocks Auth Block - authentication, users, sessions, API keys, organizations, roles, permissions, invitations, teams, OAuth/SSO, audit logs",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "keywords": ["auth", "authentication", "authorization", "users", "sessions", "api-keys", "organizations", "roles", "permissions", "invitations", "teams", "oauth", "sso", "audit-logs"],
       "category": "platform"
     },
@@ -55,7 +55,7 @@
       "name": "search-block",
       "source": "./plugins/search-block",
       "description": "23blocks Search Block - full-text search, entity management, AI-powered vector search, AWS CloudSearch, email templates, multi-tenant companies",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "keywords": ["search", "entities", "vector-search", "ai-search", "cloud-search", "mail-templates", "companies", "multi-tenant", "jarvis", "nlp"],
       "category": "platform"
     },
@@ -63,7 +63,7 @@
       "name": "assets-block",
       "source": "./plugins/assets-block",
       "description": "23blocks Assets Block - asset management, digital entities, categories, tags, vendors, warehouses, events, audits, operations, alerts, and access control",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "keywords": ["assets", "inventory", "entities", "categories", "vendors", "warehouses", "audits", "operations", "alerts", "access-control"],
       "category": "platform"
     },
@@ -71,7 +71,7 @@
       "name": "campaigns-block",
       "source": "./plugins/campaigns-block",
       "description": "23blocks Campaigns Block - marketing campaigns, media management, landing pages, audience targeting, templates, and campaign performance tracking",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "keywords": ["campaigns", "marketing", "media", "landing-pages", "audiences", "templates", "targeting"],
       "category": "platform"
     },
@@ -79,7 +79,7 @@
       "name": "company-block",
       "source": "./plugins/company-block",
       "description": "23blocks Company Block - organizational structure management including departments, teams, positions, and employee assignments",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "keywords": ["company", "departments", "teams", "positions", "employees", "organizational-structure"],
       "category": "platform"
     },
@@ -87,7 +87,7 @@
       "name": "conversations-block",
       "source": "./plugins/conversations-block",
       "description": "23blocks Conversations Block - real-time messaging, conversations, groups, notifications, meetings, WebSocket connections, and file sharing",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "keywords": ["conversations", "messaging", "groups", "notifications", "meetings", "websocket", "real-time", "chat"],
       "category": "platform"
     },
@@ -95,7 +95,7 @@
       "name": "crm-block",
       "source": "./plugins/crm-block",
       "description": "23blocks CRM Block - customer relationship management including accounts, contacts, leads, opportunities, meetings, billings, quotes, referrals, and calendar sync",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "keywords": ["crm", "accounts", "contacts", "leads", "opportunities", "meetings", "billings", "quotes", "calendar"],
       "category": "platform"
     },
@@ -103,7 +103,7 @@
       "name": "geolocation-block",
       "source": "./plugins/geolocation-block",
       "description": "23blocks Geolocation Block - location management, addresses, premises, bookings, routes, regions, and geographic hierarchies",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "keywords": ["geolocation", "locations", "addresses", "premises", "bookings", "routes", "regions", "maps"],
       "category": "platform"
     },
@@ -111,7 +111,7 @@
       "name": "onboarding-block",
       "source": "./plugins/onboarding-block",
       "description": "23blocks Onboarding Block - user onboarding flows, step-by-step journeys, progress tracking, remarketing, and journey reporting",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "keywords": ["onboarding", "journeys", "steps", "flows", "remarketing", "user-progress", "reports"],
       "category": "platform"
     },
@@ -119,7 +119,7 @@
       "name": "products-block",
       "source": "./plugins/products-block",
       "description": "23blocks Products Block - product catalog management including products, categories, brands, carts, orders, stock, pricing, reviews, and promotions",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "keywords": ["products", "catalog", "categories", "brands", "carts", "orders", "stock", "pricing", "reviews", "e-commerce"],
       "category": "platform"
     },
@@ -127,7 +127,7 @@
       "name": "rewards-block",
       "source": "./plugins/rewards-block",
       "description": "23blocks Rewards Block - loyalty programs, coupons, badges, customer rewards, offer codes, and expiration rules management",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "keywords": ["rewards", "loyalty", "coupons", "badges", "customers", "offer-codes", "points", "gamification"],
       "category": "platform"
     },
@@ -135,7 +135,7 @@
       "name": "sales-block",
       "source": "./plugins/sales-block",
       "description": "23blocks Sales Block - order management, subscriptions, payments, Stripe integration, MercadoPago, flexible orders, vendor payments, and sales reporting",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "keywords": ["sales", "orders", "subscriptions", "payments", "stripe", "mercadopago", "invoicing", "vendors"],
       "category": "platform"
     },
@@ -143,7 +143,7 @@
       "name": "university-block",
       "source": "./plugins/university-block",
       "description": "23blocks University Block - learning management with courses, subjects, lessons, assignments, tests, coaching, teachers, students, attendance, and calendar",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "keywords": ["university", "lms", "courses", "subjects", "lessons", "assignments", "tests", "coaching", "students"],
       "category": "platform"
     },
@@ -151,7 +151,7 @@
       "name": "wallet-block",
       "source": "./plugins/wallet-block",
       "description": "23blocks Wallet Block - digital wallets, transactions, transfers, OTP authorization, content storage, and webhook integrations",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "keywords": ["wallet", "transactions", "transfers", "otp", "payments", "content-storage", "webhooks"],
       "category": "platform"
     },
@@ -159,7 +159,7 @@
       "name": "rag-block",
       "source": "./plugins/rag-block",
       "description": "23blocks RAG Block - file ingestion, vector embeddings, YOLOv8 object detection, CLIP embeddings, and semantic search across products, accounts, contacts, users, and company storage",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "keywords": ["rag", "vector-search", "embeddings", "object-detection", "yolov8", "clip", "ocr", "semantic-search", "visual-search", "ingestion"],
       "category": "platform"
     }

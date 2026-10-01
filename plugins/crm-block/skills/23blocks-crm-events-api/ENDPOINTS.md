@@ -2,6 +2,21 @@
 
 Full endpoint documentation. See [SKILL.md](SKILL.md) for setup, data models, and SDK usage.
 
+## Contents
+
+- GET `/events/`: List Events
+- POST `/events/`: Create Event
+- PUT `/events/:unique_id`: Update Event
+- DELETE `/events/:unique_id`: Delete Event
+- PUT `/events/:unique_id/contacts/confirmation`: Contact Confirmation
+- PUT `/events/:unique_id/contacts/checking`: Contact Check-in
+- PUT `/events/:unique_id/contacts/checkout`: Contact Checkout
+- PUT `/events/:unique_id/contacts/notes`: Contact Notes
+- PUT `/events/:unique_id/employees/confirmation`: Employee Confirmation
+- PUT `/events/:unique_id/employees/checking`: Employee Check-in
+- PUT `/events/:unique_id/employees/checkout`: Employee Checkout
+- PUT `/events/:unique_id/admin/notes`: Admin Notes
+
 ---
 
 ## Endpoints

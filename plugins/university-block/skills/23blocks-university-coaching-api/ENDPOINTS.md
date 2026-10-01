@@ -2,6 +2,34 @@
 
 Full endpoint documentation. See [SKILL.md](SKILL.md) for setup, data models, and SDK usage.
 
+## Contents
+
+- POST `/matches/`: Create Match
+- PUT `/matches/:unique_id/activate`: Activate Match
+- PUT `/matches/:unique_id/deactivate`: Deactivate Match
+- DELETE `/matches/:unique_id`: Delete Match
+- POST `/matches/evaluate`: Evaluate Potential Matches
+- POST `/matches/availabilities`: Evaluate Availability Compatibility
+- GET `/users/:unique_id/coaching/active`: Student Active Match
+- GET `/users/:unique_id/coaching/matches`: Student All Matches
+- GET `/users/:unique_id/coaching/available`: Available Coaches
+- POST `/users/:unique_id/coaches/find`: Find Coaches
+- GET `/coaching/sessions/`: List Sessions
+- GET `/coaching/sessions/:unique_id`: Get Session
+- POST `/coaching/sessions`: Create Session
+- PUT `/coaching/sessions/:unique_id`: Update Session
+- DELETE `/coaching/sessions/:unique_id`: Cancel Session
+- PUT `/coaching/sessions/:unique_id/students/confirmation`: Student Confirm
+- PUT `/coaching/sessions/:unique_id/students/checking`: Student Check-in
+- PUT `/coaching/sessions/:unique_id/students/checkout`: Student Check-out
+- PUT `/coaching/sessions/:unique_id/teachers/confirmation`: Teacher Confirm
+- PUT `/coaching/sessions/:unique_id/teachers/checking`: Teacher Check-in
+- PUT `/coaching/sessions/:unique_id/teachers/checkout`: Teacher Check-out
+- PUT `/coaching/sessions/:unique_id/students/notes`: Student Notes
+- PUT `/coaching/sessions/:unique_id/admin/notes`: Admin Notes
+- GET `/users/:unique_id/coaching_sessions`: Student Sessions
+- GET `/teachers/:unique_id/coaching_sessions`: Teacher Sessions
+
 ---
 
 ## Coaching Matches

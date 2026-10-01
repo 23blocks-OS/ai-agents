@@ -2,6 +2,18 @@
 
 Full endpoint documentation. See [SKILL.md](SKILL.md) for setup, data models, and SDK usage.
 
+## Contents
+
+- GET `/templates`: List Templates
+- GET `/templates/:unique_id`: Get Template
+- POST `/templates`: Create Template
+- PUT `/templates/:unique_id`: Update Template
+- DELETE `/templates/:unique_id`: Delete Template
+- GET `/template_details`: List Template Details
+- POST `/template_details`: Create Template Detail
+- PUT `/template_details/:unique_id`: Update Template Detail
+- DELETE `/template_details/:unique_id`: Delete Template Detail
+
 ---
 
 ## Template Endpoints

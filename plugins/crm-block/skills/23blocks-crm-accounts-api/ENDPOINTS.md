@@ -2,6 +2,39 @@
 
 Full endpoint documentation. See [SKILL.md](SKILL.md) for setup, data models, and SDK usage.
 
+## Contents
+
+- GET `/accounts/`: List Accounts
+- GET `/accounts/:unique_id`: Get Account
+- GET `/accounts/status/trash`: Trashed Accounts
+- GET `/accounts/status/archive`: Archived Accounts
+- POST `/accounts/validate`: Validate Account
+- POST `/accounts/validate_tax_id`: Validate Tax ID
+- POST `/accounts/`: Create Account
+- PUT `/accounts/:unique_id/`: Update Account
+- DELETE `/accounts/:unique_id/`: Delete Account
+- DELETE `/accounts/:unique_id/archive`: Archive Account
+- POST `/accounts/:unique_id/details`: Add Details
+- PUT `/accounts/:unique_id/details`: Update Details
+- PUT `/accounts/:unique_id/presign_logo`: Presign Logo
+- PUT `/accounts/:unique_id/logo/publish`: Publish Logo
+- GET `/accounts/:unique_id/leads`: Account Leads
+- POST `/accounts/:unique_id/leads`: Add Lead to Account
+- GET `/accounts/:unique_id/contacts`: Account Contacts
+- GET `/accounts/:unique_id/contacts/:contact_unique_id`: Get Specific Contact
+- POST `/accounts/:unique_id/contacts`: Add Contact to Account
+- DELETE `/accounts/:unique_id/contacts/:contact_unique_id`: Remove Contact
+- GET `/accounts/:unique_id/meetings`: Account Meetings
+- GET `/accounts/:unique_id/documents`: List Documents
+- PUT `/accounts/:unique_id/presign_document`: Presign Document
+- POST `/accounts/:unique_id/documents`: Upload Document
+- DELETE `/accounts/:unique_id/documents/:unique_document_id`: Delete Document
+- POST `/accounts/:unique_id/categories`: Assign Category
+- GET `/accounts/:unique_id/locations`: List Locations
+- POST `/accounts/:unique_id/locations`: Add Location
+- GET `/accounts/:unique_id/quotes`: Account Quotes
+- POST `/accounts/:unique_id/quotes`: Add Quote
+
 ---
 
 ## Endpoints

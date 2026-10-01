@@ -1,6 +1,6 @@
 {
   "name": "forms-block",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "23blocks Forms Block - REST API and TypeScript/React SDK for form schemas, validation, submissions, surveys, appointments, app forms with scoring, magic links with OTP verification",
   "author": {
     "name": "23blocks",
