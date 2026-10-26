@@ -269,7 +269,7 @@ curl -X POST "$BLOCKS_API_URL/auth/social" \
 
 `role_id` is ignored. New social users always get the tenant's default self-signup role; to change it, update the user afterwards with `users:write`.
 
-**Optional headers:** `X-OAuth-Mode: true` for an access + refresh token pair, `X-Device-ID` to tie the refresh token to a device.
+**Optional headers:** `X-OAuth-Mode: true` for the OAuth-style response, `X-Device-ID` to tie the refresh token to a device. Since Auth v4.49.6 `meta.auth` includes `refresh_token` either way (store it securely; it can be absent if issuing failed, and sign-in still succeeds).
 
 **Response 200:** the user (with role, profile, subscription and avatar included) and `meta.auth` holding the token, plus `meta.social` with the provider details. Provider-specific shortcuts also exist: `POST /auth/google`, `/auth/facebook`, `/auth/apple`.
 

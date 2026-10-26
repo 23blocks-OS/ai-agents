@@ -202,6 +202,7 @@ Authorization is by OAuth scope, not numeric role id. A `403` usually means the 
 - `PUT /auth/password` with a JWT: needs `current_password`, or a token with the `password:reset` scope. Otherwise `401 current_password_required`.
 
 ### Token and Session Rules
+- Every sign-in (sign-in, sign-up, social, passwordless) returns `refresh_token` in `meta.auth`, with or without `X-OAuth-Mode`. Store it securely (only copy; max 20 active per user per company, oldest revoked). If absent, sign-in still succeeded.
 - A failed refresh means the user is signed out (deleted, suspended, banned, or no role). Do not retry it as a network error.
 - Refresh tokens are revoked on logout, account deletion, status change, and password change (signs out every device).
 - Group claims (`group_id`, `group_role`, `group_owner_id`, `group_ids`) survive a refresh.
@@ -243,7 +244,7 @@ curl -X GET "$BLOCKS_API_URL/users" \
 ### Sessions & Tokens
 - `POST /auth/sign_in` - Login (create session, get access token)
 - `DELETE /auth/sign_out` - Logout (destroy session)
-- `POST /oauth/token/refresh` - Refresh token (requires OAuth mode)
+- `POST /oauth/token/refresh` - Refresh token (also `grant_type=refresh_token` at `POST /:company_url_id/oauth/token`, no API key)
 - `POST /oauth/token/revoke` - Revoke a specific token (RFC 7009)
 - `POST /oauth/token/revoke_all` - Revoke all tokens for a user
 - `GET /auth/validate_token` - Validate current token

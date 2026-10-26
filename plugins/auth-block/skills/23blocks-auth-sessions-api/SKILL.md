@@ -50,7 +50,7 @@ curl -X POST "$BLOCKS_API_URL/auth/sign_in" \
 **Optional Headers:**
 | Header | Description |
 |--------|-------------|
-| `X-OAuth-Mode: true` | Enables refresh token flow — response includes `refresh_token` |
+| `X-OAuth-Mode: true` | OAuth-style response (`oauth_mode: true`). The `refresh_token` is returned either way (Auth v4.49.6) |
 | `X-Device-ID: <id>` | Associates session with a device for per-device token revocation |
 
 **Response 200 (success):**
@@ -80,9 +80,11 @@ curl -X POST "$BLOCKS_API_URL/auth/sign_in" \
 }
 ```
 
+**Refresh token on every sign-in (Auth v4.49.6):** `meta.auth` also carries `refresh_token` and its expiry fields on sign-in, sign-up, social login and passwordless login, with or without `X-OAuth-Mode: true`. Store it securely: only a digest is kept server-side, so the response is the only copy. At most 20 refresh tokens are active per user per company; issuing a new one revokes the oldest. If issuing fails, sign-in still succeeds and the field is simply absent, so do not treat a missing `refresh_token` as a failed login.
+
 **Response 200 (OAuth mode — with `X-OAuth-Mode: true`):**
 
-Same as above, but `meta.auth` also includes:
+Same as the default response, with `oauth_mode: true`. `meta.auth` includes:
 ```json
 {
   "meta": {
@@ -147,7 +149,7 @@ curl -X DELETE "$BLOCKS_API_URL/auth/sign_out" \
 
 ### POST /oauth/token/refresh - Refresh Token
 
-Refreshes an expired access token using a refresh token. Requires OAuth mode to have been enabled during login.
+Refreshes an expired access token using a refresh token from sign-in.
 
 **Request:**
 ```bash
@@ -169,6 +171,8 @@ curl -X POST "$BLOCKS_API_URL/oauth/token/refresh" \
 **Errors:**
 - `400 Bad Request` - `{ "error": "invalid_grant", "error_description": "..." }`
 
+**Standard OIDC form (Auth v4.49.5):** `POST $BLOCKS_API_URL/<company_url_id>/oauth/token` with `grant_type=refresh_token&refresh_token=<token>` (form-encoded) returns the same token pair. No API key is needed: the company comes from the URL and the refresh token is the credential. A missing, blank or non-string `refresh_token` returns `400 invalid_request`; an unknown, revoked, other-company, or suspended/banned/deleted-user token returns `400 invalid_grant`. `/oauth/token/refresh` is unchanged and still needs the API key.
+
 **A failed refresh means the session is over.** Refresh fails closed (Auth v4.49.2): when the account can no longer sign in, the refresh token is revoked and the invalid-token error is returned. Treat any failed refresh as "signed out" and send the user to sign-in; do not retry it as a network error.
 
 Refresh tokens are revoked on the server when:
@@ -179,7 +183,7 @@ Refresh tokens are revoked on the server when:
 
 Group claims (`group_id`, `group_role`, `group_owner_id`, `group_ids`) are carried into the refreshed access token.
 
-A refresh token is issued at sign-in only when the client sends `X-OAuth-Mode: true`. Refresh by default, refresh-token rotation and an admin "revoke all sessions" endpoint are planned but not released; do not rely on them.
+A refresh token is issued at every sign-in (see above). Refresh-token rotation and an admin "revoke all sessions" endpoint are planned but not released; do not rely on them.
 
 **Caching:** `POST /auth/sign_in`, `POST /auth/introspect`, the OIDC token and userinfo endpoints, and `/oauth/token/refresh` and `/revoke` answer with `Cache-Control: no-store` (and `Pragma: no-cache`), including errors. Never cache these responses. Discovery and JWKS stay cacheable.
 

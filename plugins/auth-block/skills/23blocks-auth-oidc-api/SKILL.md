@@ -165,7 +165,7 @@ curl -X POST "$BLOCKS_API_URL/{company_url_id}/oauth/token" \
 | Grant Type | Description |
 |------------|-------------|
 | `authorization_code` | Exchange auth code for tokens |
-| `refresh_token` | Exchange refresh token for new access token |
+| `refresh_token` | Exchange refresh token for new access token (`grant_type=refresh_token&refresh_token=<token>`, no API key; `400 invalid_request` if missing/blank, `400 invalid_grant` if unknown, revoked, other company, or user suspended/banned/deleted) |
 | `client_credentials` | Currently unavailable |
 
 **Errors:**

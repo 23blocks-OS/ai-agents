@@ -49,6 +49,8 @@ curl -X POST "$BLOCKS_API_URL/oauth/token/refresh" \
 }
 ```
 
+Sign-in returns the first refresh token on every login (Auth v4.49.6). Alternative without an API key: `POST /<company_url_id>/oauth/token` with `grant_type=refresh_token&refresh_token=<token>` (`400 invalid_request` if the token is missing or blank, `400 invalid_grant` if unknown, revoked, another company's, or its user is suspended/banned/deleted).
+
 **Errors:**
 - `400 Bad Request` - Missing refresh_token parameter, missing or invalid API key
 - `400 Bad Request` (invalid_grant) - Invalid or expired refresh token
