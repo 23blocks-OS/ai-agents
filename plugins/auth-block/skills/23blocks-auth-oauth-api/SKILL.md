@@ -243,6 +243,40 @@ curl -X POST "$BLOCKS_API_URL/oauth/callback/google" \
 
 ---
 
+### POST /auth/social - Social Login (Google, Facebook, Apple)
+
+Signs a user in with a provider token the client already holds, and creates the user on first login. Provider credentials come from the company's keys (`23blocks-company-companies-api`). Needs only `X-API-KEY`; no bearer token.
+
+**Request:**
+```bash
+curl -X POST "$BLOCKS_API_URL/auth/social" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "provider": "google",
+    "token": "google-id-token"
+  }'
+```
+
+**Request Parameters:**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `provider` | string | Yes | `facebook`, `google` or `apple` |
+| `token` | string | Yes | Access token (Facebook) or ID token (Google, Apple) |
+| `nonce` | string | No | Replay protection for Apple Sign In |
+| `subscription` | string | No | Subscription model unique ID for new users |
+| `first_name`, `last_name` | string | No | Apple only sends the name on first login |
+
+`role_id` is ignored. New social users always get the tenant's default self-signup role; to change it, update the user afterwards with `users:write`.
+
+**Optional headers:** `X-OAuth-Mode: true` for an access + refresh token pair, `X-Device-ID` to tie the refresh token to a device.
+
+**Response 200:** the user (with role, profile, subscription and avatar included) and `meta.auth` holding the token, plus `meta.social` with the provider details. Provider-specific shortcuts also exist: `POST /auth/google`, `/auth/facebook`, `/auth/apple`.
+
+**Errors:** JSON:API errors with `source: "SocialAuth"` and statuses `400`, `401` (including `missing_api_key`), `404`, `409`, `422`, `502`.
+
+---
+
 ### POST /sso/login - SSO Login
 
 Initiates a SAML/SSO login flow.

@@ -9,8 +9,9 @@ capabilities:
   - Handle organization membership and ownership transfers
   - Define roles and assign permissions
   - Manage granular permissions and resource access
-  - Send and manage invitations with accept/decline workflows
+  - Invite users by email, resend invitations, and accept them
   - Create teams with membership management
+  - Manage groups for shared plans, with members and JWT group claims
   - Configure OAuth/SSO providers for social login
   - Query audit logs for security monitoring
 ---
@@ -115,12 +116,9 @@ Invitation workflow management:
 
 | Feature | Description |
 |---------|-------------|
-| CRUD | Create, read, update, delete invitations |
-| Send | Send invitation emails |
-| Resend | Resend pending invitations |
-| Accept | Accept an invitation |
-| Decline | Decline an invitation |
-| Cancel | Cancel a pending invitation |
+| Invite | Invite a user by email (needs `users:write`) |
+| Resend | Resend a pending invitation |
+| Accept | Accept an invitation by setting a password |
 
 ### Teams
 
@@ -131,6 +129,17 @@ Team management within organizations:
 | CRUD | Create, read, update, delete teams |
 | Members | List, add, remove team members |
 | Roles | Update member roles within teams |
+
+### Groups
+
+Shared-plan membership (Family, Team subscriptions):
+
+| Feature | Description |
+|---------|-------------|
+| CRUD | Create, list, show, update, delete groups |
+| Members | Add and remove members with owner/admin/member roles |
+| User groups | List the groups a user belongs to |
+| JWT claims | `group_id`, `group_owner_id`, `group_role`, `group_ids` on user tokens |
 
 ### OAuth / SSO
 
@@ -164,6 +173,41 @@ Security audit trail:
 $BLOCKS_API_URL  # e.g., https://auth.api.us.23blocks.com
 ```
 
+### Scope Requirements
+Authorization is by OAuth scope, not numeric role id. A `403` usually means the token lacks one of these:
+
+| Endpoint | Scope |
+|----------|-------|
+| `GET /users`, `/users/:id`, `/users/:id/devices` | `users:read` |
+| `PUT /users/:id` | self, or `users:write` |
+| `PUT /users/:id/email` | self + password, or `users:update_email` |
+| `DELETE /users/:id` | `users:delete` |
+| `POST /auth/invitation` | `users:write` |
+| `POST/DELETE /roles/:id/permissions` | `roles:write` |
+| `POST/PUT/DELETE /permissions` | `permissions:write` |
+| `POST /companies` | `tenants:create` |
+| `PUT /companies/:url_id` (and details, subscriptions) | `companies:write` |
+| `GET /companies/:url_id/secret` | `companies:manage` |
+| `POST/DELETE /companies/:url_id/access/users` | `tenants:admin` |
+| `POST/PUT /subscription_models` | `subscription_models:write` (new scopes `subscription_models:read` and `:write`) |
+| Another user's avatar | `users:read` / `users:write` |
+| Countries, states, counties, cities, currencies (writes) | `admin:write` |
+| Mail templates (all) | `admin:write` |
+
+`GET /companies/:url_id` and its sub-resources also return `403` if the caller does not belong to that company. Company responses no longer include `api_access_key` or `rsa_private_key_pem`; other company fields depend on scope (see `23blocks-company-companies-api`).
+
+### Request Body Rules
+- `POST /guests`: `user_unique_id` is ignored (server-generated). `PUT /guests/:id/convert`: `user_unique_id` is taken from the token.
+- `POST /auth/social`: `role_id` is ignored; new users get the tenant default role.
+- `PUT /auth/password` with a JWT: needs `current_password`, or a token with the `password:reset` scope. Otherwise `401 current_password_required`.
+
+### Token and Session Rules
+- A failed refresh means the user is signed out (deleted, suspended, banned, or no role). Do not retry it as a network error.
+- Refresh tokens are revoked on logout, account deletion, status change, and password change (signs out every device).
+- Group claims (`group_id`, `group_role`, `group_owner_id`, `group_ids`) survive a refresh.
+- Agent (AID) token requests need a fresh single-use proof each time; `authorization_pending` means keep polling; `429` means back off.
+- Sign-in, introspection, refresh and OIDC token responses are `no-store`: never cache them.
+
 ### Authentication
 All authenticated endpoints require:
 ```bash
@@ -192,6 +236,9 @@ curl -X GET "$BLOCKS_API_URL/users" \
 - `PUT /users/:unique_id/activate` - Activate user
 - `PUT /users/:unique_id/deactivate` - Deactivate user
 - `POST /users/search` - Search users
+- `DELETE /me` - Delete own account (password required; soft delete, 6 h recovery window)
+- `POST /users/recover` - Request account recovery email
+- `PUT /users/recover` - Complete recovery with token and new password
 
 ### Sessions & Tokens
 - `POST /auth/sign_in` - Login (create session, get access token)
@@ -257,16 +304,10 @@ curl -X GET "$BLOCKS_API_URL/users" \
 - `POST /permissions/check` - Check permission
 
 ### Invitations
-- `GET /invitations` - List invitations
-- `GET /invitations/:unique_id` - Get invitation
-- `POST /invitations` - Create invitation
-- `PUT /invitations/:unique_id` - Update invitation
-- `DELETE /invitations/:unique_id` - Delete invitation
-- `POST /invitations/:unique_id/send` - Send invitation
-- `POST /invitations/:unique_id/resend` - Resend invitation
-- `POST /invitations/:unique_id/accept` - Accept invitation
-- `POST /invitations/:unique_id/decline` - Decline invitation
-- `DELETE /invitations/:unique_id/cancel` - Cancel invitation
+- `POST /auth/invitation` - Invite a user (`users:write`; `role_id` must be assignable by the inviter; `appid` must match the authenticated app)
+- `POST /auth/invitation/resend` - Resend an invitation
+- `GET /auth/invitation/accept` - Invitation email link (redirects with the token)
+- `PUT /auth/invitation` - Accept an invitation (set password, returns a session)
 
 ### Teams
 - `GET /teams` - List teams
@@ -278,6 +319,20 @@ curl -X GET "$BLOCKS_API_URL/users" \
 - `POST /teams/:unique_id/members` - Add team member
 - `DELETE /teams/:unique_id/members/:user_id` - Remove team member
 - `PUT /teams/:unique_id/members/:user_id` - Update team member role
+
+### Groups
+- `GET /groups/` - List groups (`user_id` / `owner_id` filters; unfiltered needs `groups:admin`)
+- `GET /groups/:id` - Get group with members
+- `POST /groups/` - Create group (`groups:write`)
+- `PUT /groups/:id` - Update group
+- `DELETE /groups/:id` - Delete group (soft delete)
+- `POST /groups/:id/members` - Add member (`user_unique_id`, `role`)
+- `DELETE /groups/:id/members/:user_id` - Remove member (owner cannot be removed)
+- `GET /users/:user_id/groups` - Groups a user belongs to
+- `POST /groups/:id/invitations` - Invite by email (`role` admin or member; expires in 7 days)
+- `GET /groups/:id/invitations` - List pending invitations
+- `DELETE /groups/:id/invitations/:invitation_id` - Revoke an invitation
+- `POST /groups/invitations/:token/accept` - Accept (account email must match)
 
 ### OAuth / SSO
 - `GET /oauth/providers` - List OAuth providers
@@ -353,22 +408,23 @@ curl -X POST "$BLOCKS_API_URL/roles" \
   }'
 
 # 3. Invite a member
-curl -X POST "$BLOCKS_API_URL/invitations" \
+curl -X POST "$BLOCKS_API_URL/auth/invitation" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
   -H "X-API-KEY: $BLOCKS_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "invitation": {
+    "user": {
       "email": "newmember@example.com",
-      "role_id": "{role_id}",
-      "organization_id": "{org_id}"
+      "role_id": {role_id}
     }
   }'
 
-# 4. Send the invitation
-curl -X POST "$BLOCKS_API_URL/invitations/{invitation_id}/send" \
+# 4. Resend it later if it was not accepted
+curl -X POST "$BLOCKS_API_URL/auth/invitation/resend" \
   -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
-  -H "X-API-KEY: $BLOCKS_API_KEY"
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{ "invitation": { "email": "newmember@example.com" } }'
 ```
 
 ### Setup OAuth and SSO Login

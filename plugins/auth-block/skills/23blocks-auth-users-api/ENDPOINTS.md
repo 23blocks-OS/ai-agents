@@ -17,6 +17,9 @@ Full endpoint documentation. See [SKILL.md](SKILL.md) for setup, data models, an
 - PUT `/users/:unique_id/activate`: Activate User
 - PUT `/users/:unique_id/deactivate`: Deactivate User
 - POST `/users/search`: Search Users
+- DELETE `/me`: Delete My Account
+- POST `/users/recover`: Request Account Recovery
+- PUT `/users/recover`: Complete Account Recovery
 
 ---
 
@@ -446,3 +449,87 @@ curl -X POST "$BLOCKS_API_URL/users/search" \
 ```
 
 **Response 200:** Same format as GET /users
+
+---
+
+### DELETE /me - Delete My Account
+
+Self-service account deletion (Auth API v4.49.0). The signed-in user deletes their own account; no admin scope is needed. It is a soft delete: the user row stays with `status: deleted` and `deleted_at` set, and `unique_id` is kept so other blocks' records still resolve.
+
+**Request:**
+```bash
+curl -X DELETE "$BLOCKS_API_URL/me" \
+  -H "Authorization: Bearer $BLOCKS_AUTH_TOKEN" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "password": "current-password",
+    "anonymize_after_grace_period": true
+  }'
+```
+
+**Request Parameters:**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `password` | string | Yes | The user's current password |
+| `anonymize_after_grace_period` | boolean | No | If true, a job anonymizes email, name, profile PII and avatar after the recovery window |
+
+**Response 204** No Content.
+
+**What happens:**
+- Refresh tokens are revoked in the same transaction, so the user is signed out everywhere.
+- Deleted, suspended and banned users can no longer sign in (password or passwordless).
+- The recovery window is 6 hours (Devise `reset_password_within`). With anonymization, the email becomes `anonymized_<user_id>_<timestamp>@deleted.local`.
+- Other blocks keep their own copies of the user. Auth does not cascade the delete: remove or cancel subscriptions, Jarvis identity, files and forms in the other blocks first, and delete in Auth last.
+
+**Errors:**
+- `404` GW-DEL-001 - User not found
+- `422` GW-DEL-002 - Password missing
+- `401` GW-DEL-003 - Wrong password
+- `422` GW-DEL-004 - Already deleted
+
+---
+
+### POST /users/recover - Request Account Recovery
+
+Emails a recovery link for a deleted account that is still inside the recovery window. Always answers `200` with the same message whether or not the email exists or the account is deleted, so it cannot be used to probe for accounts.
+
+**Request:**
+```bash
+curl -X POST "$BLOCKS_API_URL/users/recover" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{ "email": "user@example.com", "recovery_url": "https://app.example.com/recover" }'
+```
+
+**Request Parameters:**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `email` | string | Yes | Account email |
+| `recovery_url` | string | Yes | Page in your app that receives the recovery token |
+
+**Errors:** `422` GW-REC-001 (email missing), `422` GW-REC-002 (recovery URL missing).
+
+---
+
+### PUT /users/recover - Complete Account Recovery
+
+Reactivates the deleted account and sets a new password.
+
+**Request:**
+```bash
+curl -X PUT "$BLOCKS_API_URL/users/recover" \
+  -H "X-API-KEY: $BLOCKS_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "recovery_token": "token-from-email",
+    "password": "new-password",
+    "password_confirmation": "new-password"
+  }'
+```
+
+**Response 200:** the user, now `status: active`.
+
+**Errors:** `422` GW-REC-010 (token missing), GW-REC-011 (password missing), GW-REC-012 (passwords differ), GW-REC-013 (invalid token), GW-REC-014 (expired token), GW-REC-015 (account is not deleted), GW-REC-016 (save failed).
+
+An account that was already anonymized cannot be meaningfully recovered.

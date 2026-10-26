@@ -169,6 +169,20 @@ curl -X POST "$BLOCKS_API_URL/oauth/token/refresh" \
 **Errors:**
 - `400 Bad Request` - `{ "error": "invalid_grant", "error_description": "..." }`
 
+**A failed refresh means the session is over.** Refresh fails closed (Auth v4.49.2): when the account can no longer sign in, the refresh token is revoked and the invalid-token error is returned. Treat any failed refresh as "signed out" and send the user to sign-in; do not retry it as a network error.
+
+Refresh tokens are revoked on the server when:
+- the user's status becomes deleted, suspended or banned,
+- the user changes their password, which signs them out of **every** device, including the one that made the change,
+- the user signs out,
+- the user deletes their account (`DELETE /me`).
+
+Group claims (`group_id`, `group_role`, `group_owner_id`, `group_ids`) are carried into the refreshed access token.
+
+A refresh token is issued at sign-in only when the client sends `X-OAuth-Mode: true`. Refresh by default, refresh-token rotation and an admin "revoke all sessions" endpoint are planned but not released; do not rely on them.
+
+**Caching:** `POST /auth/sign_in`, `POST /auth/introspect`, the OIDC token and userinfo endpoints, and `/oauth/token/refresh` and `/revoke` answer with `Cache-Control: no-store` (and `Pragma: no-cache`), including errors. Never cache these responses. Discovery and JWKS stay cacheable.
+
 ---
 
 ### POST /oauth/token/revoke - Revoke Token

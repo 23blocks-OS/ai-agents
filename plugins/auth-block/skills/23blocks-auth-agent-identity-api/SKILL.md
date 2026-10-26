@@ -266,6 +266,8 @@ aid-token.sh --auth https://auth.api.us.23blocks.com/<tenant> --scope "files:rea
 
 > Full endpoint documentation: [ENDPOINTS.md](ENDPOINTS.md)
 
+**Proofs are single-use.** Every token request needs a fresh proof; never reuse or replay one, and do not retry within the same second (identical proof, refused once). A proof more than 60 s ahead of the server clock is refused, so keep NTP on. Until an admin approves a new agent, the token endpoint answers `400 authorization_pending`: that means wait and poll again, not fail. On `429` back off. Scripts like `aid-token.sh` must build a new proof per call.
+
 **Token caching:** `aid-token.sh` automatically caches tokens at `~/.agent-messaging/tokens/` and reuses them until 60 seconds before expiry.
 
 ### Step 4: Use the Token
@@ -356,8 +358,11 @@ curl -X DELETE "https://auth.api.us.23blocks.com/<tenant>/agent_registrations/<i
 | Error | HTTP | Cause | Fix |
 |-------|------|-------|-----|
 | `agent_not_registered` | 400 | Agent not registered with tenant | Run `aid-register.sh` |
-| `invalid_grant` | 400 | Signature invalid or identity expired | Verify AMP keys match registration |
-| `invalid_proof` | 400 | Proof of possession failed | Check system clock sync |
+| `invalid_grant` | 400 | Signature invalid, identity expired, or agent has no role / a role without permissions | Verify AMP keys match registration; if the role is the cause, ask the tenant admin |
+| `invalid_proof` | 400 | Proof forged, already used, or dated more than 60 s in the future | Build a fresh proof for every request; check system clock sync (NTP) |
+| `authorization_pending` (token endpoint) | 400 | Agent not approved yet (Auth v4.49.3+) | Not a failure: poll again after the registration interval (default 5 s) with a new proof |
+| `access_denied` (token endpoint) | 403 | Registration rejected or disabled | Stop; ask the tenant admin |
+| rate limited | 429 | More than 150 token requests per 5 minutes for this agent | Wait, retry with a new proof |
 | `invalid_scope` | 400 | Requested scopes exceed permissions | Omit `--scope` to get all available |
 | `agent_suspended` | 403 | Agent suspended by admin | Contact tenant admin |
 | 401 | 401 | Registration token expired/invalid | Get fresh admin JWT |

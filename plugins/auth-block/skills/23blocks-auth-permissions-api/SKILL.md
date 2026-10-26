@@ -18,6 +18,10 @@ Send requests to `$BLOCKS_API_URL` (this block: `https://auth.api.us.23blocks.co
 - `X-API-KEY: $BLOCKS_API_KEY`: static tenant routing key (`pk_live_sh_...`) from the company config, the same for every block. It is not the key used to register an agent identity.
 - `Authorization: Bearer $BLOCKS_AUTH_TOKEN`: the caller's identity and scopes; it expires. Get it from login (`/auth/sign_in`), from the user, or, for an agent, with `aid-token.sh -a https://auth.api.us.23blocks.com/<tenant> -q` (first-time setup: the `23blocks-auth-agent-identity-api` skill).
 
+## Required Scopes
+
+Access is gated by OAuth scope, not numeric role id; a missing scope returns `403`. `POST /permissions`, `PUT /permissions/:id` and `DELETE /permissions/:id` need `permissions:write`.
+
 ## Endpoints
 
 ### GET /permissions - List Permissions

@@ -60,6 +60,8 @@ curl -X POST "$BLOCKS_API_URL/auth/introspect" \
 }
 ```
 
+User JWTs also carry `group_id`, `group_owner_id`, `group_role` and `group_ids` when the user belongs to a group. Read them by decoding the token (verify with the JWKS endpoint); this response is not documented to include them. See `23blocks-auth-groups-api`.
+
 **Response 200 (inactive token):**
 ```json
 {

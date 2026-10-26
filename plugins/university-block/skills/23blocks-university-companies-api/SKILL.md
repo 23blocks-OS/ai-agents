@@ -101,7 +101,6 @@ curl -X POST "$BLOCKS_API_URL/companies" \
       "name": "New University",
       "url_id": "new-university",
       "schema_name": "new_university",
-      "api_access_key": "generated-access-key",
       "auth_provider": "23blocks",
       "status": "active",
       "created_at": "2025-01-12T10:30:00Z"
@@ -323,7 +322,6 @@ curl -X DELETE "$BLOCKS_API_URL/companies/company-uuid-123/exchange/exchange-uui
 | `name` | string | Display name |
 | `url_id` | string | URL-friendly identifier |
 | `schema_name` | string | Database schema name |
-| `api_access_key` | string | Company API access key |
 | `auth_provider` | string | Auth provider (23blocks, auth0, cognito, okta) |
 | `preferred_domain` | string | Preferred domain |
 | `preferred_language` | string | Language code |

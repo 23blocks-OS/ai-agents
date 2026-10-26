@@ -103,7 +103,6 @@ curl -X POST "$BLOCKS_API_URL/companies" \
       "name": "New Company Inc",
       "url_id": "new-company",
       "schema_name": "new_company",
-      "api_access_key": "generated-access-key",
       "auth_provider": "23blocks",
       "status": "active",
       "created_at": "2025-01-12T10:30:00Z"
@@ -302,6 +301,10 @@ All `/companies/*` endpoints require a valid JWT + valid X-API-Key. Some sub-act
 | `DELETE /companies/:url_id/keys/:key_unique_id` | `keys:write` |
 | `POST /companies/:url_id/exchange` | `exchange:write` |
 
+The Authentication API (gateway) also gates company access by scope instead of numeric role id: `PUT /companies/:url_id` and its details/subscriptions need `companies:write`, `GET /companies/:url_id/secret` needs `companies:manage`, and `GET /companies/:url_id` and its sub-resources return `403` if the caller does not belong to that company.
+
+**Scope-gated response fields:** `schema_name` needs `tenants:admin`; `url_id`, `slack_channel`, `slack_username`, `open_access` and `auth_provider` need `companies:read` or `companies:manage`; `slack_hook`, `auth_config`, `rsa_public_key_pem` and `jwt_key_id` need `companies:manage`. Treat all of them as optional. `api_access_key` and `rsa_private_key_pem` are never returned: read the API key from your own configuration (`BLOCKS_API_KEY`).
+
 ---
 
 ## Data Models
@@ -314,7 +317,6 @@ All `/companies/*` endpoints require a valid JWT + valid X-API-Key. Some sub-act
 | `name` | string | Display name |
 | `url_id` | string | URL-friendly identifier |
 | `schema_name` | string | Database schema name |
-| `api_access_key` | string | Company API access key |
 | `auth_provider` | string | Auth provider (23blocks, auth0, cognito, okta) |
 | `preferred_domain` | string | Preferred domain |
 | `preferred_language` | string | Language code |

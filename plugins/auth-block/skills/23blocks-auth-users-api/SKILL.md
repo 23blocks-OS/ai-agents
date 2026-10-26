@@ -18,6 +18,17 @@ Send requests to `$BLOCKS_API_URL` (this block: `https://auth.api.us.23blocks.co
 - `X-API-KEY: $BLOCKS_API_KEY`: static tenant routing key (`pk_live_sh_...`) from the company config, the same for every block. It is not the key used to register an agent identity.
 - `Authorization: Bearer $BLOCKS_AUTH_TOKEN`: the caller's identity and scopes; it expires. Get it from login (`/auth/sign_in`), from the user, or, for an agent, with `aid-token.sh -a https://auth.api.us.23blocks.com/<tenant> -q` (first-time setup: the `23blocks-auth-agent-identity-api` skill).
 
+## Required Scopes
+
+Access is gated by OAuth scope, not numeric role id; a missing scope returns `403`.
+
+- `GET /users`, `GET /users/:id`, `GET /users/:id/devices`: `users:read`
+- `PUT /users/:id`: the user themself, or `users:write`
+- `PUT /users/:id/email`: the user with their password, or `users:update_email`
+- `DELETE /users/:id`: `users:delete`
+- Another user's avatar: `users:read` / `users:write`
+- `PUT /auth/password` with a JWT: send `current_password` (or use a `password:reset` token)
+
 ## Endpoints
 
 > Full endpoint documentation: [ENDPOINTS.md](ENDPOINTS.md)
@@ -37,6 +48,9 @@ Send requests to `$BLOCKS_API_URL` (this block: `https://auth.api.us.23blocks.co
 | PUT | `/users/:unique_id/activate` | Activate deactivated user |
 | PUT | `/users/:unique_id/deactivate` | Deactivate user account |
 | POST | `/users/search` | Search users with filters |
+| DELETE | `/me` | Delete your own account (password required, soft delete) |
+| POST | `/users/recover` | Request a recovery email for a deleted account |
+| PUT | `/users/recover` | Complete recovery with the emailed token and a new password |
 
 ---
 
@@ -49,7 +63,7 @@ Send requests to `$BLOCKS_API_URL` (this block: `https://auth.api.us.23blocks.co
 | `email` | string | User email |
 | `first_name` | string | First name |
 | `last_name` | string | Last name |
-| `status` | enum | active, inactive, suspended |
+| `status` | enum | active, inactive, suspended, banned, deleted (deleted, suspended and banned users cannot sign in) |
 | `email_verified` | boolean | Email verification status |
 | `last_login_at` | timestamp | Last login time |
 | `created_at` | timestamp | Creation time |

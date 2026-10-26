@@ -43,7 +43,11 @@ Exchange an Agent Identity for a JWT access token.
 3. Concatenate: `signature_bytes + timestamp_string`
 4. Base64url encode the result
 
-**Proof max age:** 300 seconds (5 minutes)
+**Proof max age:** 300 seconds (5 minutes) in the past. A proof dated more than 60 seconds in the future is refused (Auth v4.49.4), so keep the agent machine's clock in sync (NTP).
+
+**A proof is single-use.** Re-sending the same proof gets the same `invalid_proof` answer as a forged one. Build a fresh proof for every request. Ed25519 is deterministic, so two proofs made in the same second are identical: if you retry within the same second the retry is refused. Wait a second and build a new proof.
+
+**Rate limit:** the endpoint is throttled per agent fingerprint, 150 requests per 5 minutes, answered with `429`. Polling every few seconds while waiting for approval stays far below it. On `429`, wait and retry with a new proof.
 
 **Curl example:**
 
@@ -69,6 +73,8 @@ curl -X POST "https://auth.api.us.23blocks.com/<tenant>/oauth/token" \
 }
 ```
 
+A token is issued only if the agent is approved, active, and its role has at least one permission. Since Auth v4.49.3 an agent that is not yet approved no longer receives a 200 token with an empty scope list.
+
 **Error Response (400):**
 
 ```json
@@ -77,6 +83,19 @@ curl -X POST "https://auth.api.us.23blocks.com/<tenant>/oauth/token" \
   "error_description": "No active registration found for this agent identity"
 }
 ```
+
+**Registration-state errors:**
+
+| Status | `error` | Meaning | What to do |
+|--------|---------|---------|------------|
+| 400 | `authorization_pending` | Not approved yet | Not a failure. Poll again after the interval the registration returned (default 5 s) with a new proof. Do not cache the answer |
+| 403 | `access_denied` | Registration rejected or disabled | Stop; ask the tenant admin |
+| 400 | `invalid_grant` | Agent has no role, or its role has no permissions | Stop; ask the tenant admin |
+| 403 | `invalid_grant` | Agent is suspended | Stop; ask the tenant admin |
+| 400 | `invalid_proof` | Proof forged, reused, or dated more than 60 s ahead | Build a fresh proof; check the system clock |
+| 429 | | Throttled (150 per 5 minutes per agent) | Wait, then retry with a new proof |
+
+The token endpoint response is sent with `Cache-Control: no-store`.
 
 ---
 

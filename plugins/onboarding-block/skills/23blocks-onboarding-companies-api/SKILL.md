@@ -101,7 +101,6 @@ curl -X POST "$BLOCKS_API_URL/companies" \
       "name": "New Company Inc",
       "url_id": "new-company",
       "schema_name": "new_company",
-      "api_access_key": "generated-access-key",
       "auth_provider": "23blocks",
       "status": "active",
       "created_at": "2025-01-12T10:30:00Z"
@@ -378,7 +377,6 @@ curl -X POST "$BLOCKS_API_URL/companies/acme-corp/storage" \
 | `name` | string | Display name |
 | `url_id` | string | URL-friendly identifier |
 | `schema_name` | string | Database schema name |
-| `api_access_key` | string | Company API access key |
 | `auth_provider` | string | Auth provider (23blocks, auth0, cognito, okta) |
 | `preferred_domain` | string | Preferred domain |
 | `preferred_language` | string | Language code |

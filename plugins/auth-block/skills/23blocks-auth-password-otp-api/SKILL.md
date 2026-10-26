@@ -138,6 +138,8 @@ curl -X POST "$BLOCKS_API_URL/auth/password/otp/verify" \
 5. Client uses scoped JWT to call PUT /auth/password to set new password
 ```
 
+**Changing a password while logged in:** `PUT /auth/password` with a JWT Bearer token now requires either a token with the `password:reset` scope (the OTP and reset-email flows already issue one) or a `current_password` field matching the existing password. A normal logged-in change that omits `current_password` returns `401` with code `current_password_required`. The DeviseTokenAuth header flow is unchanged.
+
 ---
 
 ## Error Response Format

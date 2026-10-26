@@ -46,7 +46,8 @@ curl -X POST "$BLOCKS_API_URL/guests/" \
 | `guest.username` | string | No | Guest username |
 | `guest.name` | string | No | Guest display name |
 | `guest.status` | string | No | Guest status |
-| `guest.user_unique_id` | string | No | Associated user unique ID |
+
+`guest.user_unique_id` in the body is ignored: the server generates it.
 
 **Response 201:**
 ```json
@@ -166,7 +167,6 @@ curl -X PUT "$BLOCKS_API_URL/guests/{user_unique_id}/convert" \
   -H "Content-Type: application/json" \
   -d '{
     "guest": {
-      "user_unique_id": "registered-user-uuid",
       "email": "registered@example.com",
       "username": "registereduser",
       "name": "Registered User"
@@ -177,10 +177,11 @@ curl -X PUT "$BLOCKS_API_URL/guests/{user_unique_id}/convert" \
 **Request Parameters:**
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `guest.user_unique_id` | string | No | Registered user unique ID |
 | `guest.email` | string | No | Registered user email |
 | `guest.username` | string | No | Registered username |
 | `guest.name` | string | No | Registered display name |
+
+`guest.user_unique_id` in the body is ignored: the server takes it from the token.
 
 **Response 200:**
 ```json
