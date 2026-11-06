@@ -246,6 +246,18 @@ curl -X GET "https://auth.api.us.23blocks.com/<tenant>/agent_registrations/statu
 - Human approval is mandatory — there is no auto-approve option
 - The `authorization_url` domain is controlled by the Company field `agent_authorization_domain` (default: `app.23blocks.com`). Tenants can customize this to point to their own approval UI.
 
+#### Device Authorization Flow for Agents and CLIs (RFC 8628) — pending release
+
+The Auth API is adding a generic OAuth device flow so a CLI or agent can sign in without a pasted JWT. Status at 2026-11-06: PR in review, merging to `development`. Confirm it is live on your tenant before use. Details below are only what the Auth API owner has confirmed; check the response fields on the live API.
+
+| Step | Call |
+|------|------|
+| 1. Get device and user codes | `POST /device/authorize` |
+| 2. User approves in a browser | `/device/verify` |
+| 3. Agent polls the token endpoint until approved | standard RFC 8628 polling (`authorization_pending`, `slow_down`, `expired_token`, `access_denied`) |
+
+This is separate from the agent-registration flow above (`/agent_registrations/request`), which registers an AID keypair. Do not use `client_credentials` for agents: it was withdrawn and answers `400 unsupported_grant_type`.
+
 ### Step 3: Token Exchange (Per-Session)
 
 The agent requests a JWT by presenting its signed identity:

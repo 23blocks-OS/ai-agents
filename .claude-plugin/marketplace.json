@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "Official 23blocks platform plugins for Claude Code. One plugin per block.",
-    "version": "2.1.0",
+    "version": "2.1.1",
     "homepage": "https://www.23blocks.com",
     "repository": "https://github.com/23blocks-OS/ai-agents"
   },
@@ -47,7 +47,7 @@
       "name": "auth-block",
       "source": "./plugins/auth-block",
       "description": "23blocks Auth Block - authentication, users, sessions, API keys, organizations, roles, permissions, invitations, teams, OAuth/SSO, audit logs",
-      "version": "1.1.0",
+      "version": "1.4.0",
       "keywords": ["auth", "authentication", "authorization", "users", "sessions", "api-keys", "organizations", "roles", "permissions", "invitations", "teams", "oauth", "sso", "audit-logs"],
       "category": "platform"
     },

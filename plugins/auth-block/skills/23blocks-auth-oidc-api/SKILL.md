@@ -40,7 +40,7 @@ curl -X GET "$BLOCKS_API_URL/{company_url_id}/.well-known/openid-configuration"
   "introspection_endpoint": "https://auth.api.us.23blocks.com/my-company/oauth/introspect",
   "revocation_endpoint": "https://auth.api.us.23blocks.com/my-company/oauth/revoke",
   "response_types_supported": ["code", "token", "id_token", "code token", "code id_token", "token id_token", "code token id_token"],
-  "grant_types_supported": ["authorization_code", "implicit", "password", "client_credentials", "refresh_token"],
+  "grant_types_supported": ["authorization_code", "implicit", "password", "refresh_token", "urn:aid:agent-identity"],
   "subject_types_supported": ["public"],
   "id_token_signing_alg_values_supported": ["RS256"],
   "scopes_supported": ["openid", "profile", "email", "..."],
@@ -50,6 +50,8 @@ curl -X GET "$BLOCKS_API_URL/{company_url_id}/.well-known/openid-configuration"
   "end_session_endpoint": "https://auth.api.us.23blocks.com/my-company/oauth/logout"
 }
 ```
+
+> **Discovery caveat (Auth v4.52.11):** `client_credentials` is no longer listed. `authorization_code`, `implicit` and `password` are still listed, but the token endpoint does not serve them today, so do not rely on those entries. Check this list before choosing a grant.
 
 **Errors:**
 - `404 Not Found` - Company not found or OIDC not enabled
@@ -166,10 +168,11 @@ curl -X POST "$BLOCKS_API_URL/{company_url_id}/oauth/token" \
 |------------|-------------|
 | `authorization_code` | Exchange auth code for tokens |
 | `refresh_token` | Exchange refresh token for new access token (`grant_type=refresh_token&refresh_token=<token>`, no API key; `400 invalid_request` if missing/blank, `400 invalid_grant` if unknown, revoked, other company, or user suspended/banned/deleted) |
-| `client_credentials` | Currently unavailable |
+| `urn:aid:agent-identity` | Agent Identity (AID) token exchange; see `23blocks-auth-agent-identity-api` |
+| `client_credentials` | Withdrawn (Feb 2026). Answers `400 unsupported_grant_type` since Auth v4.52.9. Not listed in discovery since v4.52.11. Do not retry; use AID or the device flow for agents |
 
 **Errors:**
-- `400 Bad Request` (unsupported_grant_type) - Invalid grant type
+- `400 Bad Request` (`unsupported_grant_type`) - Grant type not served, including `client_credentials`. This is permanent, so do not retry (the old `503 temporarily_unavailable` was retryable)
 
 ---
 
